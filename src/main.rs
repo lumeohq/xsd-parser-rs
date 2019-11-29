@@ -2,11 +2,10 @@ use std::fs;
 use std::io::Read;
 
 mod xsd;
-pub use xsd::simple_type::xsd::SimpleType;
-pub use xsd::complex_type::xsd::ComplexType;
-use roxmltree::Edge;
-
-
+pub use xsd::simple_type::SimpleType;
+pub use xsd::complex_type::ComplexType;
+use roxmltree::Node;
+use crate::xsd::utils::{find_child, get_struct_comment};
 
 
 fn main() {
@@ -18,11 +17,9 @@ fn main() {
             return;
         },
     };
-    let schema = doc.root();
-
-
-
-   //pretty_print_code(&schema);
+    let root = doc.root();
+    let schema = find_child(&root, "schema").expect("All xsd need schema element");
+    generate_and_print(&schema);
 }
 
 fn load_file(path: &str) -> String {
@@ -32,29 +29,17 @@ fn load_file(path: &str) -> String {
     text
 }
 
-fn pretty_print(node: &roxmltree::Node, shift: usize) {
-    print!("{}>{:?}\n", "-".repeat(shift), node);
-    for child in node.children().filter(|e| !e.is_text()) {
-        pretty_print(&child, shift+2);
-    }
-}
-
-fn pretty_print_code(node: &roxmltree::Node) {
-    if node.is_comment() {
-        let comment = node.text().unwrap_or("").trim();
-        if comment.len() > 2 {
-            println!("//{}", comment);
+fn generate_and_print(schema: &Node) {
+    for child in schema.children().filter(|node| !node.is_text()) {
+        if child.is_comment() {
+            print!("{}", get_struct_comment(child.text()));
         }
-    }
-    else if node.is_element() {
-        if node.tag_name().name() == "simpleType" {
-            print!("{:?}", SimpleType::new(node));
+        else if child.is_element() {
+            match child.tag_name().name() {
+                "simpleType" => {print!("{:?}", SimpleType::new(&child));},
+                "complexType" => {print!("{:?}", ComplexType::new(&child));},
+                _ => {println!("\nUNSUPPORTED_ELEMENT: {:?}", child);}
+            }
         }
-        else if node.tag_name().name() == "complexType" {
-            print!("{:?}", ComplexType::new(node));
-        }
-    }
-    for child in node.children().filter(|e| !e.is_text()) {
-        pretty_print_code(&child);
     }
 }
