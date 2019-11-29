@@ -1,12 +1,12 @@
-pub mod xsd {
-    pub trait Validate {
-        fn validate(&self) -> Result<(), &str>;
-    }
 
-    pub trait GenerateCode {
-        fn generate_code(&self) -> String;
-    }
+pub trait Validate {
+    fn validate(&self) -> Result<(), &str>;
 }
+
+pub trait GenerateCode {
+    fn generate_code(&self) -> String;
+}
+
 
 
 
