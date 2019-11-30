@@ -22,11 +22,19 @@ fn get_sequence<'a> (node: &'a roxmltree::Node) -> Vec<Element> {
     }
 }
 
+fn has_any_elements(node: &roxmltree::Node) -> bool {
+    match find_child(node, "sequence") {
+        Some(node) => find_child(&node, "any").is_some(),
+        _ => false
+    }
+}
+
 pub struct ComplexType<'a> {
     name: String,
     documentation: Option<&'a str>,
     attrs: Vec<Attribute>,
-    sequence: Vec<Element>
+    sequence: Vec<Element>,
+    has_any_elements: bool,
 }
 
 impl<'a> ComplexType<'a> {
@@ -36,7 +44,8 @@ impl<'a> ComplexType<'a> {
             name,
             documentation: get_documentation(node),
             attrs: get_attrs(node),
-            sequence: get_sequence(node)
+            sequence: get_sequence(node),
+            has_any_elements: has_any_elements(node)
         }
     }
 }
@@ -59,6 +68,9 @@ impl GenerateCode for ComplexType<'_> {
             map(|a| a.generate_code()).
             collect()
         );
+        if self.has_any_elements {
+            fields.push("  any_elements: Vec<AnyElement>,".to_string() );
+        }
 
         format!("{}pub struct {} {{\n{}\n}} \n\n",
                 get_struct_comment(self.documentation),
