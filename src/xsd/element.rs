@@ -2,11 +2,9 @@ use crate::xsd::utils::*;
 use crate::xsd::traits::*;
 use std::collections::HashMap;
 
-type AnyAttributes = HashMap<String, String>;
-
 pub struct AnyElement {
     text: Option<String>,
-    attributes: AnyAttributes,
+    attributes: HashMap<String, String>,
     elements: Vec<AnyElement>,
 }
 
