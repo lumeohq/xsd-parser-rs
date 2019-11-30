@@ -13,6 +13,26 @@ pub fn match_type(s: &str) -> &str {
     }
 }
 
+pub fn get_node_name(node: & roxmltree::Node) -> String {
+    match node.attribute("name") {
+        Some(s) => lowercase_first_letter(s),
+        None => match node.attribute("ref") {
+            Some(s) => lowercase_first_letter(s.rsplit(":").next().unwrap().into()),
+            None => "_UNSUPPORTED_NAME_DEFENITION".to_string()
+        }
+    }
+}
+
+pub fn get_node_type(node: & roxmltree::Node) -> String {
+    match node.attribute("type") {
+        Some(s) => match_type(s).replace(":", "::"),
+        None => match node.attribute("ref") {
+            Some(s) => match_type(s).replace(":", "::"),
+            None => {return "UNSUPPORTED_TYPE_DEFINITION".to_string();},
+        }
+    }
+}
+
 
 pub fn lowercase_first_letter(s: &str) -> String {
     let mut c = s.chars();
@@ -70,6 +90,6 @@ pub fn get_field_comment(doc: &Option<String>) -> String {
         lines().
         map(|s| s.trim()).
         filter(|s| s.len() > 1).
-        map(|s| format!("{}  ", s)).
+        map(|s| format!("// {}  ", s)).
         fold(String::from(""), |x , y| (x+&y))
 }
