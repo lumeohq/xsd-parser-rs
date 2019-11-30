@@ -1,7 +1,7 @@
 
 use std::fmt;
 use crate::xsd::utils::*;
-use crate::xsd::elements::*;
+use crate::xsd::traits::*;
 
 pub struct SimpleType <'a> {
     name: String,

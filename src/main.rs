@@ -1,5 +1,5 @@
 use std::fs;
-use std::io::Read;
+use std::io::{Read};
 
 mod xsd;
 pub use xsd::simple_type::SimpleType;
