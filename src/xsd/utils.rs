@@ -1,3 +1,5 @@
+extern crate inflector;
+use inflector::cases::snakecase::to_snake_case;
 
 use roxmltree::*;
 
@@ -15,9 +17,9 @@ pub fn match_type(s: &str) -> &str {
 
 pub fn get_node_name(node: & roxmltree::Node) -> String {
     match node.attribute("name") {
-        Some(s) => lowercase_first_letter(s),
+        Some(s) => to_snake_case(s),
         None => match node.attribute("ref") {
-            Some(s) => lowercase_first_letter(s.rsplit(":").next().unwrap().into()),
+            Some(s) => to_snake_case(s.rsplit(":").next().unwrap().into()),
             None => "_UNSUPPORTED_NAME_DEFENITION".to_string()
         }
     }
@@ -30,15 +32,6 @@ pub fn get_node_type(node: & roxmltree::Node) -> String {
             Some(s) => match_type(s).replace(":", "::"),
             None => {return "UNSUPPORTED_TYPE_DEFINITION".to_string();},
         }
-    }
-}
-
-
-pub fn lowercase_first_letter(s: &str) -> String {
-    let mut c = s.chars();
-    match c.next() {
-        None => String::new(),
-        Some(f) => f.to_lowercase().chain(c).collect(),
     }
 }
 
