@@ -54,8 +54,9 @@ impl GenerateCode for ComplexType<'_> {
             fields.push("  any_attributes: HashMap<String, String>,".to_string() );
         }
 
-        format!("{}pub struct {} {{\n{}\n}} \n\n",
+        format!("{}{}pub struct {} {{\n{}\n}} \n\n",
                 get_struct_comment(self.documentation),
+                self.generate_yaserde_derive(),
                 self.name,
                 fields.join("\n")
         )
@@ -89,3 +90,5 @@ fn has_any_elements(node: &roxmltree::Node) -> bool {
 fn has_any_attributes(node: &roxmltree::Node) -> bool {
     find_child(node, "anyAttribute").is_some()
 }
+
+impl GenerateYaserdeDerive for ComplexType<'_> {}

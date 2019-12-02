@@ -1,4 +1,3 @@
-
 use std::fmt;
 use crate::xsd::utils::*;
 use crate::xsd::traits::*;
@@ -35,10 +34,13 @@ impl<'a> fmt::Debug for SimpleType <'a> {
 
 impl GenerateCode for SimpleType<'_> {
     fn generate_code(&self) -> String {
-        format!("{} pub struct {} ({}); \n\n",
+        format!("{}{}pub struct {} ({}); \n\n",
                 get_struct_comment(self.documentation),
+                self.generate_yaserde_derive(),
                 self.name,
                 self.field_type
         )
     }
 }
+
+impl GenerateYaserdeDerive for SimpleType<'_> {}
