@@ -1,3 +1,6 @@
+extern crate inflector;
+use inflector::cases::snakecase::to_snake_case;
+
 use crate::xsd::utils::*;
 use crate::xsd::traits::*;
 
@@ -15,12 +18,19 @@ impl Attribute {
             documentation: get_documentation(node).map(|v| v.to_string()),
         }
     }
+
+    pub fn generate_yaserde_attributes(&self) -> String {
+        format!("#[yaserde(attribute, rename = \"{}\")]",
+                self.name,
+        )
+    }
 }
 
 impl GenerateCode for Attribute {
     fn generate_code(&self) -> String {
-        format!("  {}: {},  {}",
-                self.name,
+        format!("  {}\n  pub {}: {},  {}",
+                self.generate_yaserde_attributes(),
+                to_snake_case(&self.name),
                 self.type_,
                 get_field_comment(&self.documentation)
         )

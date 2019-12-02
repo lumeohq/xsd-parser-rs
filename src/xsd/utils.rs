@@ -1,6 +1,3 @@
-extern crate inflector;
-use inflector::cases::snakecase::to_snake_case;
-
 use roxmltree::*;
 
 pub fn match_type(s: &str) -> &str {
@@ -17,9 +14,9 @@ pub fn match_type(s: &str) -> &str {
 
 pub fn get_node_name(node: & roxmltree::Node) -> String {
     match node.attribute("name") {
-        Some(s) => to_snake_case(s),
+        Some(s) => s.to_string(),
         None => match node.attribute("ref") {
-            Some(s) => to_snake_case(s.rsplit(":").next().unwrap().into()),
+            Some(s) => s.rsplit(":").next().unwrap().into(),
             None => "_UNSUPPORTED_NAME_DEFENITION".to_string()
         }
     }
@@ -30,9 +27,29 @@ pub fn get_node_type(node: & roxmltree::Node) -> String {
         Some(s) => match_type(s).replace(":", "::"),
         None => match node.attribute("ref") {
             Some(s) => match_type(s).replace(":", "::"),
-            None => {return "UNSUPPORTED_TYPE_DEFINITION".to_string();},
+            None => "UNSUPPORTED_TYPE_DEFINITION".to_string()
         }
     }
+}
+
+pub fn get_node_namespace(node: & roxmltree::Node) -> Option<String> {
+    match node.attribute("type") {
+        Some(s) => before_colon(&s),
+        None => match node.attribute("ref") {
+            Some(s) => before_colon(&s),
+            None => None
+        }
+    }
+}
+
+fn before_colon(s: &str) -> Option<String> {
+    let bytes = s.as_bytes();
+    for (i, &item) in bytes.iter().enumerate() {
+        if item == b':' {
+            return Some(s[0..i].to_string());
+        }
+    }
+    None
 }
 
 pub fn uppercase_first_letter(s: &str) -> String {
