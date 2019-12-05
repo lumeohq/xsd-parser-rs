@@ -8,7 +8,10 @@ use roxmltree::Node;
 use crate::xsd::utils::{find_child, get_struct_comment};
 
 mod xsd2;
+mod generator;
 pub use xsd2::simple_type::SimpleType as ST;
+pub use generator::simple_type::simple_type;
+use inflector::cases::pascalcase::to_pascal_case;
 
 fn main() {
     let text = load_file("xsd/onvif.xsd");
@@ -48,6 +51,8 @@ fn generate_and_print(schema: &Node) {
     }
 }
 
+
+
 fn generate_and_print2(schema: &Node) {
     let stypes: Vec<ST> = schema.
         children().
@@ -55,21 +60,6 @@ fn generate_and_print2(schema: &Node) {
         map(|node| ST{node}).collect();
 
     for st in stypes {
-        println!("{}", generate_simple_type(&st));
+        println!("{}", simple_type(&st));
     }
-}
-
-fn generate_simple_type(st: &ST) -> String {
-    let l = st.list();
-
-    if l.is_some() {
-        return format!("struct {} (Vec<{}>);", st.name().expect("Global Simple Type must have names"), l.unwrap().item_type().unwrap());
-    }
-    let r = st.restriction();
-    if r.is_some() {
-        return format!("struct {} ({});", st.name().expect("Global Simple Type must have names"), r.unwrap().base());
-    }
-
-    return format!("struct {} ({});", st.name().expect("Global Simple Type must have names"), "Unknown");
-
 }
