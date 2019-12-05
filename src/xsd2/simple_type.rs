@@ -30,6 +30,7 @@ impl<'a, 'input> fmt::Debug for SimpleType<'a, 'input> {
     }
 }
 
+
 pub struct Restriction<'a, 'input> {
     pub node: roxmltree::Node<'a, 'input>,
 }
