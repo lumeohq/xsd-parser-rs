@@ -14,5 +14,4 @@ impl<'a, 'input: 'a> Schema<'a, 'input> {
             None => None
         }
     }
-
 }
