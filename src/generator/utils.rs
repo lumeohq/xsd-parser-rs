@@ -1,25 +1,14 @@
 extern crate inflector;
-use inflector::cases::snakecase::to_snake_case;
 use inflector::cases::pascalcase::to_pascal_case;
 
 
-pub fn get_struct_comment(doc: Option<&str>) -> String {
+pub fn get_comment(doc: Option<&str>) -> String {
     doc.
         unwrap_or("").
         lines().
         map(|s| s.trim()).
         filter(|s| s.len() > 2).
         map(|s| format!("// {}\n", s)).
-        fold(String::new(), |x , y| (x+&y))
-}
-
-pub fn get_field_comment(doc: Option<&str>) -> String {
-    doc.
-        unwrap_or("").
-        lines().
-        map(|s| s.trim()).
-        filter(|s| s.len() > 1).
-        map(|s| format!("// {}  ", s)).
         fold(String::new(), |x , y| (x+&y))
 }
 

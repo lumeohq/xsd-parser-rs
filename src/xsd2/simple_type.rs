@@ -24,7 +24,7 @@ impl<'a, 'input: 'a> SimpleType<'a, 'input> {
     }
 }
 
-impl<'a, 'input> fmt::Debug for SimpleType<'a, 'input> {
+impl<'a, 'input> fmt::Display for SimpleType<'a, 'input> {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         write!(f, "{:?}  //{:?}", self.name(), self.documentation())
     }
