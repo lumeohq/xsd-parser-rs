@@ -1,10 +1,14 @@
-use crate::generator::utils::*;
-use crate::generator::simple_type::*;
-use crate::xsd2::schema::Schema;
 use std::borrow::Cow;
-use crate::xsd2::simple_type::SimpleType;
-use crate::generator::enumeration::{enum_struct};
 
+use inflector::cases::snakecase::to_snake_case;
+
+use crate::generator::complex_type::{field_from_attribute, yaserde_attributes};
+use crate::generator::enumeration::enum_struct;
+use crate::generator::simple_type::*;
+use crate::generator::utils::*;
+use crate::xsd2::complex_type::{Attribute, ComplexType};
+use crate::xsd2::schema::Schema;
+use crate::xsd2::simple_type::SimpleType;
 
 pub struct Generator<'a, 'input> {
     target_namespace: Option<&'a str>,
@@ -28,6 +32,16 @@ impl <'a, 'input> Generator<'a, 'input> {
         map(|node| SimpleType{node}).collect::<Vec<SimpleType>>() {
             println!("{}", self.simple_type(&st));
         }
+
+        for node in self.schema.node.
+            children().
+            filter(|node| node.is_element() ) {
+            match node.tag_name().name() {
+                "simpleType" => println!("{}", self.simple_type(&SimpleType{node})),
+                "complexType" => println!("{}", self.complex_type(&ComplexType{node})),
+                _ =>  println!("{:?}\n\n", node)
+            }
+        }
     }
 
     fn match_type(&self, typename: &str) -> Cow<'a, str>{
@@ -50,7 +64,30 @@ impl <'a, 'input> Generator<'a, 'input> {
         }
     }
 
+    fn complex_type(&self, element: &ComplexType) -> String {
+        let doc = get_comment(element.documentation());
+        let name = get_type_name(element.name().expect("GLOBAL COMPLEX TYPE NAME REQUIRED"));
+        let attributes = element.
+            attributes().
+            iter().
+            map(|a| self.field_from_attribute(a)).
+            collect::<Vec<String>>().
+            join("\n\n");
+        format!("{}{}pub struct {} {{\n{}\n}} \n\n", doc, yaserde_derive(), name, attributes)
+    }
+
+    fn field_from_attribute(&self, attr: &Attribute) -> String {
+        let name = attr.name();
+        format!("  {}\n  pub {}: {},  {}",
+                yaserde_attributes(name),
+                to_snake_case(&name),
+                self.match_type(attr.typename()),
+                get_comment(attr.documentation())
+        )
+    }
+
     fn simple_type(&self, element: &SimpleType) -> String {
+
         let doc = get_comment(element.documentation());
         let name = get_type_name(element.name().expect("SIMPLE TYPE WITHOUT NAME NOT SUPPORTED"));
         let l = element.list();

@@ -40,16 +40,28 @@ pub struct Attribute<'a, 'input> {
 }
 
 impl<'a, 'input> Attribute<'a, 'input> {
-    pub fn name(&self) -> Option<&'a str> {
-        self.node.attribute("name")
+    pub fn name(&self) -> &'a str {
+        match self.node.attribute("name") {
+            Some(name) => name,
+            None => match self.node.attribute("ref") {
+                Some(s) => s,
+                None => "_UNSUPPORTED_NAME"
+            }
+        }
     }
 
     pub fn documentation(&self) -> Option<&'a str> {
         get_documentation(&self.node)
     }
 
-    pub fn typename(&self) -> Option<&'a str> {
-        self.node.attribute("type")
+    pub fn typename(&self) -> &'a str {
+        match self.node.attribute("type") {
+            Some(name) => name,
+            None => match self.node.attribute("ref") {
+                Some(s) => s,
+                None => "_UNSUPPORTED_TYPE"
+            }
+        }
     }
 
     pub fn use_type(&self) -> UseType {
@@ -62,5 +74,21 @@ impl<'a, 'input> Attribute<'a, 'input> {
             },
             None => UseType::Optional
         }
+    }
+}
+
+pub struct Element<'a, 'input> {
+    pub node: roxmltree::Node<'a, 'input>,
+}
+
+impl<'a, 'input> Element<'a, 'input> {
+    pub fn name(&self) -> Option<&'a str> {
+        self.node.attribute("name")
+    }
+    pub fn documentation(&self) -> Option<&'a str> {
+        get_documentation(&self.node)
+    }
+    pub fn typename(&self) -> Option<&'a str> {
+        self.node.attribute("type")
     }
 }
