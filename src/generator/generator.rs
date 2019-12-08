@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use inflector::cases::snakecase::to_snake_case;
 
-use crate::generator::complex_type::{field_from_attribute, yaserde_attributes};
+use crate::generator::complex_type::{yaserde_attributes, attribute_type};
 use crate::generator::enumeration::enum_struct;
 use crate::generator::simple_type::*;
 use crate::generator::utils::*;
@@ -78,10 +78,11 @@ impl <'a, 'input> Generator<'a, 'input> {
 
     fn field_from_attribute(&self, attr: &Attribute) -> String {
         let name = attr.name();
+
         format!("  {}\n  pub {}: {},  {}",
                 yaserde_attributes(name),
                 to_snake_case(&name),
-                self.match_type(attr.typename()),
+                attribute_type(attr, self.match_type(attr.typename())),
                 get_comment(attr.documentation())
         )
     }
