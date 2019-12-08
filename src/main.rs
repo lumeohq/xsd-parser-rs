@@ -4,8 +4,11 @@ use std::io::{Read};
 mod xsd;
 pub use xsd::simple_type::SimpleType;
 pub use xsd::complex_type::ComplexType;
-use roxmltree::Node;
-use crate::xsd::utils::{find_child, get_struct_comment};
+use crate::xsd::utils::{find_child};
+
+mod xsd2;
+mod generator;
+pub use generator::generator::Generator;
 
 
 fn main() {
@@ -19,7 +22,8 @@ fn main() {
     };
     let root = doc.root();
     let schema = find_child(&root, "schema").expect("All xsd need schema element");
-    generate_and_print(&schema);
+    let generator = Generator::new(schema);
+    generator.print();
 }
 
 fn load_file(path: &str) -> String {
@@ -29,17 +33,3 @@ fn load_file(path: &str) -> String {
     text
 }
 
-fn generate_and_print(schema: &Node) {
-    for child in schema.children().filter(|node| !node.is_text()) {
-        if child.is_comment() {
-            print!("{}", get_struct_comment(child.text()));
-        }
-        else if child.is_element() {
-            match child.tag_name().name() {
-                "simpleType" => {print!("{:?}", SimpleType::new(&child));},
-                "complexType" => {print!("{:?}", ComplexType::new(&child));},
-                _ => {println!("\nUNSUPPORTED_ELEMENT: {:?}", child);}
-            }
-        }
-    }
-}
