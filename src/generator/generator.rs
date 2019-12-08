@@ -2,13 +2,14 @@ use std::borrow::Cow;
 
 use inflector::cases::snakecase::to_snake_case;
 
-use crate::generator::complex_type::{yaserde_attributes, attribute_type};
+use crate::generator::complex_type::{yaserde_attributes, attribute_type, element_type};
 use crate::generator::enumeration::enum_struct;
 use crate::generator::simple_type::*;
 use crate::generator::utils::*;
 use crate::xsd2::complex_type::{Attribute, ComplexType};
 use crate::xsd2::schema::Schema;
 use crate::xsd2::simple_type::SimpleType;
+use crate::xsd2::sequence::Element;
 
 pub struct Generator<'a, 'input> {
     target_namespace: Option<&'a str>,
@@ -72,8 +73,18 @@ impl <'a, 'input> Generator<'a, 'input> {
             iter().
             map(|a| self.field_from_attribute(a)).
             collect::<Vec<String>>().
-            join("\n\n");
-        format!("{}{}pub struct {} {{\n{}\n}} \n\n", doc, yaserde_derive(), name, attributes)
+            join("\n");
+
+        let elements: String = match element.sequence()  {
+            Some(s) => {
+                s.elements().
+                    iter().
+                    map(|el| self.field_from_element(el)).
+                    collect::<Vec<String>>().join("\n")
+            },
+            None => String::new()
+        };
+        format!("{}{}pub struct {} {{\n{}\n{}}} \n\n", doc, yaserde_derive(), name, attributes, elements)
     }
 
     fn field_from_attribute(&self, attr: &Attribute) -> String {
@@ -84,6 +95,17 @@ impl <'a, 'input> Generator<'a, 'input> {
                 to_snake_case(&name),
                 attribute_type(attr, self.match_type(attr.typename())),
                 get_comment(attr.documentation())
+        )
+    }
+
+    fn field_from_element(&self, elem: &Element) -> String {
+        let name = elem.name();
+
+        format!("  {}\n  pub {}: {},  {}",
+                yaserde_attributes(name),  //TODO: yaserde for elements
+                to_snake_case(&name),
+                element_type(elem, self.match_type(elem.typename())),
+                get_comment(elem.documentation())
         )
     }
 

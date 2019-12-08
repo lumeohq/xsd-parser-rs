@@ -1,4 +1,4 @@
-use crate::xsd2::utils::{MaxOccurs, MinOccurs, get_documentation};
+use crate::xsd2::utils::{MaxOccurs, MinOccurs, get_documentation, get_node_name, get_node_type};
 
 
 pub struct Sequence<'a, 'input> {
@@ -35,13 +35,9 @@ pub struct Element<'a, 'input> {
 }
 
 impl<'a, 'input> Element<'a, 'input> {
-    pub fn name(&self) -> Option<&'a str> {
-        self.node.attribute("name")
-    }
+    pub fn name(&self) -> &'a str { get_node_name(&self.node) }
     pub fn documentation(&self) -> Option<&'a str> {
         get_documentation(&self.node)
     }
-    pub fn typename(&self) -> Option<&'a str> {
-        self.node.attribute("type")
-    }
+    pub fn typename(&self) -> &'a str { get_node_type(&self.node) }
 }
