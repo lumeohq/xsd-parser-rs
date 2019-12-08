@@ -1,3 +1,6 @@
+extern crate inflector;
+use inflector::cases::snakecase::to_snake_case;
+
 use crate::xsd::utils::*;
 use crate::xsd::traits::*;
 use std::collections::HashMap;
@@ -9,6 +12,7 @@ pub struct AnyElement {
 }
 
 pub struct Element {
+    prefix: Option<String>,
     name: String,
     type_: String,
     documentation: Option<String>
@@ -17,17 +21,29 @@ pub struct Element {
 impl Element {
     pub fn new(node: & roxmltree::Node) -> Self {
         Element {
+            prefix: get_node_namespace(node),
             name: get_node_name(node),
             type_: get_element_type(node),
             documentation: get_documentation(node).map(|t| t.to_string())
+        }
+    }
+
+    pub fn generate_yaserde_attributes(&self) -> String {
+        match &self.prefix {
+            None => format!("#[yaserde(rename = \"{}\")]", self.name),
+            Some(prefix) => format!("#[yaserde(prefix = \"{}\", rename = \"{}\")]",
+                                    prefix,
+                                    self.name,
+            )
         }
     }
 }
 
 impl GenerateCode for Element {
     fn generate_code(&self) -> String {
-        format!("  {}: {},  {}",
-                self.name,
+        format!("  {}\n  pub {}: {},  {}",
+                self.generate_yaserde_attributes(),
+                to_snake_case(&self.name),
                 self.type_,
                 get_field_comment(&self.documentation),
         )
