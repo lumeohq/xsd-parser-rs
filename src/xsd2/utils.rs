@@ -23,3 +23,9 @@ pub fn get_documentation<'a>(node: &Node<'a, '_>) -> Option<&'a str> {
         None => None
     }
 }
+
+pub type MinOccurs = usize;
+pub enum MaxOccurs {
+    Bounded(usize),
+    Unbounded
+}
