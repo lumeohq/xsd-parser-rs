@@ -45,29 +45,11 @@ pub struct Attribute<'a, 'input> {
 }
 
 impl<'a, 'input> Attribute<'a, 'input> {
-    pub fn name(&self) -> &'a str {
-        match self.node.attribute("name") {
-            Some(name) => name,
-            None => match self.node.attribute("ref") {
-                Some(s) => s,
-                None => "_UNSUPPORTED_NAME"
-            }
-        }
-    }
-
+    pub fn name(&self) -> &'a str { get_node_name(&self.node) }
     pub fn documentation(&self) -> Option<&'a str> {
         get_documentation(&self.node)
     }
-
-    pub fn typename(&self) -> &'a str {
-        match self.node.attribute("type") {
-            Some(name) => name,
-            None => match self.node.attribute("ref") {
-                Some(s) => s,
-                None => "_UNSUPPORTED_TYPE"
-            }
-        }
-    }
+    pub fn typename(&self) -> &'a str { get_node_type(&self.node) }
 
     pub fn use_type(&self) -> UseType {
         match self.node.attribute("use") {

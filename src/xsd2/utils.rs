@@ -24,6 +24,26 @@ pub fn get_documentation<'a>(node: &Node<'a, '_>) -> Option<&'a str> {
     }
 }
 
+pub fn get_node_type<'a>(node: &Node<'a, '_>) -> &'a str {
+    match node.attribute("type") {
+        Some(name) => name,
+        None => match node.attribute("ref") {
+            Some(s) => s,
+            None => "_UNSUPPORTED_TYPE"
+        }
+    }
+}
+
+pub fn get_node_name<'a>(node: &Node<'a, '_>) -> &'a str {
+    match node.attribute("name") {
+        Some(name) => name,
+        None => match node.attribute("ref") {
+            Some(s) => s,
+            None => "_UNSUPPORTED_NAME"
+        }
+    }
+}
+
 pub type MinOccurs = usize;
 pub enum MaxOccurs {
     Bounded(usize),
