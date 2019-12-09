@@ -84,7 +84,7 @@ impl <'a, 'input> Generator<'a, 'input> {
             },
             None => String::new()
         };
-        format!("{}{}pub struct {} {{\n{}\n{}}} \n\n", doc, yaserde_derive(), name, attributes, elements)
+        format!("{}{}pub struct {} {{\n{}\n{}\n}} \n\n", doc, yaserde_derive(), name, attributes, elements)
     }
 
     fn field_from_attribute(&self, attr: &Attribute) -> String {
@@ -105,7 +105,7 @@ impl <'a, 'input> Generator<'a, 'input> {
                 yaserde_for_element(name),
                 to_snake_case(&name),
                 element_type(elem, self.match_type(elem.typename())),
-                get_comment(elem.documentation())
+                get_comment(elem.documentation()),
         )
     }
 
