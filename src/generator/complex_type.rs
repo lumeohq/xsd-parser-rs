@@ -14,6 +14,10 @@ pub fn element_type(elem: &Element, typename: Cow<str>) -> String {
     typename.to_string()
 }
 
-pub fn yaserde_attributes(name: &str) -> String {
+pub fn yaserde_for_attribute(name: &str) -> String {
     format!("#[yaserde(attribute, rename = \"{}\")]", name)
+}
+
+pub fn yaserde_for_element(name: &str) -> String {
+    format!("#[yaserde(rename = \"{}\")]", name)
 }

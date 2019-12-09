@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use inflector::cases::snakecase::to_snake_case;
 
-use crate::generator::complex_type::{yaserde_attributes, attribute_type, element_type};
+use crate::generator::complex_type::{yaserde_for_attribute, attribute_type, element_type, yaserde_for_element};
 use crate::generator::enumeration::enum_struct;
 use crate::generator::simple_type::*;
 use crate::generator::utils::*;
@@ -91,7 +91,7 @@ impl <'a, 'input> Generator<'a, 'input> {
         let name = attr.name();
 
         format!("  {}\n  pub {}: {},  {}",
-                yaserde_attributes(name),
+                yaserde_for_attribute(name),
                 to_snake_case(&name),
                 attribute_type(attr, self.match_type(attr.typename())),
                 get_comment(attr.documentation())
@@ -102,7 +102,7 @@ impl <'a, 'input> Generator<'a, 'input> {
         let name = elem.name();
 
         format!("  {}\n  pub {}: {},  {}",
-                yaserde_attributes(name),  //TODO: yaserde for elements
+                yaserde_for_element(name),
                 to_snake_case(&name),
                 element_type(elem, self.match_type(elem.typename())),
                 get_comment(elem.documentation())

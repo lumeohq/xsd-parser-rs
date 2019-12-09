@@ -18,7 +18,7 @@ impl<'a, 'input: 'a> Sequence<'a, 'input> {
     }
 
     pub fn min_occurs(&self) -> Option<MinOccurs> {
-        self.node.attribute("MinOccurs").map(|v| v.parse::<usize>().ok()).flatten()
+        self.node.attribute("MinOccurs").and_then(|v| v.parse::<usize>().ok())
     }
 
     pub fn elements(&self) -> Vec<Element> {
