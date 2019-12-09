@@ -1,4 +1,4 @@
-use crate::xsd2::utils::{MaxOccurs, MinOccurs, get_documentation, get_node_name, get_node_type};
+use crate::xsd2::utils::{MaxOccurs, MinOccurs, get_documentation, get_node_name, get_node_type, max_occurs, min_occurs};
 
 
 pub struct Sequence<'a, 'input> {
@@ -7,19 +7,8 @@ pub struct Sequence<'a, 'input> {
 
 impl<'a, 'input: 'a> Sequence<'a, 'input> {
 
-    pub fn max_occurs(&self) -> Option<MaxOccurs> {
-        match self.node.attribute("MaxOccurs") {
-            Some(v) => match v {
-                "unbounded" => Some(MaxOccurs::Unbounded),
-                v => v.parse::<usize>().ok().map(|val| MaxOccurs::Bounded(val))
-            },
-            None => None
-        }
-    }
-
-    pub fn min_occurs(&self) -> Option<MinOccurs> {
-        self.node.attribute("MinOccurs").and_then(|v| v.parse::<usize>().ok())
-    }
+    pub fn max_occurs(&self) -> MaxOccurs { max_occurs(&self.node) }
+    pub fn min_occurs(&self) -> MinOccurs { min_occurs(&self.node) }
 
     pub fn elements(&self) -> Vec<Element> {
         self.node.
@@ -40,4 +29,7 @@ impl<'a, 'input> Element<'a, 'input> {
         get_documentation(&self.node)
     }
     pub fn typename(&self) -> &'a str { get_node_type(&self.node) }
+
+    pub fn max_occurs(&self) -> MaxOccurs { max_occurs(&self.node) }
+    pub fn min_occurs(&self) -> MinOccurs { min_occurs(&self.node) }
 }
