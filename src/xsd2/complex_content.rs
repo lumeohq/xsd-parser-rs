@@ -1,4 +1,3 @@
-use crate::xsd2::sequence::Sequence;
 use crate::xsd2::utils::find_child;
 use crate::xsd2::extension::Extension;
 

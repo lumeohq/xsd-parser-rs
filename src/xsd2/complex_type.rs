@@ -3,8 +3,6 @@ use std::fmt;
 use crate::xsd2::utils::*;
 use crate::xsd2::sequence::Sequence;
 use crate::xsd2::complex_content::ComplexContent;
-use crate::xsd2::extension::Extension;
-use std::borrow::Borrow;
 
 pub struct ComplexType<'a, 'input> {
     pub node: roxmltree::Node<'a, 'input>,

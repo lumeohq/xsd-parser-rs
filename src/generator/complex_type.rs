@@ -12,7 +12,6 @@ pub fn attribute_type(attr: &Attribute, typename: Cow<str>) -> String {
 }
 
 pub fn element_type(elem: &Element, typename: Cow<str>) -> String {
-    let occurs = (elem.min_occurs(), elem.max_occurs());
     let min = elem.min_occurs();
     let max = elem.max_occurs();
     match min {
@@ -31,9 +30,9 @@ pub fn element_type(elem: &Element, typename: Cow<str>) -> String {
 }
 
 pub fn yaserde_for_attribute(name: &str) -> String {
-    format!("#[yaserde(attribute, rename = \"{}\")]", name)
+    format!("  #[yaserde(attribute, rename = \"{}\")]\n", name)
 }
 
 pub fn yaserde_for_element(name: &str) -> String {
-    format!("#[yaserde(rename = \"{}\")]", name)
+    format!("  #[yaserde(rename = \"{}\")]\n", name)
 }

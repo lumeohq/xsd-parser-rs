@@ -17,6 +17,7 @@ impl<'a, 'input: 'a> Sequence<'a, 'input> {
             map(|node| Element{node}).
             collect::<Vec<Element>>()
     }
+
 }
 
 pub struct Element<'a, 'input> {
