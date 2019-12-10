@@ -115,10 +115,6 @@ impl<'a, 'input: 'a> List<'a, 'input> {
     pub fn simple_type(&self) -> Option<roxmltree::Node<'a, 'input>> {
         find_child(&self.node, "simpleType")
     }
-
-    pub fn documentation(&self) -> Option<&'a str> {
-        get_documentation(&self.node)
-    }
 }
 
 

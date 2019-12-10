@@ -1,14 +1,22 @@
 extern crate inflector;
 use inflector::cases::pascalcase::to_pascal_case;
+use std::str;
 
+fn split_comment_line(s: &str) -> String {
+    s.as_bytes()
+    .chunks(60)
+    .map(|ch| format!("// {}\n", str::from_utf8(ch).unwrap()))
+    .collect::<Vec<String>>()
+    .join("")
+}
 
-pub fn get_comment(doc: Option<&str>) -> String {
+pub fn get_structure_comment(doc: Option<&str>) -> String {
     doc.
         unwrap_or("").
         lines().
         map(|s| s.trim()).
         filter(|s| s.len() > 2).
-        map(|s| format!("// {}\n", s)).
+        map(|s| split_comment_line(s)).
         fold(String::new(), |x , y| (x+&y))
 }
 

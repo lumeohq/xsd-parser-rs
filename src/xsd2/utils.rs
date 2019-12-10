@@ -18,10 +18,9 @@ pub fn find_element<'a, 'input>(node: &roxmltree::Node<'a, 'input>, tag_name: &s
 }
 
 pub fn get_documentation<'a>(node: &roxmltree::Node<'a, '_>) -> Option<&'a str> {
-    match find_element(node, "documentation") {
-        Some(node) => node.text(),
-        None => None
-    }
+    find_child(node, "annotation").
+        and_then(|node| find_child(&node, "documentation")).
+        and_then(|node| node.text())
 }
 
 pub fn get_node_type<'a>(node: &roxmltree::Node<'a, '_>) -> &'a str {

@@ -1,6 +1,6 @@
 use std::borrow::Cow;
 use crate::xsd2::simple_type::Facet;
-use crate::generator::utils::{get_comment, get_type_name};
+use crate::generator::utils::{get_structure_comment, get_type_name};
 
 pub fn enum_struct(name: &String, facets: &Vec<Facet>, typename: Cow<str>) -> String {
     format!(
@@ -26,10 +26,12 @@ impl {name} {{
 
 fn enum_case(facet : &Facet) -> String {
     format!("{}  {},",
-            get_comment(facet.documentation()),
+            get_structure_comment(facet.documentation()),
             get_type_name(facet.value())
     )
 }
+
+
 
 fn enum_cases(facets: &Vec<Facet>) -> String {
     facets.
@@ -37,6 +39,9 @@ fn enum_cases(facets: &Vec<Facet>) -> String {
         map(|f| enum_case(f)).
         collect::<Vec<String>>().join("\n")
 }
+
+
+
 
 fn enum_match(facet : &Facet) -> String {
     format!("      \"{}\" => Self::{},",
