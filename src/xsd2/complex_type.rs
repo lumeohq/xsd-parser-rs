@@ -2,6 +2,9 @@
 use std::fmt;
 use crate::xsd2::utils::*;
 use crate::xsd2::sequence::Sequence;
+use crate::xsd2::complex_content::ComplexContent;
+use crate::xsd2::extension::Extension;
+use std::borrow::Borrow;
 
 pub struct ComplexType<'a, 'input> {
     pub node: roxmltree::Node<'a, 'input>,
@@ -26,6 +29,11 @@ impl<'a, 'input: 'a> ComplexType<'a, 'input> {
     pub fn sequence(&self) -> Option<Sequence> {
         find_child(&self.node, "sequence").map(|node| Sequence{node})
     }
+
+    pub fn complex_content(&self) -> Option<ComplexContent> {
+        find_child(&self.node, "complexContent").map(|node| ComplexContent{node})
+    }
+
 }
 
 impl<'a, 'input> fmt::Display for ComplexType<'a, 'input> {

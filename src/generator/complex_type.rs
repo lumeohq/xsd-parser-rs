@@ -15,25 +15,19 @@ pub fn element_type(elem: &Element, typename: Cow<str>) -> String {
     let occurs = (elem.min_occurs(), elem.max_occurs());
     let min = elem.min_occurs();
     let max = elem.max_occurs();
-    if min == 0 {
-        match max {
+    match min {
+        0 => match max {
             MaxOccurs::None => format!("Option<{}>", typename),
             MaxOccurs::Unbounded => format!("Vec<{}>", typename),
             MaxOccurs::Bounded(val) => {if val > 1 {format!("Vec<{}>", typename)} else {typename.to_string()}}
-        }
-    }
-    else if min == 1 {
-        match max {
+        },
+        1=> match max {
             MaxOccurs::None => typename.to_string(),
             MaxOccurs::Unbounded => format!("Vec<{}>", typename),
             MaxOccurs::Bounded(val) => {if val > 1 {format!("Vec<{}>", typename)} else {typename.to_string()}}
-        }
+        },
+        _ => format!("Vec<{}>", typename)
     }
-    else {
-        format!("Vec<{}>", typename)
-    }
-
-
 }
 
 pub fn yaserde_for_attribute(name: &str) -> String {

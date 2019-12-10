@@ -1,4 +1,4 @@
-use std::borrow::Cow;
+use std::borrow::{Cow, Borrow};
 
 use inflector::cases::snakecase::to_snake_case;
 
@@ -75,14 +75,27 @@ impl <'a, 'input> Generator<'a, 'input> {
             collect::<Vec<String>>().
             join("\n");
 
-        let elements: String = match element.sequence()  {
+        let sequence = element.complex_content().
+            and_then(|cc| cc.extension()).
+            and_then(|ext| ext.sequence());
+
+
+        let elements: String = match sequence {
             Some(s) => {
                 s.elements().
                     iter().
                     map(|el| self.field_from_element(el)).
                     collect::<Vec<String>>().join("\n")
             },
-            None => String::new()
+            None => match element.sequence()  {
+                Some(s) => {
+                    s.elements().
+                        iter().
+                        map(|el| self.field_from_element(el)).
+                        collect::<Vec<String>>().join("\n")
+                },
+                None => String::new()
+            }
         };
         format!("{}{}pub struct {} {{\n{}\n{}\n}} \n\n", doc, yaserde_derive(), name, attributes, elements)
     }
