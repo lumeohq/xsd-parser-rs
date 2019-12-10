@@ -8,6 +8,7 @@ use crate::xsd2::schema::Schema;
 use crate::xsd2::simple_type::SimpleType;
 use crate::xsd2::sequence::Element;
 use crate::generator::type_tree::{Types, TupleStruct, Enum, Struct, StructField};
+use crate::xsd2::complex_content::ComplexContent;
 
 pub struct Generator<'a, 'input> {
     target_namespace: Option<&'a str>,
@@ -81,6 +82,7 @@ impl <'a, 'input> Generator<'a, 'input> {
     fn complex_type(&self, element: &ComplexType) -> Types {
         let comment = get_structure_comment(element.documentation());
         let name = get_type_name(element.name().expect("GLOBAL COMPLEX TYPE NAME REQUIRED"));
+
         let mut attributes = element.
             attributes().
             iter().
@@ -109,6 +111,19 @@ impl <'a, 'input> Generator<'a, 'input> {
         let mut fields: Vec<StructField> = Vec::with_capacity(attributes.len() + elements.len());
         fields.append(&mut elements);
         fields.append(&mut attributes);
+
+        match element.complex_content().and_then(|cc| cc.extension()) {
+            Some(ext) => {
+                let ty = ext.base();
+                fields.push(StructField{
+                    name: "base".to_string(),
+                    typename: get_type_name(self.match_type(ty).as_ref()),
+                    macros: yaserde_for_element("base"), //TODO: yaserde for base element
+                    comment: String::new()
+                });
+            },
+            None => ()
+        }
 
         Types::Struct(Struct{
             comment,
