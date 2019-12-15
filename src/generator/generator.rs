@@ -8,7 +8,6 @@ use crate::xsd2::schema::Schema;
 use crate::xsd2::simple_type::SimpleType;
 use crate::xsd2::sequence::Element;
 use crate::generator::type_tree::{Types, TupleStruct, Enum, Struct, StructField};
-use crate::xsd2::complex_content::ComplexContent;
 
 pub struct Generator<'a, 'input> {
     target_namespace: Option<&'a str>,
@@ -62,7 +61,7 @@ impl <'a, 'input> Generator<'a, 'input> {
     fn field_from_attribute(&self, attr: &Attribute) -> StructField {
         let name = attr.name();
         StructField{
-            name: get_type_name(&name),
+            name: get_field_name(&name),
             typename: attribute_type(attr, self.match_type(attr.typename())),
             macros: yaserde_for_attribute(name),
             comment: get_field_comment(attr.documentation())
@@ -72,7 +71,7 @@ impl <'a, 'input> Generator<'a, 'input> {
     fn field_from_element(&self, elem: &Element) -> StructField {
         let name = elem.name();
         StructField{
-            name: get_type_name(&name),
+            name: get_field_name(&name),
             typename: element_type(elem, self.match_type(elem.typename())),
             macros: yaserde_for_element(name),
             comment: get_field_comment(elem.documentation())
@@ -166,4 +165,5 @@ impl <'a, 'input> Generator<'a, 'input> {
     }
 
 }
+
 

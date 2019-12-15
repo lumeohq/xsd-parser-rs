@@ -5,11 +5,6 @@ use crate::xsd::utils::*;
 use crate::xsd::traits::*;
 use std::collections::HashMap;
 
-pub struct AnyElement {
-    text: Option<String>,
-    attributes: HashMap<String, String>,
-    elements: Vec<AnyElement>,
-}
 
 pub struct Element {
     prefix: Option<String>,

@@ -1,6 +1,7 @@
 extern crate inflector;
 use inflector::cases::pascalcase::to_pascal_case;
 use std::str;
+use self::inflector::cases::snakecase::to_snake_case;
 
 fn split_comment_line(s: &str) -> String {
     s.as_bytes()
@@ -32,6 +33,10 @@ pub fn get_field_comment(doc: Option<&str>) -> String {
 
 pub fn get_type_name(name: &str) -> String {
     to_pascal_case(name)
+}
+
+pub fn get_field_name(name: &str) -> String {
+    to_snake_case(name)
 }
 
 pub(crate) fn yaserde_derive() -> String {
