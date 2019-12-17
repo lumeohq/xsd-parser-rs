@@ -18,6 +18,10 @@ impl<'a, 'input: 'a> Sequence<'a, 'input> {
             collect::<Vec<Element>>()
     }
 
+    pub fn any(&self) -> Option<AnyElement> {
+        self.node.children().find(|n| n.tag_name().name() == "any").map(|n| AnyElement{node: n})
+    }
+
 }
 
 pub struct Element<'a, 'input> {
@@ -33,4 +37,18 @@ impl<'a, 'input> Element<'a, 'input> {
 
     pub fn max_occurs(&self) -> MaxOccurs { max_occurs(&self.node) }
     pub fn min_occurs(&self) -> MinOccurs { min_occurs(&self.node) }
+}
+
+pub struct AnyElement<'a, 'input> {
+    pub node: roxmltree::Node<'a, 'input>,
+}
+
+impl<'a, 'input: 'a> AnyElement<'a, 'input> {
+
+    pub fn max_occurs(&self) -> MaxOccurs { max_occurs(&self.node) }
+    pub fn min_occurs(&self) -> MinOccurs { min_occurs(&self.node) }
+
+    pub fn namespace(&self) -> Option<&str> {
+        self.node.attribute("namespace")
+    }
 }
