@@ -6,7 +6,7 @@ use crate::generator::utils::*;
 use crate::xsd2::complex_type::{Attribute, ComplexType};
 use crate::xsd2::schema::Schema;
 use crate::xsd2::simple_type::SimpleType;
-use crate::xsd2::sequence::Element;
+use crate::xsd2::sequence::{Element, Sequence};
 use crate::generator::type_tree::{Types, TupleStruct, Enum, Struct, StructField};
 
 pub struct Generator<'a, 'input> {
@@ -78,6 +78,26 @@ impl <'a, 'input> Generator<'a, 'input> {
         }
     }
 
+    fn get_fields_from_sequence(&self, s: &Sequence) -> Vec<StructField> {
+        let mut fields = s.elements().
+            iter().
+            map(|el| self.field_from_element(el)).
+            collect::<Vec<StructField>>();
+
+        let any = s.any();
+        match any {
+            Some(_a) => {fields.push(StructField{
+                name: "any".to_string(),
+                typename: "AnyElement".to_string(),
+                macros: "//TODO: we need yaserde for this extension\n".to_string(),
+                comment: String::new()
+            })},
+            None => ()
+        }
+
+        fields
+    }
+
     fn complex_type(&self, element: &ComplexType) -> Types {
         let comment = get_structure_comment(element.documentation());
         let name = get_type_name(element.name().expect("GLOBAL COMPLEX TYPE NAME REQUIRED"));
@@ -94,16 +114,9 @@ impl <'a, 'input> Generator<'a, 'input> {
 
 
         let mut elements = match sequence {
-            Some(s) =>
-                s.elements().
-                    iter().
-                    map(|el| self.field_from_element(el)).
-                    collect::<Vec<StructField>>(),
+            Some(s) => self.get_fields_from_sequence(&s),
             None => match element.sequence()  {
-                Some(s) => s.elements().
-                                    iter().
-                                    map(|el| self.field_from_element(el)).
-                                    collect::<Vec<StructField>>(),
+                Some(s) => self.get_fields_from_sequence(&s),
                 None => vec!()
             }
         };
