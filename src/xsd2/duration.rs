@@ -1,6 +1,6 @@
 use std::time;
 
-#[derive(Default)]
+#[derive(Default, Debug)]
 pub struct Duration {
     pub negative: bool,
 
@@ -118,7 +118,7 @@ impl Duration {
                     return Err("Dot occurred twice");
                 }
 
-                if (!cur_started) {
+                if !cur_started {
                     return Err("No digits before dot");
                 }
 

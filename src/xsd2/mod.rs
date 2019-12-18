@@ -7,3 +7,5 @@ pub mod sequence;
 pub mod complex_content;
 pub mod extension;
 
+#[cfg(test)]
+mod tests;
