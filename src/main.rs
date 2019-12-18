@@ -10,20 +10,23 @@ mod xsd2;
 mod generator;
 pub use generator::generator::Generator;
 
-
 fn main() {
-    let text = load_file("xsd/onvif.xsd");
-    let doc = match roxmltree::Document::parse(&text) {
-        Ok(doc) => doc,
-        Err(e) => {
-            println!("Error: {}.", e);
-            return;
-        },
-    };
-    let root = doc.root();
-    let schema = find_child(&root, "schema").expect("All xsd need schema element");
-    let generator = Generator::new(schema);
-    generator.print();
+//    let text = load_file("xsd/onvif.xsd");
+//    let doc = match roxmltree::Document::parse(&text) {
+//        Ok(doc) => doc,
+//        Err(e) => {
+//            println!("Error: {}.", e);
+//            return;
+//        },
+//    };
+//    let root = doc.root();
+//    let schema = find_child(&root, "schema").expect("All xsd need schema element");
+//    let generator = Generator::new(schema);
+//    generator.print();
+
+    let mut dur = xsd2::duration::Duration::from_lexical_representation("P1YM5D")
+        .expect("Error parsing duration");
+    println!("{}", dur.to_lexical_representation());
 }
 
 fn load_file(path: &str) -> String {
