@@ -24,7 +24,7 @@ fn main() {
 //    let generator = Generator::new(schema);
 //    generator.print();
 
-    let mut dur = xsd2::duration::Duration::from_lexical_representation("P1YM5D")
+    let mut dur = xsd2::duration::Duration::from_lexical_representation("P1Y5M5D")
         .expect("Error parsing duration");
     println!("{}", dur.to_lexical_representation());
 }

@@ -21,30 +21,24 @@ impl Duration {
 
         let mut date_str = String::new();
         if self.years > 0 {
-            date_str.push_str(&self.years.to_string());
-            date_str.push_str("Y");
+            date_str.push_str(&format!("{}Y", self.years));
         }
         if self.months > 0 {
-            date_str.push_str(&self.months.to_string());
-            date_str.push_str("M");
+            date_str.push_str(&format!("{}M", self.months));
         }
         if self.days > 0 {
-            date_str.push_str(&self.days.to_string());
-            date_str.push_str("D");
+            date_str.push_str(&format!("{}D", self.days));
         }
 
         let mut time_str = String::new();
         if self.hours > 0 {
-            time_str.push_str(&self.hours.to_string());
-            time_str.push_str("H");
+            date_str.push_str(&format!("{}H", self.hours));
         }
         if self.minutes > 0 {
-            time_str.push_str(&self.minutes.to_string());
-            time_str.push_str("M");
+            date_str.push_str(&format!("{}M", self.minutes));
         }
         if self.seconds > 0 {
-            time_str.push_str(&self.seconds.to_string());
-            time_str.push_str("S");
+            date_str.push_str(&format!("{}S", self.seconds));
         }
 
         if time_str.is_empty() {
@@ -101,11 +95,11 @@ impl Duration {
             }
             else if c == 'T' {
                 if t_found {
-                    return Err("Symbol 'T' occurred twice")
+                    return Err("Symbol 'T' occurred twice");
                 }
 
                 if cur > 0 {
-                    return Err("Symbol 'T' occurred after a number")
+                    return Err("Symbol 'T' occurred after a number");
                 }
 
                 t_found = true;
@@ -118,11 +112,11 @@ impl Duration {
             }
             else if c == 'Y' {
                 if (!cur_started) {
-                    return Err("No value is specified for years, so 'Y' must not be present")
+                    return Err("No value is specified for years, so 'Y' must not be present");
                 }
 
                 if last_component >= 1 {
-                    return Err("Bad order of duration components")
+                    return Err("Bad order of duration components");
                 }
 
                 last_component = 1;
@@ -133,11 +127,11 @@ impl Duration {
             else if c == 'M' {
                 if t_found {
                     if (!cur_started) {
-                        return Err("No value is specified for minutes, so 'M' must not be present")
+                        return Err("No value is specified for minutes, so 'M' must not be present");
                     }
 
                     if last_component >= 5 {
-                        return Err("Bad order of duration components")
+                        return Err("Bad order of duration components");
                     }
 
                     last_component = 5;
@@ -147,11 +141,11 @@ impl Duration {
                 }
                 else {
                     if (!cur_started) {
-                        return Err("No value is specified for months, so 'M' must not be present")
+                        return Err("No value is specified for months, so 'M' must not be present");
                     }
 
                     if last_component >= 2 {
-                        return Err("Bad order of duration components")
+                        return Err("Bad order of duration components");
                     }
 
                     last_component = 2;
@@ -162,11 +156,11 @@ impl Duration {
             }
             else if c == 'D' {
                 if (!cur_started) {
-                    return Err("No value is specified for days, so 'D' must not be present")
+                    return Err("No value is specified for days, so 'D' must not be present");
                 }
 
                 if last_component >= 3 {
-                    return Err("Bad order of duration components")
+                    return Err("Bad order of duration components");
                 }
 
                 last_component = 3;
@@ -176,15 +170,15 @@ impl Duration {
             }
             else if c == 'H' {
                 if (!cur_started) {
-                    return Err("No value is specified for hours, so 'H' must not be present")
+                    return Err("No value is specified for hours, so 'H' must not be present");
                 }
 
                 if !t_found {
-                    return Err("No symbol 'T' found before hours components")
+                    return Err("No symbol 'T' found before hours components");
                 }
 
                 if last_component >= 4 {
-                    return Err("Bad order of duration components")
+                    return Err("Bad order of duration components");
                 }
 
                 last_component = 4;
@@ -194,21 +188,24 @@ impl Duration {
             }
             else if c == 'S' {
                 if (!cur_started) {
-                    return Err("No value is specified for seconds, so 'S' must not be present")
+                    return Err("No value is specified for seconds, so 'S' must not be present");
                 }
 
                 if !t_found {
-                    return Err("No symbol 'T' found before seconds components")
+                    return Err("No symbol 'T' found before seconds components");
                 }
 
                 if last_component >= 6 {
-                    return Err("Bad order of duration components")
+                    return Err("Bad order of duration components");
                 }
 
                 last_component = 6;
                 dur.hours = cur;
                 cur = 0;
                 cur_started = false;
+            }
+            else {
+                return Err("Incorrect character occured");
             }
         }
 
