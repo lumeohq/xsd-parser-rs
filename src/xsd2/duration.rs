@@ -1,3 +1,4 @@
+// TODO: implement yaserde (de)serialization traits as we resolve https://github.com/media-io/yaserde/issues/25
 #[derive(Default, Debug)]
 pub struct Duration {
     pub negative: bool,
