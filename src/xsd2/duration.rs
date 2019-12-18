@@ -30,13 +30,13 @@ impl Duration {
 
         let mut time_str = String::new();
         if self.hours > 0 {
-            date_str.push_str(&format!("{}H", self.hours));
+            time_str.push_str(&format!("{}H", self.hours));
         }
         if self.minutes > 0 {
-            date_str.push_str(&format!("{}M", self.minutes));
+            time_str.push_str(&format!("{}M", self.minutes));
         }
         if self.seconds > 0.0 {
-            date_str.push_str(&format!("{}S", self.seconds));
+            time_str.push_str(&format!("{}S", self.seconds));
         }
 
         if time_str.is_empty() {
@@ -80,14 +80,15 @@ impl Duration {
     pub fn from_lexical_representation(s: &str) -> Result<Duration, &'static str> {
         let mut dur: Duration = Default::default();
 
-        let mut p_found = false;
-        let mut t_found = false;
-        let mut last_component = 0;
+        let mut p_found = false; // Is 'P' found in the string.
+        let mut t_found = false; // Is 'T' delimiter occurred.
+        let mut last_filled_component = 0;  // 1 to 6 for Year to Minute.
 
-        let mut cur: u64 = 0;
-        let mut cur_started = false;
+        let mut number: u64 = 0;
+        let mut number_is_empty = true;
 
         let mut dot_found = false;
+        // Numerator and denominator of seconds fraction part.
         let mut numer: u64 = 0;
         let mut denom: u64 = 1;
 
@@ -114,26 +115,17 @@ impl Duration {
                         return Err("Symbol 'T' occurred twice");
                     }
 
-                    if cur > 0 {
+                    if number > 0 {
                         return Err("Symbol 'T' occurred after a number");
                     }
 
                     t_found = true;
-                    last_component = 3;
+                    last_filled_component = 3;
                 }
-                '.' => {
-                    if dot_found {
-                        return Err("Dot occurred twice");
-                    }
 
-                    if !cur_started {
-                        return Err("No digits before dot");
-                    }
-
-                    dot_found = true;
-                }
+                // Duration components:
                 'Y' => {
-                    if !cur_started {
+                    if number_is_empty {
                         return Err("No value is specified for years, so 'Y' must not be present");
                     }
 
@@ -141,18 +133,18 @@ impl Duration {
                         return Err("Only the seconds can be expressed as a decimal");
                     }
 
-                    if last_component >= 1 {
+                    if last_filled_component >= 1 {
                         return Err("Bad order of duration components");
                     }
 
-                    last_component = 1;
-                    dur.years = cur;
-                    cur = 0;
-                    cur_started = false;
+                    last_filled_component = 1;
+                    dur.years = number;
+                    number = 0;
+                    number_is_empty = true;
                 }
                 'M' => {
                     if t_found {
-                        if !cur_started {
+                        if number_is_empty {
                             return Err("No value is specified for minutes, so 'M' must not be present");
                         }
 
@@ -160,17 +152,17 @@ impl Duration {
                             return Err("Only the seconds can be expressed as a decimal");
                         }
 
-                        if last_component >= 5 {
+                        if last_filled_component >= 5 {
                             return Err("Bad order of duration components");
                         }
 
-                        last_component = 5;
-                        dur.minutes = cur;
-                        cur = 0;
-                        cur_started = false;
+                        last_filled_component = 5;
+                        dur.minutes = number;
+                        number = 0;
+                        number_is_empty = true;
                     }
                     else {
-                        if !cur_started {
+                        if number_is_empty {
                             return Err("No value is specified for months, so 'M' must not be present");
                         }
 
@@ -178,18 +170,18 @@ impl Duration {
                             return Err("Only the seconds can be expressed as a decimal");
                         }
 
-                        if last_component >= 2 {
+                        if last_filled_component >= 2 {
                             return Err("Bad order of duration components");
                         }
 
-                        last_component = 2;
-                        dur.months = cur;
-                        cur = 0;
-                        cur_started = false;
+                        last_filled_component = 2;
+                        dur.months = number;
+                        number = 0;
+                        number_is_empty = true;
                     }
                 }
                 'D' => {
-                    if !cur_started {
+                    if number_is_empty {
                         return Err("No value is specified for days, so 'D' must not be present");
                     }
 
@@ -197,17 +189,17 @@ impl Duration {
                         return Err("Only the seconds can be expressed as a decimal");
                     }
 
-                    if last_component >= 3 {
+                    if last_filled_component >= 3 {
                         return Err("Bad order of duration components");
                     }
 
-                    last_component = 3;
-                    dur.days = cur;
-                    cur = 0;
-                    cur_started = false;
+                    last_filled_component = 3;
+                    dur.days = number;
+                    number = 0;
+                    number_is_empty = true;
                 }
                 'H' => {
-                    if !cur_started {
+                    if number_is_empty {
                         return Err("No value is specified for hours, so 'H' must not be present");
                     }
 
@@ -219,17 +211,17 @@ impl Duration {
                         return Err("No symbol 'T' found before hours components");
                     }
 
-                    if last_component >= 4 {
+                    if last_filled_component >= 4 {
                         return Err("Bad order of duration components");
                     }
 
-                    last_component = 4;
-                    dur.hours = cur;
-                    cur = 0;
-                    cur_started = false;
+                    last_filled_component = 4;
+                    dur.hours = number;
+                    number = 0;
+                    number_is_empty = true;
                 }
                 'S' => {
-                    if !cur_started {
+                    if number_is_empty {
                         return Err("No value is specified for seconds, so 'S' must not be present");
                     }
 
@@ -241,14 +233,27 @@ impl Duration {
                         return Err("No symbol 'T' found before seconds components");
                     }
 
-                    if last_component >= 6 {
+                    if last_filled_component >= 6 {
                         return Err("Bad order of duration components");
                     }
 
-                    last_component = 6;
-                    dur.seconds = cur as f64 + numer as f64 / denom as f64;
-                    cur = 0;
-                    cur_started = false;
+                    last_filled_component = 6;
+                    dur.seconds = number as f64 + numer as f64 / denom as f64;
+                    number = 0;
+                    number_is_empty = true;
+                }
+
+                // Number:
+                '.' => {
+                    if dot_found {
+                        return Err("Dot occurred twice");
+                    }
+
+                    if number_is_empty {
+                        return Err("No digits before dot");
+                    }
+
+                    dot_found = true;
                 }
                 digit => {
                     if !digit.is_digit(10) {
@@ -261,15 +266,15 @@ impl Duration {
                         denom *= 10;
                     }
                     else {
-                        cur *= 10;
-                        cur += digit.to_digit(10).expect("error converting a digit") as u64;
-                        cur_started = true;
+                        number *= 10;
+                        number += digit.to_digit(10).expect("error converting a digit") as u64;
+                        number_is_empty = false;
                     }
                 }
             }
         }
 
-        if cur > 0 {
+        if number > 0 {
             return Err("Number at the end of the string");
         }
 
@@ -277,11 +282,11 @@ impl Duration {
             return Err("Symbol 'P' not found in the string");
         }
 
-        if last_component == 0 {
+        if last_filled_component == 0 {
             return Err("No duration components presented");
         }
 
-        if last_component <= 3 && t_found {
+        if last_filled_component <= 3 && t_found {
             return Err("no time items are present, so 'T' must not be present");
         }
 
