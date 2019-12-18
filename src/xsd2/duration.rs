@@ -1,7 +1,5 @@
 use std::time;
 
-// TODO: decimal seconds
-
 #[derive(Default)]
 pub struct Duration {
     pub negative: bool,
