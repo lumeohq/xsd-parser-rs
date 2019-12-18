@@ -99,7 +99,7 @@ impl Duration {
                         dur.negative = true;
                     }
                     else {
-                        return Err("'-' sign may only occur at the beginning of the string");
+                        return Err("The minus sign must appear first");
                     }
                 }
                 'P' => {
@@ -226,7 +226,7 @@ impl Duration {
                     }
 
                     if dot_found && denom == 1 {
-                        return Err("At least one digit should occur after dot");
+                        return Err("At least one digit must follow the decimal point if it appears");
                     }
 
                     if !t_found {
@@ -279,11 +279,11 @@ impl Duration {
         }
 
         if !p_found {
-            return Err("Symbol 'P' not found in the string");
+            return Err("'P' must always be present");
         }
 
         if last_filled_component == 0 {
-            return Err("No duration components presented");
+            return Err("At least one number and designator are required");
         }
 
         if last_filled_component <= 3 && t_found {
