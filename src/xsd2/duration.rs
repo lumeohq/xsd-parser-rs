@@ -70,6 +70,13 @@ impl Duration {
         }
     }
 
+    // TODO: Implement normalization function that takes a moment at time to start from and
+    // converts months & years to days.
+
+    // TODO: Add a version of to_std_duration that takes a moment at time to start from and uses
+    // normalization function.
+
+    // TODO: rewrite to reduce code duplication.
     pub fn from_lexical_representation(s: &str) -> Result<Duration, &'static str> {
         let mut dur: Duration = Default::default();
 
