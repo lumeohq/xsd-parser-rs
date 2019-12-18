@@ -1,5 +1,3 @@
-use std::time;
-
 #[derive(Default, Debug)]
 pub struct Duration {
     pub negative: bool,
@@ -70,28 +68,54 @@ impl Duration {
         }
     }
 
+    // TODO: Add a version of to_std_duration that takes a moment at time to start from.
+
     // TODO: Implement normalization function that takes a moment at time to start from and
     // converts months & years to days.
 
-    // TODO: Add a version of to_std_duration that takes a moment at time to start from and uses
-    // normalization function.
-
-    // TODO: rewrite to reduce code duplication.
     pub fn from_lexical_representation(s: &str) -> Result<Duration, &'static str> {
+        fn fill_component(context: &mut ParsingContext, component: &mut u64, idx: i32, name: &str, symbol: char) -> Option<&'static str> {
+            if context.number_is_empty {
+                return Some("No value is specified for years, so 'Y' must not be present");
+            }
+
+            if context.dot_found {
+                return Some("Only the seconds can be expressed as a decimal");
+            }
+
+            if context.last_filled_component >= idx {
+                return Some("Bad order of duration components");
+            }
+
+            *component = context.number;
+            context.last_filled_component = idx;
+            context.number = 0;
+            context.number_is_empty = true;
+            None
+        }
+
+        fn fill_seconds(context: &mut ParsingContext, seconds: &mut f64) -> Option<&'static str> {
+            if context.number_is_empty {
+                return Some("No value is specified for seconds, so 'S' must not be present");
+            }
+
+            if context.dot_found && context.denom == 1 {
+                return Some("At least one digit must follow the decimal point if it appears");
+            }
+
+            if context.last_filled_component >= 6 {
+                return Some("Bad order of duration components");
+            }
+
+            *seconds = context.number as f64 + context.numer as f64 / context.denom as f64;
+            context.last_filled_component = 6;
+            context.number = 0;
+            context.number_is_empty = true;
+            None
+        }
+
         let mut dur: Duration = Default::default();
-
-        let mut p_found = false; // Is 'P' found in the string.
-        let mut t_found = false; // Is 'T' delimiter occurred.
-        let mut last_filled_component = 0;  // 1 to 6 for Year to Minute.
-
-        let mut number: u64 = 0;
-        let mut number_is_empty = true;
-
-        let mut dot_found = false;
-        // Numerator and denominator of seconds fraction part.
-        let mut numer: u64 = 0;
-        let mut denom: u64 = 1;
-
+        let mut context = ParsingContext::new();
         for (i, c) in s.chars().enumerate() {
             match c {
                 '-' => {
@@ -104,192 +128,135 @@ impl Duration {
                 }
                 'P' => {
                     if i == 0 || i == 1 && dur.negative {
-                        p_found = true;
+                        context.p_found = true;
                     }
                     else {
                         return Err("Symbol 'P' occurred at the wrong position");
                     }
                 }
                 'T' => {
-                    if t_found {
+                    if context.t_found {
                         return Err("Symbol 'T' occurred twice");
                     }
 
-                    if number > 0 {
+                    if context.number > 0 {
                         return Err("Symbol 'T' occurred after a number");
                     }
 
-                    t_found = true;
-                    last_filled_component = 3;
+                    context.t_found = true;
+                    context.last_filled_component = 3;
                 }
 
                 // Duration components:
-                'Y' => {
-                    if number_is_empty {
-                        return Err("No value is specified for years, so 'Y' must not be present");
-                    }
-
-                    if dot_found {
-                        return Err("Only the seconds can be expressed as a decimal");
-                    }
-
-                    if last_filled_component >= 1 {
-                        return Err("Bad order of duration components");
-                    }
-
-                    last_filled_component = 1;
-                    dur.years = number;
-                    number = 0;
-                    number_is_empty = true;
+                'Y' => if let Some(e) = fill_component(&mut context, &mut dur.years, 1, "years", 'Y') {
+                        return Err(e);
                 }
                 'M' => {
-                    if t_found {
-                        if number_is_empty {
-                            return Err("No value is specified for minutes, so 'M' must not be present");
+                    if context.t_found {
+                        if let Some(e) = fill_component(&mut context, &mut dur.minutes, 5, "minutes", 'M') {
+                            return Err(e);
                         }
-
-                        if dot_found {
-                            return Err("Only the seconds can be expressed as a decimal");
-                        }
-
-                        if last_filled_component >= 5 {
-                            return Err("Bad order of duration components");
-                        }
-
-                        last_filled_component = 5;
-                        dur.minutes = number;
-                        number = 0;
-                        number_is_empty = true;
                     }
                     else {
-                        if number_is_empty {
-                            return Err("No value is specified for months, so 'M' must not be present");
+                        if let Some(e) = fill_component(&mut context, &mut dur.months, 2, "months", 'M') {
+                            return Err(e);
                         }
-
-                        if dot_found {
-                            return Err("Only the seconds can be expressed as a decimal");
-                        }
-
-                        if last_filled_component >= 2 {
-                            return Err("Bad order of duration components");
-                        }
-
-                        last_filled_component = 2;
-                        dur.months = number;
-                        number = 0;
-                        number_is_empty = true;
                     }
                 }
-                'D' => {
-                    if number_is_empty {
-                        return Err("No value is specified for days, so 'D' must not be present");
-                    }
-
-                    if dot_found {
-                        return Err("Only the seconds can be expressed as a decimal");
-                    }
-
-                    if last_filled_component >= 3 {
-                        return Err("Bad order of duration components");
-                    }
-
-                    last_filled_component = 3;
-                    dur.days = number;
-                    number = 0;
-                    number_is_empty = true;
+                'D' => if let Some(e) = fill_component(&mut context, &mut dur.days, 3, "days", 'D') {
+                        return Err(e);
                 }
                 'H' => {
-                    if number_is_empty {
-                        return Err("No value is specified for hours, so 'H' must not be present");
+                    if !context.t_found { return Err("No symbol 'T' found before hours components") }
+                    if let Some(e) = fill_component(&mut context, &mut dur.hours, 4, "hours", 'H') {
+                        return Err(e);
                     }
-
-                    if dot_found {
-                        return Err("Only the seconds can be expressed as a decimal");
-                    }
-
-                    if !t_found {
-                        return Err("No symbol 'T' found before hours components");
-                    }
-
-                    if last_filled_component >= 4 {
-                        return Err("Bad order of duration components");
-                    }
-
-                    last_filled_component = 4;
-                    dur.hours = number;
-                    number = 0;
-                    number_is_empty = true;
                 }
                 'S' => {
-                    if number_is_empty {
-                        return Err("No value is specified for seconds, so 'S' must not be present");
+                    if !context.t_found { return Err("No symbol 'T' found before seconds components") }
+                    if let Some(e) = fill_seconds(&mut context, &mut dur.seconds) {
+                        return Err(e);
                     }
-
-                    if dot_found && denom == 1 {
-                        return Err("At least one digit must follow the decimal point if it appears");
-                    }
-
-                    if !t_found {
-                        return Err("No symbol 'T' found before seconds components");
-                    }
-
-                    if last_filled_component >= 6 {
-                        return Err("Bad order of duration components");
-                    }
-
-                    last_filled_component = 6;
-                    dur.seconds = number as f64 + numer as f64 / denom as f64;
-                    number = 0;
-                    number_is_empty = true;
                 }
 
                 // Number:
                 '.' => {
-                    if dot_found {
+                    if context.dot_found {
                         return Err("Dot occurred twice");
                     }
 
-                    if number_is_empty {
+                    if context.number_is_empty {
                         return Err("No digits before dot");
                     }
 
-                    dot_found = true;
+                    context.dot_found = true;
                 }
                 digit => {
                     if !digit.is_digit(10) {
                         return Err("Incorrect character occurred");
                     }
 
-                    if dot_found {
-                        numer *= 10;
-                        numer += digit.to_digit(10).expect("error converting a digit") as u64;
-                        denom *= 10;
+                    if context.dot_found {
+                        context.numer *= 10;
+                        context.numer += digit.to_digit(10).expect("error converting a digit") as u64;
+                        context.denom *= 10;
                     }
                     else {
-                        number *= 10;
-                        number += digit.to_digit(10).expect("error converting a digit") as u64;
-                        number_is_empty = false;
+                        context.number *= 10;
+                        context.number += digit.to_digit(10).expect("error converting a digit") as u64;
+                        context.number_is_empty = false;
                     }
                 }
             }
         }
 
-        if number > 0 {
+        if context.number > 0 {
             return Err("Number at the end of the string");
         }
 
-        if !p_found {
+        if !context.p_found {
             return Err("'P' must always be present");
         }
 
-        if last_filled_component == 0 {
+        if context.last_filled_component == 0 {
             return Err("At least one number and designator are required");
         }
 
-        if last_filled_component <= 3 && t_found {
+        if context.last_filled_component <= 3 && context.t_found {
             return Err("no time items are present, so 'T' must not be present");
         }
 
         Ok(dur)
+    }
+}
+
+struct ParsingContext {
+    p_found: bool, // Is 'P' found in the string.
+    t_found: bool, // Is 'T' delimiter occurred.
+    last_filled_component: i32,  // 1 to 6 for Year to Minute.
+
+    number: u64,
+    number_is_empty: bool,
+
+    dot_found: bool,
+    // Numerator and denominator of seconds fraction part.
+    numer: u64,
+    denom: u64,
+}
+
+impl ParsingContext {
+    pub fn new() -> ParsingContext {
+        ParsingContext {
+            p_found: false,
+            t_found: false,
+            last_filled_component: 0,
+
+            number: 0,
+            number_is_empty: true,
+
+            dot_found: false,
+            numer: 0,
+            denom: 1,
+        }
     }
 }
