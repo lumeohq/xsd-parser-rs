@@ -12,7 +12,7 @@ pub struct Duration {
 
     pub hours: u64,
     pub minutes: u64,
-    pub seconds: u64,
+    pub seconds: f64,
 }
 
 impl Duration {
@@ -37,7 +37,7 @@ impl Duration {
         if self.minutes > 0 {
             date_str.push_str(&format!("{}M", self.minutes));
         }
-        if self.seconds > 0 {
+        if self.seconds > 0.0 {
             date_str.push_str(&format!("{}S", self.seconds));
         }
 
@@ -63,19 +63,29 @@ impl Duration {
             Err("Duration with months or years require a starting date to be converted")
         }
         else {
-            Ok(std::time::Duration::from_secs(
-                self.seconds + 60 * (self.minutes + 60 * (self.hours + 24 * self.days))))
+            let secs = self.seconds as u64;
+
+            let nanos = ((self.seconds - secs as f64) * 1e9) as u32;
+            let secs = secs + 60 * (self.minutes + 60 * (self.hours + 24 * self.days));
+
+            Ok(std::time::Duration::new(secs, nanos))
         }
     }
 
     pub fn from_lexical_representation(s: &str) -> Result<Duration, &'static str> {
         let mut dur: Duration = Default::default();
 
-        let mut cur: u64 = 0;
-        let mut cur_started = false;
         let mut p_found = false;
         let mut t_found = false;
         let mut last_component = 0;
+
+        let mut cur: u64 = 0;
+        let mut cur_started = false;
+
+        let mut dot_found = false;
+        let mut numer: u64 = 0;
+        let mut denom: u64 = 1;
+
         for (i, c) in s.chars().enumerate() {
             if c == '-' {
                 if i == 0 {
@@ -105,14 +115,36 @@ impl Duration {
                 t_found = true;
                 last_component = 3;
             }
+            else if c == '.' {
+                if dot_found {
+                    return Err("Dot occurred twice");
+                }
+
+                if (!cur_started) {
+                    return Err("No digits before dot");
+                }
+
+                dot_found = true;
+            }
             else if c.is_digit(10) {
-                cur *= 10;
-                cur += c.to_digit(10).expect("error converting a digit") as u64;
-                cur_started = true;
+                if dot_found {
+                    numer *= 10;
+                    numer += c.to_digit(10).expect("error converting a digit") as u64;
+                    denom *= 10;
+                }
+                else {
+                    cur *= 10;
+                    cur += c.to_digit(10).expect("error converting a digit") as u64;
+                    cur_started = true;
+                }
             }
             else if c == 'Y' {
-                if (!cur_started) {
+                if !cur_started {
                     return Err("No value is specified for years, so 'Y' must not be present");
+                }
+
+                if dot_found {
+                    return Err("Only the seconds can be expressed as a decimal");
                 }
 
                 if last_component >= 1 {
@@ -126,8 +158,12 @@ impl Duration {
             }
             else if c == 'M' {
                 if t_found {
-                    if (!cur_started) {
+                    if !cur_started {
                         return Err("No value is specified for minutes, so 'M' must not be present");
+                    }
+
+                    if dot_found {
+                        return Err("Only the seconds can be expressed as a decimal");
                     }
 
                     if last_component >= 5 {
@@ -140,8 +176,12 @@ impl Duration {
                     cur_started = false;
                 }
                 else {
-                    if (!cur_started) {
+                    if !cur_started {
                         return Err("No value is specified for months, so 'M' must not be present");
+                    }
+
+                    if dot_found {
+                        return Err("Only the seconds can be expressed as a decimal");
                     }
 
                     if last_component >= 2 {
@@ -155,8 +195,12 @@ impl Duration {
                 }
             }
             else if c == 'D' {
-                if (!cur_started) {
+                if !cur_started {
                     return Err("No value is specified for days, so 'D' must not be present");
+                }
+
+                if dot_found {
+                    return Err("Only the seconds can be expressed as a decimal");
                 }
 
                 if last_component >= 3 {
@@ -169,8 +213,12 @@ impl Duration {
                 cur_started = false;
             }
             else if c == 'H' {
-                if (!cur_started) {
+                if !cur_started {
                     return Err("No value is specified for hours, so 'H' must not be present");
+                }
+
+                if dot_found {
+                    return Err("Only the seconds can be expressed as a decimal");
                 }
 
                 if !t_found {
@@ -187,8 +235,12 @@ impl Duration {
                 cur_started = false;
             }
             else if c == 'S' {
-                if (!cur_started) {
+                if !cur_started {
                     return Err("No value is specified for seconds, so 'S' must not be present");
+                }
+
+                if dot_found && denom == 1 {
+                    return Err("At least one digit should occur after dot");
                 }
 
                 if !t_found {
@@ -200,7 +252,7 @@ impl Duration {
                 }
 
                 last_component = 6;
-                dur.hours = cur;
+                dur.seconds = cur as f64 + numer as f64 / denom as f64;
                 cur = 0;
                 cur_started = false;
             }
