@@ -92,177 +92,180 @@ impl Duration {
         let mut denom: u64 = 1;
 
         for (i, c) in s.chars().enumerate() {
-            if c == '-' {
-                if i == 0 {
-                    dur.negative = true;
+            match c {
+                '-' => {
+                    if i == 0 {
+                        dur.negative = true;
+                    }
+                    else {
+                        return Err("'-' sign may only occur at the beginning of the string");
+                    }
                 }
-                else {
-                    return Err("'-' sign may only occur at the beginning of the string");
+                'P' => {
+                    if i == 0 || i == 1 && dur.negative {
+                        p_found = true;
+                    }
+                    else {
+                        return Err("Symbol 'P' occurred at the wrong position");
+                    }
                 }
-            }
-            else if c == 'P' {
-                if i == 0 || i == 1 && dur.negative {
-                    p_found = true;
-                }
-                else {
-                    return Err("Symbol 'P' occurred at the wrong position");
-                }
-            }
-            else if c == 'T' {
-                if t_found {
-                    return Err("Symbol 'T' occurred twice");
-                }
+                'T' => {
+                    if t_found {
+                        return Err("Symbol 'T' occurred twice");
+                    }
 
-                if cur > 0 {
-                    return Err("Symbol 'T' occurred after a number");
-                }
+                    if cur > 0 {
+                        return Err("Symbol 'T' occurred after a number");
+                    }
 
-                t_found = true;
-                last_component = 3;
-            }
-            else if c == '.' {
-                if dot_found {
-                    return Err("Dot occurred twice");
+                    t_found = true;
+                    last_component = 3;
                 }
+                '.' => {
+                    if dot_found {
+                        return Err("Dot occurred twice");
+                    }
 
-                if !cur_started {
-                    return Err("No digits before dot");
-                }
-
-                dot_found = true;
-            }
-            else if c.is_digit(10) {
-                if dot_found {
-                    numer *= 10;
-                    numer += c.to_digit(10).expect("error converting a digit") as u64;
-                    denom *= 10;
-                }
-                else {
-                    cur *= 10;
-                    cur += c.to_digit(10).expect("error converting a digit") as u64;
-                    cur_started = true;
-                }
-            }
-            else if c == 'Y' {
-                if !cur_started {
-                    return Err("No value is specified for years, so 'Y' must not be present");
-                }
-
-                if dot_found {
-                    return Err("Only the seconds can be expressed as a decimal");
-                }
-
-                if last_component >= 1 {
-                    return Err("Bad order of duration components");
-                }
-
-                last_component = 1;
-                dur.years = cur;
-                cur = 0;
-                cur_started = false;
-            }
-            else if c == 'M' {
-                if t_found {
                     if !cur_started {
-                        return Err("No value is specified for minutes, so 'M' must not be present");
+                        return Err("No digits before dot");
+                    }
+
+                    dot_found = true;
+                }
+                'Y' => {
+                    if !cur_started {
+                        return Err("No value is specified for years, so 'Y' must not be present");
                     }
 
                     if dot_found {
                         return Err("Only the seconds can be expressed as a decimal");
                     }
 
-                    if last_component >= 5 {
+                    if last_component >= 1 {
                         return Err("Bad order of duration components");
                     }
 
-                    last_component = 5;
-                    dur.minutes = cur;
+                    last_component = 1;
+                    dur.years = cur;
                     cur = 0;
                     cur_started = false;
                 }
-                else {
+                'M' => {
+                    if t_found {
+                        if !cur_started {
+                            return Err("No value is specified for minutes, so 'M' must not be present");
+                        }
+
+                        if dot_found {
+                            return Err("Only the seconds can be expressed as a decimal");
+                        }
+
+                        if last_component >= 5 {
+                            return Err("Bad order of duration components");
+                        }
+
+                        last_component = 5;
+                        dur.minutes = cur;
+                        cur = 0;
+                        cur_started = false;
+                    }
+                    else {
+                        if !cur_started {
+                            return Err("No value is specified for months, so 'M' must not be present");
+                        }
+
+                        if dot_found {
+                            return Err("Only the seconds can be expressed as a decimal");
+                        }
+
+                        if last_component >= 2 {
+                            return Err("Bad order of duration components");
+                        }
+
+                        last_component = 2;
+                        dur.months = cur;
+                        cur = 0;
+                        cur_started = false;
+                    }
+                }
+                'D' => {
                     if !cur_started {
-                        return Err("No value is specified for months, so 'M' must not be present");
+                        return Err("No value is specified for days, so 'D' must not be present");
                     }
 
                     if dot_found {
                         return Err("Only the seconds can be expressed as a decimal");
                     }
 
-                    if last_component >= 2 {
+                    if last_component >= 3 {
                         return Err("Bad order of duration components");
                     }
 
-                    last_component = 2;
-                    dur.months = cur;
+                    last_component = 3;
+                    dur.days = cur;
                     cur = 0;
                     cur_started = false;
                 }
-            }
-            else if c == 'D' {
-                if !cur_started {
-                    return Err("No value is specified for days, so 'D' must not be present");
-                }
+                'H' => {
+                    if !cur_started {
+                        return Err("No value is specified for hours, so 'H' must not be present");
+                    }
 
-                if dot_found {
-                    return Err("Only the seconds can be expressed as a decimal");
-                }
+                    if dot_found {
+                        return Err("Only the seconds can be expressed as a decimal");
+                    }
 
-                if last_component >= 3 {
-                    return Err("Bad order of duration components");
-                }
+                    if !t_found {
+                        return Err("No symbol 'T' found before hours components");
+                    }
 
-                last_component = 3;
-                dur.days = cur;
-                cur = 0;
-                cur_started = false;
-            }
-            else if c == 'H' {
-                if !cur_started {
-                    return Err("No value is specified for hours, so 'H' must not be present");
-                }
+                    if last_component >= 4 {
+                        return Err("Bad order of duration components");
+                    }
 
-                if dot_found {
-                    return Err("Only the seconds can be expressed as a decimal");
+                    last_component = 4;
+                    dur.hours = cur;
+                    cur = 0;
+                    cur_started = false;
                 }
+                'S' => {
+                    if !cur_started {
+                        return Err("No value is specified for seconds, so 'S' must not be present");
+                    }
 
-                if !t_found {
-                    return Err("No symbol 'T' found before hours components");
+                    if dot_found && denom == 1 {
+                        return Err("At least one digit should occur after dot");
+                    }
+
+                    if !t_found {
+                        return Err("No symbol 'T' found before seconds components");
+                    }
+
+                    if last_component >= 6 {
+                        return Err("Bad order of duration components");
+                    }
+
+                    last_component = 6;
+                    dur.seconds = cur as f64 + numer as f64 / denom as f64;
+                    cur = 0;
+                    cur_started = false;
                 }
+                digit => {
+                    if !digit.is_digit(10) {
+                        return Err("Incorrect character occurred");
+                    }
 
-                if last_component >= 4 {
-                    return Err("Bad order of duration components");
+                    if dot_found {
+                        numer *= 10;
+                        numer += digit.to_digit(10).expect("error converting a digit") as u64;
+                        denom *= 10;
+                    }
+                    else {
+                        cur *= 10;
+                        cur += digit.to_digit(10).expect("error converting a digit") as u64;
+                        cur_started = true;
+                    }
                 }
-
-                last_component = 4;
-                dur.hours = cur;
-                cur = 0;
-                cur_started = false;
-            }
-            else if c == 'S' {
-                if !cur_started {
-                    return Err("No value is specified for seconds, so 'S' must not be present");
-                }
-
-                if dot_found && denom == 1 {
-                    return Err("At least one digit should occur after dot");
-                }
-
-                if !t_found {
-                    return Err("No symbol 'T' found before seconds components");
-                }
-
-                if last_component >= 6 {
-                    return Err("Bad order of duration components");
-                }
-
-                last_component = 6;
-                dur.seconds = cur as f64 + numer as f64 / denom as f64;
-                cur = 0;
-                cur_started = false;
-            }
-            else {
-                return Err("Incorrect character occured");
             }
         }
 
