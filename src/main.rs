@@ -1,14 +1,10 @@
 use std::fs;
 use std::io::{Read};
 
-mod xsd;
-pub use xsd::simple_type::SimpleType;
-pub use xsd::complex_type::ComplexType;
-use crate::xsd::utils::{find_child};
-
 mod xsd2;
 mod generator;
 pub use generator::generator::Generator;
+use crate::xsd2::utils::find_child;
 
 
 fn main() {
