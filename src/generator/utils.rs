@@ -2,6 +2,7 @@ extern crate inflector;
 use inflector::cases::pascalcase::to_pascal_case;
 use std::str;
 use self::inflector::cases::snakecase::to_snake_case;
+use std::borrow::Cow;
 
 fn split_comment_line(s: &str) -> String {
     s.as_bytes()
@@ -31,8 +32,28 @@ pub fn get_field_comment(doc: Option<&str>) -> String {
         fold(String::new(), |x , y| (x+&y))
 }
 
-pub fn get_type_name(name: &str) -> String {
-    to_pascal_case(name)
+pub(crate) fn match_type(typename: &str, target_namespace: Option<&str>) -> Cow<'static, str>{
+        match typename {
+            "xs:string"      => Cow::Borrowed("String"),
+            "xs:NCName"      => Cow::Borrowed("String"),
+            "xs:unsignedInt" => Cow::Borrowed("usize"),
+            "xs:int"         => Cow::Borrowed("i64"),
+            "xs:float"       => Cow::Borrowed("f64"),
+            "xs:boolean"     => Cow::Borrowed("bool"),
+            x => Cow::Owned(
+                    match target_namespace {
+                        Some(ns) => {
+                            if x.starts_with(ns) { x[ns.len()+1..].to_string() }
+                            else { x.replace(":", "::") }
+                        },
+                        None => x.replace(":", "::")
+                    }
+                )
+        }
+    }
+
+pub fn get_type_name(name: &str, target_namespace: Option<&str>) -> String {
+    to_pascal_case(match_type(name, target_namespace).as_ref())
 }
 
 pub fn get_field_name(name: &str) -> String {

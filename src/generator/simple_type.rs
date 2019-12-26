@@ -25,17 +25,17 @@ pub fn get_enum_facets<'a, 'input>(restriction: &Restriction<'a, 'input>) -> Vec
     }).collect()
 }
 
-pub fn enum_case2(facet : &Facet) -> EnumCase {
+pub fn enum_case2(facet : &Facet, target_namespace: Option<&str>) -> EnumCase {
     EnumCase{
         comment: get_field_comment(facet.documentation()),
-        name: get_type_name(facet.value()),
+        name: get_type_name(facet.value(), target_namespace),
         value: facet.value().to_string()
     }
 }
 
-pub fn enum_cases2(facets: &Vec<Facet>) -> Vec<EnumCase> {
+pub fn enum_cases2(facets: &Vec<Facet>, target_namespace: Option<&str>) -> Vec<EnumCase> {
     facets.
         iter().
-        map(|f| enum_case2(f)).
+        map(|f| enum_case2(f, target_namespace)).
         collect()
 }

@@ -1,23 +1,5 @@
 use core::fmt;
-
-pub struct StructField {
-    pub name: String,
-    pub typename: String,
-    pub comment: String,
-    pub macros: String
-}
-
-impl fmt::Display for StructField {
-    fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
-        write!(f,
-               "{macros}  pub {name}: {typename},  {comment}",
-               macros=self.macros,
-               name=self.name,
-               typename=self.typename,
-               comment=self.comment
-        )
-    }
-}
+use crate::generator::struct_field::StructField;
 
 pub struct Struct {
     pub name: String,

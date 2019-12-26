@@ -1,13 +1,11 @@
-use std::borrow::{Cow};
-
-use crate::generator::complex_type::{yaserde_for_attribute, attribute_type, element_type, yaserde_for_element};
+use crate::generator::complex_type::{yaserde_for_element};
 use crate::generator::simple_type::*;
 use crate::generator::utils::*;
-use crate::xsd2::complex_type::{Attribute, ComplexType};
+use crate::xsd2::complex_type::{ComplexType};
 use crate::xsd2::schema::Schema;
 use crate::xsd2::simple_type::SimpleType;
-use crate::xsd2::sequence::{Element, Sequence};
-use crate::generator::type_tree::{Types, TupleStruct, Enum, Struct, StructField};
+use crate::generator::type_tree::{Types, TupleStruct, Enum, Struct};
+use crate::generator::struct_field::{StructField, any_attribute_field, field_from_attribute, get_fields_from_sequence};
 
 pub struct Generator<'a, 'input> {
     target_namespace: Option<&'a str>,
@@ -38,74 +36,18 @@ impl <'a, 'input> Generator<'a, 'input> {
         }
     }
 
-    fn match_type(&self, typename: &str) -> Cow<'a, str>{
-        match typename {
-            "xs:string"      => Cow::Borrowed("String"),
-            "xs:NCName"      => Cow::Borrowed("String"),
-            "xs:unsignedInt" => Cow::Borrowed("usize"),
-            "xs:int"         => Cow::Borrowed("i64"),
-            "xs:float"       => Cow::Borrowed("f64"),
-            "xs:boolean"     => Cow::Borrowed("bool"),
-            x => Cow::Owned(
-                    match self.target_namespace {
-                        Some(ns) => {
-                            if x.starts_with(ns) { x[ns.len()+1..].to_string() }
-                            else { x.replace(":", "::") }
-                        },
-                        None => x.replace(":", "::")
-                    }
-                )
-        }
-    }
-
-    fn field_from_attribute(&self, attr: &Attribute) -> StructField {
-        let name = attr.name();
-        StructField{
-            name: get_field_name(&name),
-            typename: attribute_type(attr, self.match_type(attr.typename())),
-            macros: yaserde_for_attribute(name),
-            comment: get_field_comment(attr.documentation())
-        }
-    }
-
-    fn field_from_element(&self, elem: &Element) -> StructField {
-        let name = elem.name();
-        StructField{
-            name: get_field_name(&name),
-            typename: element_type(elem, self.match_type(elem.typename())),
-            macros: yaserde_for_element(name),
-            comment: get_field_comment(elem.documentation())
-        }
-    }
-
-    fn get_fields_from_sequence(&self, s: &Sequence) -> Vec<StructField> {
-        let mut fields = s.elements().
-            iter().
-            map(|el| self.field_from_element(el)).
-            collect::<Vec<StructField>>();
-
-        let any = s.any();
-        match any {
-            Some(_a) => {fields.push(StructField{
-                name: "any".to_string(),
-                typename: "AnyElement".to_string(),
-                macros: "//TODO: we need yaserde for this extension\n".to_string(),
-                comment: String::new()
-            })},
-            None => ()
-        }
-
-        fields
-    }
 
     fn complex_type(&self, element: &ComplexType) -> Types {
         let comment = get_structure_comment(element.documentation());
-        let name = get_type_name(element.name().expect("GLOBAL COMPLEX TYPE NAME REQUIRED"));
+        let name = get_type_name(
+            element.name().expect("GLOBAL COMPLEX TYPE NAME REQUIRED"),
+            self.target_namespace
+        );
 
         let mut attributes = element.
             attributes().
             iter().
-            map(|a| self.field_from_attribute(a)).
+            map(|a| field_from_attribute(a, self.target_namespace)).
             collect::<Vec<StructField>>();
 
         let sequence = element.complex_content().
@@ -114,25 +56,32 @@ impl <'a, 'input> Generator<'a, 'input> {
 
 
         let mut elements = match sequence {
-            Some(s) => self.get_fields_from_sequence(&s),
+            Some(s) => get_fields_from_sequence(&s, self.target_namespace),
             None => match element.sequence()  {
-                Some(s) => self.get_fields_from_sequence(&s),
+                Some(s) => get_fields_from_sequence(&s, self.target_namespace),
                 None => vec!()
             }
         };
-        let mut fields: Vec<StructField> = Vec::with_capacity(attributes.len() + elements.len());
+        let mut fields: Vec<StructField> = Vec::with_capacity(attributes.len() + elements.len() + 1);
         fields.append(&mut elements);
         fields.append(&mut attributes);
+
+        if element.has_any_attribute() {
+            fields.push(any_attribute_field());
+        }
 
         match element.complex_content().and_then(|cc| cc.extension()) {
             Some(ext) => {
                 let ty = ext.base();
                 fields.push(StructField{
                     name: "base".to_string(),
-                    typename: get_type_name(self.match_type(ty).as_ref()),
+                    typename: get_type_name(ty, self.target_namespace),
                     macros: yaserde_for_element("base"), //TODO: yaserde for base element
                     comment: String::new()
                 });
+                if ext.has_any_attribute() {
+                    fields.push(any_attribute_field());
+                }
             },
             None => ()
         }
@@ -148,13 +97,16 @@ impl <'a, 'input> Generator<'a, 'input> {
     fn simple_type(&self, element: &SimpleType) -> Types {
 
         let comment = get_structure_comment(element.documentation());
-        let name = get_type_name(element.name().expect("SIMPLE TYPE WITHOUT NAME NOT SUPPORTED"));
+        let name = get_type_name(
+            element.name().expect("SIMPLE TYPE WITHOUT NAME NOT SUPPORTED"),
+            self.target_namespace
+        );
         let l = element.list();
         let mut typename = String::new();
         let restriction = element.restriction();
         if restriction.is_some() {
             let r = restriction.unwrap();
-            typename = self.match_type(&r.base()).to_string();
+            typename = match_type(&r.base(), self.target_namespace).to_string();
             let facets = get_enum_facets(&r);
 
             if !facets.is_empty() {
@@ -162,12 +114,15 @@ impl <'a, 'input> Generator<'a, 'input> {
                     typename,
                     name,
                     comment,
-                    cases: enum_cases2(&facets)
+                    cases: enum_cases2(&facets, self.target_namespace)
                 });
             }
         }
         else if l.is_some() {
-            typename = format!("Vec<{}>", self.match_type(&l.unwrap().item_type().unwrap_or("NESTED SIMPLE TYPE NOT SUPPORTED")).as_ref());
+            typename = format!("Vec<{}>", match_type(
+                &l.unwrap().item_type().unwrap_or("NESTED SIMPLE TYPE NOT SUPPORTED"),
+                 self.target_namespace
+            ).as_ref());
         }
         return Types::TupleStruct(TupleStruct{
             comment,
