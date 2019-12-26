@@ -3,6 +3,7 @@ use std::fmt;
 use crate::xsd2::utils::*;
 use crate::xsd2::sequence::Sequence;
 use crate::xsd2::complex_content::ComplexContent;
+use crate::xsd2::simple_content::SimpleContent;
 
 pub struct ComplexType<'a, 'input> {
     pub node: roxmltree::Node<'a, 'input>,
@@ -30,6 +31,14 @@ impl<'a, 'input: 'a> ComplexType<'a, 'input> {
 
     pub fn complex_content(&self) -> Option<ComplexContent> {
         find_child(&self.node, "complexContent").map(|node| ComplexContent{node})
+    }
+
+    pub fn simple_content(&self) -> Option<SimpleContent> {
+        find_child(&self.node, "complexContent").map(|node| SimpleContent{node})
+    }
+
+    pub fn has_any_attribute(&self) -> bool {
+        find_child(&self.node, "anyAttribute").is_some()
     }
 
 }

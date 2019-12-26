@@ -18,7 +18,7 @@ impl<'a, 'input: 'a> Sequence<'a, 'input> {
             collect::<Vec<Element>>()
     }
 
-    pub fn any(&self) -> Option<AnyElement> {
+    pub fn any_element(&self) -> Option<AnyElement> {
         self.node.children().find(|n| n.tag_name().name() == "any").map(|n| AnyElement{node: n})
     }
 

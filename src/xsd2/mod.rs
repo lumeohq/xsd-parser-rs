@@ -4,5 +4,6 @@ pub mod schema;
 pub mod complex_type;
 pub mod sequence;
 pub mod complex_content;
+pub mod simple_content;
 pub mod extension;
 
