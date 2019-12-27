@@ -6,4 +6,4 @@ pub mod sequence;
 pub mod complex_content;
 pub mod simple_content;
 pub mod extension;
-
+pub mod choice;

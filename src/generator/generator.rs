@@ -5,7 +5,7 @@ use crate::xsd2::complex_type::{ComplexType};
 use crate::xsd2::schema::Schema;
 use crate::xsd2::simple_type::SimpleType;
 use crate::generator::type_tree::{Types, TupleStruct, Enum, Struct};
-use crate::generator::struct_field::{StructField, any_attribute_field, field_from_attribute, get_fields_from_sequence};
+use crate::generator::struct_field::{StructField, any_attribute_field, field_from_attribute, get_fields_from_sequence, get_fields_from_extension};
 
 pub struct Generator<'a, 'input> {
     target_namespace: Option<&'a str>,
@@ -36,7 +36,6 @@ impl <'a, 'input> Generator<'a, 'input> {
         }
     }
 
-
     fn complex_type(&self, element: &ComplexType) -> Types {
         let comment = get_structure_comment(element.documentation());
         let name = get_type_name(
@@ -44,46 +43,35 @@ impl <'a, 'input> Generator<'a, 'input> {
             self.target_namespace
         );
 
-        let mut attributes = element.
+        let mut fields = element.
             attributes().
             iter().
             map(|a| field_from_attribute(a, self.target_namespace)).
             collect::<Vec<StructField>>();
 
-        let sequence = element.complex_content().
-            and_then(|cc| cc.extension()).
-            and_then(|ext| ext.sequence());
+        match element.sequence()  {
+            Some(s) => fields.append(&mut get_fields_from_sequence(&s, self.target_namespace)),
+            None => ()
+        }
 
+        match element.complex_content() {
+            Some(cc) => match cc.extension() {
+                Some(ext) => fields.append(&mut  get_fields_from_extension(&ext, self.target_namespace)),
+                None => ()
+            },
+            None => ()
+        }
 
-        let mut elements = match sequence {
-            Some(s) => get_fields_from_sequence(&s, self.target_namespace),
-            None => match element.sequence()  {
-                Some(s) => get_fields_from_sequence(&s, self.target_namespace),
-                None => vec!()
-            }
-        };
-        let mut fields: Vec<StructField> = Vec::with_capacity(attributes.len() + elements.len() + 1);
-        fields.append(&mut elements);
-        fields.append(&mut attributes);
+        match element.simple_content() {
+            Some(cc) => match cc.extension() {
+                Some(ext) => fields.append(&mut  get_fields_from_extension(&ext, self.target_namespace)),
+                None => ()
+            },
+            None => ()
+        }
 
         if element.has_any_attribute() {
             fields.push(any_attribute_field());
-        }
-
-        match element.complex_content().and_then(|cc| cc.extension()) {
-            Some(ext) => {
-                let ty = ext.base();
-                fields.push(StructField{
-                    name: "base".to_string(),
-                    typename: get_type_name(ty, self.target_namespace),
-                    macros: yaserde_for_element("base"), //TODO: yaserde for base element
-                    comment: String::new()
-                });
-                if ext.has_any_attribute() {
-                    fields.push(any_attribute_field());
-                }
-            },
-            None => ()
         }
 
         Types::Struct(Struct{
@@ -95,7 +83,6 @@ impl <'a, 'input> Generator<'a, 'input> {
     }
 
     fn simple_type(&self, element: &SimpleType) -> Types {
-
         let comment = get_structure_comment(element.documentation());
         let name = get_type_name(
             element.name().expect("SIMPLE TYPE WITHOUT NAME NOT SUPPORTED"),
@@ -133,5 +120,4 @@ impl <'a, 'input> Generator<'a, 'input> {
     }
 
 }
-
 

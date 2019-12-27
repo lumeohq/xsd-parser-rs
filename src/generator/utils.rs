@@ -32,7 +32,7 @@ pub fn get_field_comment(doc: Option<&str>) -> String {
         fold(String::new(), |x , y| (x+&y))
 }
 
-pub(crate) fn match_type(typename: &str, target_namespace: Option<&str>) -> Cow<'static, str>{
+pub fn match_type(typename: &str, target_namespace: Option<&str>) -> Cow<'static, str>{
         match typename {
             "xs:string"      => Cow::Borrowed("String"),
             "xs:NCName"      => Cow::Borrowed("String"),
@@ -60,7 +60,7 @@ pub fn get_field_name(name: &str) -> String {
     to_snake_case(name)
 }
 
-pub(crate) fn yaserde_derive() -> String {
+pub fn yaserde_derive() -> String {
     "#[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]\n\
         #[yaserde(\n\
           prefix = \"unknown\",\n\
