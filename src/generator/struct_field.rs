@@ -1,15 +1,16 @@
 use core::fmt;
-use crate::xsd2::complex_type::Attribute;
-use crate::generator::utils::{get_field_name, match_type, get_field_comment, get_type_name};
-use crate::generator::complex_type::{attribute_type, yaserde_for_attribute, element_type, yaserde_for_element};
-use crate::xsd2::sequence::{Element, Sequence};
+
+use crate::generator::complex_type::{element_type, yaserde_for_attribute, yaserde_for_element};
+use crate::generator::utils::{get_field_comment, get_field_name, get_type_name, match_type};
+use crate::xsd2::attribute::{Attribute, attribute_type};
 use crate::xsd2::extension::Extension;
+use crate::xsd2::sequence::{Element, Sequence};
 
 pub struct StructField {
     pub name: String,
     pub typename: String,
     pub comment: String,
-    pub macros: String
+    pub macros: String,
 }
 
 impl fmt::Display for StructField {
@@ -82,12 +83,19 @@ pub fn get_fields_from_extension(ext: &Extension, target_namespace: Option<&str>
         None => vec!()
     };
 
+    fields.append(&mut ext.
+        attributes().
+        iter().
+        map(|a| field_from_attribute(a, target_namespace)).
+        collect::<Vec<StructField>>()
+    );
+
     let ty = ext.base();
-    fields.push(StructField{
+    fields.push(StructField {
         name: "base".to_string(),
         typename: get_type_name(ty, target_namespace),
         macros: yaserde_for_element("base"), //TODO: yaserde for base element
-        comment: String::new()
+        comment: String::new(),
     });
 
     if ext.has_any_attribute() {
