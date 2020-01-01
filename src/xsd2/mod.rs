@@ -7,3 +7,4 @@ pub mod complex_content;
 pub mod simple_content;
 pub mod extension;
 pub mod choice;
+pub mod attribute;
