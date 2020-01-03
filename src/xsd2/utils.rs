@@ -1,4 +1,5 @@
 use roxmltree::*;
+use crate::xsd2::sequence::Element;
 
 pub fn find_child<'a, 'input>(node: &roxmltree::Node<'a, 'input>, tag_name: &str) -> Option<roxmltree::Node<'a, 'input>> {
     node.children().find(|e| e.is_element() && e.tag_name().name() == tag_name)
@@ -50,22 +51,60 @@ pub enum MaxOccurs {
     None
 }
 
-pub fn max_occurs(node: &roxmltree::Node<'_, '_>) -> MaxOccurs {
-    match node.attribute("maxOccurs") {
-        Some(s) => match s {
-            "unbounded" => MaxOccurs::Unbounded,
-            s => s.
-                parse::<usize>().
-                ok().
-                map(|val| MaxOccurs::Bounded(val)).
-                unwrap_or(MaxOccurs::None)
-        },
-        None => MaxOccurs::None
+pub trait Node {
+    fn node(&self) -> & roxmltree::Node<'_, '_>;
+}
+
+pub trait MinMaxOccurs: Node {
+    fn min_occurs(&self) -> MinOccurs {
+        self.node()
+            .attribute("minOccurs")
+            .and_then(|v| v.parse::<usize>().ok())
+            .unwrap_or(1)
+    }
+
+    fn max_occurs(&self) -> MaxOccurs {
+        match self.node().attribute("maxOccurs") {
+            Some(s) => match s {
+                "unbounded" => MaxOccurs::Unbounded,
+                s => s.
+                    parse::<usize>().
+                    ok().
+                    map(|val| MaxOccurs::Bounded(val)).
+                    unwrap_or(MaxOccurs::None)
+            },
+            None => MaxOccurs::None
+        }
     }
 }
 
-pub fn min_occurs(node: &roxmltree::Node<'_, '_>) -> MinOccurs {
-    node.attribute("minOccurs").and_then(|v| v.parse::<usize>().ok()).unwrap_or(1)
+pub trait Elements: Node {
+    fn elements(&self) -> Vec<Element> {
+        self.node().
+            children().
+            filter(|node| node.is_element() && node.tag_name().name() == "element").
+            map(|node| Element{node}).
+            collect::<Vec<Element>>()
+    }
 }
 
 pub type AnyAttribute<'a, 'input> = roxmltree::Node<'a, 'input>;
+
+#[macro_export] macro_rules! create_node_type{
+    ($name:ident) => {
+        pub struct $name<'a, 'input> {
+            pub node: roxmltree::Node<'a, 'input>,
+        }
+
+        impl Node for $name<'_, '_>{
+           fn node(&self) -> &roxmltree::Node {
+                &self.node
+           }
+        }
+    };
+    ($name:ident, $($ty:ty), *) => {
+        create_node_type!{$name}
+        $(impl $ty for $name<'_, '_>{})*
+    };
+}
+
