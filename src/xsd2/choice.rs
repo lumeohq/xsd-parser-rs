@@ -1,5 +1,4 @@
-use crate::xsd2::utils::{find_child};
-use crate::xsd2::utils::{MaxOccurs, MinOccurs, get_documentation, get_node_name, get_node_type, max_occurs, min_occurs};
+use crate::xsd2::utils::{MaxOccurs, MinOccurs, max_occurs, min_occurs};
 use crate::xsd2::sequence::Element;
 
 pub struct Choice<'a, 'input> {

@@ -1,7 +1,7 @@
 use core::fmt;
 
 use crate::generator::complex_type::{element_type, yaserde_for_attribute, yaserde_for_element};
-use crate::generator::utils::{get_field_comment, get_field_name, get_type_name, match_type};
+use crate::generator::utils::{get_field_comment, get_field_name, match_type};
 use crate::xsd2::attribute::{Attribute, attribute_type};
 use crate::xsd2::extension::Extension;
 use crate::xsd2::sequence::{Element, Sequence};
@@ -93,7 +93,7 @@ pub fn get_fields_from_extension(ext: &Extension, target_namespace: Option<&str>
     let ty = ext.base();
     fields.push(StructField {
         name: "base".to_string(),
-        typename: get_type_name(ty, target_namespace),
+        typename: match_type(ty, target_namespace).to_string(),
         macros: yaserde_for_element("base"), //TODO: yaserde for base element
         comment: String::new(),
     });
