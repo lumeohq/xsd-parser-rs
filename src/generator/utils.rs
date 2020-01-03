@@ -33,27 +33,25 @@ pub fn get_field_comment(doc: Option<&str>) -> String {
 }
 
 pub fn match_type(typename: &str, target_namespace: Option<&str>) -> Cow<'static, str>{
-        match typename {
-            "xs:string"      => Cow::Borrowed("String"),
-            "xs:NCName"      => Cow::Borrowed("String"),
-            "xs:unsignedInt" => Cow::Borrowed("usize"),
-            "xs:int"         => Cow::Borrowed("i64"),
-            "xs:float"       => Cow::Borrowed("f64"),
-            "xs:boolean"     => Cow::Borrowed("bool"),
-            x => Cow::Owned(
-                    match target_namespace {
-                        Some(ns) => {
-                            if x.starts_with(ns) { x[ns.len()+1..].to_string() }
-                            else { x.replace(":", "::") }
-                        },
-                        None => x.replace(":", "::")
-                    }
-                )
-        }
+    match typename {
+        "xs:string"      => Cow::Borrowed("String"),
+        "xs:NCName"      => Cow::Borrowed("String"),
+        "xs:unsignedInt" => Cow::Borrowed("usize"),
+        "xs:int"         => Cow::Borrowed("i64"),
+        "xs:float"       => Cow::Borrowed("f64"),
+        "xs:boolean"     => Cow::Borrowed("bool"),
+        x => Cow::Owned(
+            to_pascal_case(
+                match target_namespace {
+                    Some(ns) => {
+                        if x.starts_with(ns) { x[ns.len()+1..].to_string() }
+                        else { x.replace(":", "::") }
+                    },
+                    None => x.replace(":", "::")
+                }.as_str()
+            )
+        )
     }
-
-pub fn get_type_name(name: &str, target_namespace: Option<&str>) -> String {
-    to_pascal_case(match_type(name, target_namespace).as_ref())
 }
 
 pub fn get_field_name(name: &str) -> String {

@@ -1,7 +1,7 @@
 use crate::xsd2::simple_type::{FacetType, Facet, Restriction};
 use std::borrow::Cow;
-use crate::generator::type_tree::EnumCase;
-use crate::generator::utils::{get_type_name, get_field_comment};
+use crate::generator::utils::{get_field_comment, match_type};
+use crate::generator::enumeration::EnumCase;
 
 
 pub fn tuple_struct(doc: &String, name: &String, typename: Cow<str>) -> String {
@@ -28,8 +28,9 @@ pub fn get_enum_facets<'a, 'input>(restriction: &Restriction<'a, 'input>) -> Vec
 pub fn enum_case2(facet : &Facet, target_namespace: Option<&str>) -> EnumCase {
     EnumCase{
         comment: get_field_comment(facet.documentation()),
-        name: get_type_name(facet.value(), target_namespace),
-        value: facet.value().to_string()
+        name: match_type(facet.value(), target_namespace).to_string(),
+        value: facet.value().to_string(),
+        typename: None
     }
 }
 

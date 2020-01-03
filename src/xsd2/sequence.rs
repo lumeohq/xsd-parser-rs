@@ -1,4 +1,5 @@
 use crate::xsd2::utils::{MaxOccurs, MinOccurs, get_documentation, get_node_name, get_node_type, max_occurs, min_occurs};
+use crate::xsd2::choice::Choice;
 
 
 pub struct Sequence<'a, 'input> {
@@ -20,6 +21,10 @@ impl<'a, 'input: 'a> Sequence<'a, 'input> {
 
     pub fn any_element(&self) -> Option<AnyElement> {
         self.node.children().find(|n| n.tag_name().name() == "any").map(|n| AnyElement{node: n})
+    }
+
+    pub fn choice(&self) -> Option<Choice> {
+        self.node.children().find(|n| n.tag_name().name() == "choice").map(|n| Choice{node: n})
     }
 
 }
