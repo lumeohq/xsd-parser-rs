@@ -5,6 +5,7 @@ use crate::generator::utils::{get_field_comment, get_field_name, match_type};
 use crate::xsd2::attribute::{Attribute, attribute_type};
 use crate::xsd2::extension::Extension;
 use crate::xsd2::sequence::{Element, Sequence};
+use crate::xsd2::utils::Elements;
 
 pub struct StructField {
     pub name: String,

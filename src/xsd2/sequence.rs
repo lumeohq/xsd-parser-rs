@@ -1,4 +1,4 @@
-use crate::xsd2::utils::{MaxOccurs, MinOccurs, get_documentation, get_node_name, get_node_type, max_occurs, min_occurs};
+use crate::xsd2::utils::{get_documentation, get_node_name, get_node_type, Node, MinMaxOccurs, Elements};
 use crate::xsd2::choice::Choice;
 
 
@@ -7,18 +7,6 @@ pub struct Sequence<'a, 'input> {
 }
 
 impl<'a, 'input: 'a> Sequence<'a, 'input> {
-
-    pub fn max_occurs(&self) -> MaxOccurs { max_occurs(&self.node) }
-    pub fn min_occurs(&self) -> MinOccurs { min_occurs(&self.node) }
-
-    pub fn elements(&self) -> Vec<Element> {
-        self.node.
-            children().
-            filter(|node| node.is_element() && node.tag_name().name() == "element").
-            map(|node| Element{node}).
-            collect::<Vec<Element>>()
-    }
-
     pub fn any_element(&self) -> Option<AnyElement> {
         self.node.children().find(|n| n.tag_name().name() == "any").map(|n| AnyElement{node: n})
     }
@@ -26,8 +14,15 @@ impl<'a, 'input: 'a> Sequence<'a, 'input> {
     pub fn choice(&self) -> Option<Choice> {
         self.node.children().find(|n| n.tag_name().name() == "choice").map(|n| Choice{node: n})
     }
-
 }
+
+impl Node for Sequence<'_, '_> {
+    fn node(&self) -> &roxmltree::Node {
+        &self.node
+    }
+}
+
+impl Elements for Sequence<'_, '_>{}
 
 pub struct Element<'a, 'input> {
     pub node: roxmltree::Node<'a, 'input>,
@@ -39,20 +34,22 @@ impl<'a, 'input> Element<'a, 'input> {
         get_documentation(&self.node)
     }
     pub fn typename(&self) -> &'a str { get_node_type(&self.node) }
-
-    pub fn max_occurs(&self) -> MaxOccurs { max_occurs(&self.node) }
-    pub fn min_occurs(&self) -> MinOccurs { min_occurs(&self.node) }
 }
+
+impl Node for Element<'_, '_> {
+    fn node(&self) -> &roxmltree::Node {
+        &self.node
+    }
+}
+
+impl MinMaxOccurs for Element<'_, '_>{}
+
 
 pub struct AnyElement<'a, 'input> {
     pub node: roxmltree::Node<'a, 'input>,
 }
 
 impl<'a, 'input: 'a> AnyElement<'a, 'input> {
-
-    pub fn max_occurs(&self) -> MaxOccurs { max_occurs(&self.node) }
-    pub fn min_occurs(&self) -> MinOccurs { min_occurs(&self.node) }
-
     pub fn namespace(&self) -> Option<&str> {
         self.node.attribute("namespace")
     }

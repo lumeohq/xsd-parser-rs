@@ -6,8 +6,10 @@ use crate::generator::type_tree::Types;
 use crate::generator::enumeration::{EnumCase, Enum};
 use crate::xsd2::choice::Choice;
 use crate::generator::utils::{get_field_comment, match_type};
+use crate::xsd2::utils::MinMaxOccurs;
+use crate::xsd2::utils::Elements;
 
-pub fn element_type(elem: &Element, typename: Cow<str>) -> String {
+pub fn element_type<T: MinMaxOccurs>(elem: &T, typename: Cow<str>) -> String {
     let min = elem.min_occurs();
     let max = elem.max_occurs();
     match min {
@@ -36,15 +38,15 @@ pub fn yaserde_for_element(name: &str) -> String {
 pub fn get_types_from_sequence(s: &Sequence, typename: &String, target_namespace: Option<&str>) -> Vec<Types> {
     let ch = s.choice();
     match &ch {
-        Some(c) => vec!(get_type_from_choice(c, typename, target_namespace)),
+        Some(c) => vec!(Types::Enum(get_enum_from_choice(c, typename, target_namespace))),
         None => vec!()
     }
 }
 
-pub fn get_type_from_choice(choice: &Choice, typename: &String, target_namespace: Option<&str>) -> Types {
+pub fn get_enum_from_choice(choice: &Choice, typename: &String, target_namespace: Option<&str>) -> Enum {
     let ty = match_type(typename.as_str(), target_namespace);
 
-    Types::Enum(Enum{
+    Enum{
         name: format!("{}Choice", ty),
         comment: String::new(),
         typename: "String".to_string(),
@@ -53,7 +55,7 @@ pub fn get_type_from_choice(choice: &Choice, typename: &String, target_namespace
             .iter()
             .map(|e| enum_case_from_element(e, target_namespace))
             .collect::<Vec<EnumCase>>()
-    })
+    }
 }
 
 fn enum_case_from_element(elem: &Element, target_namespace: Option<&str>) -> EnumCase {

@@ -6,8 +6,7 @@ use crate::xsd2::simple_type::SimpleType;
 use crate::generator::type_tree::{Types, TupleStruct, Struct};
 use crate::generator::struct_field::{StructField, any_attribute_field, field_from_attribute, get_fields_from_sequence, get_fields_from_extension};
 use crate::generator::enumeration::Enum;
-use crate::generator::complex_type::get_types_from_sequence;
-use std::fs::read_to_string;
+use crate::generator::complex_type::{get_types_from_sequence, get_enum_from_choice};
 
 pub struct Generator<'a, 'input> {
     target_namespace: Option<&'a str>,
@@ -73,6 +72,21 @@ impl <'a, 'input> Generator<'a, 'input> {
 
                 }
                 types.append(&mut seq_types)
+            },
+            None => ()
+        }
+
+        match element.choice() {
+            Some(ch) => {
+                let en = get_enum_from_choice(&ch, &name, self.target_namespace);
+                fields.push(StructField{
+                                name: get_field_name(en.name.as_str()),
+                                typename: match_type(en.name.as_str(), self.target_namespace).to_string(),
+                                comment: String::new(),
+                                macros: "//TODO: add yaserde macros\n".to_string()
+                            }
+                );
+                types.push(Types::Enum(en));
             },
             None => ()
         }
