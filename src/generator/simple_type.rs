@@ -4,18 +4,6 @@ use crate::generator::utils::{get_field_comment, match_type};
 use crate::generator::enumeration::EnumCase;
 
 
-pub fn tuple_struct(doc: &String, name: &String, typename: Cow<str>) -> String {
-    format!("{}pub struct {} ({}); \n\n", doc, name, typename)
-}
-
-pub fn list_simple_type(doc: &String, name: &String, item_type: &str) -> String {
-    tuple_struct(
-        doc,
-        name,
-        Cow::Owned(format!("Vec<{}>", item_type))
-    )
-}
-
 pub fn get_enum_facets<'a, 'input>(restriction: &Restriction<'a, 'input>) -> Vec<Facet<'a, 'input>> {
     restriction.facets().
     into_iter().

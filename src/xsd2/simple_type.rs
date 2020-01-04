@@ -111,13 +111,4 @@ impl<'a, 'input: 'a> List<'a, 'input> {
     pub fn item_type(&self) -> Option<&'a str> {
         self.node.attribute("itemType")
     }
-
-    pub fn simple_type(&self) -> Option<roxmltree::Node<'a, 'input>> {
-        find_child(&self.node, "simpleType")
-    }
-}
-
-
-pub struct Union {
-    // TODO:: TBD (no one in onvif)
 }

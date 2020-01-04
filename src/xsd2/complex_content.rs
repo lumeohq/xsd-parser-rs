@@ -1,5 +1,5 @@
 use crate::xsd2::utils::find_child;
-use crate::xsd2::extension::Extension;
+use crate::xsd2::node_types::Extension;
 
 pub struct ComplexContent<'a, 'input> {
     pub node: roxmltree::Node<'a, 'input>,

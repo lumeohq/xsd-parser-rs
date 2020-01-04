@@ -22,10 +22,6 @@ impl EnumCase {
         }
 
     }
-
-    pub fn match_line(&self) -> String {
-        format!("      \"{value}\" => Self::{name},", value=self.value, name=self.name)
-    }
 }
 
 pub struct Enum {

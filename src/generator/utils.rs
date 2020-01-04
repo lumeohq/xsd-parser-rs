@@ -3,6 +3,8 @@ use inflector::cases::pascalcase::to_pascal_case;
 use std::str;
 use self::inflector::cases::snakecase::to_snake_case;
 use std::borrow::Cow;
+use crate::xsd2::node_types::{UseType, Attribute};
+
 
 fn split_comment_line(s: &str) -> String {
     s.as_bytes()
@@ -64,4 +66,12 @@ pub fn yaserde_derive() -> String {
           prefix = \"unknown\",\n\
           namespace = \"unknown: unknown\"\n\
         )\n".to_string()
+}
+
+pub fn attribute_type(attr: &Attribute, typename: Cow<str>) -> String {
+    match attr.use_type() {
+        UseType::Required => typename.to_string(),
+        UseType::Optional => format!("Option<{}>", typename),
+        UseType::Prohibited => format!("Empty<{}>", typename),
+    }
 }
