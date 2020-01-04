@@ -1,10 +1,7 @@
 use std::fmt;
 
-use crate::xsd2::attribute::Attribute;
-use crate::xsd2::choice::Choice;
+use crate::xsd2::node_types::{Attribute, Choice, Sequence, SimpleContent};
 use crate::xsd2::complex_content::ComplexContent;
-use crate::xsd2::sequence::Sequence;
-use crate::xsd2::simple_content::SimpleContent;
 use crate::xsd2::utils::*;
 
 pub struct ComplexType<'a, 'input> {
@@ -46,7 +43,6 @@ impl<'a, 'input: 'a> ComplexType<'a, 'input> {
     pub fn has_any_attribute(&self) -> bool {
         find_child(&self.node, "anyAttribute").is_some()
     }
-
 }
 
 impl<'a, 'input> fmt::Display for ComplexType<'a, 'input> {

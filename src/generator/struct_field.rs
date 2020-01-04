@@ -1,11 +1,18 @@
 use core::fmt;
 
 use crate::generator::complex_type::{element_type, yaserde_for_attribute, yaserde_for_element};
-use crate::generator::utils::{get_field_comment, get_field_name, match_type};
-use crate::xsd2::attribute::{Attribute, attribute_type};
-use crate::xsd2::extension::Extension;
-use crate::xsd2::sequence::{Element, Sequence};
-use crate::xsd2::utils::Elements;
+use crate::generator::utils::{get_field_comment, get_field_name, match_type, attribute_type};
+use crate::xsd2::node_types::Extension;
+use crate::xsd2::node_types::{Attribute, Element, Sequence};
+use crate::xsd2::node_traits::{
+    Elements,
+    AnyElement,
+    Name,
+    Typename,
+    Documentation,
+    Sequence as SequenceTrait,
+    Attributes as AttributesTrait
+};
 
 pub struct StructField {
     pub name: String,
@@ -45,20 +52,20 @@ fn any_element_field() -> StructField {
 }
 
 pub fn field_from_attribute(attr: &Attribute, target_namespace: Option<&str>) -> StructField {
-    let name = attr.name();
+    let name = attr.name().unwrap_or("UNSUPPORTED_ATTRIBUTE_NAME");
     StructField{
         name: get_field_name(&name),
-        typename: attribute_type(attr, match_type(attr.typename(), target_namespace)),
+        typename: attribute_type(attr, match_type(attr.typename().unwrap_or("UNSUPPORTED_TYPE_OF_ATTRIBUTE"), target_namespace)),
         macros: yaserde_for_attribute(name),
         comment: get_field_comment(attr.documentation())
     }
 }
 
 pub  fn field_from_element(elem: &Element, target_namespace: Option<&str>) -> StructField {
-    let name = elem.name();
+    let name = elem.name().unwrap_or("UNSUPPORTED_ELEMENT_NAME");
     StructField{
         name: get_field_name(&name),
-        typename: element_type(elem, match_type(elem.typename(), target_namespace)),
+        typename: element_type(elem, match_type(elem.typename().unwrap_or("UNSUPPORTED_TYPE_OF_ELEMENT"), target_namespace)),
         macros: yaserde_for_element(name),
         comment: get_field_comment(elem.documentation())
     }

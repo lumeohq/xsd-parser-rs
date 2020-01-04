@@ -7,11 +7,12 @@ use crate::generator::type_tree::{Types, TupleStruct, Struct};
 use crate::generator::struct_field::{StructField, any_attribute_field, field_from_attribute, get_fields_from_sequence, get_fields_from_extension};
 use crate::generator::enumeration::Enum;
 use crate::generator::complex_type::{get_types_from_sequence, get_enum_from_choice};
+use crate::xsd2::node_traits::Extension;
 
 pub struct Generator<'a, 'input> {
     target_namespace: Option<&'a str>,
     pub schema: Schema<'a, 'input>,
-    types: Vec<Types>
+    //types: Vec<Types>
 }
 
 impl <'a, 'input> Generator<'a, 'input> {
@@ -21,7 +22,7 @@ impl <'a, 'input> Generator<'a, 'input> {
         Generator {
             target_namespace: tn,
             schema: sc,
-            types: vec!()
+            //types: vec!()
         }
     }
 
