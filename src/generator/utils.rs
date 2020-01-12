@@ -64,7 +64,7 @@ pub fn yaserde_derive() -> String {
         #[yaserde(\n\
           prefix = \"unknown\",\n\
           namespace = \"unknown: unknown\"\n\
-        )\n".to_string()
+        )]\n".to_string()
 }
 
 pub fn attribute_type(attr: &Attribute, typename: Cow<str>) -> String {
