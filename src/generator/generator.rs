@@ -160,4 +160,3 @@ impl <'a, 'input> Generator<'a, 'input> {
     }
 
 }
-
