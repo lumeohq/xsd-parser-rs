@@ -101,4 +101,3 @@ pub trait Typename: Node {
         self.node().attribute("type")
     }
 }
-

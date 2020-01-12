@@ -5,7 +5,6 @@ use self::inflector::cases::snakecase::to_snake_case;
 use std::borrow::Cow;
 use crate::xsd2::node_types::{UseType, Attribute};
 
-
 fn split_comment_line(s: &str) -> String {
     s.as_bytes()
     .chunks(60)

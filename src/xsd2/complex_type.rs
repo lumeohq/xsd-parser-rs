@@ -50,6 +50,3 @@ impl<'a, 'input> fmt::Display for ComplexType<'a, 'input> {
         write!(f, "{:?}  //{:?}", self.name(), self.documentation())
     }
 }
-
-
-
