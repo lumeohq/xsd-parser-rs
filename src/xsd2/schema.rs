@@ -1,4 +1,3 @@
-
 pub struct Schema<'a, 'input> {
     pub node: roxmltree::Node<'a, 'input>,
 }

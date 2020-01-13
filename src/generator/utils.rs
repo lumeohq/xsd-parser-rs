@@ -5,7 +5,6 @@ use self::inflector::cases::snakecase::to_snake_case;
 use std::borrow::Cow;
 use crate::xsd2::node_types::{UseType, Attribute};
 
-
 fn split_comment_line(s: &str) -> String {
     s.as_bytes()
     .chunks(60)
@@ -65,7 +64,7 @@ pub fn yaserde_derive() -> String {
         #[yaserde(\n\
           prefix = \"unknown\",\n\
           namespace = \"unknown: unknown\"\n\
-        )\n".to_string()
+        )]\n".to_string()
 }
 
 pub fn attribute_type(attr: &Attribute, typename: Cow<str>) -> String {
