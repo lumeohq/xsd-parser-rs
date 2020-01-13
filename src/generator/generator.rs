@@ -141,7 +141,7 @@ impl <'a, 'input> Generator<'a, 'input> {
                     typename,
                     name,
                     comment,
-                    cases: enum_cases2(&facets, self.target_namespace)
+                    cases: get_enum_cases(&facets, self.target_namespace)
                 });
             }
         }
@@ -160,4 +160,3 @@ impl <'a, 'input> Generator<'a, 'input> {
     }
 
 }
-
