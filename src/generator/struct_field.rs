@@ -8,7 +8,7 @@ use crate::xsd2::node_traits::{
     Elements,
     AnyElement,
     Name,
-    Typename,
+    TypeName,
     Documentation,
     Sequence as SequenceTrait,
     Attributes as AttributesTrait
@@ -16,7 +16,7 @@ use crate::xsd2::node_traits::{
 
 pub struct StructField {
     pub name: String,
-    pub typename: String,
+    pub type_name: String,
     pub comment: String,
     pub macros: String,
 }
@@ -25,18 +25,18 @@ impl fmt::Display for StructField {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         if self.comment.is_empty() {
             write!(f,
-                   "{macros}  pub {name}: {typename},",
+                   "{macros}  pub {name}: {type_name},",
                    macros = self.macros,
                    name = self.name,
-                   typename = self.typename,
+                   type_name = self.type_name,
             )
         }
         else {
             write!(f,
-                   "{comment}{macros}  pub {name}: {typename},",
+                   "{comment}{macros}  pub {name}: {type_name},",
                    macros = self.macros,
                    name = self.name,
-                   typename = self.typename,
+                   type_name = self.type_name,
                    comment = self.comment
             )
         }
@@ -46,7 +46,7 @@ impl fmt::Display for StructField {
 pub fn any_attribute_field() -> StructField {
     StructField{
         name: "any_attribute".to_string(),
-        typename: "AnyAttribute".to_string(),
+        type_name: "AnyAttribute".to_string(),
         comment: String::new(),
         macros: "//TODO: yaserde macros for any attribute\n".to_string()
     }
@@ -55,7 +55,7 @@ pub fn any_attribute_field() -> StructField {
 fn any_element_field() -> StructField {
     StructField{
         name: "any_element".to_string(),
-        typename: "AnyElement".to_string(),
+        type_name: "AnyElement".to_string(),
         macros: "//TODO: yaserde macros for any element\n".to_string(),
         comment: String::new()
     }
@@ -65,7 +65,7 @@ pub fn field_from_attribute(attr: &Attribute, target_namespace: Option<&str>) ->
     let name = attr.name().unwrap_or("UNSUPPORTED_ATTRIBUTE_NAME");
     StructField{
         name: get_field_name(&name),
-        typename: attribute_type(attr, match_type(attr.typename().unwrap_or("UNSUPPORTED_TYPE_OF_ATTRIBUTE"), target_namespace)),
+        type_name: attribute_type(attr, match_type(attr.type_name().unwrap_or("UNSUPPORTED_TYPE_OF_ATTRIBUTE"), target_namespace)),
         macros: yaserde_for_attribute(name),
         comment: get_field_comment(attr.documentation())
     }
@@ -75,7 +75,7 @@ pub  fn field_from_element(elem: &Element, target_namespace: Option<&str>) -> St
     let name = elem.name().unwrap_or("UNSUPPORTED_ELEMENT_NAME");
     StructField{
         name: get_field_name(&name),
-        typename: element_type(elem, match_type(elem.typename().unwrap_or("UNSUPPORTED_TYPE_OF_ELEMENT"), target_namespace)),
+        type_name: element_type(elem, match_type(elem.type_name().unwrap_or("UNSUPPORTED_TYPE_OF_ELEMENT"), target_namespace)),
         macros: yaserde_for_element(name),
         comment: get_field_comment(elem.documentation())
     }
@@ -111,7 +111,7 @@ pub fn get_fields_from_extension(ext: &Extension, target_namespace: Option<&str>
     let ty = ext.base();
     fields.push(StructField {
         name: "base".to_string(),
-        typename: match_type(ty, target_namespace).to_string(),
+        type_name: match_type(ty, target_namespace).to_string(),
         macros: yaserde_for_element("base"), //TODO: yaserde for base element
         comment: String::new(),
     });

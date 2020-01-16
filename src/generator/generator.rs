@@ -62,7 +62,7 @@ impl <'a, 'input> Generator<'a, 'input> {
                         Types::Enum(en) => {
                             fields.push(StructField{
                                 name: get_field_name(en.name.as_str()),
-                                typename: match_type(en.name.as_str(), self.target_namespace).to_string(),
+                                type_name: match_type(en.name.as_str(), self.target_namespace).to_string(),
                                 comment: String::new(),
                                 macros: "//TODO: add yaserde macros\n".to_string()
                             }
@@ -82,7 +82,7 @@ impl <'a, 'input> Generator<'a, 'input> {
                 let en = get_enum_from_choice(&ch, &name, self.target_namespace);
                 fields.push(StructField{
                                 name: get_field_name(en.name.as_str()),
-                                typename: match_type(en.name.as_str(), self.target_namespace).to_string(),
+                                type_name: match_type(en.name.as_str(), self.target_namespace).to_string(),
                                 comment: String::new(),
                                 macros: "//TODO: add yaserde macros\n".to_string()
                             }
@@ -129,16 +129,16 @@ impl <'a, 'input> Generator<'a, 'input> {
             self.target_namespace
         ).to_string();
         let l = element.list();
-        let mut typename = String::new();
+        let mut type_name = String::new();
         let restriction = element.restriction();
         if restriction.is_some() {
             let r = restriction.unwrap();
-            typename = match_type(&r.base(), self.target_namespace).to_string();
+            type_name = match_type(&r.base(), self.target_namespace).to_string();
             let facets = get_enum_facets(&r);
 
             if !facets.is_empty() {
                 return Types::Enum(Enum{
-                    typename,
+                    type_name,
                     name,
                     comment,
                     cases: get_enum_cases(&facets, self.target_namespace)
@@ -146,7 +146,7 @@ impl <'a, 'input> Generator<'a, 'input> {
             }
         }
         else if l.is_some() {
-            typename = format!("Vec<{}>", match_type(
+            type_name = format!("Vec<{}>", match_type(
                 &l.unwrap().item_type().unwrap_or("NESTED SIMPLE TYPE NOT SUPPORTED"),
                  self.target_namespace
             ).as_ref());
@@ -154,9 +154,8 @@ impl <'a, 'input> Generator<'a, 'input> {
         return Types::TupleStruct(TupleStruct{
             comment,
             name,
-            typename,
+            type_name,
             macros: String::new()
         });
     }
-
 }

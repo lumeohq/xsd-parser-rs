@@ -96,8 +96,8 @@ pub trait Name: Node {
     }
 }
 
-pub trait Typename: Node {
-    fn typename(&self) -> Option<&str> {
+pub trait TypeName: Node {
+    fn type_name(&self) -> Option<&str> {
         self.node().attribute("type")
     }
 }

@@ -44,8 +44,8 @@ pub fn get_field_comment(doc: Option<&str>) -> String {
         fold(String::new(), |x , y| (x+&y))
 }
 
-pub fn match_type(typename: &str, target_namespace: Option<&str>) -> Cow<'static, str>{
-    match typename {
+pub fn match_type(type_name: &str, target_namespace: Option<&str>) -> Cow<'static, str>{
+    match type_name {
         "xs:string"      => Cow::Borrowed("String"),
         "xs:NCName"      => Cow::Borrowed("String"),
         "xs:unsignedInt" => Cow::Borrowed("usize"),
@@ -78,10 +78,10 @@ pub fn yaserde_derive() -> String {
         )]\n".to_string()
 }
 
-pub fn attribute_type(attr: &Attribute, typename: Cow<str>) -> String {
+pub fn attribute_type(attr: &Attribute, type_name: Cow<str>) -> String {
     match attr.use_type() {
-        UseType::Required => typename.to_string(),
-        UseType::Optional => format!("Option<{}>", typename),
-        UseType::Prohibited => format!("Empty<{}>", typename),
+        UseType::Required => type_name.to_string(),
+        UseType::Optional => format!("Option<{}>", type_name),
+        UseType::Prohibited => format!("Empty<{}>", type_name),
     }
 }
