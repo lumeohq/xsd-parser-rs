@@ -5,14 +5,14 @@ use self::inflector::cases::snakecase::to_snake_case;
 use std::borrow::Cow;
 use crate::xsd2::node_types::{UseType, Attribute};
 
-fn split_comment_line(s: &str, max_len: usize, indent: usize) -> String {
+pub fn split_comment_line(s: &str, max_len: usize, indent: usize) -> String {
     let indent_str = " ".repeat(indent);
 
     let mut splitted = format!("{}//", indent_str);
     let mut current_line_length = indent + 2;
     for word in s.split_whitespace() {
         let len = word.len();
-        if current_line_length + len + 1 <= max_len {
+        if current_line_length + len + 1 <= max_len || current_line_length == indent + 2 {
             splitted = format!("{} {}", splitted, word);
             current_line_length += 1 + len;
         }
