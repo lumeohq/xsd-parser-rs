@@ -5,12 +5,21 @@ use self::inflector::cases::snakecase::to_snake_case;
 use std::borrow::Cow;
 use crate::xsd2::node_types::{UseType, Attribute};
 
-fn split_comment_line(s: &str) -> String {
-    s.as_bytes()
-    .chunks(60)
-    .map(|ch| format!("// {}\n", str::from_utf8(ch).unwrap()))
-    .collect::<Vec<String>>()
-    .join("")
+fn split_comment_line(s: &str, max_len: usize) -> String {
+    let mut splitted = "//".to_string();
+    let mut current_line_length = 0;
+    for word in s.split_whitespace() {
+        let len = word.len();
+        if current_line_length + len + 1 <= max_len {
+            splitted = format!("{} {}", splitted, word);
+            current_line_length += 1 + len;
+        }
+        else {
+            splitted = format!("{}\n// {}", splitted, word);
+            current_line_length = 3 + len;
+        }
+    }
+    format!("{}\n", splitted)
 }
 
 pub fn get_structure_comment(doc: Option<&str>) -> String {
@@ -19,7 +28,7 @@ pub fn get_structure_comment(doc: Option<&str>) -> String {
         lines().
         map(|s| s.trim()).
         filter(|s| s.len() > 2).
-        map(|s| split_comment_line(s)).
+        map(|s| split_comment_line(s, 80)).
         fold(String::new(), |x , y| (x+&y))
 }
 
