@@ -12,11 +12,11 @@ pub struct Struct {
 impl fmt::Display for Struct {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         write!(f,
-               "{comment}{macros}pub struct {name} {{\n {fields}\n}}\n",
+               "{comment}{macros}pub struct {name} {{\n{fields}\n}}\n",
                comment=self.comment,
                macros=self.macros,
                name=self.name,
-               fields=self.fields.iter().map(|f| f.to_string()).collect::<Vec<String>>().join("\n")
+               fields=self.fields.iter().map(|f| f.to_string()).collect::<Vec<String>>().join("\n\n")
         )
     }
 }

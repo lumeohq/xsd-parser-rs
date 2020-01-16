@@ -38,7 +38,7 @@ pub fn get_field_comment(doc: Option<&str>) -> String {
         lines().
         map(|s| s.trim()).
         filter(|s| s.len() > 1).
-        map(|s| format!("// {}  ", s)).
+        map(|s| split_comment_line(s, 80)).
         fold(String::new(), |x , y| (x+&y))
 }
 

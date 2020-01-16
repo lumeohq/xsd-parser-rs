@@ -9,18 +9,21 @@ pub struct EnumCase {
 
 impl EnumCase {
     pub fn case_line(&self) -> String {
-        match &self.typename {
-            Some(ty) => format!("  {name}({typename}),  {comment}",
+        let line = match &self.typename {
+            Some(ty) => format!("  {name}({typename}),",
                 name=self.name,
                 typename=ty,
-                comment=self.comment,
             ),
-            None => format!("  {name},  {comment}",
+            None => format!("  {name},",
                 name=self.name,
-                comment=self.comment
             )
+        };
+        if self.comment.is_empty() {
+            line
         }
-
+        else {
+            format!("  {comment}{line}", comment = self.comment, line = line)
+        }
     }
 }
 
