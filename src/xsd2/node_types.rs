@@ -9,7 +9,7 @@ use crate::xsd2::node_traits::{
     Name,
     Node,
     Sequence as SequenceTrait,
-    Typename,
+    TypeName,
 };
 use crate::xsd2::utils::find_child;
 
@@ -44,7 +44,7 @@ create_node_type!(Element,
     Documentation,
     MinMaxOccurs,
     Name,
-    Typename,
+    TypeName,
 );
 
 create_node_type!(Sequence,
@@ -70,7 +70,7 @@ create_node_type!(SimpleContent, ExtensionTrait);
 create_node_type!(Attribute,
     Name,
     Documentation,
-    Typename,
+    TypeName,
 );
 
 pub enum UseType {

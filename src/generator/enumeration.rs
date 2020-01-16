@@ -4,15 +4,15 @@ pub struct EnumCase {
     pub name: String,
     pub comment: String,
     pub value: String,
-    pub typename: Option<String>
+    pub type_name: Option<String>
 }
 
 impl EnumCase {
     pub fn case_line(&self) -> String {
-        let line = match &self.typename {
-            Some(ty) => format!("  {name}({typename}),",
+        let line = match &self.type_name {
+            Some(type_name ) => format!("  {name}({type_name}),",
                 name=self.name,
-                typename=ty,
+                type_name=type_name,
             ),
             None => format!("  {name},",
                 name=self.name,
@@ -22,7 +22,7 @@ impl EnumCase {
             line
         }
         else {
-            format!("{comment}{line}", comment = self.comment, line = line)
+            format!("{comment}{line}", comment=self.comment, line=line)
         }
     }
 }
@@ -31,12 +31,12 @@ pub struct Enum {
     pub name: String,
     pub cases: Vec<EnumCase>,
     pub comment: String,
-    pub typename: String
+    pub type_name: String
 }
 
 impl Enum {
     pub fn to_enum(&self) -> String {
-        format!("{comment}\npub enum {name} {{\n{cases}  \n__Unknown__({typename})\n}}",
+        format!("{comment}\npub enum {name} {{\n{cases}  \n__Unknown__({type_name})\n}}",
             comment=self.comment,
             name=self.name,
             cases=self.cases.
@@ -44,7 +44,7 @@ impl Enum {
                 map(|case| case.case_line()).
                 collect::<Vec<String>>().
                 join("\n"),
-            typename=self.typename
+            type_name=self.type_name
         )
     }
 }
