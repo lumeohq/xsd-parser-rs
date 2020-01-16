@@ -22,7 +22,7 @@ impl EnumCase {
             line
         }
         else {
-            format!("  {comment}{line}", comment = self.comment, line = line)
+            format!("{comment}{line}", comment = self.comment, line = line)
         }
     }
 }

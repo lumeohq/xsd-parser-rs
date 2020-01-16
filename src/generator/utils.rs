@@ -5,9 +5,11 @@ use self::inflector::cases::snakecase::to_snake_case;
 use std::borrow::Cow;
 use crate::xsd2::node_types::{UseType, Attribute};
 
-fn split_comment_line(s: &str, max_len: usize) -> String {
-    let mut splitted = "//".to_string();
-    let mut current_line_length = 0;
+fn split_comment_line(s: &str, max_len: usize, indent: usize) -> String {
+    let indent_str = " ".repeat(indent);
+
+    let mut splitted = format!("{}//", indent_str);
+    let mut current_line_length = indent + 2;
     for word in s.split_whitespace() {
         let len = word.len();
         if current_line_length + len + 1 <= max_len {
@@ -15,8 +17,8 @@ fn split_comment_line(s: &str, max_len: usize) -> String {
             current_line_length += 1 + len;
         }
         else {
-            splitted = format!("{}\n// {}", splitted, word);
-            current_line_length = 3 + len;
+            splitted = format!("{}\n{}// {}", splitted, indent_str, word);
+            current_line_length = indent + 3 + len;
         }
     }
     format!("{}\n", splitted)
@@ -28,7 +30,7 @@ pub fn get_structure_comment(doc: Option<&str>) -> String {
         lines().
         map(|s| s.trim()).
         filter(|s| s.len() > 2).
-        map(|s| split_comment_line(s, 80)).
+        map(|s| split_comment_line(s, 80, 0)).
         fold(String::new(), |x , y| (x+&y))
 }
 
@@ -38,7 +40,7 @@ pub fn get_field_comment(doc: Option<&str>) -> String {
         lines().
         map(|s| s.trim()).
         filter(|s| s.len() > 1).
-        map(|s| split_comment_line(s, 80)).
+        map(|s| split_comment_line(s, 80, 2)).
         fold(String::new(), |x , y| (x+&y))
 }
 
