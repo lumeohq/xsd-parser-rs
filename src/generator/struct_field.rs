@@ -23,13 +23,23 @@ pub struct StructField {
 
 impl fmt::Display for StructField {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
-        write!(f,
-               "{macros}  pub {name}: {typename},  {comment}",
-               macros=self.macros,
-               name=self.name,
-               typename=self.typename,
-               comment=self.comment
-        )
+        if self.comment.is_empty() {
+            write!(f,
+                   "{macros}  pub {name}: {typename},",
+                   macros = self.macros,
+                   name = self.name,
+                   typename = self.typename,
+            )
+        }
+        else {
+            write!(f,
+                   "{comment}{macros}  pub {name}: {typename},",
+                   macros = self.macros,
+                   name = self.name,
+                   typename = self.typename,
+                   comment = self.comment
+            )
+        }
     }
 }
 
