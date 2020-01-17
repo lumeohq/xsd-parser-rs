@@ -71,14 +71,6 @@ pub fn get_field_name(name: &str) -> String {
     to_snake_case(name)
 }
 
-pub fn yaserde_derive() -> String {
-    "#[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]\n\
-        #[yaserde(\n\
-          prefix = \"unknown\",\n\
-          namespace = \"unknown: unknown\"\n\
-        )]\n".to_string()
-}
-
 pub fn attribute_type(attr: &Attribute, type_name: Cow<str>) -> String {
     match attr.use_type() {
         UseType::Required => type_name.to_string(),

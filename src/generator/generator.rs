@@ -40,6 +40,7 @@ impl <'a, 'input> Generator<'a, 'input> {
     fn complex_type(&self, element: &ComplexType) -> Vec<Types> {
         let mut types: Vec<Types> = vec!();
         let comment = get_structure_comment(element.documentation());
+        let macros = self.yaserde_struct_macro();
         let name = match_type(
             element.name().expect("GLOBAL COMPLEX TYPE NAME REQUIRED"),
             self.target_namespace.as_ref()
@@ -113,11 +114,20 @@ impl <'a, 'input> Generator<'a, 'input> {
         types.push(Types::Struct(Struct{
             comment,
             name,
-            macros: String::new(),
+            macros,
             fields,
         }));
 
         types
+    }
+
+    fn yaserde_struct_macro(&self) -> String {
+        match &self.target_namespace {
+            Some(tn) => format!("#[yaserde(prefix = \"{prefix}\", namespace = \"{prefix}: {uri}\")]\n",
+                                prefix=tn.prefix,
+                                uri=tn.uri).to_string(),
+            None => "#[yaserde()]".to_string()
+        }
     }
 
     fn simple_type(&self, element: &SimpleType) -> Types {
