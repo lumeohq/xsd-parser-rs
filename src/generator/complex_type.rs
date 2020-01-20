@@ -37,8 +37,11 @@ pub fn yaserde_for_attribute(name: &str) -> String {
     format!("  #[yaserde(attribute, rename = \"{}\")]\n", name)
 }
 
-pub fn yaserde_for_element(name: &str) -> String {
-    format!("  #[yaserde(rename = \"{}\")]\n", name)
+pub fn yaserde_for_element(name: &str, target_namespace: Option<&TargetNamespace>) -> String {
+    match target_namespace {
+        Some(tn) => format!("  #[yaserde(prefix = \"{}\", rename = \"{}\")]\n", tn.prefix, name),
+        None => format!("  #[yaserde(rename = \"{}\")]\n", name)
+    }
 }
 
 pub fn get_types_from_sequence(s: &Sequence, type_name: &String, target_namespace: Option<&TargetNamespace>) -> Vec<Types> {

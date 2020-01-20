@@ -77,7 +77,7 @@ pub  fn field_from_element(elem: &Element, target_namespace: Option<&TargetNames
     StructField{
         name: get_field_name(&name),
         type_name: element_type(elem, match_type(elem.type_name().unwrap_or("UNSUPPORTED_TYPE_OF_ELEMENT"), target_namespace)),
-        macros: yaserde_for_element(name),
+        macros: yaserde_for_element(name, target_namespace),
         comment: get_field_comment(elem.documentation())
     }
 }
@@ -113,7 +113,7 @@ pub fn get_fields_from_extension(ext: &Extension, target_namespace: Option<&Targ
     fields.push(StructField {
         name: "base".to_string(),
         type_name: match_type(ty, target_namespace).to_string(),
-        macros: yaserde_for_element("base"), //TODO: yaserde for base element
+        macros: yaserde_for_element("base", target_namespace), //TODO: yaserde for base element
         comment: String::new(),
     });
 
