@@ -12,11 +12,11 @@ pub struct Struct {
 impl fmt::Display for Struct {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         write!(f,
-               "{comment}{macros}pub struct {name} {{\n {fields}\n}}\n",
+               "{comment}{macros}pub struct {name} {{\n{fields}\n}}\n",
                comment=self.comment,
                macros=self.macros,
                name=self.name,
-               fields=self.fields.iter().map(|f| f.to_string()).collect::<Vec<String>>().join("\n")
+               fields=self.fields.iter().map(|f| f.to_string()).collect::<Vec<String>>().join("\n\n")
         )
     }
 }
@@ -24,18 +24,18 @@ impl fmt::Display for Struct {
 pub struct TupleStruct {
     pub name: String,
     pub comment: String,
-    pub typename: String,
+    pub type_name: String,
     pub macros: String
 }
 
 impl fmt::Display for TupleStruct {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         write!(f,
-               "{comment}{macros}pub struct {name} ({typename});\n",
+               "{comment}{macros}pub struct {name} ({type_name});\n",
                comment=self.comment,
                macros=self.macros,
                name=self.name,
-               typename=self.typename
+               type_name=self.type_name
         )
     }
 }

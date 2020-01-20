@@ -24,6 +24,6 @@ pub fn get_enum_case(facet : &Facet, target_namespace: Option<&str>) -> EnumCase
         comment: get_field_comment(facet.documentation()),
         name: match_type(facet.value(), target_namespace).to_string(),
         value: facet.value().to_string(),
-        typename: None
+        type_name: None
     }
 }
