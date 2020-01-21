@@ -40,7 +40,7 @@ impl <'a, 'input> Generator<'a, 'input> {
     fn complex_type(&self, element: &ComplexType) -> Vec<Types> {
         let mut types: Vec<Types> = vec!();
         let comment = get_structure_comment(element.documentation());
-        let macros = self.yaserde_struct_macro();
+        let macros = self.struct_macro();
         let name = match_type(
             element.name().expect("GLOBAL COMPLEX TYPE NAME REQUIRED"),
             self.target_namespace.as_ref()
@@ -121,12 +121,14 @@ impl <'a, 'input> Generator<'a, 'input> {
         types
     }
 
-    fn yaserde_struct_macro(&self) -> String {
+    fn struct_macro(&self) -> String {
+        let derives = "#[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]\n";
         match &self.target_namespace {
-            Some(tn) => format!("#[yaserde(prefix = \"{prefix}\", namespace = \"{prefix}: {uri}\")]\n",
+            Some(tn) => format!("{derives}#[yaserde(prefix = \"{prefix}\", namespace = \"{prefix}: {uri}\")]\n",
+                                derives=derives,
                                 prefix=tn.prefix,
                                 uri=tn.uri).to_string(),
-            None => "#[yaserde()]".to_string()
+            None => format!("{derives}#[yaserde()]\n", derives=derives).to_string()
         }
     }
 
