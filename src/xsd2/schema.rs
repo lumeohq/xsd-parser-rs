@@ -2,24 +2,14 @@ pub struct Schema<'a, 'input> {
     pub node: roxmltree::Node<'a, 'input>,
 }
 
-pub struct TargetNamespace<'a> {
-    pub uri: &'a str,
-    pub prefix: &'a str,
-}
-
 impl<'a, 'input: 'a> Schema<'a, 'input> {
-    pub fn target_namespace(&self) -> Option<TargetNamespace<'a>> {
+    pub fn target_namespace(&self) -> Option<&'a roxmltree::Namespace<'input>> {
         match self.node.attribute("targetNamespace") {
             Some(tn) => {
-                let prefix=self.node.
+                self.node.
                     namespaces().
                     iter().
-                    find( | a| a.uri() == tn).
-                    map( | n| n.name().unwrap());
-                match prefix {
-                    Some(p) => Some(TargetNamespace{uri: tn, prefix: p}),
-                    None => None
-                }
+                    find( | a| a.uri() == tn)
             },
             None => None
         }
