@@ -102,20 +102,6 @@ pub trait TypeName: Node {
     }
 
     fn type_prefix(&self) -> Option<&str> {
-        match self.type_name() {
-            Some(tn) => {
-                let prefix = tn
-                    .split(':')
-                    .next()
-                    .unwrap_or("");
-                if prefix.len() > 0 {
-                    Some(prefix)
-                }
-                else {
-                    None
-                }
-            },
-            None => None
-        }
+        self.type_name().and_then(|tn| tn.split(':').next())
     }
 }
