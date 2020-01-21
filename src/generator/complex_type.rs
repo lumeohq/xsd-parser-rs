@@ -13,7 +13,6 @@ use crate::xsd2::node_traits::{
     TypeName
 };
 use crate::xsd2::node_types::{Choice, Element, Sequence};
-use crate::xsd2::schema::TargetNamespace;
 
 pub fn element_type<T: MinMaxOccurs>(elem: &T, type_name: Cow<str>) -> String {
     let min = elem.min_occurs();
@@ -37,14 +36,15 @@ pub fn yaserde_for_attribute(name: &str) -> String {
     format!("  #[yaserde(attribute, rename = \"{}\")]\n", name)
 }
 
-pub fn yaserde_for_element(name: &str, target_namespace: Option<&TargetNamespace>) -> String {
-    match target_namespace {
-        Some(tn) => format!("  #[yaserde(prefix = \"{}\", rename = \"{}\")]\n", tn.prefix, name),
+pub fn yaserde_for_element(name: &str, target_namespace: Option<&roxmltree::Namespace>) -> String {
+    let prefix = target_namespace.and_then(|ns| ns.name());
+    match prefix {
+        Some(p) => format!("  #[yaserde(prefix = \"{}\", rename = \"{}\")]\n", p, name),
         None => format!("  #[yaserde(rename = \"{}\")]\n", name)
     }
 }
 
-pub fn get_types_from_sequence(s: &Sequence, type_name: &String, target_namespace: Option<&TargetNamespace>) -> Vec<Types> {
+pub fn get_types_from_sequence(s: &Sequence, type_name: &String, target_namespace: Option<&roxmltree::Namespace>) -> Vec<Types> {
     let ch = s.choice();
     match &ch {
         Some(c) => vec!(Types::Enum(get_enum_from_choice(c, type_name, target_namespace))),
@@ -52,7 +52,7 @@ pub fn get_types_from_sequence(s: &Sequence, type_name: &String, target_namespac
     }
 }
 
-pub fn get_enum_from_choice(choice: &Choice, type_name: &String, target_namespace: Option<&TargetNamespace>) -> Enum {
+pub fn get_enum_from_choice(choice: &Choice, type_name: &String, target_namespace: Option<&roxmltree::Namespace>) -> Enum {
     let ty = match_type(type_name.as_str(), target_namespace);
     Enum{
         name: format!("{}Choice", ty),
@@ -66,7 +66,7 @@ pub fn get_enum_from_choice(choice: &Choice, type_name: &String, target_namespac
     }
 }
 
-fn enum_case_from_element(elem: &Element, target_namespace: Option<&TargetNamespace>) -> EnumCase {
+fn enum_case_from_element(elem: &Element, target_namespace: Option<&roxmltree::Namespace>) -> EnumCase {
     EnumCase{
         name: elem.name().expect("NAME FOR ENUM CASE REQUIRED").to_string(),
         comment: get_field_comment(elem.documentation()),

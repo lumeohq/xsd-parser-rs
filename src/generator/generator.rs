@@ -1,7 +1,7 @@
 use crate::generator::simple_type::*;
 use crate::generator::utils::*;
 use crate::xsd2::complex_type::{ComplexType};
-use crate::xsd2::schema::{Schema, TargetNamespace};
+use crate::xsd2::schema::Schema;
 use crate::xsd2::simple_type::SimpleType;
 use crate::generator::type_tree::{Types, TupleStruct, Struct};
 use crate::generator::struct_field::{StructField, any_attribute_field, field_from_attribute, get_fields_from_sequence, get_fields_from_extension};
@@ -10,7 +10,7 @@ use crate::generator::complex_type::{get_types_from_sequence, get_enum_from_choi
 use crate::xsd2::node_traits::Extension;
 
 pub struct Generator<'a, 'input> {
-    target_namespace: Option<TargetNamespace<'a>>,
+    target_namespace: Option<&'a roxmltree::Namespace<'input>>,
     pub schema: Schema<'a, 'input>,
     //types: Vec<Types>
 }
@@ -43,25 +43,25 @@ impl <'a, 'input> Generator<'a, 'input> {
         let macros = self.struct_macro();
         let name = match_type(
             element.name().expect("GLOBAL COMPLEX TYPE NAME REQUIRED"),
-            self.target_namespace.as_ref()
+            self.target_namespace
         ).to_string();
 
         let mut fields = element.
             attributes().
             iter().
-            map(|a| field_from_attribute(a, self.target_namespace.as_ref())).
+            map(|a| field_from_attribute(a, self.target_namespace)).
             collect::<Vec<StructField>>();
 
         match element.sequence()  {
             Some(s) => {
-                fields.append(&mut get_fields_from_sequence(&s, self.target_namespace.as_ref()));
-                let mut seq_types = get_types_from_sequence(&s, &name, self.target_namespace.as_ref());
+                fields.append(&mut get_fields_from_sequence(&s, self.target_namespace));
+                let mut seq_types = get_types_from_sequence(&s, &name, self.target_namespace);
                 for ty in &seq_types {
                     match ty {
                         Types::Enum(en) => {
                             fields.push(StructField{
                                 name: get_field_name(en.name.as_str()),
-                                type_name: match_type(en.name.as_str(), self.target_namespace.as_ref()).to_string(),
+                                type_name: match_type(en.name.as_str(), self.target_namespace).to_string(),
                                 comment: String::new(),
                                 macros: "//TODO: add yaserde macros\n".to_string()
                             }
@@ -78,10 +78,10 @@ impl <'a, 'input> Generator<'a, 'input> {
 
         match element.choice() {
             Some(ch) => {
-                let en = get_enum_from_choice(&ch, &name, self.target_namespace.as_ref());
+                let en = get_enum_from_choice(&ch, &name, self.target_namespace);
                 fields.push(StructField{
                                 name: get_field_name(en.name.as_str()),
-                                type_name: match_type(en.name.as_str(), self.target_namespace.as_ref()).to_string(),
+                                type_name: match_type(en.name.as_str(), self.target_namespace).to_string(),
                                 comment: String::new(),
                                 macros: "//TODO: add yaserde macros\n".to_string()
                             }
@@ -93,7 +93,7 @@ impl <'a, 'input> Generator<'a, 'input> {
 
         match element.complex_content() {
             Some(cc) => match cc.extension() {
-                Some(ext) => fields.append(&mut  get_fields_from_extension(&ext, self.target_namespace.as_ref())),
+                Some(ext) => fields.append(&mut  get_fields_from_extension(&ext, self.target_namespace)),
                 None => ()
             },
             None => ()
@@ -101,7 +101,7 @@ impl <'a, 'input> Generator<'a, 'input> {
 
         match element.simple_content() {
             Some(cc) => match cc.extension() {
-                Some(ext) => fields.append(&mut  get_fields_from_extension(&ext, self.target_namespace.as_ref())),
+                Some(ext) => fields.append(&mut  get_fields_from_extension(&ext, self.target_namespace)),
                 None => ()
             },
             None => ()
@@ -124,10 +124,17 @@ impl <'a, 'input> Generator<'a, 'input> {
     fn struct_macro(&self) -> String {
         let derives = "#[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]\n";
         match &self.target_namespace {
-            Some(tn) => format!("{derives}#[yaserde(prefix = \"{prefix}\", namespace = \"{prefix}: {uri}\")]\n",
+            Some(tn) => {
+                match tn.name() {
+                    Some(name) => format!("{derives}#[yaserde(prefix = \"{prefix}\", namespace = \"{prefix}: {uri}\")]\n",
                                 derives=derives,
-                                prefix=tn.prefix,
-                                uri=tn.uri).to_string(),
+                                prefix=name,
+                                uri=tn.uri()).to_string(),
+                    None => format!("{derives}#[yaserde(namespace = \"{uri}\")]\n",
+                                derives=derives,
+                                uri=tn.uri()).to_string()
+                }
+            },
             None => format!("{derives}#[yaserde()]\n", derives=derives).to_string()
         }
     }
@@ -136,14 +143,14 @@ impl <'a, 'input> Generator<'a, 'input> {
         let comment = get_structure_comment(element.documentation());
         let name = match_type(
             element.name().expect("SIMPLE TYPE WITHOUT NAME NOT SUPPORTED"),
-            self.target_namespace.as_ref()
+            self.target_namespace
         ).to_string();
         let l = element.list();
         let mut type_name = String::new();
         let restriction = element.restriction();
         if restriction.is_some() {
             let r = restriction.unwrap();
-            type_name = match_type(&r.base(), self.target_namespace.as_ref()).to_string();
+            type_name = match_type(&r.base(), self.target_namespace).to_string();
             let facets = get_enum_facets(&r);
 
             if !facets.is_empty() {
@@ -151,14 +158,14 @@ impl <'a, 'input> Generator<'a, 'input> {
                     type_name,
                     name,
                     comment,
-                    cases: get_enum_cases(&facets, self.target_namespace.as_ref())
+                    cases: get_enum_cases(&facets, self.target_namespace)
                 });
             }
         }
         else if l.is_some() {
             type_name = format!("Vec<{}>", match_type(
                 &l.unwrap().item_type().unwrap_or("NESTED SIMPLE TYPE NOT SUPPORTED"),
-                 self.target_namespace.as_ref()
+                 self.target_namespace
             ).as_ref());
         }
         return Types::TupleStruct(TupleStruct{

@@ -13,7 +13,6 @@ use crate::xsd2::node_traits::{
     Sequence as SequenceTrait,
     Attributes as AttributesTrait
 };
-use crate::xsd2::schema::TargetNamespace;
 
 pub struct StructField {
     pub name: String,
@@ -62,7 +61,7 @@ fn any_element_field() -> StructField {
     }
 }
 
-pub fn field_from_attribute(attr: &Attribute, target_namespace: Option<&TargetNamespace>) -> StructField {
+pub fn field_from_attribute(attr: &Attribute, target_namespace: Option<&roxmltree::Namespace>) -> StructField {
     let name = attr.name().unwrap_or("UNSUPPORTED_ATTRIBUTE_NAME");
     StructField{
         name: get_field_name(&name),
@@ -72,7 +71,7 @@ pub fn field_from_attribute(attr: &Attribute, target_namespace: Option<&TargetNa
     }
 }
 
-pub  fn field_from_element(elem: &Element, target_namespace: Option<&TargetNamespace>) -> StructField {
+pub  fn field_from_element(elem: &Element, target_namespace: Option<&roxmltree::Namespace>) -> StructField {
     let name = elem.name().unwrap_or("UNSUPPORTED_ELEMENT_NAME");
     StructField{
         name: get_field_name(&name),
@@ -82,7 +81,7 @@ pub  fn field_from_element(elem: &Element, target_namespace: Option<&TargetNames
     }
 }
 
-pub fn get_fields_from_sequence(s: &Sequence, target_namespace: Option<&TargetNamespace>) -> Vec<StructField> {
+pub fn get_fields_from_sequence(s: &Sequence, target_namespace: Option<&roxmltree::Namespace>) -> Vec<StructField> {
     let mut fields = s.elements().
         iter().
         map(|el| field_from_element(el, target_namespace)).
@@ -96,7 +95,7 @@ pub fn get_fields_from_sequence(s: &Sequence, target_namespace: Option<&TargetNa
     fields
 }
 
-pub fn get_fields_from_extension(ext: &Extension, target_namespace: Option<&TargetNamespace>) -> Vec<StructField> {
+pub fn get_fields_from_extension(ext: &Extension, target_namespace: Option<&roxmltree::Namespace>) -> Vec<StructField> {
     let mut fields = match ext.sequence() {
         Some(s) => get_fields_from_sequence(&s, target_namespace),
         None => vec!()

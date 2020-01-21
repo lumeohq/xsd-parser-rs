@@ -4,7 +4,6 @@ use std::str;
 use self::inflector::cases::snakecase::to_snake_case;
 use std::borrow::Cow;
 use crate::xsd2::node_types::{UseType, Attribute};
-use crate::xsd2::schema::TargetNamespace;
 
 pub fn split_comment_line(s: &str, max_len: usize, indent: usize) -> String {
     let indent_str = " ".repeat(indent);
@@ -45,7 +44,7 @@ pub fn get_field_comment(doc: Option<&str>) -> String {
         fold(String::new(), |x , y| (x+&y))
 }
 
-pub fn match_type(type_name: &str, target_namespace: Option<&TargetNamespace>) -> Cow<'static, str>{
+pub fn match_type(type_name: &str, target_namespace: Option<&roxmltree::Namespace>) -> Cow<'static, str>{
     match type_name {
         "xs:string"      => Cow::Borrowed("String"),
         "xs:NCName"      => Cow::Borrowed("String"),
@@ -53,17 +52,24 @@ pub fn match_type(type_name: &str, target_namespace: Option<&TargetNamespace>) -
         "xs:int"         => Cow::Borrowed("i64"),
         "xs:float"       => Cow::Borrowed("f64"),
         "xs:boolean"     => Cow::Borrowed("bool"),
-        x => Cow::Owned(
-            to_pascal_case(
-                match target_namespace {
-                    Some(ns) => {
-                        if x.starts_with(ns.prefix) { x[ns.prefix.len()+1..].to_string() }
-                        else { x.replace(":", "::") }
-                    },
-                    None => x.replace(":", "::")
-                }.as_str()
+        x => {
+            let prefix = target_namespace.and_then(|ns| ns.name());
+            Cow::Owned(
+                to_pascal_case(
+                    match prefix {
+                        Some(name) => {
+                            if x.starts_with(name) {
+                                x[name.len() + 1..].to_string()
+                            }
+                            else {
+                                x.replace(":", "::")
+                            }
+                        }
+                        None => x.replace(":", "::")
+                    }.as_str()
+                )
             )
-        )
+        }
     }
 }
 
