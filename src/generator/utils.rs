@@ -46,29 +46,27 @@ pub fn get_field_comment(doc: Option<&str>) -> String {
 
 pub fn match_type(type_name: &str, target_namespace: Option<&roxmltree::Namespace>) -> Cow<'static, str>{
     match type_name {
-        "xs:string"      => Cow::Borrowed("String"),
-        "xs:NCName"      => Cow::Borrowed("String"),
-        "xs:unsignedInt" => Cow::Borrowed("usize"),
-        "xs:int"         => Cow::Borrowed("i64"),
-        "xs:float"       => Cow::Borrowed("f64"),
-        "xs:boolean"     => Cow::Borrowed("bool"),
+        "xs:string"      => "String".into(),
+        "xs:NCName"      => "String".into(),
+        "xs:unsignedInt" => "usize".into(),
+        "xs:int"         => "i64".into(),
+        "xs:float"       => "f64".into(),
+        "xs:boolean"     => "bool".into(),
         x => {
             let prefix = target_namespace.and_then(|ns| ns.name());
-            Cow::Owned(
-                to_pascal_case(
-                    match prefix {
-                        Some(name) => {
-                            if x.starts_with(name) {
-                                x[name.len() + 1..].to_string()
-                            }
-                            else {
-                                x.replace(":", "::")
-                            }
+            to_pascal_case(
+                match prefix {
+                    Some(name) => {
+                        if x.starts_with(name) {
+                            x[name.len() + 1..].to_string()
                         }
-                        None => x.replace(":", "::")
-                    }.as_str()
-                )
-            )
+                        else {
+                            x.replace(":", "::")
+                        }
+                    }
+                    None => x.replace(":", "::")
+                }.as_str()
+            ).into()
         }
     }
 }
