@@ -61,7 +61,7 @@ fn any_element_field() -> StructField {
     }
 }
 
-pub fn field_from_attribute(attr: &Attribute, target_namespace: Option<&str>) -> StructField {
+pub fn field_from_attribute(attr: &Attribute, target_namespace: Option<&roxmltree::Namespace>) -> StructField {
     let name = attr.name().unwrap_or("UNSUPPORTED_ATTRIBUTE_NAME");
     StructField{
         name: get_field_name(&name),
@@ -71,17 +71,17 @@ pub fn field_from_attribute(attr: &Attribute, target_namespace: Option<&str>) ->
     }
 }
 
-pub  fn field_from_element(elem: &Element, target_namespace: Option<&str>) -> StructField {
+pub  fn field_from_element(elem: &Element, target_namespace: Option<&roxmltree::Namespace>) -> StructField {
     let name = elem.name().unwrap_or("UNSUPPORTED_ELEMENT_NAME");
     StructField{
         name: get_field_name(&name),
         type_name: element_type(elem, match_type(elem.type_name().unwrap_or("UNSUPPORTED_TYPE_OF_ELEMENT"), target_namespace)),
-        macros: yaserde_for_element(name),
+        macros: yaserde_for_element(name, target_namespace),
         comment: get_field_comment(elem.documentation())
     }
 }
 
-pub fn get_fields_from_sequence(s: &Sequence, target_namespace: Option<&str>) -> Vec<StructField> {
+pub fn get_fields_from_sequence(s: &Sequence, target_namespace: Option<&roxmltree::Namespace>) -> Vec<StructField> {
     let mut fields = s.elements().
         iter().
         map(|el| field_from_element(el, target_namespace)).
@@ -95,7 +95,7 @@ pub fn get_fields_from_sequence(s: &Sequence, target_namespace: Option<&str>) ->
     fields
 }
 
-pub fn get_fields_from_extension(ext: &Extension, target_namespace: Option<&str>) -> Vec<StructField> {
+pub fn get_fields_from_extension(ext: &Extension, target_namespace: Option<&roxmltree::Namespace>) -> Vec<StructField> {
     let mut fields = match ext.sequence() {
         Some(s) => get_fields_from_sequence(&s, target_namespace),
         None => vec!()
@@ -112,7 +112,7 @@ pub fn get_fields_from_extension(ext: &Extension, target_namespace: Option<&str>
     fields.push(StructField {
         name: "base".to_string(),
         type_name: match_type(ty, target_namespace).to_string(),
-        macros: yaserde_for_element("base"), //TODO: yaserde for base element
+        macros: yaserde_for_element("base", target_namespace), //TODO: yaserde for base element
         comment: String::new(),
     });
 

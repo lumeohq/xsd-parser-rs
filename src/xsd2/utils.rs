@@ -1,6 +1,4 @@
 use roxmltree::*;
-use crate::xsd2::node_types::UseType;
-use std::borrow::Cow;
 
 pub fn find_child<'a, 'input>(node: &roxmltree::Node<'a, 'input>, tag_name: &str) -> Option<roxmltree::Node<'a, 'input>> {
     node.children().find(|e| e.is_element() && e.tag_name().name() == tag_name)
