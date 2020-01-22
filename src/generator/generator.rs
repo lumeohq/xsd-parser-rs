@@ -10,7 +10,7 @@ use crate::generator::complex_type::{get_types_from_sequence, get_enum_from_choi
 use crate::xsd2::node_traits::Extension;
 
 pub struct Generator<'a, 'input> {
-    target_namespace: Option<&'a str>,
+    target_namespace: Option<&'a roxmltree::Namespace<'input>>,
     pub schema: Schema<'a, 'input>,
     //types: Vec<Types>
 }
@@ -18,30 +18,29 @@ pub struct Generator<'a, 'input> {
 impl <'a, 'input> Generator<'a, 'input> {
     pub fn new(schema: roxmltree::Node<'a, 'input>) -> Self {
         let sc = Schema::<'a, 'input>{node: schema};
-        let tn = sc.target_namespace();
         Generator {
-            target_namespace: tn,
+            target_namespace: sc.target_namespace(),
             schema: sc,
             //types: vec!()
         }
     }
 
     pub fn print(&self) {
-        for node in self.schema.node.
-            children().
-            filter(|node| node.is_element() ) {
-                match node.tag_name().name() {
-                        "simpleType" => println!("{}", self.simple_type(&SimpleType{node})),
-                        "complexType" => for t in self.complex_type(&ComplexType{node}) {println!("{}", t);}
-                    ,
-                    _ =>  print!("")
-                }
+        for node in self.schema.node.children().filter(|node| node.is_element() ) {
+            match node.tag_name().name() {
+                "simpleType" => println!("{}", self.simple_type(&SimpleType{node})),
+                "complexType" => for t in self.complex_type(&ComplexType{node}) {
+                    println!("{}", t);
+                },
+                _ =>  print!("")
+            }
         }
     }
 
     fn complex_type(&self, element: &ComplexType) -> Vec<Types> {
         let mut types: Vec<Types> = vec!();
         let comment = get_structure_comment(element.documentation());
+        let macros = self.struct_macro();
         let name = match_type(
             element.name().expect("GLOBAL COMPLEX TYPE NAME REQUIRED"),
             self.target_namespace
@@ -115,11 +114,29 @@ impl <'a, 'input> Generator<'a, 'input> {
         types.push(Types::Struct(Struct{
             comment,
             name,
-            macros: String::new(),
+            macros,
             fields,
         }));
 
         types
+    }
+
+    fn struct_macro(&self) -> String {
+        let derives = "#[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]\n";
+        match &self.target_namespace {
+            Some(tn) => {
+                match tn.name() {
+                    Some(name) => format!("{derives}#[yaserde(prefix = \"{prefix}\", namespace = \"{prefix}: {uri}\")]\n",
+                                derives=derives,
+                                prefix=name,
+                                uri=tn.uri()).to_string(),
+                    None => format!("{derives}#[yaserde(namespace = \"{uri}\")]\n",
+                                derives=derives,
+                                uri=tn.uri()).to_string()
+                }
+            },
+            None => format!("{derives}#[yaserde()]\n", derives=derives).to_string()
+        }
     }
 
     fn simple_type(&self, element: &SimpleType) -> Types {

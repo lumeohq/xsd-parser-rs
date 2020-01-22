@@ -100,4 +100,8 @@ pub trait TypeName: Node {
     fn type_name(&self) -> Option<&str> {
         self.node().attribute("type")
     }
+
+    fn type_prefix(&self) -> Option<&str> {
+        self.type_name().and_then(|tn| tn.split(':').next())
+    }
 }
