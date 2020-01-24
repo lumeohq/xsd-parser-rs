@@ -42,27 +42,30 @@ pub fn get_field_comment(doc: Option<&str>) -> String {
         .fold(String::new(), |x, y| (x + &y))
 }
 
-pub fn match_type(typename: &str, target_namespace: Option<&str>) -> Cow<'static, str> {
-    match typename {
-        "xs:string" => Cow::Borrowed("String"),
-        "xs:NCName" => Cow::Borrowed("String"),
-        "xs:unsignedInt" => Cow::Borrowed("usize"),
-        "xs:int" => Cow::Borrowed("i64"),
-        "xs:float" => Cow::Borrowed("f64"),
-        "xs:boolean" => Cow::Borrowed("bool"),
-        x => Cow::Owned(to_pascal_case(
-            match target_namespace {
-                Some(ns) => {
-                    if x.starts_with(ns) {
-                        x[ns.len() + 1..].to_string()
-                    } else {
-                        x.replace(":", "::")
+pub fn match_type(type_name: &str, target_namespace: Option<&roxmltree::Namespace>) -> Cow<'static, str>{
+    match type_name {
+        "xs:string"      => "String".into(),
+        "xs:NCName"      => "String".into(),
+        "xs:unsignedInt" => "usize".into(),
+        "xs:int"         => "i64".into(),
+        "xs:float"       => "f64".into(),
+        "xs:boolean"     => "bool".into(),
+        x => {
+            let prefix = target_namespace.and_then(|ns| ns.name());
+            to_pascal_case(
+                match prefix {
+                    Some(name) => {
+                        if x.starts_with(name) {
+                            x[name.len() + 1..].to_string()
+                        }
+                        else {
+                            x.replace(":", "::")
+                        }
                     }
-                }
-                None => x.replace(":", "::"),
-            }
-            .as_str(),
-        )),
+                    None => x.replace(":", "::")
+                }.as_str()
+            ).into()
+        }
     }
 }
 
@@ -113,12 +116,8 @@ pub fn tuple_struct_macros() -> String {
     "//TODO: Tuple Struct macros\n".to_string()
 }
 
-pub fn struct_field_macros() -> String {
-    "//TODO: struct_field_macros\n".to_string()
-}
-
-pub fn struct_macros() -> String {
-    "//TODO: struct macros\n".to_string()
+pub fn struct_field_macros(name: &str) -> String {
+    format!("  #[yaserde(attribute, rename = \"{}\")]\n", name)
 }
 
 pub fn get_parent_name(node: Option<Node>) -> String {
@@ -128,6 +127,24 @@ pub fn get_parent_name(node: Option<Node>) -> String {
             None => get_parent_name(n.parent()).to_string() + "_" + n.tag_name().name(),
         },
         None => "UnsupportedName".to_string(),
+    }
+}
+
+pub fn struct_macro(target_namespace: Option<&roxmltree::Namespace>) -> String {
+    let derives = "#[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]\n";
+    match target_namespace {
+        Some(tn) => {
+            match tn.name() {
+                Some(name) => format!("{derives}#[yaserde(prefix = \"{prefix}\", namespace = \"{prefix}: {uri}\")]\n",
+                            derives=derives,
+                            prefix=name,
+                            uri=tn.uri()).to_string(),
+                None => format!("{derives}#[yaserde(namespace = \"{uri}\")]\n",
+                            derives=derives,
+                            uri=tn.uri()).to_string()
+            }
+        },
+        None => format!("{derives}#[yaserde()]\n", derives=derives).to_string()
     }
 }
 

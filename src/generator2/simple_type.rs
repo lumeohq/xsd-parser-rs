@@ -61,9 +61,9 @@ fn simple_type_list(
         }
     };
     RsType::TupleStruct(TupleStruct {
-        name: match_type(name, target_ns.and_then(|n| n.name())).to_string(),
+        name: match_type(name, target_ns).to_string(),
         comment: doc,
-        type_name: format!("Vec<{}>", match_type(type_name, target_ns.and_then(|n| n.name()))),
+        type_name: format!("Vec<{}>", match_type(type_name, target_ns)),
         macros: tuple_struct_macros(),
         subtypes: types,
     })
@@ -79,14 +79,14 @@ fn simple_type_restriction(
         restriction
             .attribute("base")
             .expect("The base value is required"),
-        target_ns.and_then(|n| n.name()),
+        target_ns,
     );
-    let struct_name = match_type(name, target_ns.and_then(|n| n.name()));
+    let struct_name = match_type(name, target_ns);
 
     let enum_cases = restriction
         .children()
         .filter(|n| n.is_element() && n.tag_name().name() == "enumeration")
-        .map(|n| get_enum_case(&n, target_ns.and_then(|n| n.name())))
+        .map(|n| get_enum_case(&n, target_ns))
         .collect::<Vec<EnumCase>>();
 
     //TODO: add validators for all facet types
@@ -108,7 +108,7 @@ fn simple_type_restriction(
     }
 }
 
-fn get_enum_case(node: &Node, target_ns: Option<&str>) -> EnumCase {
+fn get_enum_case(node: &Node, target_ns: Option<&roxmltree::Namespace>) -> EnumCase {
     let value = node
         .attribute("value")
         .expect("value is required attribute in enumeration facet");
