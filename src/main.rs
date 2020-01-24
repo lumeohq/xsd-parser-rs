@@ -3,12 +3,20 @@ use std::io::{Read};
 
 mod xsd;
 mod generator;
+mod generator2;
+
 pub use generator::generator::Generator;
 use crate::xsd::utils::find_child;
+
+use crate::generator2::generator::parse;
 
 
 fn main() {
     let text = load_file("xsd/types.xsd");
+    parse(text.as_str());
+
+    println!("\n\n\n");
+
     let doc = match roxmltree::Document::parse(&text) {
         Ok(doc) => doc,
         Err(e) => {
