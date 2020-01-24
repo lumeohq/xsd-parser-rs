@@ -1,13 +1,13 @@
 use crate::generator::simple_type::*;
 use crate::generator::utils::*;
-use crate::xsd2::complex_type::{ComplexType};
-use crate::xsd2::schema::Schema;
-use crate::xsd2::simple_type::SimpleType;
+use crate::xsd::complex_type::{ComplexType};
+use crate::xsd::schema::Schema;
+use crate::xsd::simple_type::SimpleType;
 use crate::generator::type_tree::{Types, TupleStruct, Struct};
 use crate::generator::struct_field::{StructField, any_attribute_field, field_from_attribute, get_fields_from_sequence, get_fields_from_extension};
 use crate::generator::enumeration::Enum;
 use crate::generator::complex_type::{get_types_from_sequence, get_enum_from_choice};
-use crate::xsd2::node_traits::Extension;
+use crate::xsd::node_traits::Extension;
 
 pub struct Generator<'a, 'input> {
     target_namespace: Option<&'a roxmltree::Namespace<'input>>,

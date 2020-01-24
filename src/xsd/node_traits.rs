@@ -1,10 +1,10 @@
-use crate::xsd2::node_types::Element;
-use crate::xsd2::utils::find_child;
-use crate::xsd2::node_types::Choice as ChoiceType;
-use crate::xsd2::node_types::AnyElement as AnyElementType;
-use crate::xsd2::node_types::Extension as ExtensionType;
-use crate::xsd2::node_types::Sequence as SequenceType;
-use crate::xsd2::node_types::Attribute;
+use crate::xsd::node_types::Element;
+use crate::xsd::utils::find_child;
+use crate::xsd::node_types::Choice as ChoiceType;
+use crate::xsd::node_types::AnyElement as AnyElementType;
+use crate::xsd::node_types::Extension as ExtensionType;
+use crate::xsd::node_types::Sequence as SequenceType;
+use crate::xsd::node_types::Attribute;
 
 pub trait Node {
     fn node(&self) -> & roxmltree::Node<'_, '_>;

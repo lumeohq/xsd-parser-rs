@@ -1,5 +1,5 @@
 use std::fmt;
-use crate::xsd2::utils::*;
+use crate::xsd::utils::*;
 
 pub struct SimpleType<'a, 'input> {
     pub node: roxmltree::Node<'a, 'input>,

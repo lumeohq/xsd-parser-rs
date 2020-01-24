@@ -3,7 +3,7 @@ use inflector::cases::pascalcase::to_pascal_case;
 use std::str;
 use self::inflector::cases::snakecase::to_snake_case;
 use std::borrow::Cow;
-use crate::xsd2::node_types::{UseType, Attribute};
+use crate::xsd::node_types::{UseType, Attribute};
 
 pub fn split_comment_line(s: &str, max_len: usize, indent: usize) -> String {
     let indent_str = " ".repeat(indent);
