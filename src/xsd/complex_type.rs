@@ -1,8 +1,8 @@
 use std::fmt;
 
-use crate::xsd2::node_types::{Attribute, Choice, Sequence, SimpleContent};
-use crate::xsd2::complex_content::ComplexContent;
-use crate::xsd2::utils::*;
+use crate::xsd::node_types::{Attribute, Choice, Sequence, SimpleContent};
+use crate::xsd::complex_content::ComplexContent;
+use crate::xsd::utils::*;
 
 pub struct ComplexType<'a, 'input> {
     pub node: roxmltree::Node<'a, 'input>,

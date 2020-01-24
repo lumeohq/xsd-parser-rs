@@ -3,7 +3,7 @@ use std::borrow::Cow;
 use crate::generator::enumeration::{EnumCase, Enum};
 use crate::generator::type_tree::Types;
 use crate::generator::utils::{get_field_comment, match_type};
-use crate::xsd2::node_traits::{
+use crate::xsd::node_traits::{
     MinMaxOccurs,
     Elements,
     MaxOccurs,
@@ -12,7 +12,7 @@ use crate::xsd2::node_traits::{
     Documentation,
     TypeName
 };
-use crate::xsd2::node_types::{Choice, Element, Sequence};
+use crate::xsd::node_types::{Choice, Element, Sequence};
 
 pub fn element_type<T: MinMaxOccurs>(elem: &T, type_name: Cow<str>) -> String {
     let min = elem.min_occurs();

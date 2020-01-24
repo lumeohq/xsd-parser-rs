@@ -1,4 +1,4 @@
-use crate::xsd2::simple_type::{FacetType, Facet, Restriction};
+use crate::xsd::simple_type::{FacetType, Facet, Restriction};
 use crate::generator::utils::{get_field_comment, match_type};
 use crate::generator::enumeration::EnumCase;
 

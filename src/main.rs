@@ -1,14 +1,14 @@
 use std::fs;
 use std::io::{Read};
 
-mod xsd2;
+mod xsd;
 mod generator;
 pub use generator::generator::Generator;
-use crate::xsd2::utils::find_child;
+use crate::xsd::utils::find_child;
 
 
 fn main() {
-    let text = load_file("xsd/onvif.xsd");
+    let text = load_file("xsd/types.xsd");
     let doc = match roxmltree::Document::parse(&text) {
         Ok(doc) => doc,
         Err(e) => {

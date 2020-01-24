@@ -2,9 +2,9 @@ use core::fmt;
 
 use crate::generator::complex_type::{element_type, yaserde_for_attribute, yaserde_for_element};
 use crate::generator::utils::{get_field_comment, get_field_name, match_type, attribute_type};
-use crate::xsd2::node_types::Extension;
-use crate::xsd2::node_types::{Attribute, Element, Sequence};
-use crate::xsd2::node_traits::{
+use crate::xsd::node_types::Extension;
+use crate::xsd::node_types::{Attribute, Element, Sequence};
+use crate::xsd::node_traits::{
     Elements,
     AnyElement,
     Name,

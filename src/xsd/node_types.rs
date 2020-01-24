@@ -1,4 +1,4 @@
-use crate::xsd2::node_traits::{
+use crate::xsd::node_traits::{
     AnyElement as AnyElementTrait,
     Attributes,
     Choice as ChoiceTrait,
@@ -11,7 +11,7 @@ use crate::xsd2::node_traits::{
     Sequence as SequenceTrait,
     TypeName,
 };
-use crate::xsd2::utils::find_child;
+use crate::xsd::utils::find_child;
 
 macro_rules! create_node_type{
     ($name:ident) => {
