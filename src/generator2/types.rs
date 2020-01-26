@@ -1,5 +1,6 @@
-use crate::generator2::utils::{get_field_comment, get_structure_comment};
 use core::fmt;
+
+use crate::generator2::utils::{get_field_comment, get_structure_comment};
 
 pub struct Struct {
     pub name: String,
@@ -135,19 +136,27 @@ impl fmt::Display for EnumCase {
 pub struct Alias {
     pub name: String,
     pub original: String,
-    pub comment: String,
+    pub comment: Option<String>,
+    pub subtypes: Vec<RsType>,
 }
 
 impl fmt::Display for Alias {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+        let is_same_name = self.name == self.original;
         write!(
             f,
-            "{comment}pub type {name} = {original};\n",
-            comment = self.comment,
+            "{comment}{visibility}type {name} = {original};\n",
+            visibility = if is_same_name { "//" } else { "pub " },
+            comment = get_field_comment(self.comment.as_deref()),
             name = self.name,
             original = self.original
         )
     }
+}
+
+pub struct Import {
+    namespace: Option<String>,
+    schema_location: Option<String>,
 }
 
 pub enum RsType {
