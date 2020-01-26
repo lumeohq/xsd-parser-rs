@@ -1,18 +1,17 @@
 use std::fs;
-use std::io::{Read};
+use std::io::Read;
+
+pub use generator::generator::Generator;
+
+use crate::generator2::generator::parse;
+use crate::xsd::utils::find_child;
 
 mod xsd;
 mod generator;
 mod generator2;
 
-pub use generator::generator::Generator;
-use crate::xsd::utils::find_child;
-
-use crate::generator2::generator::parse;
-
-
 fn main() {
-    let text = load_file("xsd/types.xsd");
+    let text = load_file("xsd/onvif.xsd");
     parse(text.as_str());
 
     println!("\n\n\n");

@@ -1,7 +1,8 @@
+use roxmltree::Node;
+
 use crate::generator2::types::{RsType, Struct, StructField};
 use crate::generator2::utils::{any_attribute_field, find_child, get_documentation, get_field_name, get_parent_name, match_type, struct_field_macros, struct_macro};
-use crate::xsd::elements::{ElementType, ExtensionType, RestrictionType, XmlNode, Name};
-use roxmltree::Node;
+use crate::xsd::elements::{ElementType, ExtensionType, Name, RestrictionType, XmlNode};
 
 //A complex type can contain one and only one of the following elements,
 // which determines the type of content allowed in the complex type.
@@ -28,8 +29,9 @@ pub fn parse_complex_type(node: &Node, parent: &Node, target_ns: Option<&roxmltr
         .filter(|n| n.is_element() && AVAILABLE_CONTENT_TYPES.contains(&n.xsd_type()))
         .last();
 
-    if content.is_none() {
-        //No content, only attributes
+    if content.is_none() ||
+        content.unwrap().children().filter(|n| n.is_element()).count() == 0 {
+        //No content (or empty), only attributes
         let mut fields = fields_from_attributes(node, target_ns);
         match find_child(node, "anyAttribute") {
             Some(_) => fields.push(any_attribute_field()),
@@ -55,7 +57,7 @@ pub fn parse_complex_type(node: &Node, parent: &Node, target_ns: Option<&roxmltr
         //        _ => panic!("Invalid content type of complexType {:?}", content_node.xsd_type()),
         _ => {
             return RsType::Struct(Struct {
-                fields: vec![],
+                fields: fields_from_attributes(node, target_ns),
                 comment: get_documentation(node),
                 macros: struct_macro(target_ns),
                 subtypes: vec![],
@@ -129,14 +131,16 @@ fn fields_from_attributes(node: &Node, target_ns: Option<&roxmltree::Namespace>)
 
 fn attribute_to_field(node: &Node, target_ns: Option<&roxmltree::Namespace>) -> StructField {
     let name = get_field_name(
-            node.attribute("name")
-                .expect("All attributes have name in Onvif"),
-        );
+        node.attribute("name").or(node.attribute("ref"))
+            .expect("All attributes have name or ref in Onvif"),
+    );
+
     StructField {
         macros: struct_field_macros(name.as_str()),
         type_name: match_type(
             node.attribute("type")
-                .expect("All attributes have type in Onvif"),
+                .or(node.attribute("ref"))
+                .unwrap_or("()"),
             target_ns,
         )
         .to_string(),
