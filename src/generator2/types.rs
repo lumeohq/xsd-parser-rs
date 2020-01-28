@@ -1,13 +1,35 @@
 use core::fmt;
 
 use crate::generator2::utils::{get_field_comment, get_structure_comment};
+use std::intrinsics::write_bytes;
+
+pub struct File {
+    pub name: String,
+    pub namespace: Option<String>,
+    pub types: Vec<RsEntity>
+}
+
+impl fmt::Display for File {
+    fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+        write!(
+            f,
+            "//generated file\n{types}",
+            types = self
+                .types
+                .iter()
+                .map(|f| f.to_string())
+                .collect::<Vec<String>>()
+                .join("\n"),
+        )
+    }
+}
 
 pub struct Struct {
     pub name: String,
     pub comment: Option<String>,
     pub fields: Vec<StructField>,
     pub macros: String,
-    pub subtypes: Vec<RsType>,
+    pub subtypes: Vec<RsEntity>,
 }
 
 impl fmt::Display for Struct {
@@ -39,6 +61,7 @@ pub struct StructField {
     pub type_name: String,
     pub comment: Option<String>,
     pub macros: String,
+    pub subtypes: Vec<RsEntity>
 }
 
 impl fmt::Display for StructField {
@@ -59,7 +82,7 @@ pub struct TupleStruct {
     pub comment: Option<String>,
     pub type_name: String,
     pub macros: String,
-    pub subtypes: Vec<RsType>,
+    pub subtypes: Vec<RsEntity>,
 }
 
 impl fmt::Display for TupleStruct {
@@ -137,7 +160,7 @@ pub struct Alias {
     pub name: String,
     pub original: String,
     pub comment: Option<String>,
-    pub subtypes: Vec<RsType>,
+    pub subtypes: Vec<RsEntity>,
 }
 
 impl fmt::Display for Alias {
@@ -155,37 +178,57 @@ impl fmt::Display for Alias {
 }
 
 pub struct Import {
-    namespace: Option<String>,
-    schema_location: Option<String>,
+    pub name: String,
+    pub location: String,
 }
 
-pub enum RsType {
+impl fmt::Display for Import {
+    fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+        write!(
+            f,
+            "//use {}  {};\n",
+            self.location,
+            self.name,
+        )
+    }
+}
+
+pub enum RsEntity {
     Struct(Struct),
     TupleStruct(TupleStruct),
     Enum(Enum),
     Alias(Alias),
+    StructField(StructField),
+    File(File),
+    Import(Import)
 }
 
-impl fmt::Display for RsType {
+impl fmt::Display for RsEntity {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
-        use RsType::*;
+        use RsEntity::*;
         match self {
             Struct(s) => write!(f, "{}", s),
             TupleStruct(tp) => write!(f, "{}", tp),
             Enum(e) => write!(f, "{}", e),
             Alias(al) => write!(f, "{}", al),
+            StructField(sf) => write!(f, "{}", sf),
+            File(file) => write!(f, "{}", file),
+            Import(im) => write!(f, "{}", im),
         }
     }
 }
 
-impl RsType {
+impl RsEntity {
     pub fn name(&self) -> &str {
-        use RsType::*;
+        use RsEntity::*;
         match self {
             Struct(s) => s.name.as_str(),
             TupleStruct(tp) => tp.name.as_str(),
             Enum(e) => e.name.as_str(),
             Alias(al) => al.name.as_str(),
+            StructField(sf) => sf.name.as_str(),
+            File(file) => file.name.as_str(),
+            Import(im) => im.name.as_str(),
         }
     }
 }
