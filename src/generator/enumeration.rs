@@ -40,9 +40,9 @@ impl Enum {
     }
 
     fn enum_body(&self) -> String {
-        format!("{comment}\n{derive}\npub enum {name} {{\n{cases}\n\n  __Unknown__({type_name})\n}}",
+        format!("{comment}{derive}pub enum {name} {{\n{cases}\n\n  __Unknown__({type_name})\n}}",
             comment=self.comment,
-            derive="#[derive(PartialEq, Debug, YaSerialize, YaDeserialize)]",
+            derive="#[derive(PartialEq, Debug, YaSerialize, YaDeserialize)]\n",
             name=self.name,
             cases=self.cases.
                 iter().
