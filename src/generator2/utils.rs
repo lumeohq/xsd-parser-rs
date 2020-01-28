@@ -5,6 +5,7 @@ use inflector::cases::pascalcase::to_pascal_case;
 use roxmltree::{Node, Namespace};
 use std::borrow::Cow;
 use std::str;
+use crate::xsd::elements::{XmlNode, ElementType};
 
 pub fn split_comment_line(s: &str, max_len: usize, indent: usize) -> String {
     let indent_str = " ".repeat(indent);
@@ -79,6 +80,7 @@ pub fn any_attribute_field() -> StructField {
         type_name: "AnyAttribute".to_string(),
         comment: None,
         macros: "//TODO: yaserde macros for any attribute\n".to_string(),
+        subtypes: vec![],
     }
 }
 
@@ -88,6 +90,7 @@ fn any_element_field() -> StructField {
         type_name: "AnyElement".to_string(),
         macros: "//TODO: yaserde macros for any element\n".to_string(),
         comment: None,
+        subtypes: vec![],
     }
 }
 
@@ -120,13 +123,19 @@ pub fn struct_field_macros(name: &str) -> String {
     format!("  #[yaserde(attribute, rename = \"{}\")]\n", name)
 }
 
-pub fn get_parent_name(node: Option<Node>) -> String {
-    match node {
-        Some(n) => match n.attribute("name") {
-            Some(s) => s.to_string(),
-            None => get_parent_name(n.parent()).to_string() + "_" + n.tag_name().name(),
-        },
-        None => "UnsupportedName".to_string(),
+pub fn get_parent_name<'a>(node: &Node<'a, '_>) -> &'a str {
+    match node.parent_element() {
+        Some(parent) => {
+            if parent.xsd_type() == ElementType::Schema {
+                return "SchemaElement";
+            }
+
+            match parent.attribute("name") {
+                Some(s) => s,
+                None => get_parent_name(&parent)
+            }
+        }
+        None => "UnsupportedName",
     }
 }
 
@@ -145,6 +154,34 @@ pub fn struct_macro(target_namespace: Option<&roxmltree::Namespace>) -> String {
             }
         },
         None => format!("{derives}#[yaserde()]\n", derives=derives).to_string()
+    }
+}
+
+pub fn get_fields_from_attributes(node: &Node, target_ns: Option<&Namespace>) -> Vec<StructField> {
+    node.children()
+        .filter(|n| n.is_element() && n.xsd_type() == ElementType::Attribute)
+        .map(|n| attribute_to_field(&n, target_ns))
+        .collect()
+}
+
+fn attribute_to_field(node: &Node, target_ns: Option<&roxmltree::Namespace>) -> StructField {
+    let name = get_field_name(
+        node.attribute("name").or(node.attribute("ref"))
+            .expect("All attributes have name or ref in Onvif"),
+    );
+
+    StructField {
+        macros: struct_field_macros(name.as_str()),
+        type_name: match_type(
+            node.attribute("type")
+                .or(node.attribute("ref"))
+                .unwrap_or("()"),
+            target_ns,
+        )
+        .to_string(),
+        comment: get_documentation(node),
+        subtypes: vec![],
+        name,
     }
 }
 

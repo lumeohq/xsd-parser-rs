@@ -1,4 +1,4 @@
-use crate::generator2::types::{Enum, EnumCase, RsType, TupleStruct};
+use crate::generator2::types::{Enum, EnumCase, RsEntity, TupleStruct};
 use crate::generator2::utils::{
     find_child, get_documentation, get_parent_name, match_type, tuple_struct_macros,
 };
@@ -6,13 +6,12 @@ use crate::xsd::elements::{ElementType, RestrictionType, XmlNode};
 
 use roxmltree::Node;
 
-pub fn parse_simple_type(node: &Node, parent: &Node, tn: Option<&roxmltree::Namespace>) -> RsType {
+pub fn parse_simple_type(node: &Node, parent: &Node, tn: Option<&roxmltree::Namespace>) -> RsEntity {
     let name = if parent.xsd_type() == ElementType::Schema {
         node.attribute("name")
             .expect("Name required if the simpleType element is a child of the schema element")
-            .to_string()
     } else {
-        get_parent_name(Some(*parent))
+        get_parent_name(node)
     };
 
     let content = node
@@ -25,10 +24,10 @@ pub fn parse_simple_type(node: &Node, parent: &Node, tn: Option<&roxmltree::Name
 
     match content.xsd_type() {
         ElementType::Union => unimplemented!(), //TODO: Add union parser (No in ONVIF)
-        ElementType::List => simple_type_list(&content, name.as_str(), get_documentation(node), tn),
+        ElementType::List => simple_type_list(&content, name, get_documentation(node), tn),
         ElementType::Restriction(r) => match r {
             RestrictionType::SimpleType => {
-                simple_type_restriction(&content, name.as_str(), get_documentation(node), tn)
+                simple_type_restriction(&content, name, get_documentation(node), tn)
             }
             _ => panic!("Invalid restriction type of SimpleType {:?}", r),
         },
@@ -44,8 +43,8 @@ fn simple_type_list(
     name: &str,
     doc: Option<String>,
     target_ns: Option<&roxmltree::Namespace>,
-) -> RsType {
-    let mut types: Vec<RsType> = vec![];
+) -> RsEntity {
+    let mut types: Vec<RsEntity> = vec![];
 
     let item_type = list.attribute("itemType");
     let type_name = if item_type.is_some() {
@@ -60,7 +59,7 @@ fn simple_type_list(
             None => "Unsupported_type_name",
         }
     };
-    RsType::TupleStruct(TupleStruct {
+    RsEntity::TupleStruct(TupleStruct {
         name: match_type(name, target_ns).to_string(),
         comment: doc,
         type_name: format!("Vec<{}>", match_type(type_name, target_ns)),
@@ -74,7 +73,7 @@ fn simple_type_restriction(
     name: &str,
     doc: Option<String>,
     target_ns: Option<&roxmltree::Namespace>,
-) -> RsType {
+) -> RsEntity {
     let base = match_type(
         restriction
             .attribute("base")
@@ -91,14 +90,14 @@ fn simple_type_restriction(
 
     //TODO: add validators for all facet types
     if !enum_cases.is_empty() {
-        RsType::Enum(Enum {
+        RsEntity::Enum(Enum {
             comment: doc,
             name: struct_name.to_string(),
             cases: enum_cases,
             type_name: base.to_string(),
         })
     } else {
-        RsType::TupleStruct(TupleStruct {
+        RsEntity::TupleStruct(TupleStruct {
             name: struct_name.to_string(),
             comment: doc,
             type_name: base.to_string(),
