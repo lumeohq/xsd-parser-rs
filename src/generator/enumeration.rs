@@ -36,15 +36,27 @@ pub struct Enum {
 
 impl Enum {
     pub fn to_enum(&self) -> String {
-        format!("{comment}\npub enum {name} {{\n{cases}  \n__Unknown__({type_name})\n}}",
+        format!("{body}\n\n{impl}", body=self.enum_body(), impl=self.enum_impl())
+    }
+
+    fn enum_body(&self) -> String {
+        format!("{comment}\n{derive}\npub enum {name} {{\n{cases}\n\n  __Unknown__({type_name})\n}}",
             comment=self.comment,
+            derive="#[derive(PartialEq, Debug, YaSerialize, YaDeserialize)]",
             name=self.name,
             cases=self.cases.
                 iter().
                 map(|case| case.case_line()).
                 collect::<Vec<String>>().
-                join("\n"),
+                join("\n\n"),
             type_name=self.type_name
+        )
+    }
+
+    fn enum_impl(&self) -> String {
+        format!("impl Default for {name} {{\n  fn default() -> {name} {{\n    {name}::{case}\n  }}\n}}",
+            name=self.name,
+            case=self.cases.first().map_or("__Unknown__", |case| &case.name)
         )
     }
 }
