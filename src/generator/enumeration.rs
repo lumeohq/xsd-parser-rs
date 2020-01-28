@@ -55,8 +55,8 @@ impl Enum {
 
     fn enum_impl(&self) -> String {
         format!("impl Default for {name} {{\n  fn default() -> {name} {{\n    {name}::{case}\n  }}\n}}",
-            name=self.name,
-            case=self.cases.first().map_or("__Unknown__", |case| &case.name)
+                name = self.name,
+                case = self.cases.first().map_or("__Unknown__", |case| &case.name)
         )
     }
 }
@@ -65,4 +65,27 @@ impl fmt::Display for Enum {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         write!(f,"{}\n", self.to_enum())
     }
+}
+
+#[test]
+fn enum_default_trait_generation_test() {
+    // No cases except for __Unknown__.
+    let mut e = Enum{
+        type_name: "String".to_string(),
+        name: "E".to_string(),
+        comment: "".to_string(),
+        cases: vec![]
+    };
+    assert_eq!(e.enum_impl(),
+               "impl Default for E {\n  fn default() -> E {\n    E::__Unknown__\n  }\n}");
+
+    // Some cases.
+    e.cases = vec![EnumCase{
+        name: "EC".to_string(),
+        comment: "".to_string(),
+        value: "".to_string(),
+        type_name: None
+    }];
+    assert_eq!(e.enum_impl(),
+               "impl Default for E {\n  fn default() -> E {\n    E::EC\n  }\n}");
 }
