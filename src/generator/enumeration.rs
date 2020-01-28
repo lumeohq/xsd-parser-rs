@@ -1,5 +1,6 @@
 use core::fmt;
 
+#[derive(Default)]
 pub struct EnumCase {
     pub name: String,
     pub comment: String,
@@ -27,6 +28,7 @@ impl EnumCase {
     }
 }
 
+#[derive(Default)]
 pub struct Enum {
     pub name: String,
     pub cases: Vec<EnumCase>,
@@ -73,18 +75,15 @@ fn enum_default_trait_generation_test() {
     let mut e = Enum{
         type_name: "String".to_string(),
         name: "E".to_string(),
-        comment: "".to_string(),
-        cases: vec![]
+        ..Default::default()
     };
     assert_eq!(e.enum_impl(),
                "impl Default for E {\n  fn default() -> E {\n    E::__Unknown__\n  }\n}");
 
     // Some cases.
-    e.cases = vec![EnumCase{
+    e.cases = vec![EnumCase {
         name: "EC".to_string(),
-        comment: "".to_string(),
-        value: "".to_string(),
-        type_name: None
+        ..Default::default()
     }];
     assert_eq!(e.enum_impl(),
                "impl Default for E {\n  fn default() -> E {\n    E::EC\n  }\n}");
