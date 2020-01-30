@@ -1,5 +1,6 @@
 use core::fmt;
 
+#[derive(Default)]
 pub struct EnumCase {
     pub name: String,
     pub comment: String,
@@ -27,6 +28,7 @@ impl EnumCase {
     }
 }
 
+#[derive(Default)]
 pub struct Enum {
     pub name: String,
     pub cases: Vec<EnumCase>,
@@ -36,15 +38,26 @@ pub struct Enum {
 
 impl Enum {
     pub fn to_enum(&self) -> String {
-        format!("{comment}\npub enum {name} {{\n{cases}  \n__Unknown__({type_name})\n}}",
+        format!("{body}\n\n{impl}", body=self.enum_body(), impl=self.enum_impl())
+    }
+
+    fn enum_body(&self) -> String {
+        format!("{comment}{derive}pub enum {name} {{\n{cases}\n\n  __Unknown__({type_name})\n}}",
             comment=self.comment,
+            derive="#[derive(PartialEq, Debug, YaSerialize, YaDeserialize)]\n",
             name=self.name,
             cases=self.cases.
                 iter().
                 map(|case| case.case_line()).
                 collect::<Vec<String>>().
-                join("\n"),
+                join("\n\n"),
             type_name=self.type_name
+        )
+    }
+
+    fn enum_impl(&self) -> String {
+        format!("impl Default for {name} {{\n  fn default() -> {name} {{\n    {name}::__Unknown__(\"No valid variants\".into())\n  }}\n}}",
+            name = self.name
         )
     }
 }
@@ -53,4 +66,24 @@ impl fmt::Display for Enum {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         write!(f,"{}\n", self.to_enum())
     }
+}
+
+#[test]
+fn enum_default_trait_generation_test() {
+    let output = "impl Default for E {\n  fn default() -> E {\n    E::__Unknown__(\"No valid variants\".into())\n  }\n}";
+
+    // No cases except for __Unknown__.
+    let mut e = Enum{
+        type_name: "String".to_string(),
+        name: "E".to_string(),
+        ..Default::default()
+    };
+    assert_eq!(e.enum_impl(), output);
+
+    // Some cases.
+    e.cases = vec![EnumCase {
+        name: "EC".to_string(),
+        ..Default::default()
+    }];
+    assert_eq!(e.enum_impl(), output);
 }
