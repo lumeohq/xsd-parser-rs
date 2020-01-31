@@ -1,24 +1,21 @@
 use crate::generator2::types::{RsEntity, StructField, Struct};
 use roxmltree::{Namespace, Node};
-use crate::generator2::utils::{get_parent_name, match_type, get_fields_from_attributes, get_documentation, struct_field_macros, find_child, any_attribute_field, struct_macro};
+use crate::generator2::utils::{match_type, get_fields_from_attributes, get_documentation, struct_field_macros, find_child, any_attribute_field, struct_macro};
 use crate::xsd::elements::{XmlNode, ElementType, RestrictionType, ExtensionType};
 
-pub fn parse_complex_content(node: &Node, parent: &Node, target_ns: Option<&Namespace>) -> RsEntity {
-let name= get_parent_name(node);
-
+pub fn parse_complex_content(node: &Node, target_ns: Option<&Namespace>) -> RsEntity {
     let content = node
         .children()
         .filter(|n| n.is_element() && n.xsd_type() != ElementType::Annotation)
         .last()
         .expect(
-            "Complex content must be defined in one of the following ways: [Restriction, Extension]",
+            "Content in complexContent required",
         );
 
     match content.xsd_type() {
         ElementType::Restriction(r) => match r {
             RestrictionType::ComplexContent => complex_content_restriction(
                 &content,
-                name,
                 target_ns
             ),
             _ => unreachable!("Invalid restriction type of SimpleContent {:?}", r),
@@ -26,22 +23,21 @@ let name= get_parent_name(node);
         ElementType::Extension(e) => match e {
             ExtensionType::ComplexContent => complex_content_extension(
                 &content,
-                name,
                 target_ns
             ),
             _ => unreachable!("Invalid extension type of SimpleContent {:?}", e),
         },
-        _ => unreachable!(),
+        _ => unreachable!(
+            "Complex content must be defined in one of the following ways: [Restriction, Extension]"
+        ),
     }
 }
 
-fn complex_content_extension(node: &Node, name: &str, target_ns: Option<&Namespace>) -> RsEntity {
+fn complex_content_extension(node: &Node, target_ns: Option<&Namespace>) -> RsEntity {
     let base = match_type(
         node.attribute("base").expect("The base value is required"),
         target_ns,
     );
-
-    let struct_name = match_type(name, target_ns);
 
     let mut fields = get_fields_from_attributes(node, target_ns);
 
@@ -62,7 +58,7 @@ fn complex_content_extension(node: &Node, name: &str, target_ns: Option<&Namespa
 
     RsEntity::Struct(
         Struct {
-            name: struct_name.to_string(),
+            name: String::default(),
             subtypes: vec![],
             comment: get_documentation(node),
             macros: struct_macro(target_ns),
@@ -71,6 +67,6 @@ fn complex_content_extension(node: &Node, name: &str, target_ns: Option<&Namespa
     )
 }
 
-fn complex_content_restriction(node: &Node, name: &str, target_ns: Option<&Namespace>) -> RsEntity {
-    unimplemented!()
+fn complex_content_restriction(node: &Node, target_ns: Option<&Namespace>) -> RsEntity {
+    unimplemented!("\n{:?}  {:?}\n", node, target_ns)
 }

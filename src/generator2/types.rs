@@ -1,7 +1,6 @@
 use core::fmt;
 
 use crate::generator2::utils::{get_field_comment, get_structure_comment};
-use std::intrinsics::write_bytes;
 
 pub struct File {
     pub name: String,
@@ -195,12 +194,14 @@ impl fmt::Display for Import {
 
 pub enum RsEntity {
     Struct(Struct),
+    StructField(StructField),
     TupleStruct(TupleStruct),
     Enum(Enum),
+    EnumCase(EnumCase),
     Alias(Alias),
-    StructField(StructField),
     File(File),
-    Import(Import)
+    Import(Import),
+    Array(Vec<RsEntity>)
 }
 
 impl fmt::Display for RsEntity {
@@ -210,10 +211,17 @@ impl fmt::Display for RsEntity {
             Struct(s) => write!(f, "{}", s),
             TupleStruct(tp) => write!(f, "{}", tp),
             Enum(e) => write!(f, "{}", e),
+            EnumCase(ec) => write!(f, "{}", ec),
             Alias(al) => write!(f, "{}", al),
             StructField(sf) => write!(f, "{}", sf),
             File(file) => write!(f, "{}", file),
             Import(im) => write!(f, "{}", im),
+            Array(ar) => {
+                for entity in ar {
+                    write!(f, "{}", entity)?
+                };
+                Ok(())
+            }
         }
     }
 }
@@ -225,10 +233,12 @@ impl RsEntity {
             Struct(s) => s.name.as_str(),
             TupleStruct(tp) => tp.name.as_str(),
             Enum(e) => e.name.as_str(),
+            EnumCase(ec) => ec.name.as_str(),
             Alias(al) => al.name.as_str(),
             StructField(sf) => sf.name.as_str(),
             File(file) => file.name.as_str(),
             Import(im) => im.name.as_str(),
+            Array(_) => ""
         }
     }
 }

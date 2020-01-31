@@ -4,11 +4,12 @@ use crate::generator2::complex_type::parse_complex_type;
 use crate::generator2::element::parse_element;
 use crate::generator2::simple_type::parse_simple_type;
 use crate::generator2::types::{RsEntity, File, Import, StructField};
-use crate::generator2::utils::{target_namespace, find_child, get_documentation};
+use crate::generator2::utils::{target_namespace, get_documentation};
 use crate::xsd::elements::{ElementType, XmlNode};
 use crate::generator2::sequence::parse_sequence;
 use crate::generator2::simple_content::parse_simple_content;
 use crate::generator2::complex_content::parse_complex_content;
+use crate::generator2::choice::parse_choice;
 
 pub fn parse(text: &str) {
     let doc = match roxmltree::Document::parse(&text) {
@@ -52,8 +53,10 @@ pub fn parse_node(node: &roxmltree::Node<'_, '_>, parent: &roxmltree::Node, tn: 
         Import | Include => parse_import(node),
         Any => parse_any(node),
         Sequence => parse_sequence(node, parent, tn),
-        SimpleContent => parse_simple_content(node, parent, tn),
-        ComplexContent => parse_complex_content(node, parent, tn),
+        SimpleContent => parse_simple_content(node, tn),
+        ComplexContent => parse_complex_content(node, tn),
+        Choice => parse_choice(node, tn),
+
         _ => {unreachable!("{:?}", node);},
     }
 }

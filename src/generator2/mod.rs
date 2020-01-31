@@ -7,3 +7,4 @@ mod element;
 mod sequence;
 mod simple_content;
 mod complex_content;
+mod choice;
