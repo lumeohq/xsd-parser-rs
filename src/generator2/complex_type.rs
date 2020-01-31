@@ -1,20 +1,19 @@
 use roxmltree::Node;
 
-use crate::generator2::types::{RsEntity, Struct, StructField};
-use crate::generator2::utils::{any_attribute_field, find_child, get_documentation, get_field_name, get_parent_name, match_type, struct_field_macros, struct_macro, get_fields_from_attributes};
-use crate::xsd::elements::{ElementType, ExtensionType, Name, RestrictionType, XmlNode};
+use crate::generator2::types::{RsEntity, Struct};
+use crate::generator2::utils::{any_attribute_field, find_child, get_documentation, get_parent_name, struct_macro, get_fields_from_attributes};
+use crate::xsd::elements::{ElementType, XmlNode};
 use crate::generator2::generator::parse_node;
-use std::borrow::{Borrow, BorrowMut};
 
 //A complex type can contain one and only one of the following elements,
 // which determines the type of content allowed in the complex type.
 const AVAILABLE_CONTENT_TYPES: [ElementType; 6] = [
-    ElementType::SimpleContent,
-    ElementType::ComplexContent,
-    ElementType::Group,
-    ElementType::All,
+    ElementType::All, //No in ONVIF
     ElementType::Choice,
+    ElementType::ComplexContent,
+    ElementType::Group, //No in ONVIF
     ElementType::Sequence,
+    ElementType::SimpleContent,
 ];
 
 pub fn parse_complex_type(node: &Node, parent: &Node, target_ns: Option<&roxmltree::Namespace>) -> RsEntity {
@@ -52,8 +51,11 @@ pub fn parse_complex_type(node: &Node, parent: &Node, target_ns: Option<&roxmltr
 
     let mut res = parse_node(&content_node, node, target_ns);
     match &mut res  {
-        RsEntity::Struct( st) => {st.fields.append(&mut fields);},
-        _ => ()
+        RsEntity::Struct( st) => {
+            st.fields.append(&mut fields);
+            st.name = name.to_string();
+        },
+        _ => () //TODO: enum from choice
     };
     res
 }
