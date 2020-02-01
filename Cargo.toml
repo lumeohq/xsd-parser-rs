@@ -9,3 +9,4 @@ edition = "2018"
 [dependencies]
 roxmltree = "0.7.3"
 Inflector = "*"
+linked-hash-map = "0.5.2"

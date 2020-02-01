@@ -1,7 +1,7 @@
 use roxmltree::Node;
 
 use crate::generator2::types::{RsEntity, Struct};
-use crate::generator2::utils::{any_attribute_field, find_child, get_documentation, get_parent_name, struct_macro, get_fields_from_attributes};
+use crate::generator2::utils::{any_attribute_field, find_child, get_documentation, get_parent_name, struct_macro, attributes_to_fields};
 use crate::xsd::elements::{ElementType, XmlNode};
 use crate::generator2::generator::parse_node;
 
@@ -29,7 +29,7 @@ pub fn parse_complex_type(node: &Node, parent: &Node, target_ns: Option<&roxmltr
         .filter(|n| n.is_element() && AVAILABLE_CONTENT_TYPES.contains(&n.xsd_type()))
         .last();
 
-    let mut fields = get_fields_from_attributes(node, target_ns);
+    let mut fields = attributes_to_fields(node, target_ns);
     match find_child(node, "anyAttribute") {
         Some(_) => fields.push(any_attribute_field()),
         None => (),
