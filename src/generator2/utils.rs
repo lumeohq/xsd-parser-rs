@@ -17,7 +17,8 @@ pub fn split_comment_line(s: &str, max_len: usize, indent: usize) -> String {
         if current_line_length + len + 1 <= max_len || current_line_length == indent + 2 {
             splitted = format!("{} {}", splitted, word);
             current_line_length += 1 + len;
-        } else {
+        }
+        else {
             splitted = format!("{}\n{}// {}", splitted, indent_str, word);
             current_line_length = indent + 3 + len;
         }
@@ -35,22 +36,24 @@ pub fn get_structure_comment(doc: Option<&str>) -> String {
 }
 
 pub fn get_field_comment(doc: Option<&str>) -> String {
-    doc.unwrap_or("")
-        .lines()
-        .map(|s| s.trim())
-        .filter(|s| s.len() > 1)
-        .map(|s| format!("// {}  ", s))
-        .fold(String::new(), |x, y| (x + &y))
+    doc.
+        unwrap_or("").
+        lines().
+        map(|s| s.trim()).
+        filter(|s| s.len() > 1).
+        map(|s| split_comment_line(s, 80, 2)).
+        fold(String::new(), |x , y| (x+&y))
 }
 
 pub fn match_type(type_name: &str, target_namespace: Option<&roxmltree::Namespace>) -> Cow<'static, str>{
     match type_name {
-        "xs:string"      => "String".into(),
-        "xs:NCName"      => "String".into(),
-        "xs:unsignedInt" => "usize".into(),
-        "xs:int"         => "i64".into(),
-        "xs:float"       => "f64".into(),
         "xs:boolean"     => "bool".into(),
+        "xs:double"       => "f64".into(),
+        "xs:float"       => "f64".into(),
+        "xs:int"         => "i64".into(),
+        "xs:NCName"      => "String".into(),
+        "xs:string"      => "String".into(),
+        "xs:unsignedInt" => "usize".into(),
         x => {
             let prefix = target_namespace.and_then(|ns| ns.name());
             to_pascal_case(
@@ -71,7 +74,19 @@ pub fn match_type(type_name: &str, target_namespace: Option<&roxmltree::Namespac
 }
 
 pub fn get_field_name(name: &str) -> String {
-    to_snake_case(name)
+    let result = to_snake_case(name);
+    if result.chars().next().unwrap().is_numeric() || RS_KEYWORDS.contains(&result.as_str()) {
+        return format!("_{}", result);
+    }
+    result
+}
+
+pub fn get_type_name(name: &str) -> String {
+    let result = to_pascal_case(name);
+    if result.chars().next().unwrap().is_numeric() || RS_KEYWORDS.contains(&result.as_str()) {
+        return format!("_{}", result);
+    }
+    result
 }
 
 pub fn any_attribute_field() -> StructField {
@@ -79,7 +94,7 @@ pub fn any_attribute_field() -> StructField {
         name: "any_attribute".to_string(),
         type_name: "AnyAttribute".to_string(),
         comment: None,
-        macros: "//TODO: yaserde macros for any attribute\n".to_string(),
+        macros: "//  TODO: yaserde macros for any attribute\n//".to_string(),
         subtypes: vec![],
     }
 }
@@ -88,7 +103,7 @@ fn any_element_field() -> StructField {
     StructField {
         name: "any_element".to_string(),
         type_name: "AnyElement".to_string(),
-        macros: "//TODO: yaserde macros for any element\n".to_string(),
+        macros: "//  TODO: yaserde macros for any element\n//".to_string(),
         comment: None,
         subtypes: vec![],
     }
@@ -157,7 +172,7 @@ pub fn struct_macro(target_namespace: Option<&roxmltree::Namespace>) -> String {
     }
 }
 
-pub fn get_fields_from_attributes(node: &Node, target_ns: Option<&Namespace>) -> Vec<StructField> {
+pub fn attributes_to_fields(node: &Node, target_ns: Option<&Namespace>) -> Vec<StructField> {
     node.children()
         .filter(|n| n.is_element() && n.xsd_type() == ElementType::Attribute)
         .map(|n| attribute_to_field(&n, target_ns))
@@ -165,13 +180,13 @@ pub fn get_fields_from_attributes(node: &Node, target_ns: Option<&Namespace>) ->
 }
 
 fn attribute_to_field(node: &Node, target_ns: Option<&roxmltree::Namespace>) -> StructField {
-    let name = get_field_name(
-        node.attribute("name").or(node.attribute("ref"))
-            .expect("All attributes have name or ref in Onvif"),
-    );
+    let name =  node
+        .attribute("name")
+        .or(node.attribute("ref"))
+        .expect("All attributes have name or ref in Onvif");
 
     StructField {
-        macros: struct_field_macros(name.as_str()),
+        macros: struct_field_macros(name),
         type_name: match_type(
             node.attribute("type")
                 .or(node.attribute("ref"))
@@ -181,8 +196,66 @@ fn attribute_to_field(node: &Node, target_ns: Option<&roxmltree::Namespace>) -> 
         .to_string(),
         comment: get_documentation(node),
         subtypes: vec![],
-        name,
+        name:  get_field_name(name),
     }
 }
+
+const RS_KEYWORDS: &'static [&str] = &[
+  "abstract",
+  "alignof",
+  "as",
+  "become",
+  "box",
+  "break",
+  "const",
+  "continue",
+  "crate",
+  "do",
+  "else",
+  "enum",
+  "extern crate",
+  "extern",
+  "false",
+  "final",
+  "fn",
+  "for",
+  "if let",
+  "if",
+  "impl",
+  "in",
+  "let",
+  "loop",
+  "macro",
+  "match",
+  "mod",
+  "move",
+  "mut",
+  "offsetof",
+  "override",
+  "priv",
+  "proc",
+  "pub",
+  "pure",
+  "ref",
+  "return",
+  "Self",
+  "self",
+  "sizeof",
+  "static",
+  "struct",
+  "super",
+  "trait",
+  "true",
+  "type",
+  "typeof",
+  "unsafe",
+  "unsized",
+  "use",
+  "use",
+  "virtual",
+  "where",
+  "while",
+  "yield"
+];
 
 

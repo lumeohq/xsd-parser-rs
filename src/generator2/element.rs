@@ -3,7 +3,7 @@ use roxmltree::Namespace;
 
 use crate::generator2::generator::parse_node;
 use crate::generator2::types::{Alias, RsEntity, Struct, StructField, EnumCase};
-use crate::generator2::utils::{get_documentation, match_type, struct_macro, get_field_name, struct_field_macros};
+use crate::generator2::utils::{get_documentation, match_type, struct_macro, get_field_name, struct_field_macros, get_type_name};
 use crate::xsd::elements::{ElementType, XmlNode, min_occurs, max_occurs, MaxOccurs};
 use std::borrow::Cow;
 
@@ -71,7 +71,7 @@ fn parse_case_of_choice(element: &Node, target_ns: Option<&Namespace>) -> RsEnti
 
     RsEntity::EnumCase(
         EnumCase{
-            name: get_field_name(name),
+            name: get_type_name(name),
             value: String::default(),
             type_name: Some(type_name),
             comment: get_documentation(element),

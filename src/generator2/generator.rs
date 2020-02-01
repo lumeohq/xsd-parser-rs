@@ -11,6 +11,8 @@ use crate::generator2::simple_content::parse_simple_content;
 use crate::generator2::complex_content::parse_complex_content;
 use crate::generator2::choice::parse_choice;
 
+use linked_hash_map::LinkedHashMap;
+
 pub fn parse(text: &str) {
     let doc = match roxmltree::Document::parse(&text) {
         Ok(doc) => doc,
@@ -20,8 +22,15 @@ pub fn parse(text: &str) {
     };
     let root =  doc.root();
 
+    let mut map:LinkedHashMap<String, RsEntity>  = LinkedHashMap::new();
+
     for node in root.children().filter(|e| e.is_element()) {
-        println!("{}", parse_node(&node, &root, None));
+        let entity = parse_node(&node, &root, None);
+        map.insert(entity.name().to_string(), entity);
+    }
+
+    for val in map.values() {
+        println!("{}", val);
     }
 
 
@@ -77,7 +86,7 @@ fn parse_any(node: &roxmltree::Node) -> RsEntity {
         StructField{
             name: "any".to_string(),
             type_name: "AnyElement".to_string(),
-            macros: "// ".to_string(),
+            macros: "//TODO: yaserde macro for any elemet\n//".to_string(),
             subtypes: vec![],
             comment: get_documentation(node)
         }
