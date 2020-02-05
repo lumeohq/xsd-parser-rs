@@ -99,16 +99,6 @@ pub fn any_attribute_field() -> StructField {
     }
 }
 
-fn any_element_field() -> StructField {
-    StructField {
-        name: "any_element".to_string(),
-        type_name: "AnyElement".to_string(),
-        macros: "//  TODO: yaserde macros for any element\n//".to_string(),
-        comment: None,
-        subtypes: vec![],
-    }
-}
-
 pub fn target_namespace<'a, 'input>(node: &Node<'a, 'input>) -> Option<&'a Namespace<'input>> {
     match node.attribute("targetNamespace") {
         Some(tn) => node
@@ -185,20 +175,34 @@ fn attribute_to_field(node: &Node, target_ns: Option<&roxmltree::Namespace>) -> 
         .or(node.attribute("ref"))
         .expect("All attributes have name or ref in Onvif");
 
+    let matched_type = match_type(
+        node.attribute("type")
+            .or(node.attribute("ref"))
+            .unwrap_or("()"),
+        target_ns,
+    );
+
+    let type_name = match node.attribute("use") {
+        Some(u) => {match u {
+            "optional" => format!("Option<{}>", matched_type),
+            "prohibited" => "()".to_string(), // TODO: maybe Empty<T> or remove this field
+            "required" => matched_type.to_string(),
+            _ => unreachable!(
+                "If 'use' specified, this attribute must have one of the following values [optional, prohibited, required]"
+            )
+        }},
+        None => format!("Option<{}>", matched_type)
+    };
+
     StructField {
         macros: struct_field_macros(name),
-        type_name: match_type(
-            node.attribute("type")
-                .or(node.attribute("ref"))
-                .unwrap_or("()"),
-            target_ns,
-        )
-        .to_string(),
+        type_name,
         comment: get_documentation(node),
         subtypes: vec![],
         name:  get_field_name(name),
     }
 }
+
 
 const RS_KEYWORDS: &'static [&str] = &[
   "abstract",

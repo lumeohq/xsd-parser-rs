@@ -65,6 +65,7 @@ pub fn parse_node(node: &roxmltree::Node<'_, '_>, parent: &roxmltree::Node, tn: 
         SimpleContent => parse_simple_content(node, tn),
         ComplexContent => parse_complex_content(node, tn),
         Choice => parse_choice(node, tn),
+        AnyAttribute => parse_any_attribute(node),
 
         _ => {unreachable!("{:?}", node);},
     }
@@ -86,7 +87,19 @@ fn parse_any(node: &roxmltree::Node) -> RsEntity {
         StructField{
             name: "any".to_string(),
             type_name: "AnyElement".to_string(),
-            macros: "//TODO: yaserde macro for any elemet\n//".to_string(),
+            macros: "//TODO: yaserde macro for any element\n//".to_string(),
+            subtypes: vec![],
+            comment: get_documentation(node)
+        }
+    )
+}
+
+fn parse_any_attribute(node: &roxmltree::Node) -> RsEntity {
+    RsEntity::StructField(
+        StructField{
+            name: "any_attribute".to_string(),
+            type_name: "AnyAttribute".to_string(),
+            macros: "//TODO: yaserde macro for any attribute\n//".to_string(),
             subtypes: vec![],
             comment: get_documentation(node)
         }
