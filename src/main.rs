@@ -1,10 +1,10 @@
+mod parser;
+
 use std::fs;
 use std::io::Read;
 
 use crate::parser::parser::parse;
 
-mod xsd;
-mod parser;
 
 fn main() {
     let text = load_file("xsd/onvif.xsd");

@@ -1,10 +1,11 @@
+mod choice;
+mod complex_content;
 mod complex_type;
-pub mod parser;
+mod element;
+mod elements;
+mod sequence;
+mod simple_content;
 mod simple_type;
 mod types;
 mod utils;
-mod element;
-mod sequence;
-mod simple_content;
-mod complex_content;
-mod choice;
+pub mod parser;

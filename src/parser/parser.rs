@@ -5,7 +5,7 @@ use crate::parser::element::parse_element;
 use crate::parser::simple_type::parse_simple_type;
 use crate::parser::types::{RsEntity, File, Import, StructField};
 use crate::parser::utils::{target_namespace, get_documentation};
-use crate::xsd::elements::{ElementType, XmlNode};
+use crate::parser::elements::{ElementType, XmlNode};
 use crate::parser::sequence::parse_sequence;
 use crate::parser::simple_content::parse_simple_content;
 use crate::parser::complex_content::parse_complex_content;
