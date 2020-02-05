@@ -142,19 +142,6 @@ impl XmlNode for roxmltree::Node<'_, '_> {
     }
 }
 
-pub trait Name {
-    fn name(&self) -> Option<&str>;
-}
-
-impl Name for Option<roxmltree::Namespace<'_>> {
-    fn name(&self) -> Option<& str> {
-        match self {
-            Some(n) => n.name(),
-            None => None
-        }
-    }
-}
-
 pub type MinOccurs = usize;
 pub enum MaxOccurs {
     Bounded(usize),

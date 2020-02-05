@@ -2,6 +2,17 @@ use crate::generator2::types::{RsEntity, StructField, Struct};
 use roxmltree::{Namespace, Node};
 use crate::generator2::utils::{match_type, attributes_to_fields, get_documentation, struct_field_macros, find_child, any_attribute_field, struct_macro};
 use crate::xsd::elements::{XmlNode, ElementType, RestrictionType, ExtensionType};
+use crate::xsd::elements::ElementType::Element;
+use crate::generator2::generator::parse_node;
+
+const AVAILABLE_CONTENT_TYPES: [ElementType; 6] = [
+    ElementType::All, //No in ONVIF
+    ElementType::Attribute,
+    ElementType::AttributeGroup,
+    ElementType::Choice,
+    ElementType::Group, //No in ONVIF
+    ElementType::Sequence,
+];
 
 pub fn parse_complex_content(node: &Node, target_ns: Option<&Namespace>) -> RsEntity {
     let content = node
@@ -18,14 +29,14 @@ pub fn parse_complex_content(node: &Node, target_ns: Option<&Namespace>) -> RsEn
                 &content,
                 target_ns
             ),
-            _ => unreachable!("Invalid restriction type of SimpleContent {:?}", r),
+            _ => unreachable!("Invalid restriction type of complexContent {:?}", r),
         },
         ElementType::Extension(e) => match e {
             ExtensionType::ComplexContent => complex_content_extension(
                 &content,
                 target_ns
             ),
-            _ => unreachable!("Invalid extension type of SimpleContent {:?}", e),
+            _ => unreachable!("Invalid extension type of complexContent {:?}", e),
         },
         _ => unreachable!(
             "Complex content must be defined in one of the following ways: [Restriction, Extension]"
@@ -55,6 +66,22 @@ fn complex_content_extension(node: &Node, target_ns: Option<&Namespace>) -> RsEn
         Some(_) => fields.push(any_attribute_field()),
         None => (),
     };
+
+    let content = node.children().filter(
+        |n| n.is_element() && n.xsd_type() != ElementType::Attribute && AVAILABLE_CONTENT_TYPES.contains(&n.xsd_type())
+    ).last();
+
+    if content.is_some() {
+        let mut res = parse_node(&content.unwrap(), node, target_ns);
+        match &mut res {
+            RsEntity::Struct(s) => {
+                s.fields.append(&mut fields);
+                s.comment = get_documentation(node);
+                return res;
+            },
+            _ => ()
+        }
+    }
 
     RsEntity::Struct(
         Struct {
