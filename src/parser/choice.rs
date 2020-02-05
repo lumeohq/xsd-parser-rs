@@ -1,6 +1,6 @@
 use crate::parser::types::{RsEntity, Enum};
 use roxmltree::Node;
-use crate::parser::elements::{ElementType, XmlNode};
+use crate::parser::xsd_elements::{ElementType, XsdNode};
 use crate::parser::parser::parse_node;
 
 pub fn parse_choice(choice: &Node, target_ns: Option<&roxmltree::Namespace>) -> RsEntity {

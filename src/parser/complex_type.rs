@@ -2,7 +2,7 @@ use roxmltree::Node;
 
 use crate::parser::types::{RsEntity, Struct, StructField};
 use crate::parser::utils::{any_attribute_field, find_child, get_documentation, get_parent_name, struct_macro, attributes_to_fields, get_field_name, match_type};
-use crate::parser::elements::{ElementType, XmlNode};
+use crate::parser::xsd_elements::{ElementType, XsdNode};
 use crate::parser::parser::parse_node;
 
 //A complex type can contain one and only one of the following elements,

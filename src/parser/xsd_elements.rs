@@ -64,11 +64,11 @@ pub enum RestrictionType {
     SimpleType,
 }
 
-pub trait XmlNode {
+pub trait XsdNode {
     fn xsd_type(&self) -> ElementType;
 }
 
-impl XmlNode for roxmltree::Node<'_, '_> {
+impl XsdNode for roxmltree::Node<'_, '_> {
     fn xsd_type(&self) -> ElementType {
         use ElementType::*;
         match self.tag_name().name() {

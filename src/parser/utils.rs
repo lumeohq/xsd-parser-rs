@@ -5,7 +5,7 @@ use inflector::cases::pascalcase::to_pascal_case;
 use roxmltree::{Node, Namespace};
 use std::borrow::Cow;
 use std::str;
-use crate::parser::elements::{XmlNode, ElementType};
+use crate::parser::xsd_elements::{XsdNode, ElementType};
 
 pub fn split_comment_line(s: &str, max_len: usize, indent: usize) -> String {
     let indent_str = " ".repeat(indent);
