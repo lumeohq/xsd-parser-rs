@@ -1,5 +1,5 @@
 mod complex_type;
-pub mod generator;
+pub mod parser;
 mod simple_type;
 mod types;
 mod utils;

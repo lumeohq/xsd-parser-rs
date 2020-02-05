@@ -1,9 +1,9 @@
-use crate::generator2::types::{RsEntity, StructField, Struct};
+use crate::parser::types::{RsEntity, StructField, Struct};
 use roxmltree::{Namespace, Node};
-use crate::generator2::utils::{match_type, attributes_to_fields, get_documentation, struct_field_macros, find_child, any_attribute_field, struct_macro};
+use crate::parser::utils::{match_type, attributes_to_fields, get_documentation, struct_field_macros, find_child, any_attribute_field, struct_macro};
 use crate::xsd::elements::{XmlNode, ElementType, RestrictionType, ExtensionType};
 use crate::xsd::elements::ElementType::Element;
-use crate::generator2::generator::parse_node;
+use crate::parser::parser::parse_node;
 
 const AVAILABLE_CONTENT_TYPES: [ElementType; 6] = [
     ElementType::All, //No in ONVIF

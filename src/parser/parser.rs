@@ -1,15 +1,15 @@
 use roxmltree::Namespace;
 
-use crate::generator2::complex_type::parse_complex_type;
-use crate::generator2::element::parse_element;
-use crate::generator2::simple_type::parse_simple_type;
-use crate::generator2::types::{RsEntity, File, Import, StructField};
-use crate::generator2::utils::{target_namespace, get_documentation};
+use crate::parser::complex_type::parse_complex_type;
+use crate::parser::element::parse_element;
+use crate::parser::simple_type::parse_simple_type;
+use crate::parser::types::{RsEntity, File, Import, StructField};
+use crate::parser::utils::{target_namespace, get_documentation};
 use crate::xsd::elements::{ElementType, XmlNode};
-use crate::generator2::sequence::parse_sequence;
-use crate::generator2::simple_content::parse_simple_content;
-use crate::generator2::complex_content::parse_complex_content;
-use crate::generator2::choice::parse_choice;
+use crate::parser::sequence::parse_sequence;
+use crate::parser::simple_content::parse_simple_content;
+use crate::parser::complex_content::parse_complex_content;
+use crate::parser::choice::parse_choice;
 
 use linked_hash_map::LinkedHashMap;
 

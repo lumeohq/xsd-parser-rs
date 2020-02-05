@@ -1,9 +1,9 @@
 use roxmltree::Node;
 
-use crate::generator2::types::{RsEntity, Struct};
-use crate::generator2::utils::{any_attribute_field, find_child, get_documentation, get_parent_name, struct_macro, attributes_to_fields};
+use crate::parser::types::{RsEntity, Struct, StructField};
+use crate::parser::utils::{any_attribute_field, find_child, get_documentation, get_parent_name, struct_macro, attributes_to_fields, get_field_name, match_type};
 use crate::xsd::elements::{ElementType, XmlNode};
-use crate::generator2::generator::parse_node;
+use crate::parser::parser::parse_node;
 
 //A complex type can contain one and only one of the following elements,
 // which determines the type of content allowed in the complex type.
@@ -54,8 +54,29 @@ pub fn parse_complex_type(node: &Node, parent: &Node, target_ns: Option<&roxmltr
         RsEntity::Struct( st) => {
             st.fields.append(&mut fields);
             st.name = name.to_string();
-        },
-        _ => () //TODO: enum from choice
+        }
+        RsEntity::Enum(en) => {
+            en.name = format!("{}Choice", name);
+            fields.push(StructField{
+                name: get_field_name(en.name.as_str()),
+                type_name: match_type(en.name.as_str(), target_ns).into(),
+                comment: None,
+                macros: "//TODO: add yaserde macros\n".to_string(),
+                subtypes: vec![]
+            });
+            en.subtypes = vec![
+                RsEntity::Struct(
+                    Struct {
+                        name: name.to_string(),
+                        subtypes: vec![],
+                        macros: struct_macro(target_ns),
+                        comment: get_documentation(node),
+                        fields
+                    }
+                )
+            ];
+        }
+        _ => ()
     };
     res
 }

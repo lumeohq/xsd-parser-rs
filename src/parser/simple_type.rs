@@ -1,5 +1,5 @@
-use crate::generator2::types::{Enum, EnumCase, RsEntity, TupleStruct};
-use crate::generator2::utils::{
+use crate::parser::types::{Enum, EnumCase, RsEntity, TupleStruct};
+use crate::parser::utils::{
     find_child, get_documentation, get_parent_name, match_type, tuple_struct_macros,
 };
 use crate::xsd::elements::{ElementType, RestrictionType, XmlNode};
@@ -95,6 +95,7 @@ fn simple_type_restriction(
             name: struct_name.to_string(),
             cases: enum_cases,
             type_name: base.to_string(),
+            subtypes: vec![]
         })
     } else {
         RsEntity::TupleStruct(TupleStruct {

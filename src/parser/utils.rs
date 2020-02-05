@@ -1,6 +1,6 @@
 extern crate inflector;
 use self::inflector::cases::snakecase::to_snake_case;
-use crate::generator2::types::StructField;
+use crate::parser::types::StructField;
 use inflector::cases::pascalcase::to_pascal_case;
 use roxmltree::{Node, Namespace};
 use std::borrow::Cow;
@@ -200,6 +200,14 @@ fn attribute_to_field(node: &Node, target_ns: Option<&roxmltree::Namespace>) -> 
         comment: get_documentation(node),
         subtypes: vec![],
         name:  get_field_name(name),
+    }
+}
+
+pub fn yaserde_for_element(name: &str, target_namespace: Option<&roxmltree::Namespace>) -> String {
+    let prefix = target_namespace.and_then(|ns| ns.name());
+    match prefix {
+        Some(p) => format!("  #[yaserde(prefix = \"{}\", rename = \"{}\")]\n", p, name),
+        None => format!("  #[yaserde(rename = \"{}\")]\n", name)
     }
 }
 
