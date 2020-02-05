@@ -1,7 +1,7 @@
 use crate::parser::types::{RsEntity, StructField, Struct};
 use roxmltree::{Namespace, Node};
 use crate::parser::utils::{match_type, attributes_to_fields, get_documentation, struct_field_macros, find_child, any_attribute_field, struct_macro};
-use crate::parser::elements::{XmlNode, ElementType, RestrictionType, ExtensionType};
+use crate::parser::xsd_elements::{XsdNode, ElementType, RestrictionType, ExtensionType};
 use crate::parser::parser::parse_node;
 
 const AVAILABLE_CONTENT_TYPES: [ElementType; 6] = [
