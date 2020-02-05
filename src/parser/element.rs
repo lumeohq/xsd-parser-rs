@@ -3,8 +3,8 @@ use roxmltree::Namespace;
 
 use crate::parser::parser::parse_node;
 use crate::parser::types::{Alias, RsEntity, Struct, StructField, EnumCase};
-use crate::parser::utils::{get_documentation, match_type, struct_macro, get_field_name, struct_field_macros, get_type_name, yaserde_for_element};
-use crate::xsd::elements::{ElementType, XmlNode, min_occurs, max_occurs, MaxOccurs};
+use crate::parser::utils::{get_documentation, match_type, struct_macro, get_field_name, get_type_name, yaserde_for_element};
+use crate::parser::elements::{ElementType, XmlNode, min_occurs, max_occurs, MaxOccurs};
 use std::borrow::Cow;
 
 pub fn parse_element(node: &Node, parent: &Node, target_ns: Option<&roxmltree::Namespace>) -> RsEntity {

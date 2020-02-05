@@ -2,7 +2,7 @@ use crate::parser::types::{Enum, EnumCase, RsEntity, TupleStruct};
 use crate::parser::utils::{
     find_child, get_documentation, get_parent_name, match_type, tuple_struct_macros,
 };
-use crate::xsd::elements::{ElementType, RestrictionType, XmlNode};
+use crate::parser::elements::{ElementType, RestrictionType, XmlNode};
 
 use roxmltree::Node;
 
