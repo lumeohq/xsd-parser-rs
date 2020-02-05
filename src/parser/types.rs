@@ -1,6 +1,6 @@
 use core::fmt;
 
-use crate::generator2::utils::{get_field_comment, get_structure_comment, get_type_name};
+use crate::parser::utils::{get_field_comment, get_structure_comment, get_type_name};
 
 pub struct File {
     pub name: String,
@@ -108,22 +108,33 @@ pub struct Enum {
     pub cases: Vec<EnumCase>,
     pub comment: Option<String>,
     pub type_name: String,
+    pub subtypes: Vec<RsEntity>,
 }
 
 impl fmt::Display for Enum {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         write!(
             f,
-            "{comment}pub enum {name} {{\n{cases}  \n__Unknown__({typename})\n}}\n",
+            "{comment}{derive}pub enum {name} {{\n{cases}  \n\n__Unknown__({typename})\n}}\n\n{default}\n\n{subtypes}",
             comment = get_structure_comment(self.comment.as_deref()),
+            derive="#[derive(PartialEq, Debug, YaSerialize, YaDeserialize)]\n",
             name = self.name,
             cases = self
                 .cases
                 .iter()
                 .map(|case| case.to_string())
                 .collect::<Vec<String>>()
-                .join("\n"),
-            typename = self.type_name
+                .join("\n\n"),
+            typename = self.type_name,
+            default = format!("impl Default for {name} {{\n  fn default() -> {name} {{\n    {name}::__Unknown__(\"No valid variants\".into())\n  }}\n}}",
+                name = self.name
+            ),
+            subtypes = self
+                .subtypes
+                .iter()
+                .map(|f| f.to_string())
+                .collect::<Vec<String>>()
+                .join("\n\n"),
         )
     }
 }
@@ -141,14 +152,14 @@ impl fmt::Display for EnumCase {
         match &self.type_name {
             Some(tn) => write!(
                 f,
-                "  {name}({typename}),  {comment}",
+                "{comment}  {name}({typename}),",
                 name = name,
                 typename = tn,
                 comment = get_field_comment(self.comment.as_deref()),
             ),
             None => write!(
                 f,
-                "  {name},  {comment}",
+                "{comment}  {name},",
                 name = name,
                 comment = get_field_comment(self.comment.as_deref())
             ),

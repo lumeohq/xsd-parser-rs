@@ -1,7 +1,7 @@
 use roxmltree::{Node, Namespace};
-use crate::generator2::types::{RsEntity, StructField, Struct};
+use crate::parser::types::{RsEntity, StructField, Struct};
 use crate::xsd::elements::{XmlNode, ElementType, RestrictionType, ExtensionType};
-use crate::generator2::utils::{match_type, get_documentation, struct_field_macros, find_child, any_attribute_field, struct_macro, attributes_to_fields};
+use crate::parser::utils::{match_type, get_documentation, struct_field_macros, find_child, any_attribute_field, struct_macro, attributes_to_fields};
 
 pub fn parse_simple_content(node: &Node, target_ns: Option<&Namespace>) -> RsEntity {
     let content = node

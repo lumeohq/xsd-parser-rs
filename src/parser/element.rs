@@ -1,9 +1,9 @@
 use roxmltree::Node;
 use roxmltree::Namespace;
 
-use crate::generator2::generator::parse_node;
-use crate::generator2::types::{Alias, RsEntity, Struct, StructField, EnumCase};
-use crate::generator2::utils::{get_documentation, match_type, struct_macro, get_field_name, struct_field_macros, get_type_name};
+use crate::parser::parser::parse_node;
+use crate::parser::types::{Alias, RsEntity, Struct, StructField, EnumCase};
+use crate::parser::utils::{get_documentation, match_type, struct_macro, get_field_name, struct_field_macros, get_type_name, yaserde_for_element};
 use crate::xsd::elements::{ElementType, XmlNode, min_occurs, max_occurs, MaxOccurs};
 use std::borrow::Cow;
 
@@ -32,7 +32,7 @@ fn parse_case_of_choice(element: &Node, target_ns: Option<&Namespace>) -> RsEnti
     if element.has_attribute("ref") {
         let ref_attr = element.attribute("ref").unwrap();
         let name = ref_attr.split(":").last().unwrap();
-        let type_name = match_type(ref_attr, target_ns);
+        let type_name = element_type(element,match_type(ref_attr, target_ns));
 
         return RsEntity::EnumCase(
             EnumCase{
@@ -48,7 +48,10 @@ fn parse_case_of_choice(element: &Node, target_ns: Option<&Namespace>) -> RsEnti
     let name = element.attribute("name").unwrap_or("UNSUPPORTED_ELEMENT_NAME");
 
     if element.has_attribute("type") {
-        let type_name = match_type(element.attribute("type").unwrap(), target_ns);
+        let type_name = element_type(
+            element,
+            match_type(element.attribute("type").unwrap(), target_ns)
+        );
         return RsEntity::EnumCase(
             EnumCase{
                 name: name.to_string(),
@@ -91,13 +94,12 @@ fn parse_field_of_sequence(node: &Node, target_ns: Option<&Namespace>) -> RsEnti
         )
     );
 
-
     RsEntity::StructField(
         StructField{
             name: get_field_name(name),
             type_name,
             comment: get_documentation(node),
-            macros: struct_field_macros(name),
+            macros: yaserde_for_element(name, target_ns),
             subtypes: vec![]
         }
     )
@@ -133,6 +135,7 @@ fn parse_global_element(node: &Node, target_ns: Option<&Namespace>) -> RsEntity 
 }
 
 pub fn element_type(node: &Node, type_name: Cow<str>) -> String {
+    print!("{:?}", node);
     let min = min_occurs(node);
     let max = max_occurs(node);
     match min {
