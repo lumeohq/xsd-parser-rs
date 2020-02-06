@@ -1,3 +1,4 @@
+mod attribute;
 mod choice;
 mod complex_content;
 mod complex_type;

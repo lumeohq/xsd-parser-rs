@@ -1,11 +1,12 @@
 extern crate inflector;
 use self::inflector::cases::snakecase::to_snake_case;
-use crate::parser::types::StructField;
+use crate::parser::types::{StructField, RsEntity};
 use inflector::cases::pascalcase::to_pascal_case;
 use roxmltree::{Node, Namespace};
 use std::borrow::Cow;
 use std::str;
 use crate::parser::xsd_elements::{XsdNode, ElementType};
+use crate::parser::parser::parse_node;
 
 pub fn split_comment_line(s: &str, max_len: usize, indent: usize) -> String {
     let indent_str = " ".repeat(indent);
@@ -172,42 +173,11 @@ pub fn struct_macro(target_namespace: Option<&roxmltree::Namespace>) -> String {
 pub fn attributes_to_fields(node: &Node, target_ns: Option<&Namespace>) -> Vec<StructField> {
     node.children()
         .filter(|n| n.is_element() && n.xsd_type() == ElementType::Attribute)
-        .map(|n| attribute_to_field(&n, target_ns))
+        .map(|n| match parse_node(&n, node, target_ns) {
+            RsEntity::StructField(sf) => sf,
+            _ => unreachable!("Invalid attribute parsing: {:?}", n)
+        })
         .collect()
-}
-
-fn attribute_to_field(node: &Node, target_ns: Option<&roxmltree::Namespace>) -> StructField {
-    let name =  node
-        .attribute("name")
-        .or(node.attribute("ref"))
-        .expect("All attributes have name or ref in Onvif");
-
-    let matched_type = match_type(
-        node.attribute("type")
-            .or(node.attribute("ref"))
-            .unwrap_or("()"),
-        target_ns,
-    );
-
-    let type_name = match node.attribute("use") {
-        Some(u) => {match u {
-            "optional" => format!("Option<{}>", matched_type),
-            "prohibited" => "()".to_string(), // TODO: maybe Empty<T> or remove this field
-            "required" => matched_type.to_string(),
-            _ => unreachable!(
-                "If 'use' specified, this attribute must have one of the following values [optional, prohibited, required]"
-            )
-        }},
-        None => format!("Option<{}>", matched_type)
-    };
-
-    StructField {
-        macros: struct_field_macros(name),
-        type_name,
-        comment: get_documentation(node),
-        subtypes: vec![],
-        name:  get_field_name(name),
-    }
 }
 
 pub fn yaserde_for_element(name: &str, target_namespace: Option<&roxmltree::Namespace>) -> String {
