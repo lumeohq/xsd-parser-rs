@@ -1,5 +1,5 @@
 use crate::parser::types::{Enum, EnumCase, RsEntity, TupleStruct};
-use crate::parser::utils::{find_child, get_documentation, match_type, tuple_struct_macros, target_namespace, get_parent_name};
+use crate::parser::utils::{find_child, get_documentation, match_type, tuple_struct_macros, get_parent_name};
 use crate::parser::xsd_elements::{ElementType, RestrictionType, XsdNode};
 
 use roxmltree::{Node, Namespace};
@@ -162,6 +162,8 @@ fn test_parse_simple_type_with_list() {
         }
         _ => unreachable!("Test failed!")
     }
+
+    println!("{}", result);
 
 }
 

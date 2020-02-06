@@ -125,11 +125,7 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 	</xs:simpleType>
 	<!--===============================-->
 	<xs:simpleType name="ReferenceTokenList">
-		<xs:list>
-			<xs:simpleType>
-				<xs:list itemType="xs:SSD"/>
-			</xs:simpleType>
-		</xs:list>
+		<xs:list itemType="tt:ReferenceToken"/>
 	</xs:simpleType>
 	<!--===============================-->
 	<xs:complexType name="FloatList">

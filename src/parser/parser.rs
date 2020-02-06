@@ -36,21 +36,6 @@ pub fn parse(text: &str) {
     //TODO: add return value
 }
 
-
-pub fn parse_schema(schema: &roxmltree::Node<'_, '_>) -> RsEntity {
-    RsEntity::File(
-        File{
-            name: "".into(),
-            namespace: None,
-            types: schema
-                .children()
-                .filter(|n| n.is_element())
-                .map(|node| parse_node(&node, schema, target_namespace(&schema)))
-                .collect()
-        }
-    )
-}
-
 pub fn parse_node(node: &roxmltree::Node<'_, '_>, parent: &roxmltree::Node, tn: Option<&Namespace>) -> RsEntity {
     use ElementType::*;
 
@@ -72,6 +57,19 @@ pub fn parse_node(node: &roxmltree::Node<'_, '_>, parent: &roxmltree::Node, tn: 
     }
 }
 
+pub fn parse_schema(schema: &roxmltree::Node<'_, '_>) -> RsEntity {
+    RsEntity::File(
+        File{
+            name: "".into(),
+            namespace: None,
+            types: schema
+                .children()
+                .filter(|n| n.is_element())
+                .map(|node| parse_node(&node, schema, target_namespace(&schema)))
+                .collect()
+        }
+    )
+}
 
 // Stubs
 fn parse_import(node: &roxmltree::Node) -> RsEntity {

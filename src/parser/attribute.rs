@@ -16,14 +16,16 @@ pub fn parse_attribute(node: &Node, target_ns: Option<&Namespace>) -> RsEntity {
     );
 
     let type_name = match node.attribute("use") {
-        Some(u) => {match u {
-            "optional" => format!("Option<{}>", matched_type),
-            "prohibited" => "()".to_string(), // TODO: maybe Empty<T> or remove this field
-            "required" => matched_type.to_string(),
-            _ => unreachable!(
-                "If 'use' specified, this attribute must have one of the following values [optional, prohibited, required]"
-            )
-        }},
+        Some(u) => {
+            match u {
+                "optional" => format!("Option<{}>", matched_type),
+                "prohibited" => "()".to_string(), // TODO: maybe Empty<T> or remove this field
+                "required" => matched_type.to_string(),
+                _ => unreachable!(
+                    "If 'use' specified, this attribute must have one of the following values [optional, prohibited, required]"
+                    )
+            }
+        },
         None => format!("Option<{}>", matched_type)
     };
 

@@ -23,10 +23,10 @@ fn elements_to_fields(sequence: &Node, parent_name: &str, target_ns: Option<&Nam
     .map(|n| match parse_node(&n, sequence, target_ns){
         RsEntity::StructField(sf) => sf,
         RsEntity::Enum(mut en) => {
-            en.name = match_type(parent_name, target_ns).into();
+            en.name = format!("{}Choice", match_type(parent_name, target_ns));
             return enum_to_field(en);
         },
-        _ => unreachable!("\nElements of sequence may be only StructFields: {:?}\n{}", n, parse_node(&n, sequence, target_ns))
+        _ => unreachable!("\nError: {:?}\n{}", n, parse_node(&n, sequence, target_ns))
         }
     )
     .collect()
@@ -34,8 +34,8 @@ fn elements_to_fields(sequence: &Node, parent_name: &str, target_ns: Option<&Nam
 
 fn enum_to_field(en: Enum) -> StructField {
     StructField {
-        name: format!("{}_choice", get_field_name(en.name.as_str())),
-        type_name: format!("{}Choice", en.name),
+        name: format!("{}", get_field_name(en.name.as_str())),
+        type_name: format!("{}", en.name),
         comment: None,
         macros: struct_field_macros(en.name.as_str()),
         subtypes: vec![RsEntity::Enum(en)]

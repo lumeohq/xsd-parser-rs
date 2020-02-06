@@ -2,6 +2,7 @@ use core::fmt;
 
 use crate::parser::utils::{get_field_comment, get_structure_comment, get_type_name};
 
+#[derive(Debug)]
 pub struct File {
     pub name: String,
     pub namespace: Option<String>,
@@ -23,6 +24,7 @@ impl fmt::Display for File {
     }
 }
 
+#[derive(Debug)]
 pub struct Struct {
     pub name: String,
     pub comment: Option<String>,
@@ -35,7 +37,7 @@ impl fmt::Display for Struct {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         write!(
             f,
-            "{comment}{macros}pub struct {name} {{\n{fields}\n}}\n{subtypes}",
+            "{comment}{macros}pub struct {name} {{\n{fields}\n}}\n{subtypes}\n{fields_subtypes}",
             comment = get_structure_comment(self.comment.as_deref()),
             macros = self.macros,
             name = self.name,
@@ -51,10 +53,23 @@ impl fmt::Display for Struct {
                 .map(|f| f.to_string())
                 .collect::<Vec<String>>()
                 .join("\n\n"),
+            fields_subtypes = self
+                .fields
+                .iter()
+                .map(|f| f
+                    .subtypes
+                    .iter()
+                    .map(|e| e.to_string())
+                    .collect::<Vec<String>>()
+                    .join("\n")
+                )
+                .collect::<Vec<String>>()
+                .join("\n"),
         )
     }
 }
 
+#[derive(Debug)]
 pub struct StructField {
     pub name: String,
     pub type_name: String,
@@ -76,6 +91,7 @@ impl fmt::Display for StructField {
     }
 }
 
+#[derive(Debug)]
 pub struct TupleStruct {
     pub name: String,
     pub comment: Option<String>,
@@ -103,6 +119,7 @@ impl fmt::Display for TupleStruct {
     }
 }
 
+#[derive(Debug)]
 pub struct Enum {
     pub name: String,
     pub cases: Vec<EnumCase>,
@@ -139,6 +156,7 @@ impl fmt::Display for Enum {
     }
 }
 
+#[derive(Debug)]
 pub struct EnumCase {
     pub name: String,
     pub comment: Option<String>,
@@ -167,6 +185,7 @@ impl fmt::Display for EnumCase {
     }
 }
 
+#[derive(Debug)]
 pub struct Alias {
     pub name: String,
     pub original: String,
@@ -188,6 +207,7 @@ impl fmt::Display for Alias {
     }
 }
 
+#[derive(Debug)]
 pub struct Import {
     pub name: String,
     pub location: String,
@@ -204,6 +224,7 @@ impl fmt::Display for Import {
     }
 }
 
+#[derive(Debug)]
 pub enum RsEntity {
     Struct(Struct),
     StructField(StructField),
