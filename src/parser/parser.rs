@@ -1,15 +1,15 @@
 use roxmltree::Namespace;
 
+use crate::parser::choice::parse_choice;
+use crate::parser::complex_content::parse_complex_content;
 use crate::parser::complex_type::parse_complex_type;
 use crate::parser::element::parse_element;
+use crate::parser::sequence::parse_sequence;
+use crate::parser::simple_content::parse_simple_content;
 use crate::parser::simple_type::parse_simple_type;
 use crate::parser::types::{RsEntity, File, Import, StructField};
 use crate::parser::utils::{target_namespace, get_documentation};
 use crate::parser::xsd_elements::{ElementType, XsdNode};
-use crate::parser::sequence::parse_sequence;
-use crate::parser::simple_content::parse_simple_content;
-use crate::parser::complex_content::parse_complex_content;
-use crate::parser::choice::parse_choice;
 
 use linked_hash_map::LinkedHashMap;
 
@@ -32,10 +32,9 @@ pub fn parse(text: &str) {
     for val in map.values() {
         println!("{}", val);
     }
-
-
     //TODO: add return value
 }
+
 
 pub fn parse_schema(schema: &roxmltree::Node<'_, '_>) -> RsEntity {
     RsEntity::File(
@@ -55,17 +54,17 @@ pub fn parse_node(node: &roxmltree::Node<'_, '_>, parent: &roxmltree::Node, tn: 
     use ElementType::*;
 
     match node.xsd_type() {
-        Schema => parse_schema(node),
-        SimpleType => parse_simple_type(node, parent, tn),
+        Any => parse_any(node),
+        AnyAttribute => parse_any_attribute(node),
+        Choice => parse_choice(node, tn),
+        ComplexContent => parse_complex_content(node, tn),
         ComplexType => parse_complex_type(node, parent, tn),
         Element => parse_element(node, parent, tn),
         Import | Include => parse_import(node),
-        Any => parse_any(node),
+        Schema => parse_schema(node),
         Sequence => parse_sequence(node, parent, tn),
         SimpleContent => parse_simple_content(node, tn),
-        ComplexContent => parse_complex_content(node, tn),
-        Choice => parse_choice(node, tn),
-        AnyAttribute => parse_any_attribute(node),
+        SimpleType => parse_simple_type(node, parent, tn),
 
         _ => {unreachable!("{:?}", node);},
     }

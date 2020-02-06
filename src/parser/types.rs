@@ -115,7 +115,7 @@ impl fmt::Display for Enum {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         write!(
             f,
-            "{comment}{derive}pub enum {name} {{\n{cases}  \n\n__Unknown__({typename})\n}}\n\n{default}\n\n{subtypes}",
+            "{comment}{derive}pub enum {name} {{\n{cases}  \n__Unknown__({typename})\n}}\n\n{default}\n\n{subtypes}",
             comment = get_structure_comment(self.comment.as_deref()),
             derive="#[derive(PartialEq, Debug, YaSerialize, YaDeserialize)]\n",
             name = self.name,
@@ -124,9 +124,9 @@ impl fmt::Display for Enum {
                 .iter()
                 .map(|case| case.to_string())
                 .collect::<Vec<String>>()
-                .join("\n\n"),
+                .join("\n"),
             typename = self.type_name,
-            default = format!("impl Default for {name} {{\n  fn default() -> {name} {{\n    {name}::__Unknown__(\"No valid variants\".into())\n  }}\n}}",
+            default = format!("impl Default for {name} {{\n  fn default() -> {name} {{\n    Self::__Unknown__(\"No valid variants\".into())\n  }}\n}}",
                 name = self.name
             ),
             subtypes = self

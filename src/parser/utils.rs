@@ -36,16 +36,25 @@ pub fn get_structure_comment(doc: Option<&str>) -> String {
 }
 
 pub fn get_field_comment(doc: Option<&str>) -> String {
+    if doc.is_none() {
+        return String::new();
+    }
     doc.
-        unwrap_or("").
+        unwrap().
         lines().
         map(|s| s.trim()).
         filter(|s| s.len() > 1).
         map(|s| split_comment_line(s, 80, 2)).
-        fold(String::new(), |x , y| (x+&y))
+        fold("\n".to_string(), |x , y| (x+&y))
 }
 
 pub fn match_type(type_name: &str, target_namespace: Option<&roxmltree::Namespace>) -> Cow<'static, str>{
+    fn replace(s: &str) -> String {
+        match s.find(":") {
+            Some(index) => format!("{}::{}", &s[0..index], to_pascal_case(&s[index..])),
+            None => s.into()
+        }
+    }
     match type_name {
         "xs:boolean"     => "bool".into(),
         "xs:double"       => "f64".into(),
@@ -56,19 +65,17 @@ pub fn match_type(type_name: &str, target_namespace: Option<&roxmltree::Namespac
         "xs:unsignedInt" => "usize".into(),
         x => {
             let prefix = target_namespace.and_then(|ns| ns.name());
-            to_pascal_case(
-                match prefix {
-                    Some(name) => {
-                        if x.starts_with(name) {
-                            x[name.len() + 1..].to_string()
-                        }
-                        else {
-                            x.replace(":", "::")
-                        }
+            match prefix {
+                Some(name) => {
+                    if x.starts_with(name) {
+                        to_pascal_case(&x[name.len() + 1..])
                     }
-                    None => x.replace(":", "::")
-                }.as_str()
-            ).into()
+                    else {
+                        replace(x)
+                    }
+                }
+                None => replace(x)
+            }.into()
         }
     }
 }

@@ -84,7 +84,7 @@ impl XsdNode for roxmltree::Node<'_, '_> {
             "complexType" => ComplexType,
             "documentation" => Documentation,
             "element" => Element,
-            "extension" => match self.parent() {
+            "extension" => match self.parent_element() {
                 Some(parent) => match parent.tag_name().name() {
                     "complexContent" => Extension(ExtensionType::ComplexContent),
                     "simpleContent" => Extension(ExtensionType::SimpleContent),
@@ -104,7 +104,7 @@ impl XsdNode for roxmltree::Node<'_, '_> {
             "list" => List,
             "notation" => Notation,
             "redefine" => Redefine,
-            "restriction" => match self.parent() {
+            "restriction" => match self.parent_element() {
                 Some(parent) => match parent.tag_name().name() {
                     "complexContent" => Restriction(RestrictionType::ComplexContent),
                     "simpleContent" => Restriction(RestrictionType::SimpleContent),
