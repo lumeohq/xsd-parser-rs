@@ -12,6 +12,7 @@ use crate::parser::utils::{target_namespace, get_documentation};
 use crate::parser::xsd_elements::{ElementType, XsdNode};
 
 use linked_hash_map::LinkedHashMap;
+use crate::parser::attribute::parse_attribute;
 
 pub fn parse(text: &str) {
     let doc = match roxmltree::Document::parse(&text) {
@@ -56,6 +57,7 @@ pub fn parse_node(node: &roxmltree::Node<'_, '_>, parent: &roxmltree::Node, tn: 
     match node.xsd_type() {
         Any => parse_any(node),
         AnyAttribute => parse_any_attribute(node),
+        Attribute => parse_attribute(node, tn),
         Choice => parse_choice(node, tn),
         ComplexContent => parse_complex_content(node, tn),
         ComplexType => parse_complex_type(node, parent, tn),
