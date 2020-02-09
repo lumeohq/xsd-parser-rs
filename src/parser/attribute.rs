@@ -1,6 +1,5 @@
 use roxmltree::{Node, Namespace};
 
-use crate::parser::constants::attribute;
 use crate::parser::types::{RsEntity, StructField};
 use crate::parser::utils::{struct_field_macros, get_documentation, get_field_name, match_type};
 use crate::parser::xsd_elements::{XsdNode, UseType};
