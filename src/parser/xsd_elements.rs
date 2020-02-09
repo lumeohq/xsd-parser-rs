@@ -1,3 +1,5 @@
+use crate::parser::constants::attribute;
+
 #[derive(Debug, PartialEq)]
 pub enum ElementType {
     All,
@@ -66,9 +68,13 @@ pub enum RestrictionType {
 
 pub trait XsdNode {
     fn xsd_type(&self) -> ElementType;
+    fn attr_name(&self) -> Option<&str>;
+    fn attr_type(&self) -> Option<&str>;
+    fn attr_ref(&self) -> Option<&str>;
+    fn attr_use(&self) -> UseType;
 }
 
-impl XsdNode for roxmltree::Node<'_, '_> {
+impl<'a> XsdNode for roxmltree::Node<'a, '_> {
     fn xsd_type(&self) -> ElementType {
         use ElementType::*;
         match self.tag_name().name() {
@@ -140,7 +146,37 @@ impl XsdNode for roxmltree::Node<'_, '_> {
             _ => UnknownElement(self.tag_name().name().to_string()),
         }
     }
+
+    fn attr_name(&self) -> Option<&str> {
+        self.attribute(attribute::NAME)
+    }
+
+    fn attr_use(&self) -> UseType {
+        match self.attribute(attribute::USE).unwrap_or("optional") {
+            "optional" => UseType::Optional,
+            "prohibited" => UseType::Prohibited,
+            "required" => UseType::Required,
+            _ => unreachable!(
+                "If 'use' specified, this attribute must have one of the following values [optional, prohibited, required]"
+            )
+        }
+    }
+
+    fn attr_type(&self) -> Option<&str> {
+        self.attribute(attribute::TYPE)
+    }
+
+    fn attr_ref(&self) -> Option<&str> {
+        self.attribute(attribute::REF)
+    }
 }
+
+pub enum UseType {
+    Required,
+    Prohibited,
+    Optional,
+}
+
 
 pub type MinOccurs = usize;
 pub enum MaxOccurs {
@@ -151,13 +187,13 @@ pub enum MaxOccurs {
 
 pub fn min_occurs(node: &roxmltree::Node) -> MinOccurs {
     node
-    .attribute("minOccurs")
+    .attribute(attribute::MIN_OCCURS)
     .and_then(|v| v.parse::<usize>().ok())
     .unwrap_or(1)
 }
 
 pub fn max_occurs(node: &roxmltree::Node) -> MaxOccurs {
-    match node.attribute("maxOccurs") {
+    match node.attribute(attribute::MAX_OCCURS) {
         Some(s) => match s {
             "unbounded" => MaxOccurs::Unbounded,
             s => s.

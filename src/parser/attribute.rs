@@ -1,33 +1,30 @@
 use roxmltree::{Node, Namespace};
+
+use crate::parser::constants::attribute;
 use crate::parser::types::{RsEntity, StructField};
 use crate::parser::utils::{struct_field_macros, get_documentation, get_field_name, match_type};
+use crate::parser::xsd_elements::{XsdNode, UseType};
+
 
 pub fn parse_attribute(node: &Node, target_ns: Option<&Namespace>) -> RsEntity {
     let name =  node
-        .attribute("name")
-        .or(node.attribute("ref"))
+        .attr_name()
+        .or(node.attr_ref())
         .expect("All attributes have name or ref in Onvif");
 
     let matched_type = match_type(
-        node.attribute("type")
-            .or(node.attribute("ref"))
+        node.attr_type()
+            .or(node.attr_ref())
             .unwrap_or("()"),
         target_ns,
     );
 
-    let type_name = match node.attribute("use") {
-        Some(u) => {
-            match u {
-                "optional" => format!("Option<{}>", matched_type),
-                "prohibited" => "()".to_string(), // TODO: maybe Empty<T> or remove this field
-                "required" => matched_type.to_string(),
-                _ => unreachable!(
-                    "If 'use' specified, this attribute must have one of the following values [optional, prohibited, required]"
-                    )
-            }
-        },
-        None => format!("Option<{}>", matched_type)
+    let type_name = match node.attr_use() {
+        UseType::Optional => format!("Option<{}>", matched_type),
+        UseType::Prohibited => "()".to_string(), // TODO: maybe Empty<T> or remove this field
+        UseType::Required => matched_type.to_string(),
     };
+
 
     RsEntity::StructField(
         StructField {

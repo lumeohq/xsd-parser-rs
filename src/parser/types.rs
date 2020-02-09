@@ -1,8 +1,9 @@
 use core::fmt;
-
-use crate::parser::utils::{get_field_comment, get_structure_comment, get_type_name};
 use std::cell::RefCell;
 use std::collections::HashMap;
+
+use crate::parser::constants::tag;
+use crate::parser::utils::{get_field_comment, get_structure_comment, get_type_name};
 
 #[derive(Debug, Clone)]
 pub struct File {
@@ -53,12 +54,12 @@ impl Struct {
             .fields
             .borrow()
             .iter()
-            .filter(|f| f.name.as_str() == "__base__")
+            .filter(|f| f.name.as_str() == tag::BASE)
             .flat_map(|f| types.get(&f.type_name).map(|s| s.fields.borrow().clone()).unwrap_or(vec![]))
             .collect::<Vec<StructField>>();
 
         self.fields.borrow_mut().append(&mut fields);
-        self.fields.borrow_mut().retain(|field| field.name.as_str() != "__base__");
+        self.fields.borrow_mut().retain(|field| field.name.as_str() != tag::BASE);
 
         for subtype in &self.subtypes {
             if let RsEntity::Struct(s) = subtype {

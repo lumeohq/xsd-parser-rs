@@ -6,6 +6,7 @@ use crate::parser::attribute::parse_attribute;
 use crate::parser::choice::parse_choice;
 use crate::parser::complex_content::parse_complex_content;
 use crate::parser::complex_type::parse_complex_type;
+use crate::parser::constants::attribute;
 use crate::parser::element::parse_element;
 use crate::parser::sequence::parse_sequence;
 use crate::parser::simple_content::parse_simple_content;
@@ -91,8 +92,8 @@ pub fn parse_schema(schema: &roxmltree::Node<'_, '_>) -> RsEntity {
 fn parse_import(node: &roxmltree::Node) -> RsEntity {
     RsEntity::Import(
         Import{
-            name: node.attribute("namespace").unwrap_or("").into(),
-            location: node.attribute("schemaLocation").unwrap_or("").into()
+            name: node.attribute(attribute::NAMESPACE).unwrap_or("").into(),
+            location: node.attribute(attribute::SCHEMA_LOCATION).unwrap_or("").into()
         }
     )
 }

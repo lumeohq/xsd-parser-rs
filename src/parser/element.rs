@@ -1,12 +1,14 @@
+use std::borrow::Cow;
+use std::cell::RefCell;
+
 use roxmltree::Node;
 use roxmltree::Namespace;
 
+use crate::parser::constants::attribute;
 use crate::parser::parser::parse_node;
 use crate::parser::types::{Alias, RsEntity, Struct, StructField, EnumCase};
 use crate::parser::utils::{get_documentation, match_type, struct_macro, get_field_name, get_type_name, yaserde_for_element};
 use crate::parser::xsd_elements::{ElementType, XsdNode, min_occurs, max_occurs, MaxOccurs};
-use std::borrow::Cow;
-use std::cell::RefCell;
 
 pub fn parse_element(node: &Node, parent: &Node, target_ns: Option<&roxmltree::Namespace>) -> RsEntity {
     match parent.xsd_type() {
@@ -18,7 +20,7 @@ pub fn parse_element(node: &Node, parent: &Node, target_ns: Option<&roxmltree::N
 }
 
 fn element_default(node: &Node, target_ns: Option<&Namespace>) -> RsEntity {
-    let ty = node.attribute("type").unwrap_or("UNSUPPORTED");
+    let ty = node.attr_type().unwrap_or("UNSUPPORTED");
     RsEntity::Alias(
         Alias {
             name: match_type("UNSUPPORTED", target_ns).into(),
@@ -30,8 +32,8 @@ fn element_default(node: &Node, target_ns: Option<&Namespace>) -> RsEntity {
 }
 
 fn parse_case_of_choice(element: &Node, target_ns: Option<&Namespace>) -> RsEntity {
-    if element.has_attribute("ref") {
-        let ref_attr = element.attribute("ref").unwrap();
+    if element.has_attribute(attribute::REF) {
+        let ref_attr = element.attr_ref().unwrap();
         let name = ref_attr.split(":").last().unwrap();
         let type_name = element_type(element,match_type(ref_attr, target_ns));
 
@@ -46,12 +48,12 @@ fn parse_case_of_choice(element: &Node, target_ns: Option<&Namespace>) -> RsEnti
         );
     }
 
-    let name = element.attribute("name").unwrap_or("UNSUPPORTED_ELEMENT_NAME");
+    let name = element.attr_name().unwrap_or("UNSUPPORTED_ELEMENT_NAME");
 
-    if element.has_attribute("type") {
+    if element.has_attribute(attribute::TYPE) {
         let type_name = element_type(
             element,
-            match_type(element.attribute("type").unwrap(), target_ns)
+            match_type(element.attr_type().unwrap(), target_ns)
         );
         return RsEntity::EnumCase(
             EnumCase{
@@ -67,7 +69,7 @@ fn parse_case_of_choice(element: &Node, target_ns: Option<&Namespace>) -> RsEnti
     let type_name = element_type(
         element,
         match_type(
-            element.attribute("type").unwrap_or("UNSUPPORTED_TYPE_OF_ELEMENT"),
+            element.attr_type().unwrap_or("UNSUPPORTED_TYPE_OF_ELEMENT"),
             target_ns
         )
     );
@@ -85,12 +87,12 @@ fn parse_case_of_choice(element: &Node, target_ns: Option<&Namespace>) -> RsEnti
 }
 
 fn parse_field_of_sequence(node: &Node, target_ns: Option<&Namespace>) -> RsEntity {
-    let name = node.attribute("name").unwrap_or("UNSUPPORTED_ELEMENT_NAME");
+    let name = node.attr_name().unwrap_or("UNSUPPORTED_ELEMENT_NAME");
 
     let type_name = element_type(
         node,
         match_type(
-            node.attribute("type").unwrap_or("UNSUPPORTED_TYPE_OF_ELEMENT"),
+            node.attr_type().unwrap_or("UNSUPPORTED_TYPE_OF_ELEMENT"),
             target_ns
         )
     );
@@ -108,14 +110,14 @@ fn parse_field_of_sequence(node: &Node, target_ns: Option<&Namespace>) -> RsEnti
 
 fn parse_global_element(node: &Node, target_ns: Option<&Namespace>) -> RsEntity {
     let name = node
-        .attribute("name")
+        .attr_name()
         .expect("Name required if the element is a child of the schema");
 
-    if node.has_attribute("type") {
+    if node.has_attribute(attribute::TYPE) {
         return RsEntity::Alias(
             Alias {
                 name: match_type(name, target_ns).into(),
-                original: match_type(node.attribute("type").unwrap(), target_ns).into(),
+                original: match_type(node.attr_type().unwrap(), target_ns).into(),
                 comment: get_documentation(node),
                 subtypes: vec![],
             }

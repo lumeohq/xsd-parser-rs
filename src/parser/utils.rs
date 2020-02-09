@@ -1,12 +1,17 @@
-extern crate inflector;
-use self::inflector::cases::snakecase::to_snake_case;
-use crate::parser::types::{StructField, RsEntity};
-use inflector::cases::pascalcase::to_pascal_case;
-use roxmltree::{Node, Namespace};
 use std::borrow::Cow;
 use std::str;
-use crate::parser::xsd_elements::{XsdNode, ElementType};
+
+extern crate inflector;
+use inflector::cases::pascalcase::to_pascal_case;
+use inflector::cases::snakecase::to_snake_case;
+
+use roxmltree::{Node, Namespace};
+
+use crate::parser::constants::attribute;
 use crate::parser::parser::parse_node;
+use crate::parser::types::{StructField, RsEntity};
+use crate::parser::xsd_elements::{XsdNode, ElementType};
+
 
 pub fn split_comment_line(s: &str, max_len: usize, indent: usize) -> String {
     let indent_str = " ".repeat(indent);
@@ -108,7 +113,7 @@ pub fn any_attribute_field() -> StructField {
 }
 
 pub fn target_namespace<'a, 'input>(node: &Node<'a, 'input>) -> Option<&'a Namespace<'input>> {
-    match node.attribute("targetNamespace") {
+    match node.attribute(attribute::TARGET_NAMESPACE) {
         Some(tn) => node
             .namespaces()
             .iter()
@@ -143,7 +148,7 @@ pub fn get_parent_name<'a>(node: &Node<'a, '_>) -> &'a str {
                 return "SchemaElement";
             }
 
-            match parent.attribute("name") {
+            match parent.attribute(attribute::NAME) {
                 Some(s) => s,
                 None => get_parent_name(&parent)
             }

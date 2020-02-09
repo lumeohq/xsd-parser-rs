@@ -1,12 +1,13 @@
+use roxmltree::{Node, Namespace};
+
+use crate::parser::constants::attribute;
 use crate::parser::types::{Enum, EnumCase, RsEntity, TupleStruct};
 use crate::parser::utils::{find_child, get_documentation, match_type, tuple_struct_macros, get_parent_name};
 use crate::parser::xsd_elements::{ElementType, RestrictionType, XsdNode};
 
-use roxmltree::{Node, Namespace};
-
 
 pub fn parse_simple_type(node: &Node, parent: &Node, tn: Option<&roxmltree::Namespace>) -> RsEntity {
-    let name = node.attribute("name");
+    let name = node.attr_name();
 
     assert_eq!(
         parent.xsd_type() == ElementType::Schema,
@@ -55,7 +56,7 @@ pub fn parse_simple_type(node: &Node, parent: &Node, tn: Option<&roxmltree::Name
 fn simple_type_list(list: &Node, target_ns: Option<&Namespace>) -> RsEntity {
     let mut types: Vec<RsEntity> = vec![];
 
-    let item_type = match list.attribute("itemType") {
+    let item_type = match list.attribute(attribute::ITEM_TYPE) {
         Some(item_type) => format!("Vec<{}>", match_type(item_type, target_ns)),
         None => {
             let nested_simple_type = find_child(list, "simpleType").expect(
@@ -85,7 +86,7 @@ fn simple_type_list(list: &Node, target_ns: Option<&Namespace>) -> RsEntity {
 fn simple_type_restriction(restriction: &Node, target_ns: Option<&Namespace>) -> RsEntity {
     let base = match_type(
         restriction
-            .attribute("base")
+            .attribute(attribute::BASE)
             .expect("The base value is required"),
         target_ns,
     );
@@ -118,7 +119,7 @@ fn simple_type_restriction(restriction: &Node, target_ns: Option<&Namespace>) ->
 
 fn get_enum_case(node: &Node, target_ns: Option<&roxmltree::Namespace>) -> EnumCase {
     let value = node
-        .attribute("value")
+        .attribute(attribute::VALUE)
         .expect("value is required attribute in enumeration facet");
     EnumCase {
         comment: get_documentation(node),
