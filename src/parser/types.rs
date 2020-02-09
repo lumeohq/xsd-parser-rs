@@ -1,8 +1,10 @@
 use core::fmt;
 
 use crate::parser::utils::{get_field_comment, get_structure_comment, get_type_name};
+use std::cell::RefCell;
+use std::collections::HashMap;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct File {
     pub name: String,
     pub namespace: Option<String>,
@@ -24,13 +26,47 @@ impl fmt::Display for File {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default, Clone)]
 pub struct Struct {
     pub name: String,
     pub comment: Option<String>,
-    pub fields: Vec<StructField>,
+    pub fields: RefCell<Vec<StructField>>,
     pub macros: String,
     pub subtypes: Vec<RsEntity>,
+}
+
+impl Struct {
+    pub fn get_types_map(&self) -> HashMap<&String, &Self> {
+        let mut map = HashMap::new();
+        map.insert(&self.name, self);
+        for ty in &self.subtypes {
+            match ty {
+                RsEntity::Struct(st) => {map.extend(st.get_types_map());}
+                _ => ()
+            }
+        }
+        map
+    }
+
+    pub fn extend_base(&self, types: &HashMap<&String, &Self>) {
+        let mut fields = self
+            .fields
+            .borrow()
+            .iter()
+            .filter(|f| f.name.as_str() == "__base__")
+            .flat_map(|f| types.get(&f.type_name).map(|s| s.fields.borrow().clone()).unwrap_or(vec![]))
+            .collect::<Vec<StructField>>();
+
+        self.fields.borrow_mut().append(&mut fields);
+        self.fields.borrow_mut().retain(|field| field.name.as_str() != "__base__");
+
+        for subtype in &self.subtypes {
+            if let RsEntity::Struct(s) = subtype {
+                s.extend_base(types);
+            }
+        }
+
+    }
 }
 
 impl fmt::Display for Struct {
@@ -43,6 +79,7 @@ impl fmt::Display for Struct {
             name = self.name,
             fields = self
                 .fields
+                .borrow()
                 .iter()
                 .map(|f| f.to_string())
                 .collect::<Vec<String>>()
@@ -55,6 +92,7 @@ impl fmt::Display for Struct {
                 .join("\n\n"),
             fields_subtypes = self
                 .fields
+                .borrow()
                 .iter()
                 .map(|f| f
                     .subtypes
@@ -69,7 +107,7 @@ impl fmt::Display for Struct {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct StructField {
     pub name: String,
     pub type_name: String,
@@ -91,7 +129,7 @@ impl fmt::Display for StructField {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct TupleStruct {
     pub name: String,
     pub comment: Option<String>,
@@ -119,7 +157,7 @@ impl fmt::Display for TupleStruct {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Enum {
     pub name: String,
     pub cases: Vec<EnumCase>,
@@ -156,7 +194,7 @@ impl fmt::Display for Enum {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct EnumCase {
     pub name: String,
     pub comment: Option<String>,
@@ -185,7 +223,7 @@ impl fmt::Display for EnumCase {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Alias {
     pub name: String,
     pub original: String,
@@ -207,7 +245,7 @@ impl fmt::Display for Alias {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Import {
     pub name: String,
     pub location: String,
@@ -224,7 +262,7 @@ impl fmt::Display for Import {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum RsEntity {
     Struct(Struct),
     StructField(StructField),

@@ -54,7 +54,7 @@ pub fn match_type(type_name: &str, target_namespace: Option<&roxmltree::Namespac
         match s.find(":") {
             Some(index) => format!("{}::{}", &s[0..index], to_pascal_case(&s[index..])),
             None => s.into()
-        }
+        }.replace("-", "_")
     }
     match type_name {
         "xs:boolean"     => "bool".into(),

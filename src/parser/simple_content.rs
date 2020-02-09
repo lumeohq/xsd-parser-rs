@@ -2,6 +2,7 @@ use roxmltree::{Node, Namespace};
 use crate::parser::types::{RsEntity, StructField, Struct};
 use crate::parser::xsd_elements::{XsdNode, ElementType, RestrictionType, ExtensionType};
 use crate::parser::utils::{match_type, get_documentation, struct_field_macros, find_child, any_attribute_field, struct_macro, attributes_to_fields};
+use std::cell::RefCell;
 
 pub fn parse_simple_content(node: &Node, target_ns: Option<&Namespace>) -> RsEntity {
     let content = node
@@ -41,7 +42,7 @@ fn simple_content_extension(node: &Node, target_ns: Option<&Namespace>) -> RsEnt
 
     fields.push(
         StructField {
-            name: "base".to_string(),
+            name: "__base__".to_string(),
             type_name: base.to_string(),
             comment: get_documentation(node),
             macros: struct_field_macros("base"),
@@ -59,7 +60,7 @@ fn simple_content_extension(node: &Node, target_ns: Option<&Namespace>) -> RsEnt
         subtypes: vec![],
         comment: get_documentation(node),
         macros: struct_macro(target_ns),
-        fields,
+        fields: RefCell::new(fields),
     })
 }
 

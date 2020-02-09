@@ -4,6 +4,7 @@ use crate::parser::types::{RsEntity, Struct, StructField};
 use crate::parser::utils::{any_attribute_field, find_child, get_documentation, get_parent_name, struct_macro, attributes_to_fields, get_field_name, match_type};
 use crate::parser::xsd_elements::{ElementType, XsdNode};
 use crate::parser::parser::parse_node;
+use std::cell::RefCell;
 
 //A complex type can contain one and only one of the following elements,
 // which determines the type of content allowed in the complex type.
@@ -40,7 +41,7 @@ pub fn parse_complex_type(node: &Node, parent: &Node, target_ns: Option<&roxmltr
         //No content (or empty), only attributes
 
         return RsEntity::Struct(Struct {
-            fields,
+            fields: RefCell::new(fields),
             comment: get_documentation(node),
             macros: struct_macro(target_ns),
             subtypes: vec![],
@@ -52,7 +53,7 @@ pub fn parse_complex_type(node: &Node, parent: &Node, target_ns: Option<&roxmltr
     let mut res = parse_node(&content_node, node, target_ns);
     match &mut res  {
         RsEntity::Struct( st) => {
-            st.fields.append(&mut fields);
+            st.fields.borrow_mut().append(&mut fields);
             st.name = name.to_string();
         }
         RsEntity::Enum(en) => {
@@ -71,7 +72,7 @@ pub fn parse_complex_type(node: &Node, parent: &Node, target_ns: Option<&roxmltr
                         subtypes: vec![],
                         macros: struct_macro(target_ns),
                         comment: get_documentation(node),
-                        fields
+                        fields: RefCell::new(fields),
                     }
                 )
             ];

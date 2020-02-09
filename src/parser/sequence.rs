@@ -2,6 +2,7 @@ use roxmltree::{Node, Namespace};
 use crate::parser::types::{RsEntity, Struct, StructField, Enum};
 use crate::parser::utils::{match_type, struct_macro, get_documentation, get_parent_name, get_field_name, struct_field_macros};
 use crate::parser::parser::parse_node;
+use std::cell::RefCell;
 
 pub fn parse_sequence(sequence: &Node, parent: &Node, target_ns: Option<&Namespace>) -> RsEntity {
     let name = get_parent_name(sequence);
@@ -11,7 +12,7 @@ pub fn parse_sequence(sequence: &Node, parent: &Node, target_ns: Option<&Namespa
             macros: struct_macro(target_ns),
             comment: get_documentation(parent),
             subtypes: vec![],
-            fields: elements_to_fields(sequence, name, target_ns)
+            fields: RefCell::new(elements_to_fields(sequence, name, target_ns)),
         }
     )
 }

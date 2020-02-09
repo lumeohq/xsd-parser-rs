@@ -3,6 +3,7 @@ use roxmltree::{Namespace, Node};
 use crate::parser::utils::{match_type, attributes_to_fields, get_documentation, struct_field_macros, find_child, any_attribute_field, struct_macro};
 use crate::parser::xsd_elements::{XsdNode, ElementType, RestrictionType, ExtensionType};
 use crate::parser::parser::parse_node;
+use std::cell::RefCell;
 
 const AVAILABLE_CONTENT_TYPES: [ElementType; 6] = [
     ElementType::All, //No in ONVIF
@@ -53,7 +54,7 @@ fn complex_content_extension(node: &Node, target_ns: Option<&Namespace>) -> RsEn
 
     fields.push(
         StructField {
-            name: "base".to_string(),
+            name: "__base__".to_string(),
             type_name: base.to_string(),
             comment: get_documentation(node),
             macros: struct_field_macros("base"),
@@ -74,7 +75,7 @@ fn complex_content_extension(node: &Node, target_ns: Option<&Namespace>) -> RsEn
         let mut res = parse_node(&content.unwrap(), node, target_ns);
         match &mut res {
             RsEntity::Struct(s) => {
-                s.fields.append(&mut fields);
+                s.fields.borrow_mut().append(&mut fields);
                 s.comment = get_documentation(node);
                 return res;
             },
@@ -88,7 +89,7 @@ fn complex_content_extension(node: &Node, target_ns: Option<&Namespace>) -> RsEn
             subtypes: vec![],
             comment: get_documentation(node),
             macros: struct_macro(target_ns),
-            fields,
+            fields: RefCell::new(fields),
         }
     )
 }

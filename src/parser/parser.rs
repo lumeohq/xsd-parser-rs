@@ -1,5 +1,8 @@
+use std::collections::HashMap;
+
 use roxmltree::Namespace;
 
+use crate::parser::attribute::parse_attribute;
 use crate::parser::choice::parse_choice;
 use crate::parser::complex_content::parse_complex_content;
 use crate::parser::complex_type::parse_complex_type;
@@ -11,8 +14,6 @@ use crate::parser::types::{RsEntity, File, Import, StructField};
 use crate::parser::utils::{target_namespace, get_documentation};
 use crate::parser::xsd_elements::{ElementType, XsdNode};
 
-use linked_hash_map::LinkedHashMap;
-use crate::parser::attribute::parse_attribute;
 
 pub fn parse(text: &str) {
     let doc = match roxmltree::Document::parse(&text) {
@@ -23,17 +24,32 @@ pub fn parse(text: &str) {
     };
     let root =  doc.root();
 
-    let mut map:LinkedHashMap<String, RsEntity>  = LinkedHashMap::new();
+    let mut map  = HashMap::new();
 
-    for node in root.children().filter(|e| e.is_element()) {
-        let entity = parse_node(&node, &root, None);
-        map.insert(entity.name().to_string(), entity);
+    let schema = root
+        .children()
+        .filter(|e| e.is_element())
+        .last()
+        .expect("Schema element is required");
+
+    let rs_entity = parse_node(&schema, &root, None);
+
+    if let RsEntity::File(rs_file) = rs_entity {
+        for ty in &rs_file.types {
+            if let RsEntity::Struct(st) = ty {
+                map.extend(st.get_types_map());
+            }
+        }
+
+        for ty in &rs_file.types {
+            if let RsEntity::Struct(st) = ty {
+                st.extend_base(&map);
+            }
+            println!("{}", ty);
+        }
     }
 
-    for val in map.values() {
-        println!("{}", val);
-    }
-    //TODO: add return value
+
 }
 
 pub fn parse_node(node: &roxmltree::Node<'_, '_>, parent: &roxmltree::Node, tn: Option<&Namespace>) -> RsEntity {
