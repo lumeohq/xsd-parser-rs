@@ -7,6 +7,7 @@ mod element;
 mod sequence;
 mod simple_content;
 mod simple_type;
+mod tests;
 mod types;
 mod utils;
 mod xsd_elements;

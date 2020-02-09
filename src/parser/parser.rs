@@ -16,7 +16,7 @@ use crate::parser::utils::{target_namespace, get_documentation};
 use crate::parser::xsd_elements::{ElementType, XsdNode};
 
 
-pub fn parse(text: &str) {
+pub fn parse(text: &str) -> Result<File, ()> {
     let doc = match roxmltree::Document::parse(&text) {
         Ok(doc) => doc,
         Err(e) => {
@@ -46,11 +46,12 @@ pub fn parse(text: &str) {
             if let RsEntity::Struct(st) = ty {
                 st.extend_base(&map);
             }
-            println!("{}", ty);
         }
+
+        return Ok(rs_file)
     }
 
-
+    Err(())
 }
 
 pub fn parse_node(node: &roxmltree::Node<'_, '_>, parent: &roxmltree::Node, tn: Option<&Namespace>) -> RsEntity {
