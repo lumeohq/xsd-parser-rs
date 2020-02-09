@@ -6,6 +6,7 @@ use crate::parser::types::{Alias, RsEntity, Struct, StructField, EnumCase};
 use crate::parser::utils::{get_documentation, match_type, struct_macro, get_field_name, get_type_name, yaserde_for_element};
 use crate::parser::xsd_elements::{ElementType, XsdNode, min_occurs, max_occurs, MaxOccurs};
 use std::borrow::Cow;
+use std::cell::RefCell;
 
 pub fn parse_element(node: &Node, parent: &Node, target_ns: Option<&roxmltree::Namespace>) -> RsEntity {
     match parent.xsd_type() {
@@ -126,7 +127,7 @@ fn parse_global_element(node: &Node, target_ns: Option<&Namespace>) -> RsEntity 
     RsEntity::Struct(
         Struct {
             name: match_type(name, target_ns).into(),
-            fields: vec![],
+            fields: RefCell::new(vec![]),
             comment: get_documentation(node),
             subtypes: vec![content],
             macros: struct_macro(target_ns),
