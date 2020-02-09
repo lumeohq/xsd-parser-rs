@@ -9,8 +9,6 @@ use crate::parser::parser::parse;
 fn main() {
     let text = load_file("xsd/onvif.xsd");
     parse(text.as_str());
-
-    println!("\n\n\n");
 }
 
 fn load_file(path: &str) -> String {

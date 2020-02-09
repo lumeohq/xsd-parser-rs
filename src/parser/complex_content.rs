@@ -1,9 +1,13 @@
-use crate::parser::types::{RsEntity, StructField, Struct};
+use std::cell::RefCell;
+
 use roxmltree::{Namespace, Node};
+
+use crate::parser::constants::{tag, attribute};
+use crate::parser::parser::parse_node;
+use crate::parser::types::{RsEntity, StructField, Struct};
 use crate::parser::utils::{match_type, attributes_to_fields, get_documentation, struct_field_macros, find_child, any_attribute_field, struct_macro};
 use crate::parser::xsd_elements::{XsdNode, ElementType, RestrictionType, ExtensionType};
-use crate::parser::parser::parse_node;
-use std::cell::RefCell;
+
 
 const AVAILABLE_CONTENT_TYPES: [ElementType; 6] = [
     ElementType::All, //No in ONVIF
@@ -46,7 +50,7 @@ pub fn parse_complex_content(node: &Node, target_ns: Option<&Namespace>) -> RsEn
 
 fn complex_content_extension(node: &Node, target_ns: Option<&Namespace>) -> RsEntity {
     let base = match_type(
-        node.attribute("base").expect("The base value is required"),
+        node.attribute(attribute::BASE).expect("The base value is required"),
         target_ns,
     );
 
@@ -54,7 +58,7 @@ fn complex_content_extension(node: &Node, target_ns: Option<&Namespace>) -> RsEn
 
     fields.push(
         StructField {
-            name: "__base__".to_string(),
+            name: tag::BASE.to_string(),
             type_name: base.to_string(),
             comment: get_documentation(node),
             macros: struct_field_macros("base"),

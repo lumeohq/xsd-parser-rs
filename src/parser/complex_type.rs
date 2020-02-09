@@ -1,10 +1,20 @@
+use std::cell::RefCell;
+
 use roxmltree::Node;
 
-use crate::parser::types::{RsEntity, Struct, StructField};
-use crate::parser::utils::{any_attribute_field, find_child, get_documentation, get_parent_name, struct_macro, attributes_to_fields, get_field_name, match_type};
-use crate::parser::xsd_elements::{ElementType, XsdNode};
 use crate::parser::parser::parse_node;
-use std::cell::RefCell;
+use crate::parser::types::{RsEntity, Struct, StructField};
+use crate::parser::utils::{
+    any_attribute_field,
+    attributes_to_fields,
+    find_child,
+    get_documentation,
+    get_field_name,
+    get_parent_name,
+    match_type,
+    struct_macro,
+};
+use crate::parser::xsd_elements::{ElementType, XsdNode};
 
 //A complex type can contain one and only one of the following elements,
 // which determines the type of content allowed in the complex type.
@@ -19,8 +29,9 @@ const AVAILABLE_CONTENT_TYPES: [ElementType; 6] = [
 
 pub fn parse_complex_type(node: &Node, parent: &Node, target_ns: Option<&roxmltree::Namespace>) -> RsEntity {
     let name = if parent.xsd_type() == ElementType::Schema {
-        node.attribute("name")
-            .expect("Name required if the complexType element is a child of the schema element")
+        node.attr_name().expect(
+            "Name required if the complexType element is a child of the schema element"
+        )
     } else {
         get_parent_name(node)
     };

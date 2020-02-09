@@ -1,8 +1,18 @@
-use roxmltree::{Node, Namespace};
-use crate::parser::types::{RsEntity, Struct, StructField, Enum};
-use crate::parser::utils::{match_type, struct_macro, get_documentation, get_parent_name, get_field_name, struct_field_macros};
-use crate::parser::parser::parse_node;
 use std::cell::RefCell;
+
+use roxmltree::{Node, Namespace};
+
+use crate::parser::parser::parse_node;
+use crate::parser::types::{RsEntity, Struct, StructField, Enum};
+use crate::parser::utils::{
+    get_documentation,
+    get_field_name,
+    get_parent_name,
+    match_type,
+    struct_field_macros,
+    struct_macro,
+};
+
 
 pub fn parse_sequence(sequence: &Node, parent: &Node, target_ns: Option<&Namespace>) -> RsEntity {
     let name = get_parent_name(sequence);
