@@ -46,12 +46,77 @@ pub fn get_field_comment(doc: Option<&str>) -> String {
 
 pub fn match_type(type_name: &str, target_namespace: Option<&roxmltree::Namespace>) -> Cow<'static, str>{
     match type_name {
-        "xs:string"      => "String".into(),
-        "xs:NCName"      => "String".into(),
-        "xs:unsignedInt" => "usize".into(),
-        "xs:int"         => "i64".into(),
-        "xs:float"       => "f64".into(),
-        "xs:boolean"     => "bool".into(),
+        "xs:hexBinary"    => "String".into(),
+        "xs:base64Binary" => "String".into(),
+
+        "xs:boolean"      => "bool".into(),
+
+        // TODO: should use something like num_bigint::Bigint instead, but with a wrap that
+        // implements Yaserde (de)serialization. For that we need to use the "flatten" from yaserde,
+        // as it will be updated on the crates.io.
+        "xs:integer"            => "i64".into(),
+        "xs:nonNegativeInteger" => "u64".into(),
+        "xs:positiveInteger"    => "u64".into(),
+        "xs:nonPositiveInteger" => "i64".into(),
+        "xs:negativeInteger"    => "i64".into(),
+
+        "xs:long"  => "i64".into(),
+        "xs:int"   => "i32".into(),
+        "xs:short" => "i16".into(),
+        "xs:byte"  => "i8".into(),
+
+        "xs:unsignedLong"  => "u64".into(),
+        "xs:unsignedInt"   => "u32".into(),
+        "xs:unsignedShort" => "u16".into(),
+        "xs:unsignedByte"  => "u8".into(),
+
+        // TODO: should use something like bigdecimal::BigDecimal instead, but with a wrap that
+        // implements Yaserde (de)serialization. For that we need to use the "flatten" from yaserde,
+        // as it will be updated on the crates.io.
+        "xs:decimal" => "f64".into(),
+
+        "xs:double" => "f64".into(),
+        "xs:float"  => "f64".into(),
+
+        // TODO: might use types from chrono crate instead, but with a wrap that implements Yaserde
+        // (de)serialization. For that we need to use the "flatten" from yaserde, as it will be
+        // updated on the crates.io.
+        "xs:date"          => "String".into(),
+        "xs:time"          => "String".into(),
+        "xs:dateTime"      => "String".into(),
+        "xs:dateTimeStamp" => "String".into(),
+
+        "xs:duration" => "tt:Duration".into(),
+
+        // TODO: would be nice to have types with both numeric representation of value and proper
+        // (de)serialization. For that we might use the "flatten" from yaserde, as it will be
+        // updated on the crates.io.
+        "xs:gDay"       => "String".into(),
+        "xs:gMonth"     => "String".into(),
+        "xs:gMonthDay"  => "String".into(),
+        "xs:gYear"      => "String".into(),
+        "xs:gYearMonth" => "String".into(),
+
+        "xs:string"           => "String".into(),
+        "xs:normalizedString" => "String".into(),
+        "xs:token"            => "String".into(),
+        "xs:language"         => "String".into(),
+        "xs:Name"             => "String".into(),
+        "xs:NCName"           => "String".into(),
+        "xs:ENTITY"           => "String".into(),
+        "xs:ID"               => "String".into(),
+        "xs:IDREF"            => "String".into(),
+        "xs:NMTOKEN"          => "String".into(),
+        "xs:anyURI"           => "String".into(),
+        "xs:QName"            => "String".into(),
+
+        "xs::NOTATION" => "String".into(),
+
+        // Built-in list types:
+        "xs:ENTITIES" => "Vec<String>".into(),
+        "xs:IDREFS"   => "Vec<String>".into(),
+        "xs:NMTOKENS" => "Vec<String>".into(),
+
         x => {
             let prefix = target_namespace.and_then(|ns| ns.name());
             to_pascal_case(
