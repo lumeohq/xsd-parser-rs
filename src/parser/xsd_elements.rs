@@ -197,7 +197,7 @@ pub fn max_occurs(node: &roxmltree::Node) -> MaxOccurs {
             s => s
                 .parse::<usize>()
                 .ok()
-                .map(|val| MaxOccurs::Bounded(val))
+                .map(MaxOccurs::Bounded)
                 .unwrap_or(MaxOccurs::None),
         },
         None => MaxOccurs::None,

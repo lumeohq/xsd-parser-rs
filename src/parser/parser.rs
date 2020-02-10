@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use roxmltree::Namespace;
+use roxmltree::{Namespace, Node};
 
 use crate::parser::attribute::parse_attribute;
 use crate::parser::choice::parse_choice;
@@ -53,11 +53,7 @@ pub fn parse(text: &str) -> Result<File, ()> {
     Err(())
 }
 
-pub fn parse_node(
-    node: &roxmltree::Node<'_, '_>,
-    parent: &roxmltree::Node,
-    tn: Option<&Namespace>,
-) -> RsEntity {
+pub fn parse_node(node: &Node, parent: &Node, tn: Option<&Namespace>) -> RsEntity {
     use ElementType::*;
 
     match node.xsd_type() {
@@ -80,7 +76,7 @@ pub fn parse_node(
     }
 }
 
-pub fn parse_schema(schema: &roxmltree::Node<'_, '_>) -> RsEntity {
+pub fn parse_schema(schema: &Node) -> RsEntity {
     RsEntity::File(File {
         name: "".into(),
         namespace: None,
@@ -93,7 +89,7 @@ pub fn parse_schema(schema: &roxmltree::Node<'_, '_>) -> RsEntity {
 }
 
 // Stubs
-fn parse_import(node: &roxmltree::Node) -> RsEntity {
+fn parse_import(node: &Node) -> RsEntity {
     RsEntity::Import(Import {
         name: node.attribute(attribute::NAMESPACE).unwrap_or("").into(),
         location: node
@@ -103,7 +99,7 @@ fn parse_import(node: &roxmltree::Node) -> RsEntity {
     })
 }
 
-fn parse_any(node: &roxmltree::Node) -> RsEntity {
+fn parse_any(node: &Node) -> RsEntity {
     RsEntity::StructField(StructField {
         name: "any".to_string(),
         type_name: "AnyElement".to_string(),
@@ -113,7 +109,7 @@ fn parse_any(node: &roxmltree::Node) -> RsEntity {
     })
 }
 
-fn parse_any_attribute(node: &roxmltree::Node) -> RsEntity {
+fn parse_any_attribute(node: &Node) -> RsEntity {
     RsEntity::StructField(StructField {
         name: "any_attribute".to_string(),
         type_name: "AnyAttribute".to_string(),
