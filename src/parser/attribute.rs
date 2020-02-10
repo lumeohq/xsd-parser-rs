@@ -7,11 +7,11 @@ use crate::parser::xsd_elements::{UseType, XsdNode};
 pub fn parse_attribute(node: &Node, target_ns: Option<&Namespace>) -> RsEntity {
     let name = node
         .attr_name()
-        .or(node.attr_ref())
+        .or_else(|| node.attr_ref())
         .expect("All attributes have name or ref in Onvif");
 
     let matched_type = match_type(
-        node.attr_type().or(node.attr_ref()).unwrap_or("()"),
+        node.attr_type().or_else(|| node.attr_ref()).unwrap_or("()"),
         target_ns,
     );
 

@@ -41,11 +41,8 @@ impl Struct {
         let mut map = HashMap::new();
         map.insert(&self.name, self);
         for ty in &self.subtypes {
-            match ty {
-                RsEntity::Struct(st) => {
-                    map.extend(st.get_types_map());
-                }
-                _ => (),
+            if let RsEntity::Struct(st) = ty {
+                map.extend(st.get_types_map());
             }
         }
         map
@@ -61,7 +58,7 @@ impl Struct {
                 types
                     .get(&f.type_name)
                     .map(|s| s.fields.borrow().clone())
-                    .unwrap_or(vec![])
+                    .unwrap_or_else(|| vec![])
             })
             .collect::<Vec<StructField>>();
 
@@ -242,9 +239,9 @@ pub struct Alias {
 impl fmt::Display for Alias {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         let is_same_name = self.name == self.original;
-        write!(
+        writeln!(
             f,
-            "{comment}{visibility}type {name} = {original};\n",
+            "{comment}{visibility}type {name} = {original};",
             visibility = if is_same_name { "//" } else { "pub " },
             comment = get_field_comment(self.comment.as_deref()),
             name = self.name,
@@ -261,7 +258,7 @@ pub struct Import {
 
 impl fmt::Display for Import {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
-        write!(f, "//use {}  {};\n", self.location, self.name,)
+        writeln!(f, "//use {}  {};", self.location, self.name,)
     }
 }
 

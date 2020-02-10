@@ -59,10 +59,9 @@ fn complex_content_extension(node: &Node, target_ns: Option<&Namespace>) -> RsEn
         subtypes: vec![],
     });
 
-    match find_child(node, "anyAttribute") {
-        Some(_) => fields.push(any_attribute_field()),
-        None => (),
-    };
+    if find_child(node, "anyAttribute").is_some() {
+        fields.push(any_attribute_field())
+    }
 
     let content = node
         .children()
@@ -73,15 +72,12 @@ fn complex_content_extension(node: &Node, target_ns: Option<&Namespace>) -> RsEn
         })
         .last();
 
-    if content.is_some() {
-        let mut res = parse_node(&content.unwrap(), node, target_ns);
-        match &mut res {
-            RsEntity::Struct(s) => {
-                s.fields.borrow_mut().append(&mut fields);
-                s.comment = get_documentation(node);
-                return res;
-            }
-            _ => (),
+    if let Some(cont) = content {
+        let mut res = parse_node(&cont, node, target_ns);
+        if let RsEntity::Struct(s) = &mut res {
+            s.fields.borrow_mut().append(&mut fields);
+            s.comment = get_documentation(node);
+            return res;
         }
     }
 

@@ -49,10 +49,9 @@ fn simple_content_extension(node: &Node, target_ns: Option<&Namespace>) -> RsEnt
         subtypes: vec![],
     });
 
-    match find_child(node, "anyAttribute") {
-        Some(_) => fields.push(any_attribute_field()),
-        None => (),
-    };
+    if find_child(node, "anyAttribute").is_some() {
+        fields.push(any_attribute_field())
+    }
 
     RsEntity::Struct(Struct {
         name: String::default(),

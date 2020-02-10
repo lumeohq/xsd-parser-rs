@@ -39,10 +39,10 @@ pub fn parse_complex_type(
         .last();
 
     let mut fields = attributes_to_fields(node, target_ns);
-    match find_child(node, "anyAttribute") {
-        Some(_) => fields.push(any_attribute_field()),
-        None => (),
-    };
+
+    if find_child(node, "anyAttribute").is_some() {
+        fields.push(any_attribute_field())
+    }
 
     if content.is_none()
         || content
