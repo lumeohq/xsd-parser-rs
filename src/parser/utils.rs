@@ -193,7 +193,7 @@ pub fn yaserde_for_element(name: &str, target_namespace: Option<&roxmltree::Name
     }
 }
 
-const RS_KEYWORDS: & [&str] = &[
+const RS_KEYWORDS: &[&str] = &[
     "abstract",
     "alignof",
     "as",

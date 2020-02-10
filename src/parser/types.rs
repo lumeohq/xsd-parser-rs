@@ -175,9 +175,15 @@ impl fmt::Display for Enum {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         write!(
             f,
-            "{comment}{derive}pub enum {name} {{\n{cases}  \n__Unknown__({typename})\n}}\n\n{default}\n\n{subtypes}",
+            "{comment}\
+            #[derive(PartialEq, Debug, YaSerialize, YaDeserialize)]\n\
+            pub enum {name} \
+            {{\n{cases}  \n\n\
+            __Unknown__({typename})\n\
+            }}\n\n\
+            {default}\n\n\
+            {subtypes}",
             comment = get_structure_comment(self.comment.as_deref()),
-            derive="#[derive(PartialEq, Debug, YaSerialize, YaDeserialize)]\n",
             name = self.name,
             cases = self
                 .cases
