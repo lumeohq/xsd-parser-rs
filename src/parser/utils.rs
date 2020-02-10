@@ -165,13 +165,13 @@ pub fn struct_macro(target_namespace: Option<&roxmltree::Namespace>) -> String {
                 Some(name) => format!("{derives}#[yaserde(prefix = \"{prefix}\", namespace = \"{prefix}: {uri}\")]\n",
                             derives=derives,
                             prefix=name,
-                            uri=tn.uri()).to_string(),
+                            uri=tn.uri()),
                 None => format!("{derives}#[yaserde(namespace = \"{uri}\")]\n",
                             derives=derives,
-                            uri=tn.uri()).to_string()
+                            uri=tn.uri())
             }
         },
-        None => format!("{derives}#[yaserde()]\n", derives=derives).to_string()
+        None => format!("{derives}#[yaserde()]\n", derives=derives)
     }
 }
 
