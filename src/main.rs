@@ -3,11 +3,13 @@ mod parser;
 use std::fs;
 use std::io::Read;
 
-use crate::parser::parser::parse;
+use crate::parser::parse;
 
 fn main() {
     let text = load_file("xsd/onvif.xsd");
-    if let Ok(f) = parse(text.as_str()) { println!("{}", f) }
+    if let Ok(f) = parse(text.as_str()) {
+        println!("{}", f)
+    }
 }
 
 fn load_file(path: &str) -> String {
