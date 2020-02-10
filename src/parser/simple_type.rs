@@ -1,12 +1,17 @@
-use roxmltree::{Node, Namespace};
+use roxmltree::{Namespace, Node};
 
 use crate::parser::constants::attribute;
 use crate::parser::types::{Enum, EnumCase, RsEntity, TupleStruct};
-use crate::parser::utils::{find_child, get_documentation, match_type, tuple_struct_macros, get_parent_name};
+use crate::parser::utils::{
+    find_child, get_documentation, get_parent_name, match_type, tuple_struct_macros,
+};
 use crate::parser::xsd_elements::{ElementType, RestrictionType, XsdNode};
 
-
-pub fn parse_simple_type(node: &Node, parent: &Node, tn: Option<&roxmltree::Namespace>) -> RsEntity {
+pub fn parse_simple_type(
+    node: &Node,
+    parent: &Node,
+    tn: Option<&roxmltree::Namespace>,
+) -> RsEntity {
     let name = node.attr_name();
 
     assert_eq!(
@@ -27,9 +32,7 @@ pub fn parse_simple_type(node: &Node, parent: &Node, tn: Option<&roxmltree::Name
         ElementType::Union => unimplemented!(), //TODO: Add union parser (No in ONVIF)
         ElementType::List => simple_type_list(&content, tn),
         ElementType::Restriction(r) => match r {
-            RestrictionType::SimpleType => {
-                simple_type_restriction(&content, tn)
-            }
+            RestrictionType::SimpleType => simple_type_restriction(&content, tn),
             _ => unreachable!("Invalid restriction type of SimpleType {:?}", r),
         },
         _ => unreachable!("Invalid content type of SimpleType {:?}", content),
@@ -37,17 +40,25 @@ pub fn parse_simple_type(node: &Node, parent: &Node, tn: Option<&roxmltree::Name
     if name.is_some() {
         let n = match_type(name.unwrap(), tn).to_string();
         match &mut content_type {
-            RsEntity::Enum(en) => {en.name = n;}
-            RsEntity::TupleStruct(ts) => {ts.name = n;}
-            _ => unreachable!("Unexpected RsType for simpleType node")
+            RsEntity::Enum(en) => {
+                en.name = n;
+            }
+            RsEntity::TupleStruct(ts) => {
+                ts.name = n;
+            }
+            _ => unreachable!("Unexpected RsType for simpleType node"),
         }
     }
 
     let comment = get_documentation(node);
     match &mut content_type {
-        RsEntity::Enum(en) => {en.comment = comment;}
-        RsEntity::TupleStruct(ts) => {ts.comment = comment;}
-        _ => unreachable!("Unexpected RsType for simpleType node")
+        RsEntity::Enum(en) => {
+            en.comment = comment;
+        }
+        RsEntity::TupleStruct(ts) => {
+            ts.comment = comment;
+        }
+        _ => unreachable!("Unexpected RsType for simpleType node"),
     }
 
     content_type
@@ -69,7 +80,7 @@ fn simple_type_list(list: &Node, target_ns: Option<&Namespace>) -> RsEntity {
                     types.push(RsEntity::Enum(en));
                     format!("Vec<{}>", types.last().unwrap().name())
                 }
-                _ => unreachable!()
+                _ => unreachable!(),
             }
         }
     };
@@ -104,7 +115,7 @@ fn simple_type_restriction(restriction: &Node, target_ns: Option<&Namespace>) ->
             name: format!("{}Enum", get_parent_name(restriction)),
             cases: enum_cases,
             type_name: base.to_string(),
-            subtypes: vec![]
+            subtypes: vec![],
         })
     } else {
         RsEntity::TupleStruct(TupleStruct {
@@ -128,7 +139,6 @@ fn get_enum_case(node: &Node, target_ns: Option<&roxmltree::Namespace>) -> EnumC
         type_name: None,
     }
 }
-
 
 #[test]
 fn test_parse_simple_type_with_list() {
@@ -161,11 +171,10 @@ fn test_parse_simple_type_with_list() {
             assert_eq!(ts.comment.unwrap().trim(), "Some text");
             assert!(ts.subtypes.is_empty());
         }
-        _ => unreachable!("Test failed!")
+        _ => unreachable!("Test failed!"),
     }
 
     println!("{}", result);
-
 }
 
 #[test]
@@ -206,10 +215,10 @@ fn test_parse_simple_type_with_restriction() {
                     assert_eq!(en.name, "SomeTypeEnum");
                     assert_eq!(en.cases.len(), 2);
                 }
-                _ => unreachable!("Test failed!")
+                _ => unreachable!("Test failed!"),
             }
         }
-        _ => unreachable!("Test failed!")
+        _ => unreachable!("Test failed!"),
     }
 
     println!("{}", result);

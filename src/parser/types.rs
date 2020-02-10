@@ -9,7 +9,7 @@ use crate::parser::utils::{get_field_comment, get_structure_comment, get_type_na
 pub struct File {
     pub name: String,
     pub namespace: Option<String>,
-    pub types: Vec<RsEntity>
+    pub types: Vec<RsEntity>,
 }
 
 impl fmt::Display for File {
@@ -42,8 +42,10 @@ impl Struct {
         map.insert(&self.name, self);
         for ty in &self.subtypes {
             match ty {
-                RsEntity::Struct(st) => {map.extend(st.get_types_map());}
-                _ => ()
+                RsEntity::Struct(st) => {
+                    map.extend(st.get_types_map());
+                }
+                _ => (),
             }
         }
         map
@@ -55,18 +57,24 @@ impl Struct {
             .borrow()
             .iter()
             .filter(|f| f.name.as_str() == tag::BASE)
-            .flat_map(|f| types.get(&f.type_name).map(|s| s.fields.borrow().clone()).unwrap_or(vec![]))
+            .flat_map(|f| {
+                types
+                    .get(&f.type_name)
+                    .map(|s| s.fields.borrow().clone())
+                    .unwrap_or(vec![])
+            })
             .collect::<Vec<StructField>>();
 
         self.fields.borrow_mut().append(&mut fields);
-        self.fields.borrow_mut().retain(|field| field.name.as_str() != tag::BASE);
+        self.fields
+            .borrow_mut()
+            .retain(|field| field.name.as_str() != tag::BASE);
 
         for subtype in &self.subtypes {
             if let RsEntity::Struct(s) = subtype {
                 s.extend_base(types);
             }
         }
-
     }
 }
 
@@ -100,8 +108,7 @@ impl fmt::Display for Struct {
                     .iter()
                     .map(|e| e.to_string())
                     .collect::<Vec<String>>()
-                    .join("\n")
-                )
+                    .join("\n"))
                 .collect::<Vec<String>>()
                 .join("\n"),
         )
@@ -114,7 +121,7 @@ pub struct StructField {
     pub type_name: String,
     pub comment: Option<String>,
     pub macros: String,
-    pub subtypes: Vec<RsEntity>
+    pub subtypes: Vec<RsEntity>,
 }
 
 impl fmt::Display for StructField {
@@ -254,12 +261,7 @@ pub struct Import {
 
 impl fmt::Display for Import {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
-        write!(
-            f,
-            "//use {}  {};\n",
-            self.location,
-            self.name,
-        )
+        write!(f, "//use {}  {};\n", self.location, self.name,)
     }
 }
 

@@ -1,5 +1,4 @@
-
-pub mod tag{
+pub mod tag {
     pub const BASE: &str = "__base__";
 }
 
@@ -17,4 +16,3 @@ pub mod attribute {
     pub const MIN_OCCURS: &str = "minOccurs";
     pub const MAX_OCCURS: &str = "maxOccurs";
 }
-

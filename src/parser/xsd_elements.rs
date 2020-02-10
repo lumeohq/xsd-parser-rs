@@ -177,31 +177,29 @@ pub enum UseType {
     Optional,
 }
 
-
 pub type MinOccurs = usize;
 pub enum MaxOccurs {
     Bounded(usize),
     Unbounded,
-    None
+    None,
 }
 
 pub fn min_occurs(node: &roxmltree::Node) -> MinOccurs {
-    node
-    .attribute(attribute::MIN_OCCURS)
-    .and_then(|v| v.parse::<usize>().ok())
-    .unwrap_or(1)
+    node.attribute(attribute::MIN_OCCURS)
+        .and_then(|v| v.parse::<usize>().ok())
+        .unwrap_or(1)
 }
 
 pub fn max_occurs(node: &roxmltree::Node) -> MaxOccurs {
     match node.attribute(attribute::MAX_OCCURS) {
         Some(s) => match s {
             "unbounded" => MaxOccurs::Unbounded,
-            s => s.
-                parse::<usize>().
-                ok().
-                map(|val| MaxOccurs::Bounded(val)).
-                unwrap_or(MaxOccurs::None)
+            s => s
+                .parse::<usize>()
+                .ok()
+                .map(|val| MaxOccurs::Bounded(val))
+                .unwrap_or(MaxOccurs::None),
         },
-        None => MaxOccurs::None
+        None => MaxOccurs::None,
     }
 }
