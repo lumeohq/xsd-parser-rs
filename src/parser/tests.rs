@@ -1,10 +1,9 @@
-use crate::parser::types::RsEntity;
 use crate::parser::parser::parse;
+use crate::parser::types::RsEntity;
 
 #[test]
 fn test_extension_base() {
-    let text =
-        r#"
+    let text = r#"
 <xs:schema xmlns:tt="http://www.onvif.org/ver10/schema"
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
     targetNamespace="http://www.onvif.org/ver10/schema">
@@ -37,7 +36,7 @@ fn test_extension_base() {
             assert_eq!(s.fields.borrow()[0].type_name, "ReferenceToken");
             assert_eq!(s.name, "DeviceEntity");
         }
-        _ => unreachable!()
+        _ => unreachable!(),
     }
 
     match &result.types[1] {
@@ -55,6 +54,6 @@ fn test_extension_base() {
 
             assert_eq!(s.name, "VideoSource");
         }
-        _ => unreachable!()
+        _ => unreachable!(),
     }
 }
