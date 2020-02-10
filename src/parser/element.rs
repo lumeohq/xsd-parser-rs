@@ -38,13 +38,13 @@ fn element_default(node: &Node, target_ns: Option<&Namespace>) -> RsEntity {
 fn parse_case_of_choice(element: &Node, target_ns: Option<&Namespace>) -> RsEntity {
     if element.has_attribute(attribute::REF) {
         let ref_attr = element.attr_ref().unwrap();
-        let name = ref_attr.split(":").last().unwrap();
+        let name = ref_attr.split(':').last().unwrap();
         let type_name = element_type(element, match_type(ref_attr, target_ns));
 
         return RsEntity::EnumCase(EnumCase {
             name: name.to_string(),
             value: String::default(),
-            type_name: Some(type_name.into()),
+            type_name: Some(type_name),
             comment: get_documentation(element),
             //subtypes: vec![]
         });
@@ -57,7 +57,7 @@ fn parse_case_of_choice(element: &Node, target_ns: Option<&Namespace>) -> RsEnti
         return RsEntity::EnumCase(EnumCase {
             name: name.to_string(),
             value: String::default(),
-            type_name: Some(type_name.into()),
+            type_name: Some(type_name),
             comment: get_documentation(element),
             //subtypes: vec![]
         });

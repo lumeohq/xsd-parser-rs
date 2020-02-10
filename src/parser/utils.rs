@@ -19,7 +19,7 @@ pub fn split_comment_line(s: &str, max_len: usize, indent: usize) -> String {
     let mut current_line_length = indent + 2;
     for word in s.split_whitespace() {
         let len = word.len();
-        if current_line_length + len + 1 <= max_len || current_line_length == indent + 2 {
+        if current_line_length + len < max_len {
             splitted = format!("{} {}", splitted, word);
             current_line_length += 1 + len;
         } else {
@@ -56,7 +56,7 @@ pub fn match_type(
     target_namespace: Option<&roxmltree::Namespace>,
 ) -> Cow<'static, str> {
     fn replace(s: &str) -> String {
-        match s.find(":") {
+        match s.find(':') {
             Some(index) => format!("{}::{}", &s[0..index], to_pascal_case(&s[index..])),
             None => s.into(),
         }
@@ -193,7 +193,7 @@ pub fn yaserde_for_element(name: &str, target_namespace: Option<&roxmltree::Name
     }
 }
 
-const RS_KEYWORDS: &'static [&str] = &[
+const RS_KEYWORDS: & [&str] = &[
     "abstract",
     "alignof",
     "as",

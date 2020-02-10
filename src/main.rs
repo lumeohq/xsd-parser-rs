@@ -7,10 +7,7 @@ use crate::parser::parser::parse;
 
 fn main() {
     let text = load_file("xsd/onvif.xsd");
-    match parse(text.as_str()) {
-        Ok(f) => println!("{}", f),
-        _ => (),
-    }
+    if let Ok(f) = parse(text.as_str()) { println!("{}", f) }
 }
 
 fn load_file(path: &str) -> String {

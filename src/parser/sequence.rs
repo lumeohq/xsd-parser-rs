@@ -32,7 +32,7 @@ fn elements_to_fields(
             RsEntity::StructField(sf) => sf,
             RsEntity::Enum(mut en) => {
                 en.name = format!("{}Choice", match_type(parent_name, target_ns));
-                return enum_to_field(en);
+                enum_to_field(en)
             }
             _ => unreachable!("\nError: {:?}\n{}", n, parse_node(&n, sequence, target_ns)),
         })
@@ -41,8 +41,8 @@ fn elements_to_fields(
 
 fn enum_to_field(en: Enum) -> StructField {
     StructField {
-        name: format!("{}", get_field_name(en.name.as_str())),
-        type_name: format!("{}", en.name),
+        name: get_field_name(en.name.as_str()),
+        type_name: en.name.clone(),
         comment: None,
         macros: struct_field_macros(en.name.as_str()),
         subtypes: vec![RsEntity::Enum(en)],

@@ -37,14 +37,15 @@ pub fn parse_simple_type(
         },
         _ => unreachable!("Invalid content type of SimpleType {:?}", content),
     };
-    if name.is_some() {
-        let n = match_type(name.unwrap(), tn).to_string();
+
+    if let Some(n) = name {
+        let matched_type_name = match_type(n, tn).to_string();
         match &mut content_type {
             RsEntity::Enum(en) => {
-                en.name = n;
+                en.name = matched_type_name;
             }
             RsEntity::TupleStruct(ts) => {
-                ts.name = n;
+                ts.name = matched_type_name;
             }
             _ => unreachable!("Unexpected RsType for simpleType node"),
         }
