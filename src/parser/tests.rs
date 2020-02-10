@@ -1,8 +1,8 @@
-use crate::parser::parser::parse;
-use crate::parser::types::RsEntity;
-
 #[test]
 fn test_extension_base() {
+    use crate::parser::parser::parse;
+    use crate::parser::types::RsEntity;
+
     let text = r#"
 <xs:schema xmlns:tt="http://www.onvif.org/ver10/schema"
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
