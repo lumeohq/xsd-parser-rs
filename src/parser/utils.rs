@@ -30,25 +30,13 @@ pub fn split_comment_line(s: &str, max_len: usize, indent: usize) -> String {
     format!("{}\n", splitted)
 }
 
-pub fn get_structure_comment(doc: Option<&str>) -> String {
+pub fn get_formatted_comment(doc: Option<&str>) -> String {
     doc.unwrap_or("")
         .lines()
         .map(|s| s.trim())
-        .filter(|s| s.len() > 2)
+        .filter(|s| s.len() > 1)
         .map(|s| split_comment_line(s, 80, 0))
         .fold(String::new(), |x, y| (x + &y))
-}
-
-pub fn get_field_comment(doc: Option<&str>) -> String {
-    if doc.is_none() {
-        return String::new();
-    }
-    doc.unwrap()
-        .lines()
-        .map(|s| s.trim())
-        .filter(|s| s.len() > 1)
-        .map(|s| split_comment_line(s, 80, 2))
-        .fold("\n".to_string(), |x, y| (x + &y))
 }
 
 pub fn match_type(
@@ -107,8 +95,8 @@ pub fn any_attribute_field() -> StructField {
     StructField {
         name: "any_attribute".to_string(),
         type_name: "AnyAttribute".to_string(),
-        comment: None,
-        macros: "//  TODO: yaserde macros for any attribute\n//".to_string(),
+        comment: Some("//".to_string()),
+        macros: "//TODO: any_attribute macros \n//".to_string(),
         subtypes: vec![],
     }
 }
@@ -135,7 +123,7 @@ pub fn tuple_struct_macros() -> String {
     "//TODO: Tuple Struct macros\n".to_string()
 }
 
-pub fn struct_field_macros(name: &str) -> String {
+pub fn yaserde_for_attribute(name: &str) -> String {
     format!("  #[yaserde(attribute, rename = \"{}\")]\n", name)
 }
 
