@@ -145,20 +145,20 @@ fn get_enum_case(node: &Node, target_ns: Option<&roxmltree::Namespace>) -> EnumC
 fn test_parse_simple_type_with_list() {
     let doc = roxmltree::Document::parse(
 r#"
-<xs:schema xmlns:tt="http://www.onvif.org/ver10/schema" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.onvif.org/ver10/schema">
-    <xs:simpleType name="SomeType">
-        <xs:annotation>
-            <xs:documentation>
-                Some text
-            </xs:documentation>
-        </xs:annotation>
-        <xs:list>
-            <xs:simpleType>
-                <xs:list itemType="xs:SSD"/>
-            </xs:simpleType>
-        </xs:list>
-    </xs:simpleType>
-</xs:schema>
+    <xs:schema xmlns:tt="http://www.onvif.org/ver10/schema" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.onvif.org/ver10/schema">
+        <xs:simpleType name="SomeType">
+            <xs:annotation>
+                <xs:documentation>
+                    Some text
+                </xs:documentation>
+            </xs:annotation>
+            <xs:list>
+                <xs:simpleType>
+                    <xs:list itemType="xs:SSD"/>
+                </xs:simpleType>
+            </xs:list>
+        </xs:simpleType>
+    </xs:schema>
 "#
     ).unwrap();
 
@@ -181,23 +181,23 @@ r#"
 fn test_parse_simple_type_with_restriction() {
     let doc = roxmltree::Document::parse(
 r#"
-<xs:schema xmlns:tt="http://www.onvif.org/ver10/schema" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.onvif.org/ver10/schema">
-    <xs:simpleType name="SomeType">
-        <xs:annotation>
-            <xs:documentation>
-                Some text
-            </xs:documentation>
-        </xs:annotation>
-        <xs:list>
-            <xs:simpleType>
-                <xs:restriction base="xs:string">
-                    <xs:enumeration value="One"/>
-                    <xs:enumeration value="Two"/>
-                </xs:restriction>
-            </xs:simpleType>
-        </xs:list>
-    </xs:simpleType>
-</xs:schema>
+    <xs:schema xmlns:tt="http://www.onvif.org/ver10/schema" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.onvif.org/ver10/schema">
+        <xs:simpleType name="SomeType">
+            <xs:annotation>
+                <xs:documentation>
+                    Some text
+                </xs:documentation>
+            </xs:annotation>
+            <xs:list>
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="One"/>
+                        <xs:enumeration value="Two"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:list>
+        </xs:simpleType>
+    </xs:schema>
                 "#
     ).unwrap();
 
