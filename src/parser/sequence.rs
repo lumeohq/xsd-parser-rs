@@ -5,8 +5,8 @@ use roxmltree::{Namespace, Node};
 use crate::parser::parser::parse_node;
 use crate::parser::types::{Enum, RsEntity, Struct, StructField};
 use crate::parser::utils::{
-    get_documentation, get_field_name, get_parent_name, match_type, struct_field_macros,
-    struct_macro,
+    get_documentation, get_field_name, get_parent_name, match_type, struct_macro,
+    yaserde_for_element,
 };
 
 pub fn parse_sequence(sequence: &Node, parent: &Node, target_ns: Option<&Namespace>) -> RsEntity {
@@ -32,19 +32,19 @@ fn elements_to_fields(
             RsEntity::StructField(sf) => sf,
             RsEntity::Enum(mut en) => {
                 en.name = format!("{}Choice", match_type(parent_name, target_ns));
-                enum_to_field(en)
+                enum_to_field(en, target_ns)
             }
             _ => unreachable!("\nError: {:?}\n{}", n, parse_node(&n, sequence, target_ns)),
         })
         .collect()
 }
 
-fn enum_to_field(en: Enum) -> StructField {
+fn enum_to_field(en: Enum, target_ns: Option<&Namespace>) -> StructField {
     StructField {
         name: get_field_name(en.name.as_str()),
         type_name: en.name.clone(),
         comment: None,
-        macros: struct_field_macros(en.name.as_str()),
+        macros: yaserde_for_element(en.name.as_str(), target_ns),
         subtypes: vec![RsEntity::Enum(en)],
     }
 }

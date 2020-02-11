@@ -3,7 +3,7 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 
 use crate::parser::constants::tag;
-use crate::parser::utils::{get_field_comment, get_structure_comment, get_type_name};
+use crate::parser::utils::{get_formatted_comment, get_type_name};
 
 #[derive(Debug, Clone)]
 pub struct File {
@@ -80,7 +80,7 @@ impl fmt::Display for Struct {
         write!(
             f,
             "{comment}{macros}pub struct {name} {{\n{fields}\n}}\n{subtypes}\n{fields_subtypes}",
-            comment = get_structure_comment(self.comment.as_deref()),
+            comment = get_formatted_comment(self.comment.as_deref()),
             macros = self.macros,
             name = self.name,
             fields = self
@@ -129,7 +129,7 @@ impl fmt::Display for StructField {
             macros = self.macros,
             name = self.name,
             typename = self.type_name,
-            comment = get_field_comment(self.comment.as_deref())
+            comment = get_formatted_comment(self.comment.as_deref())
         )
     }
 }
@@ -148,7 +148,7 @@ impl fmt::Display for TupleStruct {
         write!(
             f,
             "{comment}{macros}pub struct {name} (pub {typename});\n{subtypes}",
-            comment = get_structure_comment(self.comment.as_deref()),
+            comment = get_formatted_comment(self.comment.as_deref()),
             macros = self.macros,
             name = self.name,
             typename = self.type_name,
@@ -183,7 +183,7 @@ impl fmt::Display for Enum {
             }}\n\n\
             {default}\n\n\
             {subtypes}",
-            comment = get_structure_comment(self.comment.as_deref()),
+            comment = get_formatted_comment(self.comment.as_deref()),
             name = self.name,
             cases = self
                 .cases
@@ -222,13 +222,13 @@ impl fmt::Display for EnumCase {
                 "{comment}  {name}({typename}),",
                 name = name,
                 typename = tn,
-                comment = get_field_comment(self.comment.as_deref()),
+                comment = get_formatted_comment(self.comment.as_deref()),
             ),
             None => write!(
                 f,
                 "{comment}  {name},",
                 name = name,
-                comment = get_field_comment(self.comment.as_deref())
+                comment = get_formatted_comment(self.comment.as_deref())
             ),
         }
     }
@@ -249,7 +249,7 @@ impl fmt::Display for Alias {
             f,
             "{comment}{visibility}type {name} = {original};",
             visibility = if is_same_name { "//" } else { "pub " },
-            comment = get_field_comment(self.comment.as_deref()),
+            comment = get_formatted_comment(self.comment.as_deref()),
             name = self.name,
             original = self.original
         )

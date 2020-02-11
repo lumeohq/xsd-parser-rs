@@ -7,7 +7,7 @@ use crate::parser::parser::parse_node;
 use crate::parser::types::{RsEntity, Struct, StructField};
 use crate::parser::utils::{
     any_attribute_field, attributes_to_fields, find_child, get_documentation, match_type,
-    struct_field_macros, struct_macro,
+    struct_macro,
 };
 use crate::parser::xsd_elements::{ElementType, ExtensionType, RestrictionType, XsdNode};
 
@@ -55,7 +55,7 @@ fn complex_content_extension(node: &Node, target_ns: Option<&Namespace>) -> RsEn
         name: tag::BASE.to_string(),
         type_name: base.to_string(),
         comment: get_documentation(node),
-        macros: struct_field_macros("base"),
+        macros: String::new(),
         subtypes: vec![],
     });
 
