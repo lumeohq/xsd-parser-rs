@@ -244,7 +244,6 @@ const RS_KEYWORDS: &[&str] = &[
     "unsafe",
     "unsized",
     "use",
-    "use",
     "virtual",
     "where",
     "while",
