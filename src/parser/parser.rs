@@ -16,12 +16,7 @@ use crate::parser::utils::{get_documentation, target_namespace};
 use crate::parser::xsd_elements::{ElementType, XsdNode};
 
 pub fn parse(text: &str) -> Result<File, ()> {
-    let doc = match roxmltree::Document::parse(&text) {
-        Ok(doc) => doc,
-        Err(e) => {
-            panic!("Error: {}.", e);
-        }
-    };
+    let doc = roxmltree::Document::parse(&text).expect("Parse document error");
     let root = doc.root();
 
     let mut map = HashMap::new();
