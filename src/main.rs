@@ -1,25 +1,15 @@
+mod parser;
+
 use std::fs;
-use std::io::{Read};
+use std::io::Read;
 
-mod xsd2;
-mod generator;
-pub use generator::generator::Generator;
-use crate::xsd2::utils::find_child;
-
+use crate::parser::parse;
 
 fn main() {
     let text = load_file("xsd/onvif.xsd");
-    let doc = match roxmltree::Document::parse(&text) {
-        Ok(doc) => doc,
-        Err(e) => {
-            println!("Error: {}.", e);
-            return;
-        },
-    };
-    let root = doc.root();
-    let schema = find_child(&root, "schema").expect("All xsd need schema element");
-    let generator = Generator::new(schema);
-    generator.print();
+    if let Ok(f) = parse(text.as_str()) {
+        println!("{}", f)
+    }
 }
 
 fn load_file(path: &str) -> String {
@@ -28,4 +18,3 @@ fn load_file(path: &str) -> String {
     file.read_to_string(&mut text).unwrap();
     text
 }
-
