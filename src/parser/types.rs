@@ -248,7 +248,7 @@ impl fmt::Display for Alias {
         writeln!(
             f,
             "{comment}{visibility}type {name} = {original};",
-            visibility = if is_same_name { "//" } else { "pub " },
+            visibility = if is_same_name { "// " } else { "// pub " }, // TODO: Always commented as an experiment
             comment = get_formatted_comment(self.comment.as_deref()),
             name = self.name,
             original = self.original
