@@ -26,12 +26,12 @@ pub fn parse_complex_type(
     parent: &Node,
     target_ns: Option<&roxmltree::Namespace>,
 ) -> RsEntity {
-    let name = if parent.xsd_type() == ElementType::Schema {
+    let name = match_type(if parent.xsd_type() == ElementType::Schema {
         node.attr_name()
             .expect("Name required if the complexType element is a child of the schema element")
     } else {
         get_parent_name(node)
-    };
+    }, target_ns);
 
     let content = node
         .children()
