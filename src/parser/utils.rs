@@ -91,7 +91,7 @@ pub fn match_type(type_name: &str, target_ns: Option<&roxmltree::Namespace>) -> 
         "xs:dateTime" => "String".into(),
         "xs:dateTimeStamp" => "String".into(),
 
-        "xs:duration" => "tt:Duration".into(),
+        "xs:duration" => "tt::Duration".into(),
 
         // TODO: would be nice to have types with both numeric representation of value and proper
         // (de)serialization. For that we might use the "flatten" from yaserde, as it will be
