@@ -11,7 +11,9 @@ pub fn parse_attribute(node: &Node, target_ns: Option<&Namespace>) -> RsEntity {
         .expect("All attributes have name or ref in Onvif");
 
     let matched_type = match_type(
-        node.attr_type().or_else(|| node.attr_ref()).unwrap_or("String"),
+        node.attr_type()
+            .or_else(|| node.attr_ref())
+            .unwrap_or("String"),
         target_ns,
     );
 

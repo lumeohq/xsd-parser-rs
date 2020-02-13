@@ -310,4 +310,18 @@ impl RsEntity {
             Import(im) => im.name.as_str(),
         }
     }
+
+    pub fn set_name(&mut self, name: &str) {
+        use RsEntity::*;
+        match self {
+            Struct(s) => s.name = name.to_string(),
+            TupleStruct(tp) => tp.name = name.to_string(),
+            Enum(e) => e.name = name.to_string(),
+            EnumCase(ec) => ec.name = name.to_string(),
+            Alias(al) => al.name = name.to_string(),
+            StructField(sf) => sf.name = name.to_string(),
+            File(file) => file.name = name.to_string(),
+            Import(im) => im.name = name.to_string(),
+        }
+    }
 }
