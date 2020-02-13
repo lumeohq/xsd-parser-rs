@@ -11,13 +11,15 @@ pub fn parse_attribute(node: &Node, target_ns: Option<&Namespace>) -> RsEntity {
         .expect("All attributes have name or ref in Onvif");
 
     let matched_type = match_type(
-        node.attr_type().or_else(|| node.attr_ref()).unwrap_or("()"),
+        node.attr_type()
+            .or_else(|| node.attr_ref())
+            .unwrap_or("String"),
         target_ns,
     );
 
     let type_name = match node.attr_use() {
         UseType::Optional => format!("Option<{}>", matched_type),
-        UseType::Prohibited => "()".to_string(), // TODO: maybe Empty<T> or remove this field
+        UseType::Prohibited => "String".to_string(), // TODO: maybe Empty<T> or remove this field
         UseType::Required => matched_type.to_string(),
     };
 

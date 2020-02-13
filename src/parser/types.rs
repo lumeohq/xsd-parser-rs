@@ -248,7 +248,7 @@ impl fmt::Display for Alias {
         writeln!(
             f,
             "{comment}{visibility}type {name} = {original};",
-            visibility = if is_same_name { "//" } else { "pub " },
+            visibility = if is_same_name { "// " } else { "// pub " }, // TODO: Always commented as an experiment
             comment = get_formatted_comment(self.comment.as_deref()),
             name = self.name,
             original = self.original
@@ -308,6 +308,20 @@ impl RsEntity {
             StructField(sf) => sf.name.as_str(),
             File(file) => file.name.as_str(),
             Import(im) => im.name.as_str(),
+        }
+    }
+
+    pub fn set_name(&mut self, name: &str) {
+        use RsEntity::*;
+        match self {
+            Struct(s) => s.name = name.to_string(),
+            TupleStruct(tp) => tp.name = name.to_string(),
+            Enum(e) => e.name = name.to_string(),
+            EnumCase(ec) => ec.name = name.to_string(),
+            Alias(al) => al.name = name.to_string(),
+            StructField(sf) => sf.name = name.to_string(),
+            File(file) => file.name = name.to_string(),
+            Import(im) => im.name = name.to_string(),
         }
     }
 }

@@ -1,16 +1,18 @@
 use std::borrow::Cow;
-use std::cell::RefCell;
 
 use roxmltree::Namespace;
 use roxmltree::Node;
 
 use crate::parser::constants::attribute;
 use crate::parser::parser::parse_node;
-use crate::parser::types::{Alias, EnumCase, RsEntity, Struct, StructField};
+use crate::parser::types::{Alias, EnumCase, RsEntity, StructField};
 use crate::parser::utils::{
-    get_documentation, get_field_name, get_type_name, match_type, struct_macro, yaserde_for_element,
+    get_documentation, get_field_name, get_type_name, match_type, yaserde_for_element,
 };
 use crate::parser::xsd_elements::{max_occurs, min_occurs, ElementType, MaxOccurs, XsdNode};
+
+const SUPPORTED_CONTENT_TYPES: [ElementType; 2] =
+    [ElementType::SimpleType, ElementType::ComplexType];
 
 pub fn parse_element(
     node: &Node,
@@ -19,7 +21,7 @@ pub fn parse_element(
 ) -> RsEntity {
     match parent.xsd_type() {
         ElementType::Schema => parse_global_element(node, target_ns),
-        ElementType::Sequence => parse_field_of_sequence(node, target_ns),
+        ElementType::Sequence => parse_field_of_sequence(node, parent, target_ns),
         ElementType::Choice => parse_case_of_choice(node, target_ns),
         _ => element_default(node, target_ns),
     }
@@ -80,23 +82,50 @@ fn parse_case_of_choice(element: &Node, target_ns: Option<&Namespace>) -> RsEnti
     })
 }
 
-fn parse_field_of_sequence(node: &Node, target_ns: Option<&Namespace>) -> RsEntity {
-    let name = node.attr_name().unwrap_or("UNSUPPORTED_ELEMENT_NAME");
+fn parse_field_of_sequence(node: &Node, _: &Node, target_ns: Option<&Namespace>) -> RsEntity {
+    let name = node
+        .attr_name()
+        .unwrap_or_else(|| node.attr_ref().unwrap_or("UNSUPPORTED_ELEMENT_NAME"));
 
-    let type_name = element_type(
-        node,
-        match_type(
-            node.attr_type().unwrap_or("UNSUPPORTED_TYPE_OF_ELEMENT"),
-            target_ns,
-        ),
-    );
+    if node.has_attribute(attribute::TYPE) || node.has_attribute(attribute::REF) {
+        let type_name = element_type(
+            node,
+            match_type(
+                node.attr_type()
+                    .unwrap_or_else(|| node.attr_ref().unwrap_or("UNSUPPORTED_TYPE_OF_ELEMENT")),
+                target_ns,
+            ),
+        );
+        return RsEntity::StructField(StructField {
+            name: get_field_name(name),
+            type_name,
+            comment: get_documentation(node),
+            macros: yaserde_for_element(name, target_ns),
+            subtypes: vec![],
+        });
+    }
+
+    let content_node = node
+        .children()
+        .filter(|n| SUPPORTED_CONTENT_TYPES.contains(&n.xsd_type()))
+        .last()
+        .unwrap_or_else(|| {
+            panic!(
+                "Must have content if no 'type' or 'ref' attribute: {:?}",
+                node
+            )
+        });
+
+    let mut field_type = parse_node(&content_node, node, target_ns);
+
+    field_type.set_name(match_type(format!("{}Type", name).as_str(), target_ns).as_ref());
 
     RsEntity::StructField(StructField {
         name: get_field_name(name),
-        type_name,
+        type_name: element_type(node, field_type.name().into()),
         comment: get_documentation(node),
         macros: yaserde_for_element(name, target_ns),
-        subtypes: vec![],
+        subtypes: vec![field_type],
     })
 }
 
@@ -113,20 +142,16 @@ fn parse_global_element(node: &Node, target_ns: Option<&Namespace>) -> RsEntity 
             subtypes: vec![],
         });
     }
+
     let content_node = node
         .children()
-        .filter(|n| n.is_element())
+        .filter(|n| SUPPORTED_CONTENT_TYPES.contains(&n.xsd_type()))
         .last()
         .expect("MUST HAVE CONTENT");
-    let content = parse_node(&content_node, node, target_ns);
 
-    RsEntity::Struct(Struct {
-        name: match_type(name, target_ns).into(),
-        fields: RefCell::new(vec![]),
-        comment: get_documentation(node),
-        subtypes: vec![content],
-        macros: struct_macro(target_ns),
-    })
+    let mut content = parse_node(&content_node, node, target_ns);
+    content.set_name(match_type(name, target_ns).as_ref());
+    content
 }
 
 pub fn element_type(node: &Node, type_name: Cow<str>) -> String {
