@@ -44,11 +44,13 @@ pub fn match_type(
     target_namespace: Option<&roxmltree::Namespace>,
 ) -> Cow<'static, str> {
     fn replace(s: &str) -> String {
-        match s.find(':') {
-            Some(index) => format!("{}::{}", &s[0..index], to_pascal_case(&s[index..])),
-            None => s.into(),
-        }
-        .replace("-", "_")
+        to_pascal_case(
+            match s.find(':') {
+                Some(index) => format!("{}::{}", &s[0..index], &s[index..]),
+                None => s.into(),
+            }
+            .replace("-", "_").as_str()
+        )
     }
     match type_name {
         "xs:hexBinary"    => "String".into(),
