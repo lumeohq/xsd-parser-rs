@@ -41,16 +41,13 @@ pub fn get_formatted_comment(doc: Option<&str>) -> String {
 
 pub fn match_type(
     type_name: &str,
-    target_namespace: Option<&roxmltree::Namespace>,
+    target_ns: Option<&roxmltree::Namespace>,
 ) -> Cow<'static, str> {
     fn replace(s: &str) -> String {
-        to_pascal_case(
-            match s.find(':') {
-                Some(index) => format!("{}::{}", &s[0..index], &s[index..]),
-                None => s.into(),
-            }
-            .replace("-", "_").as_str()
-        )
+        match s.find(':') {
+            Some(index) => format!("{}::{}", &s[0..index], to_pascal_case(&s[index..].replace("-", "_"))),
+            None => to_pascal_case(s.replace("-", "_").as_str()),
+        }
     }
     match type_name {
         "xs:hexBinary"    => "String".into(),
@@ -125,7 +122,7 @@ pub fn match_type(
         "xs:NMTOKENS" => "Vec<String>".into(),
 
         x => {
-            let prefix = target_namespace.and_then(|ns| ns.name());
+            let prefix = target_ns.and_then(|ns| ns.name());
             match prefix {
                 Some(name) => {
                     if x.starts_with(name) {
@@ -190,7 +187,19 @@ pub fn tuple_struct_macros() -> String {
 }
 
 pub fn yaserde_for_attribute(name: &str) -> String {
-    format!("  #[yaserde(attribute, rename = \"{}\")]\n", name)
+    if let Some(index) = name.find(':') {
+        format!("  #[yaserde(attribute, prefix = \"{}\" rename = \"{}\")]\n", &name[0..index], &name[index+1..])
+    } else {
+        format!("  #[yaserde(attribute, rename = \"{}\")]\n", name)
+    }
+}
+
+pub fn yaserde_for_element(name: &str, target_namespace: Option<&roxmltree::Namespace>) -> String {
+    let prefix = target_namespace.and_then(|ns| ns.name());
+    match prefix {
+        Some(p) => format!("  #[yaserde(prefix = \"{}\", rename = \"{}\")]\n", p, name),
+        None => format!("  #[yaserde(rename = \"{}\")]\n", name),
+    }
 }
 
 pub fn get_parent_name<'a>(node: &Node<'a, '_>) -> &'a str {
@@ -237,14 +246,6 @@ pub fn attributes_to_fields(node: &Node, target_ns: Option<&Namespace>) -> Vec<S
             _ => unreachable!("Invalid attribute parsing: {:?}", n),
         })
         .collect()
-}
-
-pub fn yaserde_for_element(name: &str, target_namespace: Option<&roxmltree::Namespace>) -> String {
-    let prefix = target_namespace.and_then(|ns| ns.name());
-    match prefix {
-        Some(p) => format!("  #[yaserde(prefix = \"{}\", rename = \"{}\")]\n", p, name),
-        None => format!("  #[yaserde(rename = \"{}\")]\n", name),
-    }
 }
 
 const RS_KEYWORDS: &[&str] = &[
