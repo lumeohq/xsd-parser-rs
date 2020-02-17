@@ -2,7 +2,7 @@ pub mod default;
 pub mod utils;
 
 use std::borrow::Cow;
-use crate::parser::types::{TupleStruct, Struct, Enum, Alias, StructField, EnumCase};
+use crate::parser::types::{TupleStruct, Struct, Enum, Alias, StructField, EnumCase, Import};
 use crate::generator::utils::get_formatted_comment;
 
 pub trait Generator {
@@ -93,6 +93,19 @@ pub trait Generator {
                 .collect::<Vec<String>>()
                 .join("\n\n"),
         )
+    }
+
+    fn get_alias(&self, al: &Alias) -> String {
+        format!(
+            "//{comment}{visibility}type {name} = {original};",
+            comment = get_formatted_comment(al.comment.as_deref()),
+            name = al.name,
+            original = al.original
+        )
+    }
+
+    fn get_import(&self, im: &Import) -> String {
+        format!("//use {}  {};\n", im.location, im.name)
     }
 }
 
