@@ -272,6 +272,7 @@ impl fmt::Display for Alias {
 pub struct Import {
     pub name: String,
     pub location: String,
+    pub comment: Option<String>,
 }
 
 impl fmt::Display for Import {
@@ -330,6 +331,19 @@ impl RsEntity {
             Alias(al) => al.name = name.to_string(),
             StructField(sf) => sf.name = name.to_string(),
             Import(im) => im.name = name.to_string(),
+        }
+    }
+
+    pub fn set_comment(&mut self, comment: Option<String>) {
+        use RsEntity::*;
+        match self {
+            Struct(s) => s.comment = comment,
+            TupleStruct(tp) => tp.comment = comment,
+            Enum(e) => e.comment = comment,
+            EnumCase(ec) => ec.comment = comment,
+            Alias(al) => al.comment = comment,
+            StructField(sf) => sf.comment = comment,
+            Import(im) => im.comment = comment,
         }
     }
 }
