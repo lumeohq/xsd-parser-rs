@@ -1,5 +1,5 @@
 use roxmltree::Namespace;
-use crate::parser::types::{File, TupleStruct, Struct, Enum, Alias, StructField, EnumCase};
+use crate::parser::types::{File, TupleStruct, Struct, Enum, Alias, StructField, EnumCase, StructFieldSource};
 use crate::parser::constants::attribute;
 use crate::generator::MacroGenerator;
 use std::borrow::Cow;
@@ -45,15 +45,31 @@ impl MacroGenerator for DefaultGenerator<'_> {
         "#[derive(PartialEq, Debug, YaSerialize, YaDeserialize)]".into()
     }
 
-    fn alias_macro(&self, _: &Alias) -> Cow<'static, str> {
-        "".into()
-    }
-
     fn struct_field_macro(&self, sf: &StructField) -> Cow<'static, str> {
-        unimplemented!()
+        match sf.source {
+            StructFieldSource::Attribute => yaserde_for_attribute(sf.name.as_str()).into(),
+            StructFieldSource::Element => yaserde_for_element(sf.name.as_str(), self.target_ns.as_ref()).into(),
+            _ => "".into()
+        }
     }
+}
 
-    fn enum_case_macro(&self, en: &EnumCase) -> Cow<'static, str> {
-        unimplemented!()
+fn yaserde_for_attribute(name: &str) -> String {
+    if let Some(index) = name.find(':') {
+        format!(
+            "  #[yaserde(attribute, prefix = \"{}\" rename = \"{}\")]\n",
+            &name[0..index],
+            &name[index + 1..]
+        )
+    } else {
+        format!("  #[yaserde(attribute, rename = \"{}\")]\n", name)
+    }
+}
+
+pub fn yaserde_for_element(name: &str, target_namespace: Option<&roxmltree::Namespace>) -> String {
+    let prefix = target_namespace.and_then(|ns| ns.name());
+    match prefix {
+        Some(p) => format!("  #[yaserde(prefix = \"{}\", rename = \"{}\")]\n", p, name),
+        None => format!("  #[yaserde(rename = \"{}\")]\n", name),
     }
 }
