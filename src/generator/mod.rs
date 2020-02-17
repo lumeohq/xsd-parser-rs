@@ -81,6 +81,7 @@ pub trait Generator<'input> {
     }
 
     fn get_enum(&self, en: &Enum) -> String {
+        let name = self.format_type(en.name.as_str());
         format!(
             "{comment}\
             {macros}\n\
@@ -90,18 +91,18 @@ pub trait Generator<'input> {
             }}\n\n\
             {default}\n\n\
             {subtypes}",
-            comment = default_format_comment(en.comment.as_deref()),
+            comment = self.format_comment(en.comment.as_deref()),
             macros = self.enum_macro(en),
-            name = en.name,
+            name = name,
             cases = en
                 .cases
                 .iter()
                 .map(|case| case.to_string())
                 .collect::<Vec<String>>()
                 .join("\n"),
-            typename = en.type_name,
+            typename = self.format_type(en.type_name.as_str()),
             default = format!("impl Default for {name} {{\n  fn default() -> {name} {{\n    Self::__Unknown__(\"No valid variants\".into())\n  }}\n}}",
-                              name = en.name
+                              name = name
             ),
             subtypes = en
                 .subtypes
@@ -119,7 +120,7 @@ pub trait Generator<'input> {
             Some(typename) => format!(
                 "{comment}  {name}({typename}),",
                 name = name,
-                typename = typename,
+                typename = self.format_type(typename.as_str()),
                 comment = comment,
             ),
             None => format!(
@@ -134,8 +135,8 @@ pub trait Generator<'input> {
         format!(
             "{comment}{macros}  pub {name}: {typename},",
             macros = self.struct_field_macro(sf),
-            name = sf.name,
-            typename = sf.type_name,
+            name = self.format_name(sf.name.as_str()),
+            typename = self.format_type(sf.type_name.as_str()),
             comment = self.format_comment(sf.comment.as_deref())
         )
     }
@@ -144,8 +145,8 @@ pub trait Generator<'input> {
         format!(
             "//{comment} pub type {name} = {original};",
             comment = self.format_comment(al.comment.as_deref()),
-            name = al.name,
-            original = al.original
+            name = self.format_type(al.name.as_str()),
+            original = self.format_type(al.original.as_str())
         )
     }
 
@@ -161,7 +162,7 @@ pub trait Generator<'input> {
         Cow::Owned(default_format_name(name))
     }
 
-    fn format_type<'a>(&self, type_name: &'a str) -> Cow<'a, str> {
+    fn format_type(&self, type_name: &str) -> Cow<'_, str> {
         default_format_type(type_name, self.target_ns())
     }
 }
