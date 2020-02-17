@@ -5,7 +5,6 @@ use std::collections::HashMap;
 use crate::parser::constants::tag;
 use crate::parser::utils::{get_formatted_comment, get_type_name};
 use roxmltree::Namespace;
-use crate::parser::xsd_elements::ElementType;
 
 #[derive(Debug, Clone)]
 pub struct File<'input> {
