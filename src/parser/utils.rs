@@ -9,7 +9,7 @@ use roxmltree::{Namespace, Node};
 
 use crate::parser::constants::attribute;
 use crate::parser::parser::parse_node;
-use crate::parser::types::{RsEntity, StructField};
+use crate::parser::types::{RsEntity, StructField, StructFieldSource};
 use crate::parser::xsd_elements::{ElementType, XsdNode};
 
 pub fn split_comment_line(s: &str, max_len: usize, indent: usize) -> String {
@@ -162,6 +162,7 @@ pub fn any_attribute_field() -> StructField {
         comment: Some("//".to_string()),
         macros: "//TODO: any_attribute macros \n//".to_string(),
         subtypes: vec![],
+        source: StructFieldSource::Attribute
     }
 }
 

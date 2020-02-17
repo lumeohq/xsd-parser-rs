@@ -4,7 +4,7 @@ use roxmltree::{Namespace, Node};
 
 use crate::parser::constants::{attribute, tag};
 use crate::parser::parser::parse_node;
-use crate::parser::types::{RsEntity, Struct, StructField};
+use crate::parser::types::{RsEntity, Struct, StructField, StructFieldSource};
 use crate::parser::utils::{
     any_attribute_field, attributes_to_fields, find_child, get_documentation, match_type,
     struct_macro,
@@ -57,6 +57,7 @@ fn complex_content_extension(node: &Node, target_ns: Option<&Namespace>) -> RsEn
         comment: get_documentation(node),
         macros: String::new(),
         subtypes: vec![],
+        source: StructFieldSource::Base
     });
 
     if find_child(node, "anyAttribute").is_some() {

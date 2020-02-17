@@ -5,7 +5,7 @@ use roxmltree::Node;
 
 use crate::parser::constants::attribute;
 use crate::parser::parser::parse_node;
-use crate::parser::types::{Alias, EnumCase, RsEntity, StructField};
+use crate::parser::types::{Alias, EnumCase, RsEntity, StructField, StructFieldSource};
 use crate::parser::utils::{
     get_documentation, get_field_name, get_type_name, match_type, yaserde_for_element,
 };
@@ -102,6 +102,7 @@ fn parse_field_of_sequence(node: &Node, _: &Node, target_ns: Option<&Namespace>)
             comment: get_documentation(node),
             macros: yaserde_for_element(name, target_ns),
             subtypes: vec![],
+            source: StructFieldSource::Element
         });
     }
 
@@ -126,6 +127,7 @@ fn parse_field_of_sequence(node: &Node, _: &Node, target_ns: Option<&Namespace>)
         comment: get_documentation(node),
         macros: yaserde_for_element(name, target_ns),
         subtypes: vec![field_type],
+        source: StructFieldSource::Element
     })
 }
 
