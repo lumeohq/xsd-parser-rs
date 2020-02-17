@@ -1,4 +1,5 @@
 mod parser;
+mod generator;
 
 use std::fs;
 use std::io::Read;
