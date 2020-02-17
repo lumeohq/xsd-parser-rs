@@ -27,25 +27,19 @@ pub fn parse(text: &str) -> Result<File, ()> {
         .last()
         .expect("Schema element is required");
 
-    let rs_entity = parse_node(&schema, &root, None);
-
-    if let RsEntity::File(rs_file) = rs_entity {
-        for ty in &rs_file.types {
-            if let RsEntity::Struct(st) = ty {
-                map.extend(st.get_types_map());
-            }
+    let schema_rs = parse_schema(&schema);
+    for ty in &schema_rs.types {
+        if let RsEntity::Struct(st) = ty {
+            map.extend(st.get_types_map());
         }
-
-        for ty in &rs_file.types {
-            if let RsEntity::Struct(st) = ty {
-                st.extend_base(&map);
-            }
+    }
+    for ty in &schema_rs.types {
+        if let RsEntity::Struct(st) = ty {
+            st.extend_base(&map);
         }
-
-        return Ok(rs_file);
     }
 
-    Err(())
+    return Ok(schema_rs);
 }
 
 pub fn parse_node(node: &Node, parent: &Node, tn: Option<&Namespace>) -> RsEntity {
@@ -60,7 +54,6 @@ pub fn parse_node(node: &Node, parent: &Node, tn: Option<&Namespace>) -> RsEntit
         ComplexType => parse_complex_type(node, parent, tn),
         Element => parse_element(node, parent, tn),
         Import | Include => parse_import(node),
-        Schema => parse_schema(node),
         Sequence => parse_sequence(node, parent, tn),
         SimpleContent => parse_simple_content(node, tn),
         SimpleType => parse_simple_type(node, parent, tn),
@@ -71,16 +64,17 @@ pub fn parse_node(node: &Node, parent: &Node, tn: Option<&Namespace>) -> RsEntit
     }
 }
 
-pub fn parse_schema(schema: &Node) -> RsEntity {
-    RsEntity::File(File {
+pub fn parse_schema<'input>(schema: &Node<'_, 'input>) -> File<'input> {
+    File {
         name: "".into(),
         namespace: None,
+        target_ns: target_namespace(&schema).map(|n| n.clone()),
         types: schema
             .children()
             .filter(|n| n.is_element())
             .map(|node| parse_node(&node, schema, target_namespace(&schema)))
             .collect(),
-    })
+    }
 }
 
 // Stubs
