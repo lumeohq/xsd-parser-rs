@@ -13,7 +13,7 @@ pub trait Generator {
     fn struct_field_macro(&self, sf: &StructField) -> Cow<'static, str> { "".into() }
     fn enum_case_macro(&self, ec: &EnumCase) -> Cow<'static, str> { "".into() }
 
-    fn tuple_struct(&self, ts: &TupleStruct) ->  Cow<'static, str> {
+    fn get_tuple_struct(&self, ts: &TupleStruct) ->  String {
         format!(
             "{comment}{macros}pub struct {name} (pub {typename});\n{subtypes}",
             comment = get_formatted_comment(ts.comment.as_deref()),
@@ -26,7 +26,41 @@ pub trait Generator {
                 .map(|f| f.to_string())
                 .collect::<Vec<String>>()
                 .join("\n"),
-        ).into()
+        )
+    }
+
+    fn get_struct(&self, st: &Struct) -> String {
+        format!(
+            "{comment}{macros}pub struct {name} {{\n{fields}\n}}\n{subtypes}\n{fields_subtypes}",
+            comment = get_formatted_comment(st.comment.as_deref()),
+            macros = self.struct_macro(st),
+            name = st.name,
+            fields = st
+                .fields
+                .borrow()
+                .iter()
+                .map(|f| f.to_string())
+                .collect::<Vec<String>>()
+                .join("\n\n"),
+            subtypes = st
+                .subtypes
+                .iter()
+                .map(|f| f.to_string())
+                .collect::<Vec<String>>()
+                .join("\n\n"),
+            fields_subtypes = st
+                .fields
+                .borrow()
+                .iter()
+                .map(|f| f
+                    .subtypes
+                    .iter()
+                    .map(|e| e.to_string())
+                    .collect::<Vec<String>>()
+                    .join("\n"))
+                .collect::<Vec<String>>()
+                .join("\n"),
+        )
     }
 }
 
