@@ -79,13 +79,16 @@ pub fn parse_schema<'input>(schema: &Node<'_, 'input>) -> File<'input> {
 
 // Stubs
 fn parse_import(node: &Node) -> RsEntity {
-    RsEntity::Import(Import {
-        name: node.attribute(attribute::NAMESPACE).unwrap_or("").into(),
-        location: node
-            .attribute(attribute::SCHEMA_LOCATION)
-            .unwrap_or("")
-            .into(),
-    })
+    RsEntity::Import(
+        Import {
+            name: node.attribute(attribute::NAMESPACE).unwrap_or("").into(),
+            location: node
+                .attribute(attribute::SCHEMA_LOCATION)
+                .unwrap_or("")
+                .into(),
+            comment: None
+        }
+    )
 }
 
 fn parse_any(node: &Node) -> RsEntity {

@@ -39,29 +39,9 @@ pub fn parse_simple_type(
     };
 
     if let Some(n) = name {
-        let matched_type_name = match_type(n, tn).to_string();
-        match &mut content_type {
-            RsEntity::Enum(en) => {
-                en.name = matched_type_name;
-            }
-            RsEntity::TupleStruct(ts) => {
-                ts.name = matched_type_name;
-            }
-            _ => unreachable!("Unexpected RsType for simpleType node"),
-        }
+        content_type.set_name(match_type(n, tn).as_ref());
     }
-
-    let comment = get_documentation(node);
-    match &mut content_type {
-        RsEntity::Enum(en) => {
-            en.comment = comment;
-        }
-        RsEntity::TupleStruct(ts) => {
-            ts.comment = comment;
-        }
-        _ => unreachable!("Unexpected RsType for simpleType node"),
-    }
-
+    content_type.set_comment(get_documentation(node));
     content_type
 }
 

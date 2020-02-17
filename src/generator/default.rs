@@ -1,7 +1,7 @@
 use roxmltree::Namespace;
 use crate::parser::types::{File, TupleStruct, Struct, Enum, Alias, StructField, EnumCase, StructFieldSource};
 use crate::parser::constants::attribute;
-use crate::generator::MacroGenerator;
+use crate::generator::Generator;
 use std::borrow::Cow;
 
 pub struct DefaultGenerator<'input> {
@@ -16,7 +16,7 @@ impl<'input> DefaultGenerator<'input> {
     }
 }
 
-impl MacroGenerator for DefaultGenerator<'_> {
+impl Generator for DefaultGenerator<'_> {
     fn tuple_struct_macro(&self, _: &TupleStruct) -> Cow<'static, str> {
         "#[derive(Default, PartialEq, Debug, UtilsTupleSerDe)]\n".into()
     }

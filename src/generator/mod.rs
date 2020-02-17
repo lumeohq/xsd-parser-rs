@@ -5,7 +5,7 @@ use std::borrow::Cow;
 use crate::parser::types::{TupleStruct, Struct, Enum, Alias, StructField, EnumCase};
 use crate::generator::utils::get_formatted_comment;
 
-pub trait MacroGenerator {
+pub trait Generator {
     fn tuple_struct_macro(&self, ts: &TupleStruct) ->  Cow<'static, str> { "".into() }
     fn struct_macro(&self, st: &Struct) -> Cow<'static, str> { "".into() }
     fn enum_macro(&self, en: &Enum) -> Cow<'static, str> { "".into() }
