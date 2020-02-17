@@ -16,7 +16,11 @@ impl<'input> DefaultGenerator<'input> {
     }
 }
 
-impl Generator for DefaultGenerator<'_> {
+impl<'input> Generator<'_> for DefaultGenerator<'input> {
+    fn target_ns(&self) -> &Option<Namespace<'_>> {
+        &self.target_ns
+    }
+
     fn tuple_struct_macro(&self, _: &TupleStruct) -> Cow<'static, str> {
         "#[derive(Default, PartialEq, Debug, UtilsTupleSerDe)]\n".into()
     }
