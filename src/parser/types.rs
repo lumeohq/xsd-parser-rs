@@ -4,15 +4,17 @@ use std::collections::HashMap;
 
 use crate::parser::constants::tag;
 use crate::parser::utils::{get_formatted_comment, get_type_name};
+use roxmltree::Namespace;
 
 #[derive(Debug, Clone)]
-pub struct File {
+pub struct File<'input> {
     pub name: String,
     pub namespace: Option<String>,
     pub types: Vec<RsEntity>,
+    pub target_ns: Option<Namespace<'input>>
 }
 
-impl fmt::Display for File {
+impl fmt::Display for File<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         write!(
             f,
@@ -276,7 +278,6 @@ pub enum RsEntity {
     Enum(Enum),
     EnumCase(EnumCase),
     Alias(Alias),
-    File(File),
     Import(Import),
 }
 
@@ -290,7 +291,6 @@ impl fmt::Display for RsEntity {
             EnumCase(ec) => write!(f, "{}", ec),
             Alias(al) => write!(f, "{}", al),
             StructField(sf) => write!(f, "{}", sf),
-            File(file) => write!(f, "{}", file),
             Import(im) => write!(f, "{}", im),
         }
     }
@@ -306,7 +306,6 @@ impl RsEntity {
             EnumCase(ec) => ec.name.as_str(),
             Alias(al) => al.name.as_str(),
             StructField(sf) => sf.name.as_str(),
-            File(file) => file.name.as_str(),
             Import(im) => im.name.as_str(),
         }
     }
@@ -320,7 +319,6 @@ impl RsEntity {
             EnumCase(ec) => ec.name = name.to_string(),
             Alias(al) => al.name = name.to_string(),
             StructField(sf) => sf.name = name.to_string(),
-            File(file) => file.name = name.to_string(),
             Import(im) => im.name = name.to_string(),
         }
     }
