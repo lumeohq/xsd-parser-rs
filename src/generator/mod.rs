@@ -62,5 +62,37 @@ pub trait Generator {
                 .join("\n"),
         )
     }
+
+    fn get_enum(&self, en: &Enum) -> String {
+        format!(
+            "{comment}\
+            {macros}\n\
+            pub enum {name} \
+            {{\n{cases}  \n\n\
+            __Unknown__({typename})\n\
+            }}\n\n\
+            {default}\n\n\
+            {subtypes}",
+            comment = get_formatted_comment(en.comment.as_deref()),
+            macros = self.enum_macro(en),
+            name = en.name,
+            cases = en
+                .cases
+                .iter()
+                .map(|case| case.to_string())
+                .collect::<Vec<String>>()
+                .join("\n"),
+            typename = en.type_name,
+            default = format!("impl Default for {name} {{\n  fn default() -> {name} {{\n    Self::__Unknown__(\"No valid variants\".into())\n  }}\n}}",
+                              name = en.name
+            ),
+            subtypes = en
+                .subtypes
+                .iter()
+                .map(|f| f.to_string())
+                .collect::<Vec<String>>()
+                .join("\n\n"),
+        )
+    }
 }
 
