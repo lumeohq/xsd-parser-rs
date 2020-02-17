@@ -2,17 +2,33 @@ pub mod default;
 pub mod utils;
 
 use std::borrow::Cow;
-use crate::parser::types::{TupleStruct, Struct, Enum, Alias, StructField, EnumCase, Import};
-use crate::generator::utils::{default_format_comment, default_format_type_name};
+use crate::parser::types::{TupleStruct, Struct, Enum, Alias, StructField, EnumCase, Import, RsEntity};
+use crate::generator::utils::{default_format_comment, default_format_name, default_format_type};
 use inflector::cases::pascalcase::to_pascal_case;
+use roxmltree::Namespace;
 
-pub trait Generator {
+pub trait Generator<'input> {
+    fn target_ns(&self) -> &Option<Namespace<'_>>;
+
     fn tuple_struct_macro(&self, ts: &TupleStruct) ->  Cow<'static, str> { "".into() }
     fn struct_macro(&self, st: &Struct) -> Cow<'static, str> { "".into() }
     fn enum_macro(&self, en: &Enum) -> Cow<'static, str> { "".into() }
     fn alias_macro(&self, al: &Alias) -> Cow<'static, str> { "".into() }
     fn struct_field_macro(&self, sf: &StructField) -> Cow<'static, str> { "".into() }
     fn enum_case_macro(&self, ec: &EnumCase) -> Cow<'static, str> { "".into() }
+
+    fn get_rs_entity(&self, entity: &RsEntity) -> String {
+        use RsEntity::*;
+        match entity {
+            TupleStruct(tp) => self.get_tuple_struct(tp),
+            Struct(st) => self.get_struct(st),
+            Enum(en) => self.get_enum(en),
+            Import(im) => self.get_import(im),
+            Alias(al) => self.get_alias(al),
+            EnumCase(ec) => self.get_enum_case(ec),
+            StructField(sf) => self.get_struct_field(sf),
+        }
+    }
 
     fn get_tuple_struct(&self, ts: &TupleStruct) ->  String {
         format!(
@@ -97,7 +113,7 @@ pub trait Generator {
     }
 
     fn get_enum_case(&self, ec: &EnumCase) -> String {
-        let name = self.format_type_name(ec.name.as_str());
+        let name = self.format_name(ec.name.as_str());
         let comment = self.format_comment(ec.comment.as_deref());
         match &ec.type_name {
             Some(typename) => format!(
@@ -141,8 +157,12 @@ pub trait Generator {
         default_format_comment(comment)
     }
 
-    fn format_type_name(&self, name: &str) -> String {
-        default_format_type_name(name)
+    fn format_name(&self, name: &str) -> Cow<'_, str> {
+        Cow::Owned(default_format_name(name))
+    }
+
+    fn format_type<'a>(&self, type_name: &'a str) -> Cow<'a, str> {
+        default_format_type(type_name, self.target_ns())
     }
 }
 
