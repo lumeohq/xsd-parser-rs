@@ -184,7 +184,7 @@ pub fn get_documentation<'a>(node: &Node<'a, '_>) -> Option<String> {
 }
 
 pub fn tuple_struct_macros() -> String {
-    "//TODO: Tuple Struct macros\n".to_string()
+    "#[derive(Default, PartialEq, Debug, UtilsTupleSerDe)]\n".to_string()
 }
 
 pub fn yaserde_for_attribute(name: &str) -> String {
