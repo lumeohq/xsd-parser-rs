@@ -207,6 +207,10 @@ pub fn yaserde_for_element(name: &str, target_namespace: Option<&roxmltree::Name
     }
 }
 
+pub fn yaserde_for_flatten_element() -> String {
+    "  #[yaserde(flatten)]\n".to_string()
+}
+
 pub fn get_parent_name<'a>(node: &Node<'a, '_>) -> &'a str {
     match node.parent_element() {
         Some(parent) => {
