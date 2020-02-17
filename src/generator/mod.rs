@@ -114,6 +114,15 @@ pub trait Generator {
         }
     }
 
+    fn get_struct_field(&self, sf: &StructField) -> String {
+        format!(
+            "{comment}{macros}  pub {name}: {typename},",
+            macros = self.struct_field_macro(sf),
+            name = sf.name,
+            typename = sf.type_name,
+            comment = self.format_comment(sf.comment.as_deref())
+        )
+    }
 
     fn get_alias(&self, al: &Alias) -> String {
         format!(
