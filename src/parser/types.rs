@@ -5,6 +5,7 @@ use std::collections::HashMap;
 use crate::parser::constants::tag;
 use crate::parser::utils::{get_formatted_comment, get_type_name};
 use roxmltree::Namespace;
+use crate::parser::xsd_elements::ElementType;
 
 #[derive(Debug, Clone)]
 pub struct File<'input> {
@@ -121,6 +122,15 @@ pub struct StructField {
     pub comment: Option<String>,
     pub macros: String,
     pub subtypes: Vec<RsEntity>,
+    pub source: StructFieldSource
+}
+
+#[derive(Debug, Clone)]
+pub enum StructFieldSource {
+    Attribute,
+    Element,
+    Base,
+    NA
 }
 
 impl fmt::Display for StructField {

@@ -11,7 +11,7 @@ use crate::parser::element::parse_element;
 use crate::parser::sequence::parse_sequence;
 use crate::parser::simple_content::parse_simple_content;
 use crate::parser::simple_type::parse_simple_type;
-use crate::parser::types::{File, Import, RsEntity, StructField};
+use crate::parser::types::{File, Import, RsEntity, StructField, StructFieldSource};
 use crate::parser::utils::{get_documentation, target_namespace};
 use crate::parser::xsd_elements::{ElementType, XsdNode};
 
@@ -95,6 +95,7 @@ fn parse_any(node: &Node) -> RsEntity {
         macros: "//TODO: yaserde macro for any element\n//".to_string(),
         subtypes: vec![],
         comment: get_documentation(node),
+        source: StructFieldSource::Element
     })
 }
 
@@ -105,5 +106,6 @@ fn parse_any_attribute(node: &Node) -> RsEntity {
         macros: "//TODO: yaserde macro for any attribute\n//".to_string(),
         subtypes: vec![],
         comment: get_documentation(node),
+        source: StructFieldSource::Attribute
     })
 }

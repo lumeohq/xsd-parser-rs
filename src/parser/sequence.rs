@@ -3,7 +3,7 @@ use std::cell::RefCell;
 use roxmltree::{Namespace, Node};
 
 use crate::parser::parser::parse_node;
-use crate::parser::types::{Enum, RsEntity, Struct, StructField};
+use crate::parser::types::{Enum, RsEntity, Struct, StructField, StructFieldSource};
 use crate::parser::utils::{
     get_documentation, get_field_name, get_parent_name, match_type, struct_macro,
     yaserde_for_element,
@@ -46,5 +46,6 @@ fn enum_to_field(en: Enum, target_ns: Option<&Namespace>) -> StructField {
         comment: None,
         macros: yaserde_for_element(en.name.as_str(), target_ns),
         subtypes: vec![RsEntity::Enum(en)],
+        source: StructFieldSource::Element
     }
 }

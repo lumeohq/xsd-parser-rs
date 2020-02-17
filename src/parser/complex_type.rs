@@ -3,7 +3,7 @@ use std::cell::RefCell;
 use roxmltree::Node;
 
 use crate::parser::parser::parse_node;
-use crate::parser::types::{RsEntity, Struct, StructField};
+use crate::parser::types::{RsEntity, Struct, StructField, StructFieldSource};
 use crate::parser::utils::{
     any_attribute_field, attributes_to_fields, find_child, get_documentation, get_field_name,
     get_parent_name, match_type, struct_macro, yaserde_for_flatten_element,
@@ -78,6 +78,7 @@ pub fn parse_complex_type(
                 comment: None,
                 macros: yaserde_for_flatten_element(),
                 subtypes: vec![],
+                source: StructFieldSource::NA
             });
             en.subtypes = vec![RsEntity::Struct(Struct {
                 name: name.to_string(),
