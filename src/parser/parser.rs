@@ -14,6 +14,7 @@ use crate::parser::simple_type::parse_simple_type;
 use crate::parser::types::{File, Import, RsEntity, StructField, StructFieldSource};
 use crate::parser::utils::{get_documentation, target_namespace};
 use crate::parser::xsd_elements::{ElementType, XsdNode};
+use crate::parser::list::parse_list;
 
 pub fn parse(text: &str) -> Result<File, ()> {
     let doc = roxmltree::Document::parse(&text).expect("Parse document error");
@@ -54,6 +55,7 @@ pub fn parse_node(node: &Node, parent: &Node) -> RsEntity {
         ComplexType => parse_complex_type(node, parent),
         Element => parse_element(node, parent),
         Import | Include => parse_import(node),
+        List => parse_list(node),
         Sequence => parse_sequence(node, parent),
         SimpleContent => parse_simple_content(node),
         SimpleType => parse_simple_type(node, parent),

@@ -2,8 +2,9 @@ use roxmltree::Node;
 
 use crate::parser::constants::attribute;
 use crate::parser::types::{Enum, EnumCase, RsEntity, TupleStruct};
-use crate::parser::utils::{find_child, get_documentation, get_parent_name};
+use crate::parser::utils::{get_documentation, get_parent_name};
 use crate::parser::xsd_elements::{ElementType, RestrictionType, XsdNode};
+use crate::parser::parse_node;
 
 pub fn parse_simple_type(node: &Node, parent: &Node) -> RsEntity {
     let name = node.attr_name();
@@ -24,11 +25,8 @@ pub fn parse_simple_type(node: &Node, parent: &Node) -> RsEntity {
 
     let mut content_type = match content.xsd_type() {
         ElementType::Union => unimplemented!(), //TODO: Add union parser (No in ONVIF)
-        ElementType::List => simple_type_list(&content),
-        ElementType::Restriction(r) => match r {
-            RestrictionType::SimpleType => simple_type_restriction(&content),
-            _ => unreachable!("Invalid restriction type of SimpleType {:?}", r),
-        },
+        ElementType::List => parse_node(&content, node),
+        ElementType::Restriction(RestrictionType::SimpleType) => simple_type_restriction(&content),
         _ => unreachable!("Invalid content type of SimpleType {:?}", content),
     };
 
@@ -39,34 +37,7 @@ pub fn parse_simple_type(node: &Node, parent: &Node) -> RsEntity {
     content_type
 }
 
-fn simple_type_list(list: &Node) -> RsEntity {
-    let mut types: Vec<RsEntity> = vec![];
 
-    let item_type = match list.attribute(attribute::ITEM_TYPE) {
-        Some(item_type) => format!("Vec<{}>", item_type),
-        None => {
-            let nested_simple_type = find_child(list, "simpleType").expect(
-                "itemType not allowed if the content contains a simpleType element. Otherwise, required."
-            );
-
-            match parse_simple_type(&nested_simple_type, list) {
-                RsEntity::TupleStruct(ts) => format!("Vec<{}>", ts.type_name),
-                RsEntity::Enum(en) => {
-                    types.push(RsEntity::Enum(en));
-                    format!("Vec<{}>", types.last().unwrap().name())
-                }
-                _ => unreachable!(),
-            }
-        }
-    };
-
-    RsEntity::TupleStruct(TupleStruct {
-        name: String::default(),
-        comment: None,
-        type_name: item_type,
-        subtypes: types,
-    })
-}
 
 fn simple_type_restriction(restriction: &Node) -> RsEntity {
     let base = restriction
@@ -90,10 +61,8 @@ fn simple_type_restriction(restriction: &Node) -> RsEntity {
         })
     } else {
         RsEntity::TupleStruct(TupleStruct {
-            name: String::default(),
-            comment: None,
             type_name: base.to_string(),
-            subtypes: vec![],
+            ..Default::default()
         })
     }
 }
@@ -138,7 +107,8 @@ r#"
     match parse_simple_type(&simple_type, &schema) {
         RsEntity::TupleStruct(ts) => {
             assert_eq!(ts.name, "SomeType");
-            assert_eq!(ts.type_name, "Vec<Vec<xs::Ssd>>");
+            assert_eq!(ts.type_name, "xs:SSD");
+            assert_eq!(ts.type_modifiers, vec![TypeModifier::Array, TypeModifier::Array]);
             assert_eq!(ts.comment.unwrap().trim(), "Some text");
             assert!(ts.subtypes.is_empty());
         }
@@ -177,7 +147,8 @@ r#"
     match parse_simple_type(&simple_type, &schema) {
         RsEntity::TupleStruct(ts) => {
             assert_eq!(ts.name, "SomeType");
-            assert_eq!(ts.type_name, "Vec<SomeTypeEnum>");
+            assert_eq!(ts.type_name, "SomeTypeEnum");
+            assert_eq!(ts.type_modifiers, vec![TypeModifier::Array]);
             assert_eq!(ts.comment.unwrap().trim(), "Some text");
             assert_eq!(ts.subtypes.len(), 1);
             match &ts.subtypes[0] {
