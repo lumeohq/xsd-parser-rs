@@ -1,10 +1,10 @@
 use roxmltree::Node;
 
 use crate::parser::constants::attribute;
+use crate::parser::parse_node;
 use crate::parser::types::{Enum, EnumCase, RsEntity, TupleStruct};
 use crate::parser::utils::{get_documentation, get_parent_name};
 use crate::parser::xsd_elements::{ElementType, RestrictionType, XsdNode};
-use crate::parser::parse_node;
 
 pub fn parse_simple_type(node: &Node, parent: &Node) -> RsEntity {
     let name = node.attr_name();
@@ -36,8 +36,6 @@ pub fn parse_simple_type(node: &Node, parent: &Node) -> RsEntity {
     content_type.set_comment(get_documentation(node));
     content_type
 }
-
-
 
 fn simple_type_restriction(restriction: &Node) -> RsEntity {
     let base = restriction
@@ -108,7 +106,10 @@ r#"
         RsEntity::TupleStruct(ts) => {
             assert_eq!(ts.name, "SomeType");
             assert_eq!(ts.type_name, "xs:SSD");
-            assert_eq!(ts.type_modifiers, vec![TypeModifier::Array, TypeModifier::Array]);
+            assert_eq!(
+                ts.type_modifiers,
+                vec![TypeModifier::Array, TypeModifier::Array]
+            );
             assert_eq!(ts.comment.unwrap().trim(), "Some text");
             assert!(ts.subtypes.is_empty());
         }

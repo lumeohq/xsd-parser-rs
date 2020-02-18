@@ -29,6 +29,6 @@ pub fn parse_attribute(node: &Node) -> RsEntity {
         subtypes: vec![],
         name,
         source: StructFieldSource::Attribute,
-        type_modifiers: vec![type_modifier]
+        type_modifiers: vec![type_modifier],
     })
 }

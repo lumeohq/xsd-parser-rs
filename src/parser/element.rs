@@ -2,7 +2,9 @@ use roxmltree::Node;
 
 use crate::parser::constants::attribute;
 use crate::parser::parser::parse_node;
-use crate::parser::types::{Alias, EnumCase, RsEntity, StructField, StructFieldSource, TypeModifier};
+use crate::parser::types::{
+    Alias, EnumCase, RsEntity, StructField, StructFieldSource, TypeModifier,
+};
 use crate::parser::utils::{get_documentation, get_type_name};
 use crate::parser::xsd_elements::{max_occurs, min_occurs, ElementType, MaxOccurs, XsdNode};
 
@@ -110,7 +112,7 @@ fn parse_field_of_sequence(node: &Node, _: &Node) -> RsEntity {
         comment: get_documentation(node),
         subtypes: vec![field_type],
         source: StructFieldSource::Element,
-        type_modifiers: vec![element_modifier(node)]
+        type_modifiers: vec![element_modifier(node)],
     })
 }
 

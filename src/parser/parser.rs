@@ -8,13 +8,13 @@ use crate::parser::complex_content::parse_complex_content;
 use crate::parser::complex_type::parse_complex_type;
 use crate::parser::constants::attribute;
 use crate::parser::element::parse_element;
+use crate::parser::list::parse_list;
 use crate::parser::sequence::parse_sequence;
 use crate::parser::simple_content::parse_simple_content;
 use crate::parser::simple_type::parse_simple_type;
 use crate::parser::types::{File, Import, RsEntity, StructField, StructFieldSource};
 use crate::parser::utils::{get_documentation, target_namespace};
 use crate::parser::xsd_elements::{ElementType, XsdNode};
-use crate::parser::list::parse_list;
 
 pub fn parse(text: &str) -> Result<File, ()> {
     let doc = roxmltree::Document::parse(&text).expect("Parse document error");
