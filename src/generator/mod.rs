@@ -42,12 +42,16 @@ pub trait Generator<'input> {
     }
 
     fn get_tuple_struct(&self, ts: &TupleStruct) -> String {
+        let typename = self.modify_type(
+            self.format_type(ts.type_name.as_str()).as_ref(),
+            &ts.type_modifiers
+        );
         format!(
             "{comment}{macros}pub struct {name} (pub {typename});\n{subtypes}",
             comment = default_format_comment(ts.comment.as_deref()),
             macros = self.tuple_struct_macro(ts),
             name = self.format_type(ts.name.as_str()),
-            typename = self.format_type(ts.type_name.as_str()),
+            typename = typename,
             subtypes = ts
                 .subtypes
                 .iter()
