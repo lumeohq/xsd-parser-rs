@@ -69,9 +69,8 @@ pub fn parse_complex_type(node: &Node, parent: &Node) -> RsEntity {
             fields.push(StructField {
                 name: en.name.clone(),
                 type_name: en.name.as_str().into(),
-                comment: None,
-                subtypes: vec![],
                 source: StructFieldSource::NA,
+                ..Default::default()
             });
             en.subtypes = vec![RsEntity::Struct(Struct {
                 name: name.to_string(),

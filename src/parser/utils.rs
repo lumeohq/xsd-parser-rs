@@ -50,8 +50,8 @@ pub fn any_attribute_field() -> StructField {
         name: "any_attribute".to_string(),
         type_name: "AnyAttribute".to_string(),
         comment: Some("//".to_string()),
-        subtypes: vec![],
         source: StructFieldSource::Attribute,
+        ..Default::default()
     }
 }
 

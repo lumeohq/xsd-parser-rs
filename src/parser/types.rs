@@ -112,13 +112,14 @@ impl fmt::Display for Struct {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct StructField {
     pub name: String,
     pub type_name: String,
     pub comment: Option<String>,
     pub subtypes: Vec<RsEntity>,
     pub source: StructFieldSource,
+    pub type_modifiers: Vec<TypeModifier>
 }
 
 #[derive(Debug, Clone)]
@@ -127,6 +128,12 @@ pub enum StructFieldSource {
     Element,
     Base,
     NA,
+}
+
+impl Default for StructFieldSource {
+    fn default() -> Self {
+        StructFieldSource::NA
+    }
 }
 
 impl fmt::Display for StructField {
@@ -174,6 +181,14 @@ pub struct Enum {
     pub comment: Option<String>,
     pub type_name: String,
     pub subtypes: Vec<RsEntity>,
+}
+
+#[derive(Debug, Clone)]
+pub enum TypeModifier {
+    None,
+    Array,
+    Option,
+    Empty
 }
 
 impl fmt::Display for Enum {
