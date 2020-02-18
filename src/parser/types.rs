@@ -119,7 +119,7 @@ pub struct StructField {
     pub comment: Option<String>,
     pub subtypes: Vec<RsEntity>,
     pub source: StructFieldSource,
-    pub type_modifiers: Vec<TypeModifier>
+    pub type_modifiers: Vec<TypeModifier>,
 }
 
 #[derive(Debug, Clone)]
@@ -154,7 +154,7 @@ pub struct TupleStruct {
     pub comment: Option<String>,
     pub type_name: String,
     pub subtypes: Vec<RsEntity>,
-    pub type_modifiers: Vec<TypeModifier>
+    pub type_modifiers: Vec<TypeModifier>,
 }
 
 impl fmt::Display for TupleStruct {
@@ -189,7 +189,7 @@ pub enum TypeModifier {
     None,
     Array,
     Option,
-    Empty
+    Empty,
 }
 
 impl fmt::Display for Enum {
