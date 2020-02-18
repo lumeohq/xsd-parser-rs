@@ -1,6 +1,5 @@
 use roxmltree::Namespace;
-use crate::parser::types::{File, TupleStruct, Struct, Enum, Alias, StructField, EnumCase, StructFieldSource};
-use crate::parser::constants::attribute;
+use crate::parser::types::{File, TupleStruct, Struct, Enum, StructField, StructFieldSource};
 use crate::generator::Generator;
 use std::borrow::Cow;
 
