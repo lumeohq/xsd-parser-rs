@@ -1,14 +1,14 @@
-use roxmltree::Namespace;
-use crate::parser::types::{File, TupleStruct, Struct, Enum, StructField, StructFieldSource};
 use crate::generator::Generator;
+use crate::parser::types::{Enum, File, Struct, StructField, StructFieldSource, TupleStruct};
+use roxmltree::Namespace;
 use std::borrow::Cow;
 
 pub struct YaserdeGenerator<'input> {
-    target_ns: Option<Namespace<'input>>
+    target_ns: Option<Namespace<'input>>,
 }
 
 impl<'input> YaserdeGenerator<'input> {
-    pub fn new(schema: &File<'input>) ->Self {
+    pub fn new(schema: &File<'input>) -> Self {
         YaserdeGenerator {
             target_ns: schema.target_ns.clone(),
         }
@@ -41,7 +41,8 @@ impl<'input> Generator<'_> for YaserdeGenerator<'input> {
                 ),
             },
             None => format!("{derives}#[yaserde()]\n", derives = derives),
-        }.into()
+        }
+        .into()
     }
 
     fn enum_macro(&self, _: &Enum) -> Cow<'static, str> {
@@ -51,8 +52,10 @@ impl<'input> Generator<'_> for YaserdeGenerator<'input> {
     fn struct_field_macro(&self, sf: &StructField) -> Cow<'static, str> {
         match sf.source {
             StructFieldSource::Attribute => yaserde_for_attribute(sf.name.as_str()).into(),
-            StructFieldSource::Element => yaserde_for_element(sf.name.as_str(), self.target_ns.as_ref()).into(),
-            _ => "".into()
+            StructFieldSource::Element => {
+                yaserde_for_element(sf.name.as_str(), self.target_ns.as_ref()).into()
+            }
+            _ => "".into(),
         }
     }
 }

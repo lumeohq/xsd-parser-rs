@@ -1,7 +1,7 @@
 use inflector::cases::pascalcase::to_pascal_case;
-use std::borrow::Cow;
-use roxmltree::Namespace;
 use inflector::cases::snakecase::to_snake_case;
+use roxmltree::Namespace;
+use std::borrow::Cow;
 
 fn split_comment_line(s: &str, max_len: usize, indent: usize) -> String {
     let indent_str = " ".repeat(indent);
@@ -113,19 +113,17 @@ pub fn default_format_type(type_name: &str, target_ns: &Option<Namespace>) -> Co
         "xs:IDREFS" => "Vec<String>".into(),
         "xs:NMTOKENS" => "Vec<String>".into(),
 
-        x => {
-            match target_ns.as_ref().and_then(|ns| ns.name()) {
-                Some(name) => {
-                    if x.starts_with(name) {
-                        to_pascal_case(&x[name.len() + 1..])
-                    } else {
-                        replace(x)
-                    }
+        x => match target_ns.as_ref().and_then(|ns| ns.name()) {
+            Some(name) => {
+                if x.starts_with(name) {
+                    to_pascal_case(&x[name.len() + 1..])
+                } else {
+                    replace(x)
                 }
-                None => replace(x),
             }
-                .into()
+            None => replace(x),
         }
+        .into(),
     }
 }
 

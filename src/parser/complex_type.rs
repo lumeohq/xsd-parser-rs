@@ -5,8 +5,7 @@ use roxmltree::Node;
 use crate::parser::parser::parse_node;
 use crate::parser::types::{RsEntity, Struct, StructField, StructFieldSource};
 use crate::parser::utils::{
-    any_attribute_field, attributes_to_fields, find_child, get_documentation,
-    get_parent_name, match_type,
+    any_attribute_field, attributes_to_fields, find_child, get_documentation, get_parent_name,
 };
 use crate::parser::xsd_elements::{ElementType, XsdNode};
 
@@ -21,24 +20,20 @@ const AVAILABLE_CONTENT_TYPES: [ElementType; 6] = [
     ElementType::SimpleContent,
 ];
 
-pub fn parse_complex_type(
-    node: &Node,
-    parent: &Node,
-    target_ns: Option<&roxmltree::Namespace>,
-) -> RsEntity {
-    let name = match_type(if parent.xsd_type() == ElementType::Schema {
+pub fn parse_complex_type(node: &Node, parent: &Node) -> RsEntity {
+    let name = if parent.xsd_type() == ElementType::Schema {
         node.attr_name()
             .expect("Name required if the complexType element is a child of the schema element")
     } else {
         get_parent_name(node)
-    }, target_ns);
+    };
 
     let content = node
         .children()
         .filter(|n| n.is_element() && AVAILABLE_CONTENT_TYPES.contains(&n.xsd_type()))
         .last();
 
-    let mut fields = attributes_to_fields(node, target_ns);
+    let mut fields = attributes_to_fields(node);
 
     if find_child(node, "anyAttribute").is_some() {
         fields.push(any_attribute_field())
@@ -63,7 +58,7 @@ pub fn parse_complex_type(
     }
     let content_node = content.unwrap();
 
-    let mut res = parse_node(&content_node, node, target_ns);
+    let mut res = parse_node(&content_node, node);
     match &mut res {
         RsEntity::Struct(st) => {
             st.fields.borrow_mut().append(&mut fields);
@@ -73,10 +68,10 @@ pub fn parse_complex_type(
             en.name = format!("{}Choice", name);
             fields.push(StructField {
                 name: en.name.clone(),
-                type_name: match_type(en.name.as_str(), target_ns).into(),
+                type_name: en.name.as_str().into(),
                 comment: None,
                 subtypes: vec![],
-                source: StructFieldSource::NA
+                source: StructFieldSource::NA,
             });
             en.subtypes = vec![RsEntity::Struct(Struct {
                 name: name.to_string(),

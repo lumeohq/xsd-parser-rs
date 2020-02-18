@@ -1,17 +1,11 @@
-use roxmltree::{Namespace, Node};
+use roxmltree::Node;
 
 use crate::parser::constants::attribute;
 use crate::parser::types::{Enum, EnumCase, RsEntity, TupleStruct};
-use crate::parser::utils::{
-    find_child, get_documentation, get_parent_name, match_type,
-};
+use crate::parser::utils::{find_child, get_documentation, get_parent_name};
 use crate::parser::xsd_elements::{ElementType, RestrictionType, XsdNode};
 
-pub fn parse_simple_type(
-    node: &Node,
-    parent: &Node,
-    tn: Option<&roxmltree::Namespace>,
-) -> RsEntity {
+pub fn parse_simple_type(node: &Node, parent: &Node) -> RsEntity {
     let name = node.attr_name();
 
     assert_eq!(
@@ -30,32 +24,32 @@ pub fn parse_simple_type(
 
     let mut content_type = match content.xsd_type() {
         ElementType::Union => unimplemented!(), //TODO: Add union parser (No in ONVIF)
-        ElementType::List => simple_type_list(&content, tn),
+        ElementType::List => simple_type_list(&content),
         ElementType::Restriction(r) => match r {
-            RestrictionType::SimpleType => simple_type_restriction(&content, tn),
+            RestrictionType::SimpleType => simple_type_restriction(&content),
             _ => unreachable!("Invalid restriction type of SimpleType {:?}", r),
         },
         _ => unreachable!("Invalid content type of SimpleType {:?}", content),
     };
 
     if let Some(n) = name {
-        content_type.set_name(match_type(n, tn).as_ref());
+        content_type.set_name(n);
     }
     content_type.set_comment(get_documentation(node));
     content_type
 }
 
-fn simple_type_list(list: &Node, target_ns: Option<&Namespace>) -> RsEntity {
+fn simple_type_list(list: &Node) -> RsEntity {
     let mut types: Vec<RsEntity> = vec![];
 
     let item_type = match list.attribute(attribute::ITEM_TYPE) {
-        Some(item_type) => format!("Vec<{}>", match_type(item_type, target_ns)),
+        Some(item_type) => format!("Vec<{}>", item_type),
         None => {
             let nested_simple_type = find_child(list, "simpleType").expect(
                 "itemType not allowed if the content contains a simpleType element. Otherwise, required."
             );
 
-            match parse_simple_type(&nested_simple_type, list, target_ns) {
+            match parse_simple_type(&nested_simple_type, list) {
                 RsEntity::TupleStruct(ts) => format!("Vec<{}>", ts.type_name),
                 RsEntity::Enum(en) => {
                     types.push(RsEntity::Enum(en));
@@ -74,18 +68,15 @@ fn simple_type_list(list: &Node, target_ns: Option<&Namespace>) -> RsEntity {
     })
 }
 
-fn simple_type_restriction(restriction: &Node, target_ns: Option<&Namespace>) -> RsEntity {
-    let base = match_type(
-        restriction
-            .attribute(attribute::BASE)
-            .expect("The base value is required"),
-        target_ns,
-    );
+fn simple_type_restriction(restriction: &Node) -> RsEntity {
+    let base = restriction
+        .attribute(attribute::BASE)
+        .expect("The base value is required");
 
     let enum_cases = restriction
         .children()
         .filter(|n| n.is_element() && n.tag_name().name() == "enumeration")
-        .map(|n| get_enum_case(&n, target_ns))
+        .map(|n| get_enum_case(&n))
         .collect::<Vec<EnumCase>>();
 
     //TODO: add validators for all facet types
@@ -107,13 +98,13 @@ fn simple_type_restriction(restriction: &Node, target_ns: Option<&Namespace>) ->
     }
 }
 
-fn get_enum_case(node: &Node, target_ns: Option<&roxmltree::Namespace>) -> EnumCase {
+fn get_enum_case(node: &Node) -> EnumCase {
     let value = node
         .attribute(attribute::VALUE)
         .expect("value is required attribute in enumeration facet");
     EnumCase {
         comment: get_documentation(node),
-        name: match_type(value, target_ns).to_string(),
+        name: value.to_string(),
         value: value.to_string(),
         type_name: None,
     }
@@ -144,7 +135,7 @@ r#"
     let simple_type = find_child(&schema, "simpleType").unwrap();
     let target_ns = schema.namespaces()[0].clone();
 
-    match parse_simple_type(&simple_type, &schema, Some(&target_ns)) {
+    match parse_simple_type(&simple_type, &schema) {
         RsEntity::TupleStruct(ts) => {
             assert_eq!(ts.name, "SomeType");
             assert_eq!(ts.type_name, "Vec<Vec<xs::Ssd>>");
@@ -183,7 +174,7 @@ r#"
     let simple_type = find_child(&schema, "simpleType").unwrap();
     let target_ns = schema.namespaces()[0].clone();
 
-    match parse_simple_type(&simple_type, &schema, Some(&target_ns)) {
+    match parse_simple_type(&simple_type, &schema) {
         RsEntity::TupleStruct(ts) => {
             assert_eq!(ts.name, "SomeType");
             assert_eq!(ts.type_name, "Vec<SomeTypeEnum>");

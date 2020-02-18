@@ -1,20 +1,34 @@
 pub mod default;
 pub mod utils;
 
-use std::borrow::Cow;
-use crate::parser::types::{TupleStruct, Struct, Enum, Alias, StructField, EnumCase, Import, RsEntity};
 use crate::generator::utils::{default_format_comment, default_format_name, default_format_type};
+use crate::parser::types::{
+    Alias, Enum, EnumCase, Import, RsEntity, Struct, StructField, TupleStruct,
+};
 use roxmltree::Namespace;
+use std::borrow::Cow;
 
 pub trait Generator<'input> {
     fn target_ns(&self) -> &Option<Namespace<'_>>;
 
-    fn tuple_struct_macro(&self, _: &TupleStruct) ->  Cow<'static, str> { "".into() }
-    fn struct_macro(&self, _: &Struct) -> Cow<'static, str> { "".into() }
-    fn enum_macro(&self, _: &Enum) -> Cow<'static, str> { "".into() }
-    fn alias_macro(&self, _: &Alias) -> Cow<'static, str> { "".into() }
-    fn struct_field_macro(&self, _: &StructField) -> Cow<'static, str> { "".into() }
-    fn enum_case_macro(&self, _: &EnumCase) -> Cow<'static, str> { "".into() }
+    fn tuple_struct_macro(&self, _: &TupleStruct) -> Cow<'static, str> {
+        "".into()
+    }
+    fn struct_macro(&self, _: &Struct) -> Cow<'static, str> {
+        "".into()
+    }
+    fn enum_macro(&self, _: &Enum) -> Cow<'static, str> {
+        "".into()
+    }
+    fn alias_macro(&self, _: &Alias) -> Cow<'static, str> {
+        "".into()
+    }
+    fn struct_field_macro(&self, _: &StructField) -> Cow<'static, str> {
+        "".into()
+    }
+    fn enum_case_macro(&self, _: &EnumCase) -> Cow<'static, str> {
+        "".into()
+    }
 
     fn get_rs_entity(&self, entity: &RsEntity) -> String {
         use RsEntity::*;
@@ -29,7 +43,7 @@ pub trait Generator<'input> {
         }
     }
 
-    fn get_tuple_struct(&self, ts: &TupleStruct) ->  String {
+    fn get_tuple_struct(&self, ts: &TupleStruct) -> String {
         format!(
             "{comment}{macros}pub struct {name} (pub {typename});\n{subtypes}",
             comment = default_format_comment(ts.comment.as_deref()),
@@ -118,11 +132,7 @@ pub trait Generator<'input> {
                 typename = self.format_type(typename.as_str()),
                 comment = comment,
             ),
-            None => format!(
-                "{comment}  {name},",
-                name = name,
-                comment = comment
-            ),
+            None => format!("{comment}  {name},", name = name, comment = comment),
         }
     }
 
@@ -166,4 +176,3 @@ pub trait Generator<'input> {
 mod test {
     use super::*;
 }
-

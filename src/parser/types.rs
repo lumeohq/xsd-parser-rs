@@ -11,7 +11,7 @@ pub struct File<'input> {
     pub name: String,
     pub namespace: Option<String>,
     pub types: Vec<RsEntity>,
-    pub target_ns: Option<Namespace<'input>>
+    pub target_ns: Option<Namespace<'input>>,
 }
 
 impl fmt::Display for File<'_> {
@@ -118,7 +118,7 @@ pub struct StructField {
     pub type_name: String,
     pub comment: Option<String>,
     pub subtypes: Vec<RsEntity>,
-    pub source: StructFieldSource
+    pub source: StructFieldSource,
 }
 
 #[derive(Debug, Clone)]
@@ -126,7 +126,7 @@ pub enum StructFieldSource {
     Attribute,
     Element,
     Base,
-    NA
+    NA,
 }
 
 impl fmt::Display for StructField {
