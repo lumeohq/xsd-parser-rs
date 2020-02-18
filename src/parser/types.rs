@@ -148,12 +148,13 @@ impl fmt::Display for StructField {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct TupleStruct {
     pub name: String,
     pub comment: Option<String>,
     pub type_name: String,
     pub subtypes: Vec<RsEntity>,
+    pub type_modifiers: Vec<TypeModifier>
 }
 
 impl fmt::Display for TupleStruct {
@@ -183,7 +184,7 @@ pub struct Enum {
     pub subtypes: Vec<RsEntity>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum TypeModifier {
     None,
     Array,
