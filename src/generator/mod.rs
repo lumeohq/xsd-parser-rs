@@ -2,9 +2,7 @@ pub mod default;
 pub mod utils;
 
 use crate::generator::utils::{default_format_comment, default_format_name, default_format_type};
-use crate::parser::types::{
-    Alias, Enum, EnumCase, Import, RsEntity, Struct, StructField, TupleStruct,
-};
+use crate::parser::types::{Alias, Enum, EnumCase, Import, RsEntity, Struct, StructField, TupleStruct, TypeModifier};
 use roxmltree::Namespace;
 use std::borrow::Cow;
 
@@ -137,11 +135,15 @@ pub trait Generator<'input> {
     }
 
     fn get_struct_field(&self, sf: &StructField) -> String {
+        let typename = self.modify_type(
+            self.format_type(sf.type_name.as_str()).as_ref(),
+            &sf.type_modifiers
+        );
         format!(
             "{comment}{macros}  pub {name}: {typename},",
             macros = self.struct_field_macro(sf),
             name = self.format_name(sf.name.as_str()),
-            typename = self.format_type(sf.type_name.as_str()),
+            typename = typename,
             comment = self.format_comment(sf.comment.as_deref())
         )
     }
@@ -153,6 +155,18 @@ pub trait Generator<'input> {
             name = self.format_type(al.name.as_str()),
             original = self.format_type(al.original.as_str())
         )
+    }
+
+    fn modify_type(&self, type_name: &str, modifiers: &Vec<TypeModifier>) -> String {
+        let mut result = type_name.to_string();
+        for modifier in modifiers {
+            match modifier {
+                TypeModifier::Array => {result = format!("Vec<{}>", result)},
+                TypeModifier::Option => {result = format!("Option<{}>", result)}
+                _ => ()
+            }
+        }
+        result
     }
 
     fn get_import(&self, im: &Import) -> String {
