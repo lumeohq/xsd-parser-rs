@@ -1,7 +1,7 @@
 use roxmltree::{Namespace, Node};
 
 use crate::parser::types::{RsEntity, StructField, StructFieldSource};
-use crate::parser::utils::{get_documentation, get_field_name, match_type};
+use crate::parser::utils::{get_documentation, match_type};
 use crate::parser::xsd_elements::{UseType, XsdNode};
 
 pub fn parse_attribute(node: &Node, target_ns: Option<&Namespace>) -> RsEntity {
@@ -27,7 +27,7 @@ pub fn parse_attribute(node: &Node, target_ns: Option<&Namespace>) -> RsEntity {
         type_name,
         comment: get_documentation(node),
         subtypes: vec![],
-        name: get_field_name(name),
+        name: name.to_string(),
         source: StructFieldSource::Attribute
     })
 }

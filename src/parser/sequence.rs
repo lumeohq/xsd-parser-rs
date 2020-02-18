@@ -5,7 +5,7 @@ use roxmltree::{Namespace, Node};
 use crate::parser::parser::parse_node;
 use crate::parser::types::{Enum, RsEntity, Struct, StructField, StructFieldSource};
 use crate::parser::utils::{
-    get_documentation, get_field_name, get_parent_name, match_type,
+    get_documentation, get_parent_name, match_type,
 };
 
 pub fn parse_sequence(sequence: &Node, parent: &Node, target_ns: Option<&Namespace>) -> RsEntity {
@@ -39,7 +39,7 @@ fn elements_to_fields(
 
 fn enum_to_field(en: Enum, target_ns: Option<&Namespace>) -> StructField {
     StructField {
-        name: get_field_name(en.name.as_str()),
+        name: en.name.clone(),
         type_name: en.name.clone(),
         comment: None,
         subtypes: vec![RsEntity::Enum(en)],

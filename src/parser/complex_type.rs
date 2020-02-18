@@ -5,7 +5,7 @@ use roxmltree::Node;
 use crate::parser::parser::parse_node;
 use crate::parser::types::{RsEntity, Struct, StructField, StructFieldSource};
 use crate::parser::utils::{
-    any_attribute_field, attributes_to_fields, find_child, get_documentation, get_field_name,
+    any_attribute_field, attributes_to_fields, find_child, get_documentation,
     get_parent_name, match_type,
 };
 use crate::parser::xsd_elements::{ElementType, XsdNode};
@@ -72,7 +72,7 @@ pub fn parse_complex_type(
         RsEntity::Enum(en) => {
             en.name = format!("{}Choice", name);
             fields.push(StructField {
-                name: get_field_name(en.name.as_str()),
+                name: en.name.clone(),
                 type_name: match_type(en.name.as_str(), target_ns).into(),
                 comment: None,
                 subtypes: vec![],

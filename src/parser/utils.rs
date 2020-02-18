@@ -139,14 +139,6 @@ pub fn match_type(type_name: &str, target_ns: Option<&roxmltree::Namespace>) -> 
     }
 }
 
-pub fn get_field_name(name: &str) -> String {
-    let result = to_snake_case(name);
-    if result.chars().next().unwrap().is_numeric() || RS_KEYWORDS.contains(&result.as_str()) {
-        return format!("_{}", result);
-    }
-    result
-}
-
 pub fn get_type_name(name: &str) -> String {
     let result = to_pascal_case(name);
     if result.chars().next().unwrap().is_numeric() || RS_KEYWORDS.contains(&result.as_str()) {
