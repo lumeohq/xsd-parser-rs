@@ -2,7 +2,7 @@ use roxmltree::Node;
 
 use crate::parser::constants::attribute;
 use crate::parser::parser::parse_node;
-use crate::parser::types::{Alias, EnumCase, RsEntity, StructField, StructFieldSource};
+use crate::parser::types::{Alias, EnumCase, RsEntity, StructField, StructFieldSource, TypeModifier};
 use crate::parser::utils::{get_documentation, get_type_name};
 use crate::parser::xsd_elements::{max_occurs, min_occurs, ElementType, MaxOccurs, XsdNode};
 
@@ -70,20 +70,22 @@ fn parse_case_of_choice(element: &Node) -> RsEntity {
 fn parse_field_of_sequence(node: &Node, _: &Node) -> RsEntity {
     let name = node
         .attr_name()
-        .unwrap_or_else(|| node.attr_ref().unwrap_or("UNSUPPORTED_ELEMENT_NAME"));
+        .unwrap_or_else(|| node.attr_ref().unwrap_or("UNSUPPORTED_ELEMENT_NAME"))
+        .to_string();
 
     if node.has_attribute(attribute::TYPE) || node.has_attribute(attribute::REF) {
-        let type_name = element_type(
-            node,
-            node.attr_type()
-                .unwrap_or_else(|| node.attr_ref().unwrap_or("String")),
-        );
+        let type_name = node
+            .attr_type()
+            .unwrap_or_else(|| node.attr_ref().unwrap_or("String"))
+            .to_string();
+
         return RsEntity::StructField(StructField {
-            name: name.to_string(),
+            name,
             type_name,
             comment: get_documentation(node),
-            subtypes: vec![],
             source: StructFieldSource::Element,
+            type_modifiers: vec![element_modifier(node)],
+            ..Default::default()
         });
     }
 
@@ -103,11 +105,12 @@ fn parse_field_of_sequence(node: &Node, _: &Node) -> RsEntity {
     field_type.set_name(format!("{}Type", name).as_str());
 
     RsEntity::StructField(StructField {
-        name: name.to_string(),
-        type_name: element_type(node, field_type.name().into()),
+        name,
+        type_name: field_type.name().to_string(),
         comment: get_documentation(node),
         subtypes: vec![field_type],
         source: StructFieldSource::Element,
+        type_modifiers: vec![element_modifier(node)]
     })
 }
 
@@ -163,5 +166,35 @@ pub fn element_type(node: &Node, type_name: &str) -> String {
             }
         },
         _ => format!("Vec<{}>", type_name),
+    }
+}
+
+pub fn element_modifier(node: &Node) -> TypeModifier {
+    let min = min_occurs(node);
+    let max = max_occurs(node);
+    match min {
+        0 => match max {
+            MaxOccurs::None => TypeModifier::Option,
+            MaxOccurs::Unbounded => TypeModifier::Array,
+            MaxOccurs::Bounded(val) => {
+                if val > 1 {
+                    TypeModifier::Array
+                } else {
+                    TypeModifier::None
+                }
+            }
+        },
+        1 => match max {
+            MaxOccurs::None => TypeModifier::None,
+            MaxOccurs::Unbounded => TypeModifier::Array,
+            MaxOccurs::Bounded(val) => {
+                if val > 1 {
+                    TypeModifier::Array
+                } else {
+                    TypeModifier::None
+                }
+            }
+        },
+        _ => TypeModifier::Array,
     }
 }

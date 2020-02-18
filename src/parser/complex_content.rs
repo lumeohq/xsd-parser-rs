@@ -52,8 +52,8 @@ fn complex_content_extension(node: &Node) -> RsEntity {
         name: tag::BASE.to_string(),
         type_name: base.to_string(),
         comment: get_documentation(node),
-        subtypes: vec![],
         source: StructFieldSource::Base,
+        ..Default::default()
     });
 
     if find_child(node, "anyAttribute").is_some() {

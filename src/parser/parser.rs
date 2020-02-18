@@ -93,9 +93,9 @@ fn parse_any(node: &Node) -> RsEntity {
     RsEntity::StructField(StructField {
         name: "any".to_string(),
         type_name: "AnyElement".to_string(),
-        subtypes: vec![],
         comment: get_documentation(node),
         source: StructFieldSource::Element,
+        ..Default::default()
     })
 }
 
@@ -103,8 +103,8 @@ fn parse_any_attribute(node: &Node) -> RsEntity {
     RsEntity::StructField(StructField {
         name: "any_attribute".to_string(),
         type_name: "AnyAttribute".to_string(),
-        subtypes: vec![],
         comment: get_documentation(node),
         source: StructFieldSource::Attribute,
+        ..Default::default()
     })
 }
