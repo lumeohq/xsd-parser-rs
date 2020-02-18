@@ -7,7 +7,7 @@ use crate::parser::constants::attribute;
 use crate::parser::parser::parse_node;
 use crate::parser::types::{Alias, EnumCase, RsEntity, StructField, StructFieldSource};
 use crate::parser::utils::{
-    get_documentation, get_field_name, get_type_name, match_type,
+    get_documentation, get_type_name, match_type,
 };
 use crate::parser::xsd_elements::{max_occurs, min_occurs, ElementType, MaxOccurs, XsdNode};
 
@@ -97,7 +97,7 @@ fn parse_field_of_sequence(node: &Node, _: &Node, target_ns: Option<&Namespace>)
             ),
         );
         return RsEntity::StructField(StructField {
-            name: get_field_name(name),
+            name: name.to_string(),
             type_name,
             comment: get_documentation(node),
             subtypes: vec![],
@@ -121,7 +121,7 @@ fn parse_field_of_sequence(node: &Node, _: &Node, target_ns: Option<&Namespace>)
     field_type.set_name(match_type(format!("{}Type", name).as_str(), target_ns).as_ref());
 
     RsEntity::StructField(StructField {
-        name: get_field_name(name),
+        name: name.to_string(),
         type_name: element_type(node, field_type.name().into()),
         comment: get_documentation(node),
         subtypes: vec![field_type],
