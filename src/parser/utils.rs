@@ -7,7 +7,7 @@ use roxmltree::{Namespace, Node};
 
 use crate::parser::constants::attribute;
 use crate::parser::parser::parse_node;
-use crate::parser::types::{RsEntity, StructField, StructFieldSource};
+use crate::parser::types::{RsEntity, StructField, StructFieldSource, TypeModifier};
 use crate::parser::xsd_elements::{ElementType, XsdNode};
 
 pub fn split_comment_line(s: &str, max_len: usize, indent: usize) -> String {
@@ -48,9 +48,10 @@ pub fn get_type_name(name: &str) -> String {
 pub fn any_attribute_field() -> StructField {
     StructField {
         name: "any_attribute".to_string(),
-        type_name: "AnyAttribute".to_string(),
-        comment: Some("//".to_string()),
+        type_name: "String".to_string(),
+        comment: None,
         source: StructFieldSource::Attribute,
+        type_modifiers: vec![TypeModifier::Option],
         ..Default::default()
     }
 }

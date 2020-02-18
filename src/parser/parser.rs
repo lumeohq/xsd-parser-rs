@@ -12,7 +12,7 @@ use crate::parser::list::parse_list;
 use crate::parser::sequence::parse_sequence;
 use crate::parser::simple_content::parse_simple_content;
 use crate::parser::simple_type::parse_simple_type;
-use crate::parser::types::{File, Import, RsEntity, StructField, StructFieldSource};
+use crate::parser::types::{File, Import, RsEntity, StructField, StructFieldSource, TypeModifier};
 use crate::parser::utils::{get_documentation, target_namespace};
 use crate::parser::xsd_elements::{ElementType, XsdNode};
 
@@ -94,9 +94,10 @@ fn parse_import(node: &Node) -> RsEntity {
 fn parse_any(node: &Node) -> RsEntity {
     RsEntity::StructField(StructField {
         name: "any".to_string(),
-        type_name: "AnyElement".to_string(),
+        type_name: "String".to_string(),
         comment: get_documentation(node),
         source: StructFieldSource::Element,
+        type_modifiers: vec![TypeModifier::Option],
         ..Default::default()
     })
 }
@@ -104,9 +105,10 @@ fn parse_any(node: &Node) -> RsEntity {
 fn parse_any_attribute(node: &Node) -> RsEntity {
     RsEntity::StructField(StructField {
         name: "any_attribute".to_string(),
-        type_name: "AnyAttribute".to_string(),
+        type_name: "String".to_string(),
         comment: get_documentation(node),
         source: StructFieldSource::Attribute,
+        type_modifiers: vec![TypeModifier::Option],
         ..Default::default()
     })
 }
