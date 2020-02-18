@@ -8,7 +8,7 @@ use crate::parser::types::{
 use roxmltree::Namespace;
 use std::borrow::Cow;
 
-pub trait Generator<'input> {
+pub trait MacroGenerator {
     fn target_ns(&self) -> &Option<Namespace<'_>>;
 
     fn tuple_struct_macro(&self, _: &TupleStruct) -> Cow<'static, str> {
@@ -29,6 +29,9 @@ pub trait Generator<'input> {
     fn enum_case_macro(&self, _: &EnumCase) -> Cow<'static, str> {
         "".into()
     }
+}
+
+pub trait Generator<'input>: MacroGenerator  {
 
     fn get_rs_entity(&self, entity: &RsEntity) -> String {
         use RsEntity::*;
@@ -93,7 +96,7 @@ pub trait Generator<'input> {
                     .collect::<Vec<String>>()
                     .join("\n"))
                 .collect::<Vec<String>>()
-                .join("\n"),
+                .join(""),
         )
     }
 
