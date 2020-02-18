@@ -1,6 +1,7 @@
 use inflector::cases::pascalcase::to_pascal_case;
 use std::borrow::Cow;
 use roxmltree::Namespace;
+use inflector::cases::snakecase::to_snake_case;
 
 fn split_comment_line(s: &str, max_len: usize, indent: usize) -> String {
     let indent_str = " ".repeat(indent);
@@ -129,7 +130,7 @@ pub fn default_format_type(type_name: &str, target_ns: &Option<Namespace>) -> Co
 }
 
 pub fn default_format_name(name: &str) -> String {
-    let result = to_pascal_case(name);
+    let result = to_snake_case(name);
     if result.chars().next().unwrap().is_numeric() || RS_KEYWORDS.contains(&result.as_str()) {
         return format!("_{}", result);
     }

@@ -10,12 +10,12 @@ use roxmltree::Namespace;
 pub trait Generator<'input> {
     fn target_ns(&self) -> &Option<Namespace<'_>>;
 
-    fn tuple_struct_macro(&self, ts: &TupleStruct) ->  Cow<'static, str> { "".into() }
-    fn struct_macro(&self, st: &Struct) -> Cow<'static, str> { "".into() }
-    fn enum_macro(&self, en: &Enum) -> Cow<'static, str> { "".into() }
-    fn alias_macro(&self, al: &Alias) -> Cow<'static, str> { "".into() }
-    fn struct_field_macro(&self, sf: &StructField) -> Cow<'static, str> { "".into() }
-    fn enum_case_macro(&self, ec: &EnumCase) -> Cow<'static, str> { "".into() }
+    fn tuple_struct_macro(&self, _: &TupleStruct) ->  Cow<'static, str> { "".into() }
+    fn struct_macro(&self, _: &Struct) -> Cow<'static, str> { "".into() }
+    fn enum_macro(&self, _: &Enum) -> Cow<'static, str> { "".into() }
+    fn alias_macro(&self, _: &Alias) -> Cow<'static, str> { "".into() }
+    fn struct_field_macro(&self, _: &StructField) -> Cow<'static, str> { "".into() }
+    fn enum_case_macro(&self, _: &EnumCase) -> Cow<'static, str> { "".into() }
 
     fn get_rs_entity(&self, entity: &RsEntity) -> String {
         use RsEntity::*;
