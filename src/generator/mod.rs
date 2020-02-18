@@ -35,12 +35,12 @@ pub trait Generator<'input> {
             "{comment}{macros}pub struct {name} (pub {typename});\n{subtypes}",
             comment = default_format_comment(ts.comment.as_deref()),
             macros = self.tuple_struct_macro(ts),
-            name = ts.name,
-            typename = ts.type_name,
+            name = self.format_type(ts.name.as_str()),
+            typename = self.format_type(ts.type_name.as_str()),
             subtypes = ts
                 .subtypes
                 .iter()
-                .map(|f| f.to_string())
+                .map(|f| self.get_rs_entity(f))
                 .collect::<Vec<String>>()
                 .join("\n"),
         )
@@ -51,18 +51,18 @@ pub trait Generator<'input> {
             "{comment}{macros}pub struct {name} {{\n{fields}\n}}\n{subtypes}\n{fields_subtypes}",
             comment = default_format_comment(st.comment.as_deref()),
             macros = self.struct_macro(st),
-            name = st.name,
+            name = self.format_type(st.name.as_str()),
             fields = st
                 .fields
                 .borrow()
                 .iter()
-                .map(|f| f.to_string())
+                .map(|f| self.get_struct_field(f))
                 .collect::<Vec<String>>()
                 .join("\n\n"),
             subtypes = st
                 .subtypes
                 .iter()
-                .map(|f| f.to_string())
+                .map(|f| self.get_rs_entity(f))
                 .collect::<Vec<String>>()
                 .join("\n\n"),
             fields_subtypes = st
@@ -72,7 +72,7 @@ pub trait Generator<'input> {
                 .map(|f| f
                     .subtypes
                     .iter()
-                    .map(|e| e.to_string())
+                    .map(|e| self.get_rs_entity(e))
                     .collect::<Vec<String>>()
                     .join("\n"))
                 .collect::<Vec<String>>()
@@ -83,11 +83,7 @@ pub trait Generator<'input> {
     fn get_enum(&self, en: &Enum) -> String {
         let name = self.format_type(en.name.as_str());
         format!(
-            "{comment}\
-            {macros}\n\
-            pub enum {name} \
-            {{\n{cases}  \n\n\
-            __Unknown__({typename})\n\
+            "{comment}{macros}\npub enum {name} {{\n{cases}\n __Unknown__({typename})\n\
             }}\n\n\
             {default}\n\n\
             {subtypes}",
@@ -97,7 +93,7 @@ pub trait Generator<'input> {
             cases = en
                 .cases
                 .iter()
-                .map(|case| case.to_string())
+                .map(|case| self.get_enum_case(case))
                 .collect::<Vec<String>>()
                 .join("\n"),
             typename = self.format_type(en.type_name.as_str()),
@@ -114,7 +110,7 @@ pub trait Generator<'input> {
     }
 
     fn get_enum_case(&self, ec: &EnumCase) -> String {
-        let name = self.format_name(ec.name.as_str());
+        let name = self.format_type(ec.name.as_str());
         let comment = self.format_comment(ec.comment.as_deref());
         match &ec.type_name {
             Some(typename) => format!(
@@ -165,5 +161,10 @@ pub trait Generator<'input> {
     fn format_type(&self, type_name: &str) -> Cow<'_, str> {
         default_format_type(type_name, self.target_ns())
     }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
 }
 
