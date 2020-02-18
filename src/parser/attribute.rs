@@ -1,21 +1,19 @@
-use roxmltree::{Namespace, Node};
+use roxmltree::Node;
 
 use crate::parser::types::{RsEntity, StructField, StructFieldSource};
-use crate::parser::utils::{get_documentation, match_type};
+use crate::parser::utils::get_documentation;
 use crate::parser::xsd_elements::{UseType, XsdNode};
 
-pub fn parse_attribute(node: &Node, target_ns: Option<&Namespace>) -> RsEntity {
+pub fn parse_attribute(node: &Node) -> RsEntity {
     let name = node
         .attr_name()
         .or_else(|| node.attr_ref())
         .expect("All attributes have name or ref in Onvif");
 
-    let matched_type = match_type(
-        node.attr_type()
-            .or_else(|| node.attr_ref())
-            .unwrap_or("String"),
-        target_ns,
-    );
+    let matched_type = node
+        .attr_type()
+        .or_else(|| node.attr_ref())
+        .unwrap_or("String");
 
     let type_name = match node.attr_use() {
         UseType::Optional => format!("Option<{}>", matched_type),
@@ -28,6 +26,6 @@ pub fn parse_attribute(node: &Node, target_ns: Option<&Namespace>) -> RsEntity {
         comment: get_documentation(node),
         subtypes: vec![],
         name: name.to_string(),
-        source: StructFieldSource::Attribute
+        source: StructFieldSource::Attribute,
     })
 }

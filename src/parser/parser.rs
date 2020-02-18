@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use roxmltree::{Namespace, Node};
+use roxmltree::Node;
 
 use crate::parser::attribute::parse_attribute;
 use crate::parser::choice::parse_choice;
@@ -42,21 +42,21 @@ pub fn parse(text: &str) -> Result<File, ()> {
     return Ok(schema_rs);
 }
 
-pub fn parse_node(node: &Node, parent: &Node, tn: Option<&Namespace>) -> RsEntity {
+pub fn parse_node(node: &Node, parent: &Node) -> RsEntity {
     use ElementType::*;
 
     match node.xsd_type() {
         Any => parse_any(node),
         AnyAttribute => parse_any_attribute(node),
-        Attribute => parse_attribute(node, tn),
-        Choice => parse_choice(node, tn),
-        ComplexContent => parse_complex_content(node, tn),
-        ComplexType => parse_complex_type(node, parent, tn),
-        Element => parse_element(node, parent, tn),
+        Attribute => parse_attribute(node),
+        Choice => parse_choice(node),
+        ComplexContent => parse_complex_content(node),
+        ComplexType => parse_complex_type(node, parent),
+        Element => parse_element(node, parent),
         Import | Include => parse_import(node),
-        Sequence => parse_sequence(node, parent, tn),
-        SimpleContent => parse_simple_content(node, tn),
-        SimpleType => parse_simple_type(node, parent, tn),
+        Sequence => parse_sequence(node, parent),
+        SimpleContent => parse_simple_content(node),
+        SimpleType => parse_simple_type(node, parent),
 
         _ => {
             unreachable!("{:?}", node);
@@ -72,23 +72,21 @@ pub fn parse_schema<'input>(schema: &Node<'_, 'input>) -> File<'input> {
         types: schema
             .children()
             .filter(|n| n.is_element())
-            .map(|node| parse_node(&node, schema, target_namespace(&schema)))
+            .map(|node| parse_node(&node, schema))
             .collect(),
     }
 }
 
 // Stubs
 fn parse_import(node: &Node) -> RsEntity {
-    RsEntity::Import(
-        Import {
-            name: node.attribute(attribute::NAMESPACE).unwrap_or("").into(),
-            location: node
-                .attribute(attribute::SCHEMA_LOCATION)
-                .unwrap_or("")
-                .into(),
-            comment: None
-        }
-    )
+    RsEntity::Import(Import {
+        name: node.attribute(attribute::NAMESPACE).unwrap_or("").into(),
+        location: node
+            .attribute(attribute::SCHEMA_LOCATION)
+            .unwrap_or("")
+            .into(),
+        comment: None,
+    })
 }
 
 fn parse_any(node: &Node) -> RsEntity {
@@ -97,7 +95,7 @@ fn parse_any(node: &Node) -> RsEntity {
         type_name: "AnyElement".to_string(),
         subtypes: vec![],
         comment: get_documentation(node),
-        source: StructFieldSource::Element
+        source: StructFieldSource::Element,
     })
 }
 
@@ -107,6 +105,6 @@ fn parse_any_attribute(node: &Node) -> RsEntity {
         type_name: "AnyAttribute".to_string(),
         subtypes: vec![],
         comment: get_documentation(node),
-        source: StructFieldSource::Attribute
+        source: StructFieldSource::Attribute,
     })
 }

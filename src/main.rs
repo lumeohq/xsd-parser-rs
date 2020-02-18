@@ -1,14 +1,13 @@
-mod parser;
 mod generator;
+mod parser;
 mod yaserde_generator;
 
 use std::fs;
 use std::io::Read;
 
-
+use crate::generator::Generator;
 use crate::parser::parse;
 use crate::yaserde_generator::YaserdeGenerator;
-use crate::generator::Generator;
 
 fn main() {
     let text = load_file("xsd/onvif.xsd");

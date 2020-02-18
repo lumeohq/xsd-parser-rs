@@ -57,7 +57,7 @@ pub enum FacetType {
 pub enum WhiteSpace {
     Preserve,
     Replace,
-    Collapse
+    Collapse,
 }
 
 #[derive(Debug, PartialEq)]
@@ -154,10 +154,10 @@ impl<'a> XsdNode for roxmltree::Node<'a, '_> {
                     "preserve" => Facet(FacetType::WhiteSpace(WhiteSpace::Preserve)),
                     "replace" => Facet(FacetType::WhiteSpace(WhiteSpace::Replace)),
                     "collapse" => Facet(FacetType::WhiteSpace(WhiteSpace::Collapse)),
-                    x => panic!("Invalid WhiteSpace value: {}.\n {:?}", x, self)
-                }
-                None => unreachable!("Value is required for facets")
-            }
+                    x => panic!("Invalid WhiteSpace value: {}.\n {:?}", x, self),
+                },
+                None => unreachable!("Value is required for facets"),
+            },
 
             _ => UnknownElement(self.tag_name().name().to_string()),
         }
@@ -186,20 +186,20 @@ impl<'a> XsdNode for roxmltree::Node<'a, '_> {
         }
     }
 
-    fn attr_value(&self) -> Option<&str> { self.attribute(attribute::VALUE)}
+    fn attr_value(&self) -> Option<&str> {
+        self.attribute(attribute::VALUE)
+    }
 }
 
 fn get_usize_value(node: &roxmltree::Node) -> usize {
-    node
-        .attr_value()
+    node.attr_value()
         .and_then(|s| s.parse::<usize>().ok())
         .unwrap_or_else(|| panic!("Value is required. {:?}", node))
 }
 
 fn get_string_value(node: &roxmltree::Node) -> String {
-    node
-        .attr_value()
-        .map(|s|s.to_string())
+    node.attr_value()
+        .map(|s| s.to_string())
         .unwrap_or_else(|| panic!("Value is required. {:?}", node))
 }
 
