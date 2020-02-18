@@ -34,7 +34,6 @@ pub struct Struct {
     pub name: String,
     pub comment: Option<String>,
     pub fields: RefCell<Vec<StructField>>,
-    pub macros: String,
     pub subtypes: Vec<RsEntity>,
 }
 
@@ -81,9 +80,8 @@ impl fmt::Display for Struct {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         write!(
             f,
-            "{comment}{macros}pub struct {name} {{\n{fields}\n}}\n{subtypes}\n{fields_subtypes}",
+            "{comment}pub struct {name} {{\n{fields}\n}}\n{subtypes}\n{fields_subtypes}",
             comment = get_formatted_comment(self.comment.as_deref()),
-            macros = self.macros,
             name = self.name,
             fields = self
                 .fields
@@ -119,7 +117,6 @@ pub struct StructField {
     pub name: String,
     pub type_name: String,
     pub comment: Option<String>,
-    pub macros: String,
     pub subtypes: Vec<RsEntity>,
     pub source: StructFieldSource
 }
@@ -136,8 +133,7 @@ impl fmt::Display for StructField {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         write!(
             f,
-            "{comment}{macros}  pub {name}: {typename},",
-            macros = self.macros,
+            "{comment}  pub {name}: {typename},",
             name = self.name,
             typename = self.type_name,
             comment = get_formatted_comment(self.comment.as_deref())
@@ -150,7 +146,6 @@ pub struct TupleStruct {
     pub name: String,
     pub comment: Option<String>,
     pub type_name: String,
-    pub macros: String,
     pub subtypes: Vec<RsEntity>,
 }
 
@@ -158,9 +153,8 @@ impl fmt::Display for TupleStruct {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         write!(
             f,
-            "{comment}{macros}pub struct {name} (pub {typename});\n{subtypes}",
+            "{comment}pub struct {name} (pub {typename});\n{subtypes}",
             comment = get_formatted_comment(self.comment.as_deref()),
-            macros = self.macros,
             name = self.name,
             typename = self.type_name,
             subtypes = self

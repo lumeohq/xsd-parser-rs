@@ -6,7 +6,7 @@ use crate::parser::parser::parse_node;
 use crate::parser::types::{RsEntity, Struct, StructField, StructFieldSource};
 use crate::parser::utils::{
     any_attribute_field, attributes_to_fields, find_child, get_documentation, get_field_name,
-    get_parent_name, match_type, struct_macro, yaserde_for_flatten_element,
+    get_parent_name, match_type,
 };
 use crate::parser::xsd_elements::{ElementType, XsdNode};
 
@@ -57,7 +57,6 @@ pub fn parse_complex_type(
         return RsEntity::Struct(Struct {
             fields: RefCell::new(fields),
             comment: get_documentation(node),
-            macros: struct_macro(target_ns),
             subtypes: vec![],
             name: name.to_string(),
         });
@@ -76,14 +75,12 @@ pub fn parse_complex_type(
                 name: get_field_name(en.name.as_str()),
                 type_name: match_type(en.name.as_str(), target_ns).into(),
                 comment: None,
-                macros: yaserde_for_flatten_element(),
                 subtypes: vec![],
                 source: StructFieldSource::NA
             });
             en.subtypes = vec![RsEntity::Struct(Struct {
                 name: name.to_string(),
                 subtypes: vec![],
-                macros: struct_macro(target_ns),
                 comment: get_documentation(node),
                 fields: RefCell::new(fields),
             })];

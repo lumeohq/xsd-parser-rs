@@ -6,7 +6,6 @@ use crate::parser::constants::{attribute, tag};
 use crate::parser::types::{RsEntity, Struct, StructField, StructFieldSource};
 use crate::parser::utils::{
     any_attribute_field, attributes_to_fields, find_child, get_documentation, match_type,
-    struct_macro,
 };
 use crate::parser::xsd_elements::{ElementType, ExtensionType, RestrictionType, XsdNode};
 
@@ -45,7 +44,6 @@ fn simple_content_extension(node: &Node, target_ns: Option<&Namespace>) -> RsEnt
         name: tag::BASE.to_string(),
         type_name: base.to_string(),
         comment: get_documentation(node),
-        macros: String::new(),
         subtypes: vec![],
         source: StructFieldSource::Base
     });
@@ -58,7 +56,6 @@ fn simple_content_extension(node: &Node, target_ns: Option<&Namespace>) -> RsEnt
         name: String::default(),
         subtypes: vec![],
         comment: get_documentation(node),
-        macros: struct_macro(target_ns),
         fields: RefCell::new(fields),
     })
 }

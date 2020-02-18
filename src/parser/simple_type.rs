@@ -3,7 +3,7 @@ use roxmltree::{Namespace, Node};
 use crate::parser::constants::attribute;
 use crate::parser::types::{Enum, EnumCase, RsEntity, TupleStruct};
 use crate::parser::utils::{
-    find_child, get_documentation, get_parent_name, match_type, tuple_struct_macros,
+    find_child, get_documentation, get_parent_name, match_type,
 };
 use crate::parser::xsd_elements::{ElementType, RestrictionType, XsdNode};
 
@@ -70,7 +70,6 @@ fn simple_type_list(list: &Node, target_ns: Option<&Namespace>) -> RsEntity {
         name: String::default(),
         comment: None,
         type_name: item_type,
-        macros: tuple_struct_macros(),
         subtypes: types,
     })
 }
@@ -103,7 +102,6 @@ fn simple_type_restriction(restriction: &Node, target_ns: Option<&Namespace>) ->
             name: String::default(),
             comment: None,
             type_name: base.to_string(),
-            macros: tuple_struct_macros(),
             subtypes: vec![],
         })
     }

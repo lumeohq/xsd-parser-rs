@@ -4,7 +4,6 @@ pub mod utils;
 use std::borrow::Cow;
 use crate::parser::types::{TupleStruct, Struct, Enum, Alias, StructField, EnumCase, Import, RsEntity};
 use crate::generator::utils::{default_format_comment, default_format_name, default_format_type};
-use inflector::cases::pascalcase::to_pascal_case;
 use roxmltree::Namespace;
 
 pub trait Generator<'input> {
