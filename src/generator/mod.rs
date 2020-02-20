@@ -121,7 +121,7 @@ pub trait Generator<'input>  {
             subtypes = en
                 .subtypes
                 .iter()
-                .map(|f| f.to_string())
+                .map(|f| self.get_rs_entity(f))
                 .collect::<Vec<String>>()
                 .join("\n\n"),
         )

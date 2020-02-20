@@ -5,7 +5,7 @@ use crate::parser::parser::parse_node;
 use crate::parser::types::{
     Alias, EnumCase, RsEntity, StructField, StructFieldSource, TypeModifier,
 };
-use crate::parser::utils::{get_documentation, get_type_name};
+use crate::parser::utils::{get_documentation};
 use crate::parser::xsd_elements::{max_occurs, min_occurs, ElementType, MaxOccurs, XsdNode};
 
 const SUPPORTED_CONTENT_TYPES: [ElementType; 2] =
@@ -61,7 +61,7 @@ fn parse_case_of_choice(element: &Node) -> RsEntity {
     let type_name = element_type(element, element.attr_type().unwrap_or("String"));
 
     RsEntity::EnumCase(EnumCase {
-        name: get_type_name(name),
+        name: name.to_string(),
         value: String::default(),
         type_name: Some(type_name),
         comment: get_documentation(element),
