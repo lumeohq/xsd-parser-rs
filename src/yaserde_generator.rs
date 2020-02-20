@@ -1,4 +1,4 @@
-use crate::generator::{Generator, MacroGenerator};
+use crate::generator::{Generator};
 use crate::parser::types::{Enum, File, Struct, StructField, StructFieldSource, TupleStruct};
 use roxmltree::Namespace;
 use std::borrow::Cow;
@@ -15,7 +15,7 @@ impl<'input> YaserdeGenerator<'input> {
     }
 }
 
-impl<'input> MacroGenerator for YaserdeGenerator<'input> {
+impl<'input> Generator<'_> for YaserdeGenerator<'input> {
     fn target_ns(&self) -> &Option<Namespace<'_>> {
         &self.target_ns
     }
@@ -60,7 +60,6 @@ impl<'input> MacroGenerator for YaserdeGenerator<'input> {
     }
 }
 
-impl<'input> Generator<'_> for YaserdeGenerator<'input>{}
 
 fn yaserde_for_attribute(name: &str) -> String {
     if let Some(index) = name.find(':') {

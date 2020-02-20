@@ -8,7 +8,8 @@ use crate::parser::types::{
 use roxmltree::Namespace;
 use std::borrow::Cow;
 
-pub trait MacroGenerator {
+pub trait Generator<'input>  {
+
     fn target_ns(&self) -> &Option<Namespace<'_>>;
 
     fn tuple_struct_macro(&self, _: &TupleStruct) -> Cow<'static, str> {
@@ -29,9 +30,6 @@ pub trait MacroGenerator {
     fn enum_case_macro(&self, _: &EnumCase) -> Cow<'static, str> {
         "".into()
     }
-}
-
-pub trait Generator<'input>: MacroGenerator  {
 
     fn get_rs_entity(&self, entity: &RsEntity) -> String {
         use RsEntity::*;
@@ -53,7 +51,7 @@ pub trait Generator<'input>: MacroGenerator  {
         );
         format!(
             "{comment}{macros}pub struct {name} (pub {typename});\n{subtypes}",
-            comment = default_format_comment(ts.comment.as_deref()),
+            comment = self.format_comment(ts.comment.as_deref(), 0),
             macros = self.tuple_struct_macro(ts),
             name = self.format_type(ts.name.as_str()),
             typename = typename,
@@ -69,7 +67,7 @@ pub trait Generator<'input>: MacroGenerator  {
     fn get_struct(&self, st: &Struct) -> String {
         format!(
             "{comment}{macros}pub struct {name} {{\n{fields}\n}}\n{subtypes}\n{fields_subtypes}",
-            comment = default_format_comment(st.comment.as_deref()),
+            comment = self.format_comment(st.comment.as_deref(), 0),
             macros = self.struct_macro(st),
             name = self.format_type(st.name.as_str()),
             fields = st
@@ -107,7 +105,7 @@ pub trait Generator<'input>: MacroGenerator  {
             }}\n\n\
             {default}\n\n\
             {subtypes}",
-            comment = self.format_comment(en.comment.as_deref()),
+            comment = self.format_comment(en.comment.as_deref(), 0),
             macros = self.enum_macro(en),
             name = name,
             cases = en
@@ -131,7 +129,7 @@ pub trait Generator<'input>: MacroGenerator  {
 
     fn get_enum_case(&self, ec: &EnumCase) -> String {
         let name = self.format_type(ec.name.as_str());
-        let comment = self.format_comment(ec.comment.as_deref());
+        let comment = self.format_comment(ec.comment.as_deref(), 2);
         match &ec.type_name {
             Some(typename) => format!(
                 "{comment}  {name}({typename}),",
@@ -153,14 +151,14 @@ pub trait Generator<'input>: MacroGenerator  {
             macros = self.struct_field_macro(sf),
             name = self.format_name(sf.name.as_str()),
             typename = typename,
-            comment = self.format_comment(sf.comment.as_deref())
+            comment = self.format_comment(sf.comment.as_deref(), 2)
         )
     }
 
     fn get_alias(&self, al: &Alias) -> String {
         format!(
             "//{comment} pub type {name} = {original};",
-            comment = self.format_comment(al.comment.as_deref()),
+            comment = self.format_comment(al.comment.as_deref(), 0),
             name = self.format_type(al.name.as_str()),
             original = self.format_type(al.original.as_str())
         )
@@ -182,8 +180,8 @@ pub trait Generator<'input>: MacroGenerator  {
         format!("//use {}  {};\n", im.location, im.name)
     }
 
-    fn format_comment(&self, comment: Option<&str>) -> String {
-        default_format_comment(comment)
+    fn format_comment(&self, comment: Option<&str>, indent: usize) -> String {
+        default_format_comment(comment, 80, indent)
     }
 
     fn format_name(&self, name: &str) -> Cow<'_, str> {
