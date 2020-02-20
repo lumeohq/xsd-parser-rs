@@ -26,7 +26,7 @@ fn elements_to_fields(sequence: &Node, parent_name: &str) -> Vec<StructField> {
                 en.name = format!("{}Choice", parent_name);
                 enum_to_field(en)
             }
-            _ => unreachable!("\nError: {:?}\n{}", n, parse_node(&n, sequence)),
+            _ => unreachable!("\nError: {:?}\n{:?}", n, parse_node(&n, sequence)),
         })
         .collect()
 }

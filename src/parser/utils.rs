@@ -1,7 +1,6 @@
 use std::str;
 
 extern crate inflector;
-use inflector::cases::pascalcase::to_pascal_case;
 
 use roxmltree::{Namespace, Node};
 
@@ -10,46 +9,11 @@ use crate::parser::parser::parse_node;
 use crate::parser::types::{RsEntity, StructField, StructFieldSource, TypeModifier};
 use crate::parser::xsd_elements::{ElementType, XsdNode};
 
-pub fn split_comment_line(s: &str, max_len: usize, indent: usize) -> String {
-    let indent_str = " ".repeat(indent);
-
-    let mut splitted = format!("{}//", indent_str);
-    let mut current_line_length = indent + 2;
-    for word in s.split_whitespace() {
-        let len = word.len();
-        if current_line_length + len < max_len {
-            splitted = format!("{} {}", splitted, word);
-            current_line_length += 1 + len;
-        } else {
-            splitted = format!("{}\n{}// {}", splitted, indent_str, word);
-            current_line_length = indent + 3 + len;
-        }
-    }
-    format!("{}\n", splitted)
-}
-
-pub fn get_formatted_comment(doc: Option<&str>) -> String {
-    doc.unwrap_or("")
-        .lines()
-        .map(|s| s.trim())
-        .filter(|s| s.len() > 1)
-        .map(|s| split_comment_line(s, 80, 0))
-        .fold(String::new(), |x, y| (x + &y))
-}
-
-pub fn get_type_name(name: &str) -> String {
-    let result = to_pascal_case(name);
-    if result.chars().next().unwrap().is_numeric() || RS_KEYWORDS.contains(&result.as_str()) {
-        return format!("_{}", result);
-    }
-    result
-}
 
 pub fn any_attribute_field() -> StructField {
     StructField {
         name: "any_attribute".to_string(),
         type_name: "String".to_string(),
-        comment: None,
         source: StructFieldSource::Attribute,
         type_modifiers: vec![TypeModifier::Option],
         ..Default::default()
@@ -99,60 +63,3 @@ pub fn attributes_to_fields(node: &Node) -> Vec<StructField> {
         })
         .collect()
 }
-
-const RS_KEYWORDS: &[&str] = &[
-    "abstract",
-    "alignof",
-    "as",
-    "become",
-    "box",
-    "break",
-    "const",
-    "continue",
-    "crate",
-    "do",
-    "else",
-    "enum",
-    "extern crate",
-    "extern",
-    "false",
-    "final",
-    "fn",
-    "for",
-    "if let",
-    "if",
-    "impl",
-    "in",
-    "let",
-    "loop",
-    "macro",
-    "match",
-    "mod",
-    "move",
-    "mut",
-    "offsetof",
-    "override",
-    "priv",
-    "proc",
-    "pub",
-    "pure",
-    "ref",
-    "return",
-    "Self",
-    "self",
-    "sizeof",
-    "static",
-    "struct",
-    "super",
-    "trait",
-    "true",
-    "type",
-    "typeof",
-    "unsafe",
-    "unsized",
-    "use",
-    "virtual",
-    "where",
-    "while",
-    "yield",
-];
