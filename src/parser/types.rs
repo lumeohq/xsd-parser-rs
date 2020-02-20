@@ -116,6 +116,7 @@ pub struct EnumCase {
     pub comment: Option<String>,
     pub value: String,
     pub type_name: Option<String>,
+    pub type_modifiers: Vec<TypeModifier>,
 }
 
 #[derive(Debug, Clone)]

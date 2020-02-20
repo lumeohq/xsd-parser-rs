@@ -113,7 +113,7 @@ pub fn default_format_type(type_name: &str, target_ns: &Option<Namespace>) -> Co
         "xs:IDREFS" => "Vec<String>".into(),
         "xs:NMTOKENS" => "Vec<String>".into(),
 
-        x => match target_ns.as_ref().and_then(|ns| ns.name()) {
+        x => sanitize(match target_ns.as_ref().and_then(|ns| ns.name()) {
             Some(name) => {
                 if x.starts_with(name) {
                     to_pascal_case(&x[name.len() + 1..])
@@ -122,17 +122,19 @@ pub fn default_format_type(type_name: &str, target_ns: &Option<Namespace>) -> Co
                 }
             }
             None => replace(x),
-        }
-        .into(),
+        }).into()
     }
 }
 
 pub fn default_format_name(name: &str) -> String {
-    let result = to_snake_case(name);
-    if result.chars().next().unwrap().is_numeric() || RS_KEYWORDS.contains(&result.as_str()) {
-        return format!("_{}", result);
+    sanitize(to_snake_case(name))
+}
+
+fn sanitize(s: String) -> String {
+    if s.chars().next().unwrap().is_numeric() || RS_KEYWORDS.contains(&s.as_str()) {
+        return format!("_{}", s);
     }
-    result
+    s
 }
 
 const RS_KEYWORDS: &[&str] = &[
