@@ -21,12 +21,12 @@ fn split_comment_line(s: &str, max_len: usize, indent: usize) -> String {
     format!("{}\n", splitted)
 }
 
-pub fn default_format_comment(doc: Option<&str>) -> String {
+pub fn default_format_comment(doc: Option<&str>,max_len: usize, indent: usize) -> String {
     doc.unwrap_or("")
         .lines()
         .map(|s| s.trim())
         .filter(|s| s.len() > 1)
-        .map(|s| split_comment_line(s, 80, 0))
+        .map(|s| split_comment_line(s, max_len, indent))
         .fold(String::new(), |x, y| (x + &y))
 }
 
