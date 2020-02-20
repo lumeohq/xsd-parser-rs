@@ -33,39 +33,34 @@ fn element_default(node: &Node) -> RsEntity {
 fn parse_case_of_choice(element: &Node) -> RsEntity {
     if element.has_attribute(attribute::REF) {
         let ref_attr = element.attr_ref().unwrap();
-        let name = ref_attr.split(':').last().unwrap();
-        let type_name = element_type(element, ref_attr);
 
         return RsEntity::EnumCase(EnumCase {
-            name: name.to_string(),
+            name: ref_attr.to_string(),
             value: String::default(),
-            type_name: Some(type_name),
+            type_name: Some(ref_attr.to_string()),
             comment: get_documentation(element),
-            //subtypes: vec![]
+            type_modifiers: vec![element_modifier(element)],
         });
     }
 
     let name = element.attr_name().unwrap_or("UNSUPPORTED_ELEMENT_NAME");
 
     if element.has_attribute(attribute::TYPE) {
-        let type_name = element_type(element, element.attr_type().unwrap());
         return RsEntity::EnumCase(EnumCase {
             name: name.to_string(),
             value: String::default(),
-            type_name: Some(type_name),
+            type_name: Some(element.attr_type().unwrap().to_string()),
             comment: get_documentation(element),
-            //subtypes: vec![]
+            type_modifiers: vec![element_modifier(element)],
         });
     }
-
-    let type_name = element_type(element, element.attr_type().unwrap_or("String"));
 
     RsEntity::EnumCase(EnumCase {
         name: name.to_string(),
         value: String::default(),
-        type_name: Some(type_name),
+        type_name: None,
         comment: get_documentation(element),
-        //subtypes: vec![]
+        type_modifiers: vec![element_modifier(element)],
     })
 }
 
@@ -139,36 +134,6 @@ fn parse_global_element(node: &Node) -> RsEntity {
     let mut content = parse_node(&content_node, node);
     content.set_name(name);
     content
-}
-
-pub fn element_type(node: &Node, type_name: &str) -> String {
-    let min = min_occurs(node);
-    let max = max_occurs(node);
-    match min {
-        0 => match max {
-            MaxOccurs::None => format!("Option<{}>", type_name),
-            MaxOccurs::Unbounded => format!("Vec<{}>", type_name),
-            MaxOccurs::Bounded(val) => {
-                if val > 1 {
-                    format!("Vec<{}>", type_name)
-                } else {
-                    type_name.to_string()
-                }
-            }
-        },
-        1 => match max {
-            MaxOccurs::None => type_name.to_string(),
-            MaxOccurs::Unbounded => format!("Vec<{}>", type_name),
-            MaxOccurs::Bounded(val) => {
-                if val > 1 {
-                    format!("Vec<{}>", type_name)
-                } else {
-                    type_name.to_string()
-                }
-            }
-        },
-        _ => format!("Vec<{}>", type_name),
-    }
 }
 
 pub fn element_modifier(node: &Node) -> TypeModifier {

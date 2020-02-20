@@ -134,7 +134,10 @@ pub trait Generator<'input>  {
             Some(typename) => format!(
                 "{comment}  {name}({typename}),",
                 name = name,
-                typename = self.format_type(typename.as_str()),
+                typename = self.modify_type(
+                    self.format_type(typename.as_str()).as_ref(),
+                    &ec.type_modifiers
+                ),
                 comment = comment,
             ),
             None => format!("{comment}  {name},", name = name, comment = comment),

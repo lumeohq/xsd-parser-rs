@@ -74,6 +74,7 @@ fn get_enum_case(node: &Node) -> EnumCase {
         name: value.to_string(),
         value: value.to_string(),
         type_name: None,
+        type_modifiers: vec![],
     }
 }
 
