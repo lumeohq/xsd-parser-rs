@@ -51,6 +51,7 @@ impl Struct {
             .borrow_mut()
             .retain(|field| field.name.as_str() != tag::BASE);
 
+
         for subtype in &self.subtypes {
             if let RsEntity::Struct(s) = subtype {
                 s.extend_base(types);
@@ -107,6 +108,7 @@ pub enum TypeModifier {
     None,
     Array,
     Option,
+    Recursive,
     Empty,
 }
 

@@ -169,6 +169,9 @@ pub trait Generator<'input>  {
 
     fn modify_type(&self, type_name: &str, modifiers: &Vec<TypeModifier>) -> String {
         let mut result = type_name.to_string();
+        if modifiers.contains(&TypeModifier::Recursive) {
+            return format!("Vec<{}>", result);
+        }
         for modifier in modifiers {
             match modifier {
                 TypeModifier::Array => result = format!("Vec<{}>", result),
