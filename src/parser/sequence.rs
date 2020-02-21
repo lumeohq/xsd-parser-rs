@@ -3,7 +3,7 @@ use std::cell::RefCell;
 use roxmltree::Node;
 
 use crate::parser::parser::parse_node;
-use crate::parser::types::{Enum, RsEntity, Struct, StructField, StructFieldSource};
+use crate::parser::types::{Enum, RsEntity, Struct, StructField, StructFieldSource, TypeModifier};
 use crate::parser::utils::{get_documentation, get_parent_name};
 
 pub fn parse_sequence(sequence: &Node, parent: &Node) -> RsEntity {
@@ -21,7 +21,14 @@ fn elements_to_fields(sequence: &Node, parent_name: &str) -> Vec<StructField> {
         .children()
         .filter(|n| n.is_element())
         .map(|n| match parse_node(&n, sequence) {
-            RsEntity::StructField(sf) => sf,
+            RsEntity::StructField(mut sf) => {
+                println!("\n\n{} == {}\n\n",sf.type_name.as_str(), parent_name );
+                if sf.type_name.ends_with(parent_name) {
+                    println!("GOOD NEWS!! \n{} == {}\n\n",sf.type_name.as_str(), parent_name );
+                    sf.type_modifiers.push(TypeModifier::Recursive)
+                }
+                sf
+            },
             RsEntity::Enum(mut en) => {
                 en.name = format!("{}Choice", parent_name);
                 enum_to_field(en)

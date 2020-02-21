@@ -28,16 +28,16 @@ pub fn parse_complex_type(node: &Node, parent: &Node) -> RsEntity {
         get_parent_name(node)
     };
 
-    let content = node
-        .children()
-        .filter(|n| n.is_element() && AVAILABLE_CONTENT_TYPES.contains(&n.xsd_type()))
-        .last();
-
     let mut fields = attributes_to_fields(node);
 
     if find_child(node, "anyAttribute").is_some() {
         fields.push(any_attribute_field())
     }
+
+    let content = node
+        .children()
+        .filter(|n| n.is_element() && AVAILABLE_CONTENT_TYPES.contains(&n.xsd_type()))
+        .last();
 
     if content.is_none()
         || content
