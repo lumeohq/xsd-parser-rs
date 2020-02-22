@@ -1,5 +1,8 @@
 # xsd-parser-rs
-A xsd\wsdl => rust code generator written on rust
+An xsd/wsdl => rust code generator written in rust. The main target is for generation of the [ONVIF Specifications](https://www.onvif.org/) but should work for other SOAP/XSDL/WSDL needs.
+
+## Work in Progress
+This is still a work in progress.  So please feel free to open issues and submit PRs. Please be sure to read and follow our [Code of Conduct](/CODE_OF_CONDUCT.md).
 
 ## XSD types mapping
 
@@ -66,3 +69,18 @@ in rust that supports proper month/years holding and literal representation
 
 (5) we are going to implement types that both provide stored value as integer and
 support proper (de)serialization
+
+## License
+
+<sup>
+Licensed under either of <a href="LICENSE-APACHE">Apache License, Version
+2.0</a> or <a href="LICENSE-MIT">MIT license</a> at your option.
+</sup>
+
+<br/>
+
+<sub>
+Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in this crate by you, as defined in the Apache-2.0 license, shall
+be dual licensed as above, without any additional terms or conditions.
+</sub>
