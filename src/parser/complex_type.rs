@@ -6,11 +6,11 @@ use crate::parser::parser::parse_node;
 use crate::parser::types::{RsEntity, Struct, StructField};
 use crate::parser::utils::{
     any_attribute_field, attributes_to_fields, find_child, get_documentation, get_field_name,
-    get_parent_name, match_type, struct_macro,
+    get_parent_name, match_type, struct_macro, yaserde_for_flatten_element,
 };
 use crate::parser::xsd_elements::{ElementType, XsdNode};
 
-//A complex type can contain one and only one of the following elements,
+// A complex type can contain one and only one of the following elements,
 // which determines the type of content allowed in the complex type.
 const AVAILABLE_CONTENT_TYPES: [ElementType; 6] = [
     ElementType::All, //No in ONVIF
@@ -76,7 +76,7 @@ pub fn parse_complex_type(
                 name: get_field_name(en.name.as_str()),
                 type_name: match_type(en.name.as_str(), target_ns).into(),
                 comment: None,
-                macros: "//TODO: add yaserde macros\n".to_string(),
+                macros: yaserde_for_flatten_element(),
                 subtypes: vec![],
             });
             en.subtypes = vec![RsEntity::Struct(Struct {
