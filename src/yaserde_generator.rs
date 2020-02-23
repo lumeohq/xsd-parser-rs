@@ -51,6 +51,7 @@ impl<'input> Generator<'_> for YaserdeGenerator<'input> {
 
     fn struct_field_macro(&self, sf: &StructField) -> Cow<'static, str> {
         match sf.source {
+            StructFieldSource::Choice => yaserde_for_flatten_element().into(),
             StructFieldSource::Attribute => yaserde_for_attribute(sf.name.as_str()).into(),
             StructFieldSource::Element => {
                 yaserde_for_element(sf.name.as_str(), self.target_ns.as_ref()).into()
@@ -72,10 +73,14 @@ fn yaserde_for_attribute(name: &str) -> String {
     }
 }
 
-pub fn yaserde_for_element(name: &str, target_namespace: Option<&roxmltree::Namespace>) -> String {
+fn yaserde_for_element(name: &str, target_namespace: Option<&roxmltree::Namespace>) -> String {
     let prefix = target_namespace.and_then(|ns| ns.name());
     match prefix {
         Some(p) => format!("  #[yaserde(prefix = \"{}\", rename = \"{}\")]\n", p, name),
         None => format!("  #[yaserde(rename = \"{}\")]\n", name),
     }
+}
+
+fn yaserde_for_flatten_element() -> String {
+    "  #[yaserde(flatten)]\n".to_string()
 }
