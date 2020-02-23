@@ -5,7 +5,7 @@ use crate::parser::parser::parse_node;
 use crate::parser::types::{
     Alias, EnumCase, RsEntity, StructField, StructFieldSource, TypeModifier,
 };
-use crate::parser::utils::{get_documentation};
+use crate::parser::utils::get_documentation;
 use crate::parser::xsd_elements::{max_occurs, min_occurs, ElementType, MaxOccurs, XsdNode};
 
 const SUPPORTED_CONTENT_TYPES: [ElementType; 2] =

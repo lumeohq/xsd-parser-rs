@@ -8,7 +8,7 @@ pub fn parse_attribute(node: &Node) -> RsEntity {
     let name = node
         .attr_name()
         .or_else(|| node.attr_ref())
-        .expect("All attributes have name or ref in Onvif")
+        .expect("All attributes have name or ref")
         .to_string();
 
     let type_name = node

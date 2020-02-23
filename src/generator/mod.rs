@@ -8,8 +8,7 @@ use crate::parser::types::{
 use roxmltree::Namespace;
 use std::borrow::Cow;
 
-pub trait Generator<'input>  {
-
+pub trait Generator<'input> {
     fn target_ns(&self) -> &Option<Namespace<'_>>;
 
     fn tuple_struct_macro(&self, _: &TupleStruct) -> Cow<'static, str> {
