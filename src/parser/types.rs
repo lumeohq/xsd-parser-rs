@@ -33,24 +33,30 @@ impl Struct {
     }
 
     pub fn extend_base(&self, types: &HashMap<&String, &Self>) {
+        self.fields
+            .borrow_mut()
+            .iter_mut()
+            .for_each(|f| f.extend_base(types));
+
         let mut fields = self
             .fields
             .borrow()
             .iter()
             .filter(|f| f.name.as_str() == tag::BASE)
             .flat_map(|f| {
+                let key = f.type_name.split(":").last().unwrap().to_string();
                 types
-                    .get(&f.type_name)
+                    .get(&key)
                     .map(|s| s.fields.borrow().clone())
                     .unwrap_or_else(|| vec![])
             })
             .collect::<Vec<StructField>>();
 
         self.fields.borrow_mut().append(&mut fields);
+
         self.fields
             .borrow_mut()
             .retain(|field| field.name.as_str() != tag::BASE);
-
 
         for subtype in &self.subtypes {
             if let RsEntity::Struct(s) = subtype {
@@ -70,6 +76,16 @@ pub struct StructField {
     pub type_modifiers: Vec<TypeModifier>,
 }
 
+impl StructField {
+    pub fn extend_base(&mut self, types: &HashMap<&String, &Struct>) {
+        for subtype in &mut self.subtypes {
+            if let RsEntity::Struct(st) = subtype {
+                st.extend_base(types);
+            }
+        }
+    }
+}
+
 #[derive(Debug, Clone)]
 pub enum StructFieldSource {
     Attribute,
@@ -83,7 +99,6 @@ impl Default for StructFieldSource {
         StructFieldSource::NA
     }
 }
-
 
 #[derive(Debug, Clone, Default)]
 pub struct TupleStruct {

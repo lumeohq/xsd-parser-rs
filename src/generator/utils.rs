@@ -21,7 +21,7 @@ fn split_comment_line(s: &str, max_len: usize, indent: usize) -> String {
     format!("{}\n", splitted)
 }
 
-pub fn default_format_comment(doc: Option<&str>,max_len: usize, indent: usize) -> String {
+pub fn default_format_comment(doc: Option<&str>, max_len: usize, indent: usize) -> String {
     doc.unwrap_or("")
         .lines()
         .map(|s| s.trim())
@@ -122,7 +122,8 @@ pub fn default_format_type(type_name: &str, target_ns: &Option<Namespace>) -> Co
                 }
             }
             None => replace(x),
-        }).into()
+        })
+        .into(),
     }
 }
 

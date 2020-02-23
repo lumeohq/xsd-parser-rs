@@ -9,7 +9,6 @@ use crate::parser::parser::parse_node;
 use crate::parser::types::{RsEntity, StructField, StructFieldSource, TypeModifier};
 use crate::parser::xsd_elements::{ElementType, XsdNode};
 
-
 pub fn any_attribute_field() -> StructField {
     StructField {
         name: "any_attribute".to_string(),

@@ -1,4 +1,4 @@
-use crate::generator::{Generator};
+use crate::generator::Generator;
 use crate::parser::types::{Enum, File, Struct, StructField, StructFieldSource, TupleStruct};
 use roxmltree::Namespace;
 use std::borrow::Cow;
@@ -59,7 +59,6 @@ impl<'input> Generator<'_> for YaserdeGenerator<'input> {
         }
     }
 }
-
 
 fn yaserde_for_attribute(name: &str) -> String {
     if let Some(index) = name.find(':') {
