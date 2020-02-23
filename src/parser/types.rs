@@ -91,6 +91,7 @@ pub enum StructFieldSource {
     Attribute,
     Element,
     Base,
+    Choice,
     NA,
 }
 
