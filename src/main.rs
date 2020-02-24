@@ -14,7 +14,7 @@ fn main() {
     if let Ok(f) = parse(text.as_str()) {
         let gen = YaserdeGenerator::new(&f);
         for ty in f.types {
-            println!("{}", gen.get_rs_entity(&ty));
+            println!("{}", gen.gen_rs_entity(&ty));
         }
     }
 }

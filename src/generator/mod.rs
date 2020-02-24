@@ -1,14 +1,15 @@
 pub mod default;
-pub mod utils;
+mod utils;
 pub mod validator;
 
-use crate::generator::utils::{default_format_comment, default_format_name, default_format_type};
 use crate::parser::types::{
     Alias, Enum, EnumCase, Import, RsEntity, Struct, StructField, TupleStruct, TypeModifier,
 };
+
+use crate::generator::default::{default_format_comment, default_format_name, default_format_type};
+use crate::generator::validator::{gen_facet_validation, gen_validate_impl};
 use roxmltree::Namespace;
 use std::borrow::Cow;
-use crate::generator::validator::{gen_validate_impl, gen_facet_validation};
 
 pub trait Generator<'input> {
     fn target_ns(&self) -> &Option<Namespace<'_>>;
@@ -32,20 +33,20 @@ pub trait Generator<'input> {
         "".into()
     }
 
-    fn get_rs_entity(&self, entity: &RsEntity) -> String {
+    fn gen_rs_entity(&self, entity: &RsEntity) -> String {
         use RsEntity::*;
         match entity {
-            TupleStruct(tp) => self.get_tuple_struct(tp),
-            Struct(st) => self.get_struct(st),
-            Enum(en) => self.get_enum(en),
-            Import(im) => self.get_import(im),
+            TupleStruct(tp) => self.gen_tuple_struct(tp),
+            Struct(st) => self.gen_struct(st),
+            Enum(en) => self.gen_enum(en),
+            Import(im) => self.gen_import(im),
             Alias(al) => self.get_alias(al),
-            EnumCase(ec) => self.get_enum_case(ec),
+            EnumCase(ec) => self.gen_enum_case(ec),
             StructField(sf) => self.get_struct_field(sf),
         }
     }
 
-    fn get_tuple_struct(&self, ts: &TupleStruct) -> String {
+    fn gen_tuple_struct(&self, ts: &TupleStruct) -> String {
         let typename = self.modify_type(
             self.format_type(ts.type_name.as_str()).as_ref(),
             &ts.type_modifiers,
@@ -59,10 +60,10 @@ pub trait Generator<'input> {
             subtypes = ts
                 .subtypes
                 .iter()
-                .map(|f| self.get_rs_entity(f))
+                .map(|f| self.gen_rs_entity(f))
                 .collect::<Vec<String>>()
                 .join("\n"),
-            validation=self.gen_tuple_struct_validation(ts),
+            validation = self.gen_tuple_struct_validation(ts),
         )
     }
 
@@ -72,10 +73,13 @@ pub trait Generator<'input> {
             .iter()
             .map(|f| gen_facet_validation(&f.facet_type, "0"))
             .fold(String::new(), |x, y| (x + &y));
-        Cow::Owned(gen_validate_impl(ts.name.as_str(), body.as_str()))
+        Cow::Owned(gen_validate_impl(
+            self.format_type(ts.name.as_str()).as_ref(),
+            body.as_str(),
+        ))
     }
 
-    fn get_struct(&self, st: &Struct) -> String {
+    fn gen_struct(&self, st: &Struct) -> String {
         format!(
             "{comment}{macros}pub struct {name} {{\n{fields}\n}}\n{subtypes}\n{fields_subtypes}",
             comment = self.format_comment(st.comment.as_deref(), 0),
@@ -91,7 +95,7 @@ pub trait Generator<'input> {
             subtypes = st
                 .subtypes
                 .iter()
-                .map(|f| self.get_rs_entity(f))
+                .map(|f| self.gen_rs_entity(f))
                 .collect::<Vec<String>>()
                 .join("\n\n"),
             fields_subtypes = st
@@ -101,7 +105,7 @@ pub trait Generator<'input> {
                 .map(|f| f
                     .subtypes
                     .iter()
-                    .map(|e| self.get_rs_entity(e))
+                    .map(|e| self.gen_rs_entity(e))
                     .collect::<Vec<String>>()
                     .join("\n"))
                 .collect::<Vec<String>>()
@@ -109,7 +113,7 @@ pub trait Generator<'input> {
         )
     }
 
-    fn get_enum(&self, en: &Enum) -> String {
+    fn gen_enum(&self, en: &Enum) -> String {
         let name = self.format_type(en.name.as_str());
         format!(
             "{comment}{macros}\npub enum {name} {{\n{cases}\n __Unknown__({typename})\n\
@@ -122,7 +126,7 @@ pub trait Generator<'input> {
             cases = en
                 .cases
                 .iter()
-                .map(|case| self.get_enum_case(case))
+                .map(|case| self.gen_enum_case(case))
                 .collect::<Vec<String>>()
                 .join("\n"),
             typename = self.format_type(en.type_name.as_str()),
@@ -132,13 +136,13 @@ pub trait Generator<'input> {
             subtypes = en
                 .subtypes
                 .iter()
-                .map(|f| self.get_rs_entity(f))
+                .map(|f| self.gen_rs_entity(f))
                 .collect::<Vec<String>>()
                 .join("\n\n"),
         )
     }
 
-    fn get_enum_case(&self, ec: &EnumCase) -> String {
+    fn gen_enum_case(&self, ec: &EnumCase) -> String {
         let name = self.format_type(ec.name.as_str());
         let comment = self.format_comment(ec.comment.as_deref(), 2);
         match &ec.type_name {
@@ -193,7 +197,7 @@ pub trait Generator<'input> {
         result
     }
 
-    fn get_import(&self, im: &Import) -> String {
+    fn gen_import(&self, im: &Import) -> String {
         format!("//use {}  {};\n", im.location, im.name)
     }
 
@@ -209,7 +213,6 @@ pub trait Generator<'input> {
         default_format_type(type_name, self.target_ns())
     }
 }
-
 
 #[cfg(test)]
 mod test {
