@@ -3,6 +3,7 @@ use inflector::cases::pascalcase::to_pascal_case;
 use inflector::cases::snakecase::to_snake_case;
 use roxmltree::Namespace;
 use std::borrow::Cow;
+use crate::parser::types::TypeModifier;
 
 pub fn default_format_comment(doc: Option<&str>, max_len: usize, indent: usize) -> String {
     doc.unwrap_or("")
@@ -47,6 +48,25 @@ pub fn default_format_type(type_name: &str, target_ns: &Option<Namespace>) -> Co
         None => replace(type_name),
     })
     .into()
+}
+
+pub fn default_modify_type(type_name: &str, modifiers: &[TypeModifier]) -> Cow<'static, str> {
+    if modifiers.contains(&TypeModifier::Empty) {
+        return "()".into();
+    }
+    if modifiers.contains(&TypeModifier::Recursive) {
+        return format!("Vec<{}>", type_name).into();
+    }
+
+    let mut result = type_name.to_string();
+    for modifier in modifiers {
+        match modifier {
+            TypeModifier::Array => result = format!("Vec<{}>", result),
+            TypeModifier::Option => result = format!("Option<{}>", result),
+            _ => (),
+        }
+    }
+    result.into()
 }
 
 #[cfg(test)]
@@ -116,5 +136,19 @@ mod test {
         assert_eq!(default_format_type("tt:IANA_IfTypes ", &ns), "IanaIfTypes");
         assert_eq!(default_format_type("tt:Enum", &ns), "Enum");
         assert_eq!(default_format_type("xs:TyName", &ns), "xs::TyName");
+    }
+
+    #[test]
+    fn test_default_modify_type() {
+        use TypeModifier::*;
+        assert_eq!(default_modify_type("Type", &[Recursive]), "Vec<Type>");
+        assert_eq!(default_modify_type("Type", &[None]), "Type");
+        assert_eq!(default_modify_type("Type", &[Option]), "Option<Type>");
+        assert_eq!(default_modify_type("Type", &[Array]), "Vec<Type>");
+        assert_eq!(default_modify_type("Type", &[Empty]), "()");
+
+        assert_eq!(default_modify_type("Type", &[Recursive, Option]), "Vec<Type>");
+        assert_eq!(default_modify_type("Type", &[Recursive, Array, Option]), "Vec<Type>");
+        assert_eq!(default_modify_type("Type", &[Recursive, Array, Empty]), "()");
     }
 }
