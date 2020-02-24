@@ -40,7 +40,7 @@ pub fn parse(text: &str) -> Result<File, ()> {
         }
     }
 
-    return Ok(schema_rs);
+    Ok(schema_rs)
 }
 
 pub fn parse_node(node: &Node, parent: &Node) -> RsEntity {
@@ -70,7 +70,7 @@ pub fn parse_schema<'input>(schema: &Node<'_, 'input>) -> File<'input> {
     File {
         name: "".into(),
         namespace: None,
-        target_ns: target_namespace(&schema).map(|n| n.clone()),
+        target_ns: target_namespace(&schema).cloned(),
         types: schema
             .children()
             .filter(|n| n.is_element())
