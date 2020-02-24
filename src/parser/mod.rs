@@ -12,5 +12,5 @@ mod simple_type;
 mod tests;
 pub mod types;
 mod utils;
-mod xsd_elements;
+pub mod xsd_elements;
 pub use parser::*;
