@@ -1,9 +1,9 @@
 use crate::generator::utils::{match_built_in_type, sanitize, split_comment_line};
+use crate::parser::types::TypeModifier;
 use inflector::cases::pascalcase::to_pascal_case;
 use inflector::cases::snakecase::to_snake_case;
 use roxmltree::Namespace;
 use std::borrow::Cow;
-use crate::parser::types::TypeModifier;
 
 pub fn default_format_comment(doc: Option<&str>, max_len: usize, indent: usize) -> String {
     doc.unwrap_or("")
@@ -147,8 +147,17 @@ mod test {
         assert_eq!(default_modify_type("Type", &[Array]), "Vec<Type>");
         assert_eq!(default_modify_type("Type", &[Empty]), "()");
 
-        assert_eq!(default_modify_type("Type", &[Recursive, Option]), "Vec<Type>");
-        assert_eq!(default_modify_type("Type", &[Recursive, Array, Option]), "Vec<Type>");
-        assert_eq!(default_modify_type("Type", &[Recursive, Array, Empty]), "()");
+        assert_eq!(
+            default_modify_type("Type", &[Recursive, Option]),
+            "Vec<Type>"
+        );
+        assert_eq!(
+            default_modify_type("Type", &[Recursive, Array, Option]),
+            "Vec<Type>"
+        );
+        assert_eq!(
+            default_modify_type("Type", &[Recursive, Array, Empty]),
+            "()"
+        );
     }
 }

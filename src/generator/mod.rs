@@ -6,7 +6,9 @@ use crate::parser::types::{
     Alias, Enum, EnumCase, Import, RsEntity, Struct, StructField, TupleStruct, TypeModifier,
 };
 
-use crate::generator::default::{default_format_comment, default_format_name, default_format_type, default_modify_type};
+use crate::generator::default::{
+    default_format_comment, default_format_name, default_format_type, default_modify_type,
+};
 use crate::generator::validator::{gen_facet_validation, gen_validate_impl};
 use roxmltree::Namespace;
 use std::borrow::Cow;
