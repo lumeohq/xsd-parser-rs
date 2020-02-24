@@ -37,7 +37,7 @@ pub enum ElementType {
     XsdError(String),
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum FacetType {
     Enumeration(String),
     FractionDigits(usize),
@@ -53,7 +53,7 @@ pub enum FacetType {
     WhiteSpace(WhiteSpace),
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum WhiteSpace {
     Preserve,
     Replace,
@@ -154,7 +154,7 @@ impl<'a> XsdNode for roxmltree::Node<'a, '_> {
                     "preserve" => Facet(FacetType::WhiteSpace(WhiteSpace::Preserve)),
                     "replace" => Facet(FacetType::WhiteSpace(WhiteSpace::Replace)),
                     "collapse" => Facet(FacetType::WhiteSpace(WhiteSpace::Collapse)),
-                    x => panic!("Invalid WhiteSpace value: {}.\n {:?}", x, self),
+                    x => unreachable!("Invalid WhiteSpace value: {}.\n {:?}", x, self),
                 },
                 None => unreachable!("Value is required for facets"),
             },

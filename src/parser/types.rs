@@ -2,6 +2,7 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 
 use crate::parser::constants::tag;
+use crate::parser::xsd_elements::FacetType;
 use roxmltree::Namespace;
 
 #[derive(Debug, Clone)]
@@ -44,7 +45,7 @@ impl Struct {
             .iter()
             .filter(|f| f.name.as_str() == tag::BASE)
             .flat_map(|f| {
-                let key = f.type_name.split(":").last().unwrap().to_string();
+                let key = f.type_name.split(':').last().unwrap().to_string();
                 types
                     .get(&key)
                     .map(|s| s.fields.borrow().clone())
@@ -101,6 +102,12 @@ impl Default for StructFieldSource {
     }
 }
 
+#[derive(Debug, Clone)]
+pub struct Facet {
+    pub facet_type: FacetType,
+    pub comment: Option<String>,
+}
+
 #[derive(Debug, Clone, Default)]
 pub struct TupleStruct {
     pub name: String,
@@ -108,6 +115,7 @@ pub struct TupleStruct {
     pub type_name: String,
     pub subtypes: Vec<RsEntity>,
     pub type_modifiers: Vec<TypeModifier>,
+    pub facets: Vec<Facet>,
 }
 
 #[derive(Debug, Clone)]
