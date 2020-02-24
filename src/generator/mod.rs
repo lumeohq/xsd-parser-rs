@@ -6,7 +6,7 @@ use crate::parser::types::{
     Alias, Enum, EnumCase, Import, RsEntity, Struct, StructField, TupleStruct, TypeModifier,
 };
 
-use crate::generator::default::{default_format_comment, default_format_name, default_format_type};
+use crate::generator::default::{default_format_comment, default_format_name, default_format_type, default_modify_type};
 use crate::generator::validator::{gen_facet_validation, gen_validate_impl};
 use roxmltree::Namespace;
 use std::borrow::Cow;
@@ -182,19 +182,8 @@ pub trait Generator<'input> {
         )
     }
 
-    fn modify_type(&self, type_name: &str, modifiers: &[TypeModifier]) -> String {
-        let mut result = type_name.to_string();
-        if modifiers.contains(&TypeModifier::Recursive) {
-            return format!("Vec<{}>", result);
-        }
-        for modifier in modifiers {
-            match modifier {
-                TypeModifier::Array => result = format!("Vec<{}>", result),
-                TypeModifier::Option => result = format!("Option<{}>", result),
-                _ => (),
-            }
-        }
-        result
+    fn modify_type(&self, type_name: &str, modifiers: &[TypeModifier]) -> Cow<'_, str> {
+        default_modify_type(type_name, modifiers)
     }
 
     fn gen_import(&self, im: &Import) -> String {
@@ -212,9 +201,4 @@ pub trait Generator<'input> {
     fn format_type(&self, type_name: &str) -> Cow<'_, str> {
         default_format_type(type_name, self.target_ns())
     }
-}
-
-#[cfg(test)]
-mod test {
-    use super::*;
 }
