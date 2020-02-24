@@ -1,5 +1,6 @@
 pub mod default;
 pub mod utils;
+pub mod validator;
 
 use crate::generator::utils::{default_format_comment, default_format_name, default_format_type};
 use crate::parser::types::{
@@ -7,6 +8,7 @@ use crate::parser::types::{
 };
 use roxmltree::Namespace;
 use std::borrow::Cow;
+use crate::generator::validator::{gen_validate_impl, gen_facet_validation};
 
 pub trait Generator<'input> {
     fn target_ns(&self) -> &Option<Namespace<'_>>;
@@ -49,7 +51,7 @@ pub trait Generator<'input> {
             &ts.type_modifiers,
         );
         format!(
-            "{comment}{macros}pub struct {name} (pub {typename});\n{subtypes}",
+            "{comment}{macros}pub struct {name} (pub {typename});\n{subtypes}\n{validation}",
             comment = self.format_comment(ts.comment.as_deref(), 0),
             macros = self.tuple_struct_macro(ts),
             name = self.format_type(ts.name.as_str()),
@@ -60,7 +62,17 @@ pub trait Generator<'input> {
                 .map(|f| self.get_rs_entity(f))
                 .collect::<Vec<String>>()
                 .join("\n"),
+            validation=self.gen_tuple_struct_validation(ts),
         )
+    }
+
+    fn gen_tuple_struct_validation(&self, ts: &TupleStruct) -> Cow<'static, str> {
+        let body = ts
+            .facets
+            .iter()
+            .map(|f| gen_facet_validation(&f.facet_type, "0"))
+            .fold(String::new(), |x, y| (x + &y));
+        Cow::Owned(gen_validate_impl(ts.name.as_str(), body.as_str()))
     }
 
     fn get_struct(&self, st: &Struct) -> String {
@@ -197,6 +209,7 @@ pub trait Generator<'input> {
         default_format_type(type_name, self.target_ns())
     }
 }
+
 
 #[cfg(test)]
 mod test {
