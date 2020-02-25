@@ -147,17 +147,28 @@ pub trait Generator<'input> {
     fn gen_enum_case(&self, ec: &EnumCase) -> String {
         let name = self.format_type(ec.name.as_str());
         let comment = self.format_comment(ec.comment.as_deref(), 2);
+        let macros: Cow<'static, str> = if name.as_ref() == ec.name.as_str() {
+            "".into()
+        } else {
+            self.enum_case_macro(ec)
+        };
         match &ec.type_name {
             Some(typename) => format!(
-                "{comment}  {name}({typename}),",
+                "{comment}{macros}  {name}({typename}),",
                 name = name,
                 typename = self.modify_type(
                     self.format_type(typename.as_str()).as_ref(),
                     &ec.type_modifiers
                 ),
                 comment = comment,
+                macros = macros
             ),
-            None => format!("{comment}  {name},", name = name, comment = comment),
+            None => format!(
+                "{comment}{macros}  {name},",
+                name = name,
+                comment = comment,
+                macros = macros
+            ),
         }
     }
 

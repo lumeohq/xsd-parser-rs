@@ -1,5 +1,7 @@
 use crate::generator::Generator;
-use crate::parser::types::{Enum, File, Struct, StructField, StructFieldSource, TupleStruct};
+use crate::parser::types::{
+    Enum, EnumCase, File, Struct, StructField, StructFieldSource, TupleStruct,
+};
 use roxmltree::Namespace;
 use std::borrow::Cow;
 
@@ -59,6 +61,10 @@ impl<'input> Generator<'_> for YaserdeGenerator<'input> {
             _ => "".into(),
         }
     }
+
+    fn enum_case_macro(&self, ec: &EnumCase) -> Cow<'static, str> {
+        yaserde_rename_macro(ec.name.as_str()).into()
+    }
 }
 
 fn yaserde_for_attribute(name: &str) -> String {
@@ -89,6 +95,10 @@ fn yaserde_for_element(name: &str, target_namespace: Option<&roxmltree::Namespac
     }
 }
 
+fn yaserde_rename_macro(name: &str) -> String {
+    format!("  #[yaserde(rename = \"{}\")]\n", name)
+}
+
 fn yaserde_for_flatten_element() -> String {
     "  #[yaserde(flatten)]\n".to_string()
 }
@@ -106,5 +116,13 @@ mod test {
             yaserde_for_element("xop:Include", ns),
             "  #[yaserde(prefix = \"xop\", rename = \"Include\")]\n"
         );
+    }
+
+    #[test]
+    fn test_yaserde_rename_macro() {
+        assert_eq!(
+            yaserde_rename_macro("NTP"),
+            "  #[yaserde(rename = \"NTP\")]\n"
+        )
     }
 }

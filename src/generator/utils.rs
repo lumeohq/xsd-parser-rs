@@ -58,7 +58,7 @@ pub fn match_built_in_type(type_name: &str) -> &'static str {
         "xs:dateTime" => "String",
         "xs:dateTimeStamp" => "String",
 
-        "xs:duration" => "tt::Duration",
+        "xs:duration" => "xs::Duration",
 
         // TODO: would be nice to have types with both numeric representation of value and proper
         // (de)serialization. For that we might use the "flatten" from yaserde, as it will be
@@ -82,7 +82,9 @@ pub fn match_built_in_type(type_name: &str) -> &'static str {
         "xs:anyURI" => "String",
         "xs:QName" => "String",
 
-        "xs::NOTATION" => "String",
+        "xs:NOTATION" => "String",
+
+        "xs:anySimpleType" => "String",
 
         // Built-in list types:
         "xs:ENTITIES" => "Vec<String>",
