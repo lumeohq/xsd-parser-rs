@@ -74,13 +74,37 @@ fn yaserde_for_attribute(name: &str) -> String {
 }
 
 fn yaserde_for_element(name: &str, target_namespace: Option<&roxmltree::Namespace>) -> String {
-    let prefix = target_namespace.and_then(|ns| ns.name());
+    let (prefix, field_name)= if let Some(index) = name.find(':') {
+        (Some(&name[0..index]), &name[index+1..])
+    } else {
+        (target_namespace.and_then(|ns| ns.name()), name)
+    };
+
     match prefix {
-        Some(p) => format!("  #[yaserde(prefix = \"{}\", rename = \"{}\")]\n", p, name),
-        None => format!("  #[yaserde(rename = \"{}\")]\n", name),
+        Some(p) => format!("  #[yaserde(prefix = \"{}\", rename = \"{}\")]\n", p, field_name),
+        None => format!("  #[yaserde(rename = \"{}\")]\n", field_name),
     }
 }
 
 fn yaserde_for_flatten_element() -> String {
     "  #[yaserde(flatten)]\n".to_string()
+}
+
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    # [test]
+    fn test_yaserde_for_element() {
+        let doc = roxmltree::Document::parse(
+        "<e xmlns:tt='http://www.w3.org'/>"
+        ).unwrap();
+
+        let ns = Some(&doc.root_element().namespaces()[0]);
+        assert_eq!(
+            yaserde_for_element("xop:Include", ns),
+            "  #[yaserde(prefix = \"xop\", rename = \"Include\")]\n"
+        );
+    }
 }

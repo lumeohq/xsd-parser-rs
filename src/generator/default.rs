@@ -15,7 +15,7 @@ pub fn default_format_comment(doc: Option<&str>, max_len: usize, indent: usize) 
 }
 
 pub fn default_format_name(name: &str) -> String {
-    sanitize(to_snake_case(name))
+    sanitize(to_snake_case(name.split(':').last().unwrap()))
 }
 
 pub fn default_format_type(type_name: &str, target_ns: &Option<Namespace>) -> Cow<'static, str> {
@@ -98,6 +98,10 @@ mod test {
         assert_eq!(default_format_name("Struct").as_str(), "_struct");
         assert_eq!(default_format_name("StructName").as_str(), "struct_name");
         assert_eq!(default_format_name("0fst").as_str(), "_0fst");
+
+        // Name and type from 'ref' attribute
+        // <xs:element ref="xop:Include"/>
+        assert_eq!(default_format_name("xop:Include").as_str(), "include");
     }
 
     #[test]
