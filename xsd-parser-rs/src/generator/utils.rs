@@ -27,7 +27,7 @@ pub fn match_built_in_type(type_name: &str) -> &'static str {
         "xs:nonNegativeInteger" => "xs:Integer",
         "xs:positiveInteger" => "xs:Integer",
         "xs:nonPositiveInteger" => "xs:Integer",
-        "xs:negativeInteger" => "xs:Integer",
+        "xs:negativeInteger" => "xs::Integer",
 
         "xs:long" => "i64",
         "xs:int" => "i32",
@@ -39,7 +39,7 @@ pub fn match_built_in_type(type_name: &str) -> &'static str {
         "xs:unsignedShort" => "u16",
         "xs:unsignedByte" => "u8",
 
-        "xs:decimal" => "xs:Decimal",
+        "xs:decimal" => "xs::Decimal",
 
         "xs:double" => "f64",
         "xs:float" => "f64",
