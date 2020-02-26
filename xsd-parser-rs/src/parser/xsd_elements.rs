@@ -37,20 +37,27 @@ pub enum ElementType {
     XsdError(String),
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum FacetType {
-    Enumeration,
-    FractionDigits,
-    Length,
-    MaxExclusive,
-    MaxInclusive,
-    MaxLength,
-    MinExclusive,
-    MinInclusive,
-    MinLength,
-    Pattern,
-    TotalDigits,
-    WhiteSpace,
+    Enumeration(String),
+    FractionDigits(usize),
+    Length(usize),
+    MaxExclusive(String),
+    MaxInclusive(String),
+    MaxLength(usize),
+    MinExclusive(String),
+    MinInclusive(String),
+    MinLength(usize),
+    Pattern(String),
+    TotalDigits(usize),
+    WhiteSpace(WhiteSpace),
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum WhiteSpace {
+    Preserve,
+    Replace,
+    Collapse,
 }
 
 #[derive(Debug, PartialEq)]
@@ -72,6 +79,7 @@ pub trait XsdNode {
     fn attr_type(&self) -> Option<&str>;
     fn attr_ref(&self) -> Option<&str>;
     fn attr_use(&self) -> UseType;
+    fn attr_value(&self) -> Option<&str>;
 }
 
 impl<'a> XsdNode for roxmltree::Node<'a, '_> {
@@ -130,18 +138,26 @@ impl<'a> XsdNode for roxmltree::Node<'a, '_> {
             "union" => Union,
             "unique" => Unique,
 
-            "enumeration" => Facet(FacetType::Enumeration),
-            "fractionDigits" => Facet(FacetType::FractionDigits),
-            "length" => Facet(FacetType::Length),
-            "maxExclusive" => Facet(FacetType::MaxExclusive),
-            "maxInclusive" => Facet(FacetType::MaxInclusive),
-            "maxLength" => Facet(FacetType::MaxLength),
-            "minExclusive" => Facet(FacetType::MinExclusive),
-            "minInclusive" => Facet(FacetType::MinInclusive),
-            "minLength" => Facet(FacetType::MinLength),
-            "pattern" => Facet(FacetType::Pattern),
-            "totalDigits" => Facet(FacetType::TotalDigits),
-            "whiteSpace" => Facet(FacetType::WhiteSpace),
+            "enumeration" => Facet(FacetType::Enumeration(get_string_value(self))),
+            "fractionDigits" => Facet(FacetType::FractionDigits(get_usize_value(self))),
+            "length" => Facet(FacetType::Length(get_usize_value(self))),
+            "maxExclusive" => Facet(FacetType::MaxExclusive(get_string_value(self))),
+            "maxInclusive" => Facet(FacetType::MaxInclusive(get_string_value(self))),
+            "maxLength" => Facet(FacetType::MaxLength(get_usize_value(self))),
+            "minExclusive" => Facet(FacetType::MinExclusive(get_string_value(self))),
+            "minInclusive" => Facet(FacetType::MinInclusive(get_string_value(self))),
+            "minLength" => Facet(FacetType::MinLength(get_usize_value(self))),
+            "pattern" => Facet(FacetType::Pattern(get_string_value(self))),
+            "totalDigits" => Facet(FacetType::TotalDigits(get_usize_value(self))),
+            "whiteSpace" => match self.attr_value() {
+                Some(val) => match val {
+                    "preserve" => Facet(FacetType::WhiteSpace(WhiteSpace::Preserve)),
+                    "replace" => Facet(FacetType::WhiteSpace(WhiteSpace::Replace)),
+                    "collapse" => Facet(FacetType::WhiteSpace(WhiteSpace::Collapse)),
+                    x => unreachable!("Invalid WhiteSpace value: {}.\n {:?}", x, self),
+                },
+                None => unreachable!("Value is required for facets"),
+            },
 
             _ => UnknownElement(self.tag_name().name().to_string()),
         }
@@ -149,6 +165,14 @@ impl<'a> XsdNode for roxmltree::Node<'a, '_> {
 
     fn attr_name(&self) -> Option<&str> {
         self.attribute(attribute::NAME)
+    }
+
+    fn attr_type(&self) -> Option<&str> {
+        self.attribute(attribute::TYPE)
+    }
+
+    fn attr_ref(&self) -> Option<&str> {
+        self.attribute(attribute::REF)
     }
 
     fn attr_use(&self) -> UseType {
@@ -162,13 +186,21 @@ impl<'a> XsdNode for roxmltree::Node<'a, '_> {
         }
     }
 
-    fn attr_type(&self) -> Option<&str> {
-        self.attribute(attribute::TYPE)
+    fn attr_value(&self) -> Option<&str> {
+        self.attribute(attribute::VALUE)
     }
+}
 
-    fn attr_ref(&self) -> Option<&str> {
-        self.attribute(attribute::REF)
-    }
+fn get_usize_value(node: &roxmltree::Node) -> usize {
+    node.attr_value()
+        .and_then(|s| s.parse::<usize>().ok())
+        .unwrap_or_else(|| panic!("Value is required. {:?}", node))
+}
+
+fn get_string_value(node: &roxmltree::Node) -> String {
+    node.attr_value()
+        .map(|s| s.to_string())
+        .unwrap_or_else(|| panic!("Value is required. {:?}", node))
 }
 
 pub enum UseType {
