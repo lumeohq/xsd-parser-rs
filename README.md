@@ -13,11 +13,11 @@ A following mapping used to represent built-in XSD types as rust types:
 |hexBinary         |String       | 
 |base64Binary      |String       |
 |boolean           |bool         |
-|integer           |i64 (1)      |
-|nonNegativeInteger|i64 (1)      |
-|positiveInteger   |i64 (1)      |
-|nonPositiveInteger|i64 (1)      |
-|negativeInteger   |i64 (1)      |
+|integer           |Integer (1)  |
+|nonNegativeInteger|Integer (1)  |
+|positiveInteger   |Integer (1)  |
+|nonPositiveInteger|Integer (1)  |
+|negativeInteger   |Integer (1)  |
 |long              |i64          |
 |int               |i32          |
 |short             |i16          |
@@ -26,7 +26,7 @@ A following mapping used to represent built-in XSD types as rust types:
 |unsignedInt       |u32          |
 |unsignedShort     |u16          |
 |unsignedByte      |u8           |
-|decimal           |f64 (2)      |
+|decimal           |Decimal (2)  |
 |double            |f64          |
 |float             |f64          |
 |date              |String (3)   |
@@ -58,14 +58,17 @@ A following mapping used to represent built-in XSD types as rust types:
 
 Notes:
 
-(1) we are going to use num_bigint::Bigintg type or its analog in the future
+(1) we are using our own type `Integer`, which wraps `num_bigint::Bigintg` and provides 
+XML (de)serialization with `yaserde`. You can find `Integer` in `xsd-types/src/types/integer.rs`
 
-(2) we are going to use bigdecimal::BigDecimal type or its analog in the future
+(2) we are using our own type `Decimal`, which wraps `bigdecimal::BigDecimal` and provides 
+XML (de)serialization with `yaserde`. You can find `Decimal` in `xsd-types/src/types/decimal.rs`
 
 (3) we are going to use types from the chrono crate or its analog in the future
 
-(4) we are using our own type for duration, since there are no known implementation
-in rust that supports proper month/years holding and literal representation
+(4) we are using our own type `Duration`, since there is no known implementation
+in rust that supports proper month/years holding and literal representation. You can find
+`Duration` in `xsd-types/src/types/duration.rs`
 
 (5) we are going to implement types that both provide stored value as integer and
 support proper (de)serialization
