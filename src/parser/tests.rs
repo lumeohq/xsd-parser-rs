@@ -1,9 +1,13 @@
-#[test]
-fn test_extension_base() {
-    use crate::parser::parser::parse;
-    use crate::parser::types::RsEntity;
+#[cfg(test)]
+mod test {
+    use crate::parser::types::TypeModifier;
 
-    let text = r#"
+    #[test]
+    fn test_extension_base() {
+        use crate::parser::parser::parse;
+        use crate::parser::types::RsEntity;
+
+        let text = r#"
 <xs:schema xmlns:tt="http://www.onvif.org/ver10/schema"
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
     targetNamespace="http://www.onvif.org/ver10/schema">
@@ -27,33 +31,36 @@ fn test_extension_base() {
 </xs:schema>
         "#;
 
-    let result = parse(text).unwrap();
-    assert_eq!(result.types.len(), 2);
+        let result = parse(text).unwrap();
+        assert_eq!(result.types.len(), 2);
 
-    match &result.types[0] {
-        RsEntity::Struct(s) => {
-            assert_eq!(s.fields.borrow()[0].name, "token");
-            assert_eq!(s.fields.borrow()[0].type_name, "ReferenceToken");
-            assert_eq!(s.name, "DeviceEntity");
+        match &result.types[0] {
+            RsEntity::Struct(s) => {
+                assert_eq!(s.fields.borrow()[0].name, "token");
+                assert_eq!(s.fields.borrow()[0].type_name, "tt:ReferenceToken");
+                assert_eq!(s.name, "DeviceEntity");
+            }
+            _ => unreachable!(),
         }
-        _ => unreachable!(),
-    }
 
-    match &result.types[1] {
-        RsEntity::Struct(s) => {
-            assert_eq!(s.fields.borrow().len(), 3);
+        match &result.types[1] {
+            RsEntity::Struct(s) => {
+                assert_eq!(s.fields.borrow().len(), 3);
 
-            assert_eq!(s.fields.borrow()[0].name, "resolution");
-            assert_eq!(s.fields.borrow()[0].type_name, "VideoResolution");
+                assert_eq!(s.fields.borrow()[0].name, "Resolution");
+                assert_eq!(s.fields.borrow()[0].type_name, "tt:VideoResolution");
 
-            assert_eq!(s.fields.borrow()[1].name, "imaging");
-            assert_eq!(s.fields.borrow()[1].type_name, "Option<ImagingSettings>");
+                assert_eq!(s.fields.borrow()[1].name, "Imaging");
+                assert_eq!(s.fields.borrow()[1].type_name, "tt:ImagingSettings");
+                assert_eq!(s.fields.borrow()[1].type_modifiers[0], TypeModifier::Option);
 
-            assert_eq!(s.fields.borrow()[2].name, "token");
-            assert_eq!(s.fields.borrow()[2].type_name, "ReferenceToken");
+                assert_eq!(s.fields.borrow()[2].name, "token");
+                assert_eq!(s.fields.borrow()[2].type_name, "tt:ReferenceToken");
+                assert_eq!(s.fields.borrow()[2].type_modifiers[0], TypeModifier::None);
 
-            assert_eq!(s.name, "VideoSource");
+                assert_eq!(s.name, "VideoSource");
+            }
+            _ => unreachable!(),
         }
-        _ => unreachable!(),
     }
 }
