@@ -1,7 +1,7 @@
 [package]
 name = "xsd-types"
 version = "0.1.0"
-authors = ["leonid.krutovsky <leonid.krutovsky@invitae.com>"]
+authors = ["Chris Bruce <chris@lumeo.com>", "leonid.krutovsky <leonid.krutovsky@invitae.com>", "DmitrySamoylov <dmitry.samoylov@quantumsoft.ru>", "victor-soloviev <victor.soloviev@quantumsoft.ru>"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
