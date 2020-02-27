@@ -114,8 +114,8 @@ mod test {
         assert_eq!(default_format_type("0type_name", &None), "_0TypeName");
         assert_eq!(default_format_type("Enum", &None), "Enum");
 
-        assert_eq!(default_format_type("xs:integer", &None), "i64");
-        assert_eq!(default_format_type("xs:nonNegativeInteger", &None), "u64");
+        assert_eq!(default_format_type("xs:integer", &None), "xs::Integer");
+        assert_eq!(default_format_type("xs:nonNegativeInteger", &None), "xs::Integer");
     }
 
     #[test]
