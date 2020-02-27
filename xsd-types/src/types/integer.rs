@@ -4,7 +4,7 @@ use std::io::{Read, Write};
 use std::str::FromStr;
 use yaserde::{YaDeserialize, YaSerialize};
 
-#[derive(Default, PartialEq, Debug)]
+#[derive(Default, PartialEq, PartialOrd, Debug)]
 pub struct Integer {
     pub value: BigInt,
 }
@@ -12,6 +12,16 @@ pub struct Integer {
 impl Integer {
     pub fn from_bigint(bigint: BigInt) -> Self {
         Integer { value: bigint }
+    }
+
+    pub fn from_str(s: &str) -> Result<Integer, String> {
+        Ok(Integer {
+            value: BigInt::from_str(s).map_err(|e| e.to_string())?,
+        })
+    }
+
+    pub fn to_string(&self) -> Result<String, String> {
+        Ok(self.value.to_string())
     }
 }
 

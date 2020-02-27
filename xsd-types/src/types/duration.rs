@@ -2,7 +2,7 @@ use crate::utils;
 use std::io::{Read, Write};
 use yaserde::{YaDeserialize, YaSerialize};
 
-#[derive(Default, PartialEq, Debug)]
+#[derive(Default, PartialEq, PartialOrd, Debug)]
 pub struct Duration {
     pub is_negative: bool,
 
@@ -16,7 +16,7 @@ pub struct Duration {
 }
 
 impl Duration {
-    pub fn to_lexical_representation(&self) -> String {
+    pub fn to_string(&self) -> Result<String, String> {
         let mut s = if self.is_negative {
             "-P".to_string()
         } else {
@@ -57,7 +57,7 @@ impl Duration {
             s.push_str(&time_str);
         }
 
-        s
+        Ok(s)
     }
 
     pub fn to_std_duration(&self) -> Result<std::time::Duration, String> {
@@ -78,7 +78,7 @@ impl Duration {
     // TODO: Implement normalization function that takes a moment at time to start from and
     // converts months & years to days.
 
-    pub fn from_lexical_representation(s: &str) -> Result<Duration, String> {
+    pub fn from_str(s: &str) -> Result<Duration, String> {
         fn fill_component(
             context: &mut ParsingContext,
             component: &mut u64,
@@ -276,14 +276,14 @@ impl ParsingContext {
 
 impl YaDeserialize for Duration {
     fn deserialize<R: Read>(reader: &mut yaserde::de::Deserializer<R>) -> Result<Self, String> {
-        utils::yaserde::deserialize(reader, |s| Duration::from_lexical_representation(s))
+        utils::yaserde::deserialize(reader, |s| Duration::from_str(s))
     }
 }
 
 impl YaSerialize for Duration {
     fn serialize<W: Write>(&self, writer: &mut yaserde::ser::Serializer<W>) -> Result<(), String> {
         utils::yaserde::serialize(self, "Duration", writer, |s| {
-            Ok(s.to_lexical_representation())
+            s.to_string()
         })
     }
 }
@@ -293,13 +293,13 @@ mod tests {
     use super::*;
 
     fn check_valid(s: &str) {
-        if let Err(err) = Duration::from_lexical_representation(s) {
+        if let Err(err) = Duration::from_str(s) {
             panic!("{} should be valid, but an error occurred: {}", s, err)
         }
     }
 
     fn check_invalid(s: &str) {
-        if let Ok(_) = Duration::from_lexical_representation(s) {
+        if let Ok(_) = Duration::from_str(s) {
             panic!("{} should be invalid", s)
         }
     }

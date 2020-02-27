@@ -4,7 +4,7 @@ use std::io::{Read, Write};
 use std::str::FromStr;
 use yaserde::{YaDeserialize, YaSerialize};
 
-#[derive(Default, PartialEq, Debug)]
+#[derive(Default, PartialEq, PartialOrd, Debug)]
 pub struct Decimal {
     pub value: BigDecimal,
 }
@@ -16,6 +16,16 @@ impl Decimal {
 
     pub fn to_bigdecimal(&self) -> BigDecimal {
         self.value.clone()
+    }
+
+    pub fn from_str(s: &str) -> Result<Decimal, String> {
+        Ok(Decimal {
+            value: BigDecimal::from_str(s).map_err(|e| e.to_string())?,
+        })
+    }
+
+    pub fn to_string(&self) -> Result<String, String> {
+        Ok(self.value.to_string())
     }
 }
 
