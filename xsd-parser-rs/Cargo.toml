@@ -1,0 +1,11 @@
+[package]
+name = "xsd-parser"
+version = "0.1.0"
+authors = ["Chris Bruce <chris@lumeo.com>", "leonid.krutovsky <leonid.krutovsky@quantumsoft.ru>", "DmitrySamoylov <dmitry.samoylov@quantumsoft.ru>", "victor-soloviev <victor.soloviev@quantumsoft.ru>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+roxmltree = "0.7.3"
+Inflector = "*"

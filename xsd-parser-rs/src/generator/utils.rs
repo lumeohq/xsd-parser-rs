@@ -23,14 +23,11 @@ pub fn match_built_in_type(type_name: &str) -> &'static str {
 
         "xs:boolean" => "bool",
 
-        // TODO: should use something like num_bigint::Bigint instead, but with a wrap that
-        // implements Yaserde (de)serialization. For that we need to use the "flatten" from yaserde,
-        // as it will be updated on the crates.io.
-        "xs:integer" => "i64",
-        "xs:nonNegativeInteger" => "u64",
-        "xs:positiveInteger" => "u64",
-        "xs:nonPositiveInteger" => "i64",
-        "xs:negativeInteger" => "i64",
+        "xs:integer" => "xs::Integer",
+        "xs:nonNegativeInteger" => "xs::Integer",
+        "xs:positiveInteger" => "xs::Integer",
+        "xs:nonPositiveInteger" => "xs::Integer",
+        "xs:negativeInteger" => "xs::Integer",
 
         "xs:long" => "i64",
         "xs:int" => "i32",
@@ -42,10 +39,7 @@ pub fn match_built_in_type(type_name: &str) -> &'static str {
         "xs:unsignedShort" => "u16",
         "xs:unsignedByte" => "u8",
 
-        // TODO: should use something like bigdecimal::BigDecimal instead, but with a wrap that
-        // implements Yaserde (de)serialization. For that we need to use the "flatten" from yaserde,
-        // as it will be updated on the crates.io.
-        "xs:decimal" => "f64",
+        "xs:decimal" => "xs::Decimal",
 
         "xs:double" => "f64",
         "xs:float" => "f64",
