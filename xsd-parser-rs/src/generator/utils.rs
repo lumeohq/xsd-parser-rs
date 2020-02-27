@@ -24,9 +24,9 @@ pub fn match_built_in_type(type_name: &str) -> &'static str {
         "xs:boolean" => "bool",
 
         "xs:integer" => "xs:Integer",
-        "xs:nonNegativeInteger" => "xs:Integer",
-        "xs:positiveInteger" => "xs:Integer",
-        "xs:nonPositiveInteger" => "xs:Integer",
+        "xs:nonNegativeInteger" => "xs::Integer",
+        "xs:positiveInteger" => "xs::Integer",
+        "xs:nonPositiveInteger" => "xs::Integer",
         "xs:negativeInteger" => "xs::Integer",
 
         "xs:long" => "i64",
