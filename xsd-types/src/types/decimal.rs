@@ -18,14 +18,18 @@ impl Decimal {
         self.value.clone()
     }
 
-    pub fn from_str(s: &str) -> Result<Decimal, String> {
+    pub fn to_string(&self) -> Result<String, String> {
+        Ok(self.value.to_string())
+    }
+}
+
+impl FromStr for Decimal {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
         Ok(Decimal {
             value: BigDecimal::from_str(s).map_err(|e| e.to_string())?,
         })
-    }
-
-    pub fn to_string(&self) -> Result<String, String> {
-        Ok(self.value.to_string())
     }
 }
 

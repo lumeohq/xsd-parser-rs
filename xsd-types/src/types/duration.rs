@@ -1,5 +1,6 @@
 use crate::utils;
 use std::io::{Read, Write};
+use std::str::FromStr;
 use yaserde::{YaDeserialize, YaSerialize};
 
 #[derive(Default, PartialEq, PartialOrd, Debug)]
@@ -77,8 +78,12 @@ impl Duration {
 
     // TODO: Implement normalization function that takes a moment at time to start from and
     // converts months & years to days.
+}
 
-    pub fn from_str(s: &str) -> Result<Duration, String> {
+impl FromStr for Duration {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
         fn fill_component(
             context: &mut ParsingContext,
             component: &mut u64,

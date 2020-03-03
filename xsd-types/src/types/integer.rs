@@ -14,12 +14,6 @@ impl Integer {
         Integer { value: bigint }
     }
 
-    pub fn from_str(s: &str) -> Result<Integer, String> {
-        Ok(Integer {
-            value: BigInt::from_str(s).map_err(|e| e.to_string())?,
-        })
-    }
-
     pub fn to_string(&self) -> Result<String, String> {
         Ok(self.value.to_string())
     }
@@ -28,6 +22,16 @@ impl Integer {
 impl ToBigInt for Integer {
     fn to_bigint(&self) -> Option<BigInt> {
         Some(self.value.clone())
+    }
+}
+
+impl FromStr for Integer {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Ok(Integer {
+            value: BigInt::from_str(s).map_err(|e| e.to_string())?,
+        })
     }
 }
 
