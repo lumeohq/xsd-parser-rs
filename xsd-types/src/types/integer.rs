@@ -1,5 +1,5 @@
 use crate::utils;
-use num_bigint::{BigInt, ParseBigIntError, ToBigInt};
+use num_bigint::{BigInt, ToBigInt};
 use std::fmt;
 use std::io::{Read, Write};
 use std::str::FromStr;
@@ -23,11 +23,11 @@ impl ToBigInt for Integer {
 }
 
 impl FromStr for Integer {
-    type Err = ParseBigIntError;
+    type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Ok(Integer {
-            value: BigInt::from_str(s)?,
+            value: BigInt::from_str(s).map_err(|e| e.to_string())?,
         })
     }
 }
@@ -41,7 +41,7 @@ impl fmt::Display for Integer {
 impl YaDeserialize for Integer {
     fn deserialize<R: Read>(reader: &mut yaserde::de::Deserializer<R>) -> Result<Self, String> {
         utils::yaserde::deserialize(reader, |s| {
-            Integer::from_str(s).map_err(|e| e.to_string())
+            Integer::from_str(s)
         })
     }
 }
