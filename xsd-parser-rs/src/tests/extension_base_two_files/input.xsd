@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://example.com"
+           xmlns:tns2="http://other.example.com"
+           targetNamespace="http://example.com"
+           elementFormDefault="qualified">
+
+    <xs:import namespace="http://other.example.com" schemaLocation="input2.xsd"/>
+
+    <xs:complexType name="FooType">
+        <xs:complexContent>
+            <xs:extension base="tns2:BarType">
+                <xs:sequence>
+                    <xs:element name="a" type="xs:float"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:element name="Foo" type="tns:FooType"/>
+</xs:schema>

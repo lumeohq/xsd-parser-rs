@@ -115,7 +115,10 @@ mod test {
         assert_eq!(default_format_type("Enum", &None), "Enum");
 
         assert_eq!(default_format_type("xs:integer", &None), "xs::Integer");
-        assert_eq!(default_format_type("xs:nonNegativeInteger", &None), "xs::Integer");
+        assert_eq!(
+            default_format_type("xs:nonNegativeInteger", &None),
+            "xs::Integer"
+        );
     }
 
     #[test]

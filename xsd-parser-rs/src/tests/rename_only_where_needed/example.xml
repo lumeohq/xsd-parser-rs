@@ -1,0 +1,4 @@
+<exam:Foo xmlns:exam="http://example.com">
+  <exam:min>1</exam:min>
+  <exam:max>2</exam:max>
+</exam:Foo>

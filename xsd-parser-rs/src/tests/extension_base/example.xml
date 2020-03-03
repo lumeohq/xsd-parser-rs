@@ -1,0 +1,5 @@
+<exam:Foo xmlns:exam="http://example.com">
+  <exam:b>3</exam:b>
+  <exam:c>string</exam:c>
+  <exam:a>1.5E2</exam:a>
+</exam:Foo>

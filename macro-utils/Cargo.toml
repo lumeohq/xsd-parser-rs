@@ -1,5 +1,5 @@
 [package]
-name = "xsd-parser"
+name = "macro-utils"
 version = "0.1.0"
 authors = ["Chris Bruce <chris@lumeo.com>", "leonid.krutovsky <leonid.krutovsky@quantumsoft.ru>", "DmitrySamoylov <dmitry.samoylov@quantumsoft.ru>", "victor-soloviev <victor.soloviev@quantumsoft.ru>"]
 edition = "2018"
@@ -7,16 +7,10 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-roxmltree = "0.7.3"
-Inflector = "*"
+syn = "~1.0"
+proc-macro2 = "~1.0"
+quote = "~1.0"
 
-[dev-dependencies]
-syn = { version = "1.0", features = ["full"] }
-log = "0.4.8"
-xml-rs = "0.8.0"
-yaserde = "0.3.13"
-yaserde_derive = "0.3.13"
-text-diff = "0.4.0"
-itertools = "0.8.1"
-macro-utils = { path = "../macro-utils" }
-xsd-types = { path = "../xsd-types" }
+[lib]
+name = "macro_utils"
+proc-macro = true

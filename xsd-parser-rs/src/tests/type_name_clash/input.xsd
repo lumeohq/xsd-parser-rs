@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://example.com"
+           targetNamespace="http://example.com"
+           elementFormDefault="qualified">
+    <xs:complexType name="BarType">
+        <xs:attribute name="a" type="xs:string" />
+    </xs:complexType>
+
+    <xs:complexType name="FooType">
+        <xs:sequence>
+            <xs:element name="Bar">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="tns:BarType">
+                            <xs:attribute name="b" type="xs:string" />
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="Foo" type="tns:FooType"/>
+</xs:schema>

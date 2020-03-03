@@ -1,5 +1,14 @@
+#[cfg(test)]
+#[macro_use]
+extern crate log;
+#[cfg(test)]
+#[macro_use]
+extern crate yaserde_derive;
+
 mod generator;
 mod parser;
+#[cfg(test)]
+mod tests;
 mod yaserde_generator;
 
 use std::fs;
