@@ -1,5 +1,5 @@
 use crate::utils;
-use bigdecimal::BigDecimal;
+use bigdecimal::{BigDecimal, ParseBigDecimalError};
 use std::fmt;
 use std::io::{Read, Write};
 use std::str::FromStr;
@@ -21,11 +21,11 @@ impl Decimal {
 }
 
 impl FromStr for Decimal {
-    type Err = String;
+    type Err = ParseBigDecimalError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Ok(Decimal {
-            value: BigDecimal::from_str(s).map_err(|e| e.to_string())?,
+            value: BigDecimal::from_str(s)?,
         })
     }
 }
@@ -39,7 +39,7 @@ impl fmt::Display for Decimal {
 impl YaDeserialize for Decimal {
     fn deserialize<R: Read>(reader: &mut yaserde::de::Deserializer<R>) -> Result<Self, String> {
         utils::yaserde::deserialize(reader, |s| {
-            Decimal::from_str(s)
+            Decimal::from_str(s).map_err(|e| e.to_string())
         })
     }
 }
