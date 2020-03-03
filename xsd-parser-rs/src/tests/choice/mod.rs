@@ -26,17 +26,11 @@ fn deserialization_works() {
 
 #[test]
 fn generator_does_not_panic() {
-    let rust_code = utils::generate(include_str!("input.xsd"));
-    println!("{}", rust_code)
+    println!("{}", utils::generate(include_str!("input.xsd")))
 }
 
 #[test]
 #[ignore] // Validation is not needed in this case
 fn generator_output_has_correct_ast() {
-    let expected = include_str!("expected.rs");
-    let actual = utils::generate(include_str!("input.xsd"));
-
-    text_diff::print_diff(expected, &actual, "\n");
-
-    utils::assert_ast_eq(expected, &actual)
+    utils::ast_test(include_str!("input.xsd"), include_str!("expected.rs"));
 }

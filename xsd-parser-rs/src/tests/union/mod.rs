@@ -3,7 +3,10 @@ use super::utils;
 #[test]
 fn deserialization_works() {
     mod expected {
+        use macro_utils::*;
         use std::io::{Read, Write};
+        use std::str::FromStr;
+        use xsd_types::utils;
         use yaserde::{YaDeserialize, YaSerialize};
 
         include!("expected.rs");
@@ -13,15 +16,17 @@ fn deserialization_works() {
 
     let de: expected::FooType = yaserde::de::from_str(&ser).unwrap();
 
-    assert_eq!(de, expected::FooType { min: 1, max: 2 });
+    assert_eq!(de, expected::FooType("string".to_string()));
 }
 
 #[test]
+#[ignore]
 fn generator_does_not_panic() {
     println!("{}", utils::generate(include_str!("input.xsd")))
 }
 
 #[test]
+#[ignore]
 fn generator_output_has_correct_ast() {
     utils::ast_test(include_str!("input.xsd"), include_str!("expected.rs"));
 }

@@ -13,7 +13,14 @@ fn deserialization_works() {
 
     let de: expected::FooType = yaserde::de::from_str(&ser).unwrap();
 
-    assert_eq!(de, expected::FooType { min: 1, max: 2 });
+    assert_eq!(
+        de,
+        expected::FooType {
+            a: 150.0,
+            b: 3,
+            c: "string".to_string(),
+        }
+    );
 }
 
 #[test]
@@ -22,6 +29,7 @@ fn generator_does_not_panic() {
 }
 
 #[test]
+#[ignore]
 fn generator_output_has_correct_ast() {
     utils::ast_test(include_str!("input.xsd"), include_str!("expected.rs"));
 }

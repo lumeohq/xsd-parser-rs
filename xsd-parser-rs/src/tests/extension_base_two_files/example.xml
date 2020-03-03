@@ -1,0 +1,5 @@
+<exam:Foo xmlns:exam="http://example.com" xmlns:oth="http://other.example.com">
+  <oth:b>3</oth:b>
+  <oth:c>string</oth:c>
+  <exam:a>1.5E2</exam:a>
+</exam:Foo>

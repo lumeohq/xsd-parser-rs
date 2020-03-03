@@ -27,3 +27,16 @@ pub fn assert_ast_eq(expected: &str, actual: &str) {
 
     assert_eq!(expected, actual)
 }
+
+pub fn ast_test(input_xsd: &str, expected_rs: &str) {
+    let expected = expected_rs;
+    let actual = generate(input_xsd);
+
+    println!("=== expected:\n{}", expected);
+    println!("=== actual:\n{}", actual);
+    println!("=== diff:\n");
+
+    text_diff::print_diff(expected, &actual, "\n");
+
+    assert_ast_eq(expected, &actual)
+}

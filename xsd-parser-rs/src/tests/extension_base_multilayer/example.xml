@@ -1,0 +1,7 @@
+<exam:Foo xmlns:exam="http://example.com">
+  <exam:Messages>
+    <exam:aa>3</exam:aa>
+    <exam:bb>qwe</exam:bb>
+    <exam:a>rty</exam:a>
+  </exam:Messages>
+</exam:Foo>
