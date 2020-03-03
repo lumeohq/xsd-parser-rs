@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://example.com"
+           targetNamespace="http://example.com"
+           elementFormDefault="qualified">
+    <xs:simpleType name="FooType">
+        <xs:restriction base="xs:integer"/>
+    </xs:simpleType>
+
+    <xs:element name="Foo" type="tns:FooType"/>
+</xs:schema>

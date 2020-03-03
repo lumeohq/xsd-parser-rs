@@ -2,6 +2,7 @@
 mod utils;
 mod any;
 mod choice;
+mod tuple_with_integer;
 mod complex_type;
 mod enumeration;
 mod extension_base;
