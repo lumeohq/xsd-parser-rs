@@ -1,5 +1,6 @@
 use crate::utils;
-use bigdecimal::BigDecimal;
+use bigdecimal::{BigDecimal, ParseBigDecimalError};
+use std::fmt;
 use std::io::{Read, Write};
 use std::str::FromStr;
 use yaserde::{YaDeserialize, YaSerialize};
@@ -17,35 +18,35 @@ impl Decimal {
     pub fn to_bigdecimal(&self) -> BigDecimal {
         self.value.clone()
     }
-
-    pub fn to_string(&self) -> Result<String, String> {
-        Ok(self.value.to_string())
-    }
 }
 
 impl FromStr for Decimal {
-    type Err = String;
+    type Err = ParseBigDecimalError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Ok(Decimal {
-            value: BigDecimal::from_str(s).map_err(|e| e.to_string())?,
+            value: BigDecimal::from_str(s)?,
         })
+    }
+}
+
+impl fmt::Display for Decimal {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.value.to_string())
     }
 }
 
 impl YaDeserialize for Decimal {
     fn deserialize<R: Read>(reader: &mut yaserde::de::Deserializer<R>) -> Result<Self, String> {
         utils::yaserde::deserialize(reader, |s| {
-            BigDecimal::from_str(s)
-                .map(Decimal::from_bigdecimal)
-                .map_err(|e| e.to_string())
+            Decimal::from_str(s).map_err(|e| e.to_string())
         })
     }
 }
 
 impl YaSerialize for Decimal {
     fn serialize<W: Write>(&self, writer: &mut yaserde::ser::Serializer<W>) -> Result<(), String> {
-        utils::yaserde::serialize(self, "Decimal", writer, |s| s.value.to_string())
+        utils::yaserde::serialize(self, "Decimal", writer, |s| s.to_string())
     }
 }
 
