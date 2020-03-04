@@ -2,7 +2,6 @@
 mod utils;
 mod any;
 mod choice;
-mod tuple_with_integer;
 mod complex_type;
 mod enumeration;
 mod extension_base;
@@ -11,6 +10,7 @@ mod extension_base_two_files;
 mod ref_to_attribute;
 mod rename_only_where_needed;
 mod simple_type;
+mod tuple_with_integer;
 mod type_name_clash;
 mod union;
 mod xsd_string;
