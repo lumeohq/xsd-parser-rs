@@ -40,9 +40,7 @@ impl fmt::Display for Integer {
 
 impl YaDeserialize for Integer {
     fn deserialize<R: Read>(reader: &mut yaserde::de::Deserializer<R>) -> Result<Self, String> {
-        utils::yaserde::deserialize(reader, |s| {
-            Integer::from_str(s).map_err(|e| e.to_string())
-        })
+        utils::yaserde::deserialize(reader, |s| Integer::from_str(s).map_err(|e| e.to_string()))
     }
 }
 

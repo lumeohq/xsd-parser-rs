@@ -1,17 +1,17 @@
 use super::utils;
-use xsd_types::types::Integer;
 use num_bigint::{BigInt, ToBigInt};
+use xsd_types::types::Integer;
 
 #[test]
 fn deserialization_works() {
     mod expected {
         use macro_utils::*;
+        use num_bigint::{BigInt, ToBigInt};
         use std::io::{Read, Write};
         use std::str::FromStr;
+        use xsd_types::types::Integer;
         use xsd_types::utils;
         use yaserde::{YaDeserialize, YaSerialize};
-        use xsd_types::types::Integer;
-        use num_bigint::{BigInt, ToBigInt};
 
         trait Validate {
             fn validate(&self) -> Result<(), String>;
@@ -24,7 +24,10 @@ fn deserialization_works() {
 
     let de: expected::FooType = yaserde::de::from_str(&ser).unwrap();
 
-    assert_eq!(de, expected::FooType(Integer::from_bigint(3.to_bigint().unwrap())));
+    assert_eq!(
+        de,
+        expected::FooType(Integer::from_bigint(3.to_bigint().unwrap()))
+    );
 }
 
 #[test]
