@@ -1,5 +1,6 @@
 use crate::utils;
-use num_bigint::{BigInt, ToBigInt};
+use num_bigint::{BigInt, ParseBigIntError, ToBigInt};
+use std::fmt;
 use std::io::{Read, Write};
 use std::str::FromStr;
 use yaserde::{YaDeserialize, YaSerialize};
@@ -13,16 +14,6 @@ impl Integer {
     pub fn from_bigint(bigint: BigInt) -> Self {
         Integer { value: bigint }
     }
-
-    pub fn from_str(s: &str) -> Result<Integer, String> {
-        Ok(Integer {
-            value: BigInt::from_str(s).map_err(|e| e.to_string())?,
-        })
-    }
-
-    pub fn to_string(&self) -> Result<String, String> {
-        Ok(self.value.to_string())
-    }
 }
 
 impl ToBigInt for Integer {
@@ -31,19 +22,31 @@ impl ToBigInt for Integer {
     }
 }
 
+impl FromStr for Integer {
+    type Err = ParseBigIntError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Ok(Integer {
+            value: BigInt::from_str(s)?,
+        })
+    }
+}
+
+impl fmt::Display for Integer {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.value.to_str_radix(10))
+    }
+}
+
 impl YaDeserialize for Integer {
     fn deserialize<R: Read>(reader: &mut yaserde::de::Deserializer<R>) -> Result<Self, String> {
-        utils::yaserde::deserialize(reader, |s| {
-            BigInt::from_str(s)
-                .map(Integer::from_bigint)
-                .map_err(|e| e.to_string())
-        })
+        utils::yaserde::deserialize(reader, |s| Integer::from_str(s).map_err(|e| e.to_string()))
     }
 }
 
 impl YaSerialize for Integer {
     fn serialize<W: Write>(&self, writer: &mut yaserde::ser::Serializer<W>) -> Result<(), String> {
-        utils::yaserde::serialize(self, "Integer", writer, |s| s.value.to_str_radix(10))
+        utils::yaserde::serialize(self, "Integer", writer, |s| s.to_string())
     }
 }
 

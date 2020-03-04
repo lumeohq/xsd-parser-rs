@@ -12,8 +12,9 @@ enum Type<'a> {
 pub fn from_str(ast: &syn::DeriveInput) -> TokenStream {
     let convert = match extract_field_type(ast) {
         Type::String(_) => quote! { s.to_string() },
-        Type::Struct(ty) => quote! { #ty::from_str(s)? },
-        Type::Simple(ty) => quote! { #ty::from_str(s).map_err(|e| e.to_string())? },
+        Type::Struct(ty) | Type::Simple(ty) => {
+            quote! { #ty::from_str(s).map_err(|e| e.to_string())? }
+        }
         Type::Vec(_, subtype) => match Type::from_path(&subtype) {
             Type::String(subtype) | Type::Struct(subtype) | Type::Simple(subtype) => quote! {
                 s.split_whitespace()

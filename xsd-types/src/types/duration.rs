@@ -1,5 +1,7 @@
 use crate::utils;
+use std::fmt;
 use std::io::{Read, Write};
+use std::str::FromStr;
 use yaserde::{YaDeserialize, YaSerialize};
 
 #[derive(Default, PartialEq, PartialOrd, Debug)]
@@ -16,50 +18,6 @@ pub struct Duration {
 }
 
 impl Duration {
-    pub fn to_string(&self) -> Result<String, String> {
-        let mut s = if self.is_negative {
-            "-P".to_string()
-        } else {
-            "P".to_string()
-        };
-
-        let mut date_str = String::new();
-        if self.years > 0 {
-            date_str.push_str(&format!("{}Y", self.years));
-        }
-        if self.months > 0 {
-            date_str.push_str(&format!("{}M", self.months));
-        }
-        if self.days > 0 {
-            date_str.push_str(&format!("{}D", self.days));
-        }
-
-        let mut time_str = String::new();
-        if self.hours > 0 {
-            time_str.push_str(&format!("{}H", self.hours));
-        }
-        if self.minutes > 0 {
-            time_str.push_str(&format!("{}M", self.minutes));
-        }
-        if self.seconds > 0.0 {
-            time_str.push_str(&format!("{}S", self.seconds));
-        }
-
-        if time_str.is_empty() {
-            if date_str.is_empty() {
-                s.push_str("0Y");
-            } else {
-                s.push_str(&date_str);
-            }
-        } else {
-            s.push_str(&date_str);
-            s.push_str("T");
-            s.push_str(&time_str);
-        }
-
-        Ok(s)
-    }
-
     pub fn to_std_duration(&self) -> Result<std::time::Duration, String> {
         if self.years > 0 || self.months > 0 {
             Err("Duration with months or years require a starting date to be converted".into())
@@ -73,12 +31,18 @@ impl Duration {
         }
     }
 
+    // TODO: Add from_std_duration
+
     // TODO: Add a version of to_std_duration that takes a moment at time to start from.
 
     // TODO: Implement normalization function that takes a moment at time to start from and
     // converts months & years to days.
+}
 
-    pub fn from_str(s: &str) -> Result<Duration, String> {
+impl FromStr for Duration {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
         fn fill_component(
             context: &mut ParsingContext,
             component: &mut u64,
@@ -243,6 +207,52 @@ impl Duration {
     }
 }
 
+impl fmt::Display for Duration {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let mut s = if self.is_negative {
+            "-P".to_string()
+        } else {
+            "P".to_string()
+        };
+
+        let mut date_str = String::new();
+        if self.years > 0 {
+            date_str.push_str(&format!("{}Y", self.years));
+        }
+        if self.months > 0 {
+            date_str.push_str(&format!("{}M", self.months));
+        }
+        if self.days > 0 {
+            date_str.push_str(&format!("{}D", self.days));
+        }
+
+        let mut time_str = String::new();
+        if self.hours > 0 {
+            time_str.push_str(&format!("{}H", self.hours));
+        }
+        if self.minutes > 0 {
+            time_str.push_str(&format!("{}M", self.minutes));
+        }
+        if self.seconds > 0.0 {
+            time_str.push_str(&format!("{}S", self.seconds));
+        }
+
+        if time_str.is_empty() {
+            if date_str.is_empty() {
+                s.push_str("0Y");
+            } else {
+                s.push_str(&date_str);
+            }
+        } else {
+            s.push_str(&date_str);
+            s.push_str("T");
+            s.push_str(&time_str);
+        }
+
+        write!(f, "{}", s)
+    }
+}
+
 struct ParsingContext {
     is_p_found: bool,           // Is 'P' found in the string.
     is_t_found: bool,           // Is 'T' delimiter occurred.
@@ -282,7 +292,7 @@ impl YaDeserialize for Duration {
 
 impl YaSerialize for Duration {
     fn serialize<W: Write>(&self, writer: &mut yaserde::ser::Serializer<W>) -> Result<(), String> {
-        utils::yaserde::serialize(self, "Duration", writer, |s| s.to_string().unwrap())
+        utils::yaserde::serialize(self, "Duration", writer, |s| s.to_string())
     }
 }
 
