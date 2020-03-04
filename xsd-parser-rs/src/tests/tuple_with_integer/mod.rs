@@ -1,21 +1,16 @@
 use super::utils;
-use num_bigint::{BigInt, ToBigInt};
+use num_bigint::ToBigInt;
 use xsd_types::types::Integer;
 
 #[test]
 fn deserialization_works() {
     mod expected {
         use macro_utils::*;
-        use num_bigint::{BigInt, ToBigInt};
         use std::io::{Read, Write};
         use std::str::FromStr;
         use xsd_types::types::Integer;
         use xsd_types::utils;
         use yaserde::{YaDeserialize, YaSerialize};
-
-        trait Validate {
-            fn validate(&self) -> Result<(), String>;
-        }
 
         include!("expected.rs");
     }
