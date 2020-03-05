@@ -26,7 +26,6 @@ pub fn gen_validate_impl(name: &str, body: &str) -> String {
             body = body
         )
     }
-
 }
 
 pub fn gen_facet_validation(facet: &FacetType, name: &str) -> Cow<'static, str> {

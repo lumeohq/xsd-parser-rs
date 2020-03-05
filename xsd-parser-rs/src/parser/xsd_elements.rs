@@ -191,12 +191,6 @@ impl<'a> XsdNode for roxmltree::Node<'a, '_> {
     }
 }
 
-fn get_usize_value(node: &roxmltree::Node) -> usize {
-    node.attr_value()
-        .and_then(|s| s.parse::<usize>().ok())
-        .unwrap_or_else(|| panic!("Value is required. {:?}", node))
-}
-
 fn get_string_value(node: &roxmltree::Node) -> String {
     node.attr_value()
         .map(|s| s.to_string())
