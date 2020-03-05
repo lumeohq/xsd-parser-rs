@@ -54,7 +54,7 @@ pub trait Generator<'input> {
             &ts.type_modifiers,
         );
         format!(
-            "{comment}{macros}pub struct {name} (pub {typename});\n{subtypes}\n{validation}",
+            "{comment}{macros}pub struct {name} (pub {typename});\n{subtypes}\n{validation}\n",
             comment = self.format_comment(ts.comment.as_deref(), 0),
             macros = self.tuple_struct_macro(ts),
             name = self.format_type(ts.name.as_str()),
@@ -82,11 +82,12 @@ pub trait Generator<'input> {
     }
 
     fn gen_struct(&self, st: &Struct) -> String {
+        let name = self.format_type(st.name.as_str());
         format!(
-            "{comment}{macros}pub struct {name} {{\n{fields}\n}}\n{subtypes}\n{fields_subtypes}",
+            "{comment}{macros}pub struct {name} {{\n{fields}\n}}\n\n{validation}\n{subtypes}\n{fields_subtypes}",
             comment = self.format_comment(st.comment.as_deref(), 0),
             macros = self.struct_macro(st),
-            name = self.format_type(st.name.as_str()),
+            name = name,
             fields = st
                 .fields
                 .borrow()
@@ -112,6 +113,10 @@ pub trait Generator<'input> {
                     .join("\n"))
                 .collect::<Vec<String>>()
                 .join(""),
+            validation = gen_validate_impl(
+                name.as_ref(),
+                ""
+            ),
         )
     }
 
@@ -121,7 +126,9 @@ pub trait Generator<'input> {
             "{comment}{macros}\npub enum {name} {{\n{cases}\n __Unknown__({typename})\n\
             }}\n\n\
             {default}\n\n\
-            {subtypes}",
+            {validation}\n\n
+            {subtypes}\n\n\
+            ",
             comment = self.format_comment(en.comment.as_deref(), 0),
             macros = self.enum_macro(en),
             name = name,
@@ -141,6 +148,10 @@ pub trait Generator<'input> {
                 .map(|f| self.gen_rs_entity(f))
                 .collect::<Vec<String>>()
                 .join("\n\n"),
+            validation = gen_validate_impl(
+                name.as_ref(),
+                ""
+            ),
         )
     }
 
@@ -154,7 +165,7 @@ pub trait Generator<'input> {
         };
         match &ec.type_name {
             Some(typename) => format!(
-                "{comment}{macros}  {name}({typename}),",
+                "{comment}{macros}    {name}({typename}),",
                 name = name,
                 typename = self.modify_type(
                     self.format_type(typename.as_str()).as_ref(),
@@ -178,11 +189,11 @@ pub trait Generator<'input> {
             &sf.type_modifiers,
         );
         format!(
-            "{comment}{macros}  pub {name}: {typename},",
+            "{comment}{macros}    pub {name}: {typename},",
             macros = self.struct_field_macro(sf),
             name = self.format_name(sf.name.as_str()),
             typename = typename,
-            comment = self.format_comment(sf.comment.as_deref(), 2)
+            comment = self.format_comment(sf.comment.as_deref(), 4)
         )
     }
 
