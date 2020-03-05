@@ -5,7 +5,7 @@ extern crate inflector;
 use roxmltree::{Namespace, Node};
 
 use crate::parser::constants::attribute;
-use crate::parser::parser::parse_node;
+use crate::parser::schema_parser::parse_node;
 use crate::parser::types::{RsEntity, StructField, StructFieldSource, TypeModifier};
 use crate::parser::xsd_elements::{ElementType, XsdNode};
 

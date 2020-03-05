@@ -2,7 +2,7 @@ use std::cell::RefCell;
 
 use roxmltree::Node;
 
-use crate::parser::parser::parse_node;
+use crate::parser::schema_parser::parse_node;
 use crate::parser::types::{Enum, RsEntity, Struct, StructField, StructFieldSource, TypeModifier};
 use crate::parser::utils::{get_documentation, get_parent_name};
 

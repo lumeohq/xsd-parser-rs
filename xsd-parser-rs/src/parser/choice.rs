@@ -1,6 +1,6 @@
 use roxmltree::Node;
 
-use crate::parser::parser::parse_node;
+use crate::parser::schema_parser::parse_node;
 use crate::parser::types::{Enum, RsEntity};
 use crate::parser::xsd_elements::{ElementType, XsdNode};
 
