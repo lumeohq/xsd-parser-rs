@@ -1,7 +1,7 @@
 use roxmltree::Node;
 
 use crate::parser::constants::attribute;
-use crate::parser::parse_node;
+use crate::parser::node_parser::parse_node;
 use crate::parser::types::{Enum, EnumCase, Facet, RsEntity, TupleStruct};
 use crate::parser::utils::{get_documentation, get_parent_name};
 use crate::parser::xsd_elements::{ElementType, FacetType, RestrictionType, XsdNode};

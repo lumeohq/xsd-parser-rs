@@ -1,7 +1,7 @@
 use roxmltree::Node;
 
 use crate::parser::constants::attribute;
-use crate::parser::parse_node;
+use crate::parser::node_parser::parse_node;
 use crate::parser::types::{RsEntity, TupleStruct, TypeModifier};
 use crate::parser::utils::find_child;
 

@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use roxmltree::Node;
 
 use crate::parser::any::parse_any;
@@ -14,36 +12,8 @@ use crate::parser::list::parse_list;
 use crate::parser::sequence::parse_sequence;
 use crate::parser::simple_content::parse_simple_content;
 use crate::parser::simple_type::parse_simple_type;
-use crate::parser::types::{File, RsEntity};
-use crate::parser::utils::target_namespace;
+use crate::parser::types::RsEntity;
 use crate::parser::xsd_elements::{ElementType, XsdNode};
-
-pub fn parse(text: &str) -> Result<File, ()> {
-    let doc = roxmltree::Document::parse(&text).expect("Parse document error");
-    let root = doc.root();
-
-    let mut map = HashMap::new();
-
-    let schema = root
-        .children()
-        .filter(|e| e.is_element())
-        .last()
-        .expect("Schema element is required");
-
-    let schema_rs = parse_schema(&schema);
-    for ty in &schema_rs.types {
-        if let RsEntity::Struct(st) = ty {
-            map.extend(st.get_types_map());
-        }
-    }
-    for ty in &schema_rs.types {
-        if let RsEntity::Struct(st) = ty {
-            st.extend_base(&map);
-        }
-    }
-
-    Ok(schema_rs)
-}
 
 pub fn parse_node(node: &Node, parent: &Node) -> RsEntity {
     use ElementType::*;
@@ -65,18 +35,5 @@ pub fn parse_node(node: &Node, parent: &Node) -> RsEntity {
         _ => {
             unreachable!("{:?}", node);
         }
-    }
-}
-
-pub fn parse_schema<'input>(schema: &Node<'_, 'input>) -> File<'input> {
-    File {
-        name: "".into(),
-        namespace: None,
-        target_ns: target_namespace(&schema).cloned(),
-        types: schema
-            .children()
-            .filter(|n| n.is_element())
-            .map(|node| parse_node(&node, schema))
-            .collect(),
     }
 }

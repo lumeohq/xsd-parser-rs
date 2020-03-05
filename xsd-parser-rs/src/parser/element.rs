@@ -1,7 +1,7 @@
 use roxmltree::Node;
 
 use crate::parser::constants::attribute;
-use crate::parser::schema_parser::parse_node;
+use crate::parser::node_parser::parse_node;
 use crate::parser::types::{
     Alias, EnumCase, RsEntity, Struct, StructField, StructFieldSource, TypeModifier,
 };

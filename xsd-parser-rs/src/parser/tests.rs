@@ -4,7 +4,7 @@ mod test {
 
     #[test]
     fn test_extension_base() {
-        use crate::parser::schema_parser::parse;
+        use crate::parser::parse;
         use crate::parser::types::RsEntity;
 
         let text = r#"

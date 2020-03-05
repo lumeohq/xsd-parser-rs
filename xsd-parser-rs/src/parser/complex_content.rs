@@ -3,7 +3,7 @@ use std::cell::RefCell;
 use roxmltree::Node;
 
 use crate::parser::constants::{attribute, tag};
-use crate::parser::schema_parser::parse_node;
+use crate::parser::node_parser::parse_node;
 use crate::parser::types::{RsEntity, Struct, StructField, StructFieldSource};
 use crate::parser::utils::{attributes_to_fields, get_documentation};
 use crate::parser::xsd_elements::{ElementType, ExtensionType, RestrictionType, XsdNode};
