@@ -17,7 +17,7 @@ impl<'input> YaserdeGenerator<'input> {
     }
 }
 
-impl<'input> Generator<'_> for YaserdeGenerator<'input> {
+impl<'input> Generator for YaserdeGenerator<'input> {
     fn target_ns(&self) -> &Option<Namespace<'_>> {
         &self.target_ns
     }

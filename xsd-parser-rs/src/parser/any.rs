@@ -8,7 +8,7 @@ pub fn parse_any(node: &Node) -> RsEntity {
         type_name: "String".to_string(),
         comment: get_documentation(node),
         source: StructFieldSource::Element,
-        type_modifiers: vec![TypeModifier::Option],
+        type_modifiers: vec![TypeModifier::Empty],
         ..Default::default()
     })
 }
