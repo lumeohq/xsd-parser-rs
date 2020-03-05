@@ -2,18 +2,20 @@ use std::collections::HashMap;
 
 use roxmltree::Node;
 
+use crate::parser::any::parse_any;
+use crate::parser::any_attribute::parse_any_attribute;
 use crate::parser::attribute::parse_attribute;
 use crate::parser::choice::parse_choice;
 use crate::parser::complex_content::parse_complex_content;
 use crate::parser::complex_type::parse_complex_type;
-use crate::parser::constants::attribute;
 use crate::parser::element::parse_element;
+use crate::parser::import::parse_import;
 use crate::parser::list::parse_list;
 use crate::parser::sequence::parse_sequence;
 use crate::parser::simple_content::parse_simple_content;
 use crate::parser::simple_type::parse_simple_type;
-use crate::parser::types::{File, Import, RsEntity, StructField, StructFieldSource, TypeModifier};
-use crate::parser::utils::{get_documentation, target_namespace};
+use crate::parser::types::{File, RsEntity};
+use crate::parser::utils::target_namespace;
 use crate::parser::xsd_elements::{ElementType, XsdNode};
 
 pub fn parse(text: &str) -> Result<File, ()> {
@@ -77,38 +79,4 @@ pub fn parse_schema<'input>(schema: &Node<'_, 'input>) -> File<'input> {
             .map(|node| parse_node(&node, schema))
             .collect(),
     }
-}
-
-// Stubs
-fn parse_import(node: &Node) -> RsEntity {
-    RsEntity::Import(Import {
-        name: node.attribute(attribute::NAMESPACE).unwrap_or("").into(),
-        location: node
-            .attribute(attribute::SCHEMA_LOCATION)
-            .unwrap_or("")
-            .into(),
-        comment: None,
-    })
-}
-
-fn parse_any(node: &Node) -> RsEntity {
-    RsEntity::StructField(StructField {
-        name: "any".to_string(),
-        type_name: "String".to_string(),
-        comment: get_documentation(node),
-        source: StructFieldSource::Element,
-        type_modifiers: vec![TypeModifier::Option],
-        ..Default::default()
-    })
-}
-
-fn parse_any_attribute(node: &Node) -> RsEntity {
-    RsEntity::StructField(StructField {
-        name: "any_attribute".to_string(),
-        type_name: "String".to_string(),
-        comment: get_documentation(node),
-        source: StructFieldSource::Attribute,
-        type_modifiers: vec![TypeModifier::Option],
-        ..Default::default()
-    })
 }
