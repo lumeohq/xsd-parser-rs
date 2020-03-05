@@ -126,8 +126,8 @@ pub trait Generator<'input> {
             "{comment}{macros}\npub enum {name} {{\n{cases}\n __Unknown__({typename})\n\
             }}\n\n\
             {default}\n\n\
-            {validation}\n\n
-            {subtypes}\n\n\
+            {validation}\n\n\
+            {subtypes}\n\n
             ",
             comment = self.format_comment(en.comment.as_deref(), 0),
             macros = self.enum_macro(en),
@@ -175,7 +175,7 @@ pub trait Generator<'input> {
                 macros = macros
             ),
             None => format!(
-                "{comment}{macros}  {name},",
+                "{comment}{macros}    {name},",
                 name = name,
                 comment = comment,
                 macros = macros
