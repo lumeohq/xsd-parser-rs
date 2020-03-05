@@ -5,9 +5,7 @@ use roxmltree::Node;
 use crate::parser::constants::{attribute, tag};
 use crate::parser::schema_parser::parse_node;
 use crate::parser::types::{RsEntity, Struct, StructField, StructFieldSource};
-use crate::parser::utils::{
-    any_attribute_field, attributes_to_fields, find_child, get_documentation,
-};
+use crate::parser::utils::{attributes_to_fields, get_documentation};
 use crate::parser::xsd_elements::{ElementType, ExtensionType, RestrictionType, XsdNode};
 
 const AVAILABLE_CONTENT_TYPES: [ElementType; 6] = [
@@ -27,8 +25,12 @@ pub fn parse_complex_content(node: &Node) -> RsEntity {
         .expect("Content in complexContent required");
 
     match content.xsd_type() {
-        ElementType::Restriction(RestrictionType::ComplexContent) => complex_content_restriction(&content),
-        ElementType::Extension(ExtensionType::ComplexContent) => complex_content_extension(&content),
+        ElementType::Restriction(RestrictionType::ComplexContent) => {
+            complex_content_restriction(&content)
+        }
+        ElementType::Extension(ExtensionType::ComplexContent) => {
+            complex_content_extension(&content)
+        }
         _ => unreachable!(
             "Complex content must be defined in one of the following ways: [Restriction, Extension]"
         ),
@@ -49,10 +51,6 @@ fn complex_content_extension(node: &Node) -> RsEntity {
         source: StructFieldSource::Base,
         ..Default::default()
     });
-
-    if find_child(node, "anyAttribute").is_some() {
-        fields.push(any_attribute_field())
-    }
 
     let content = node
         .children()

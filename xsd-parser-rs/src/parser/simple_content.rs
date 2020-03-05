@@ -4,9 +4,7 @@ use roxmltree::Node;
 
 use crate::parser::constants::{attribute, tag};
 use crate::parser::types::{RsEntity, Struct, StructField, StructFieldSource};
-use crate::parser::utils::{
-    any_attribute_field, attributes_to_fields, find_child, get_documentation,
-};
+use crate::parser::utils::{attributes_to_fields, get_documentation};
 use crate::parser::xsd_elements::{ElementType, ExtensionType, RestrictionType, XsdNode};
 
 pub fn parse_simple_content(node: &Node) -> RsEntity {
@@ -17,7 +15,9 @@ pub fn parse_simple_content(node: &Node) -> RsEntity {
         .expect("Content in simpleContent required");
 
     match content.xsd_type() {
-        ElementType::Restriction(RestrictionType::SimpleContent) => simple_content_restriction(&content),
+        ElementType::Restriction(RestrictionType::SimpleContent) => {
+            simple_content_restriction(&content)
+        }
         ElementType::Extension(ExtensionType::SimpleContent) => simple_content_extension(&content),
         _ => unreachable!(
             "Simple content must be defined in one of the following ways: [Restriction, Extension]"
@@ -39,10 +39,6 @@ fn simple_content_extension(node: &Node) -> RsEntity {
         source: StructFieldSource::Base,
         ..Default::default()
     });
-
-    if find_child(node, "anyAttribute").is_some() {
-        fields.push(any_attribute_field())
-    }
 
     RsEntity::Struct(Struct {
         name: String::default(),

@@ -2,7 +2,9 @@ use roxmltree::Node;
 
 use crate::parser::constants::attribute;
 use crate::parser::schema_parser::parse_node;
-use crate::parser::types::{Alias, EnumCase, RsEntity, StructField, StructFieldSource, TypeModifier, Struct};
+use crate::parser::types::{
+    Alias, EnumCase, RsEntity, Struct, StructField, StructFieldSource, TypeModifier,
+};
 use crate::parser::utils::get_documentation;
 use crate::parser::xsd_elements::{max_occurs, min_occurs, ElementType, MaxOccurs, XsdNode};
 
@@ -135,13 +137,11 @@ fn parse_global_element(node: &Node) -> RsEntity {
     }
 
     // No content => empty struct
-    RsEntity::Struct(
-        Struct{
-            name: name.to_string(),
-            comment: get_documentation(node),
-            ..Default::default()
-        }
-    )
+    RsEntity::Struct(Struct {
+        name: name.to_string(),
+        comment: get_documentation(node),
+        ..Default::default()
+    })
 }
 
 pub fn element_modifier(node: &Node) -> TypeModifier {
@@ -176,9 +176,9 @@ pub fn element_modifier(node: &Node) -> TypeModifier {
 
 #[cfg(test)]
 mod test {
-    use crate::parser::utils::find_child;
     use crate::parser::element::*;
     use crate::parser::types::RsEntity;
+    use crate::parser::utils::find_child;
 
     #[test]
     fn test_global_element_without_type() {
