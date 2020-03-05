@@ -307,7 +307,7 @@ mod tests {
     }
 
     fn check_invalid(s: &str) {
-        if let Ok(_) = Duration::from_str(s) {
+        if Duration::from_str(s).is_ok() {
             panic!("{} should be invalid", s)
         }
     }

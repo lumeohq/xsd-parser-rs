@@ -113,7 +113,6 @@ mod test {
 
         let schema = doc.root_element();
         let simple_type = find_child(&schema, "simpleType").unwrap();
-        let target_ns = schema.namespaces()[0].clone();
 
         match parse_simple_type(&simple_type, &schema) {
             RsEntity::TupleStruct(ts) => {
@@ -156,7 +155,6 @@ mod test {
 
         let schema = doc.root_element();
         let simple_type = find_child(&schema, "simpleType").unwrap();
-        let target_ns = schema.namespaces()[0].clone();
 
         match parse_simple_type(&simple_type, &schema) {
             RsEntity::TupleStruct(ts) => {
