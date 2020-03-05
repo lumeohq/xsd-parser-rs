@@ -3,6 +3,7 @@ mod utils;
 mod any;
 mod choice;
 mod complex_type;
+mod complex_type_subtypes_clash;
 mod enumeration;
 mod extension_base;
 mod extension_base_multilayer;
