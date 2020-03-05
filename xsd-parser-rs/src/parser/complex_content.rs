@@ -27,14 +27,8 @@ pub fn parse_complex_content(node: &Node) -> RsEntity {
         .expect("Content in complexContent required");
 
     match content.xsd_type() {
-        ElementType::Restriction(r) => match r {
-            RestrictionType::ComplexContent => complex_content_restriction(&content),
-            _ => unreachable!("Invalid restriction type of complexContent {:?}", r),
-        },
-        ElementType::Extension(e) => match e {
-            ExtensionType::ComplexContent => complex_content_extension(&content),
-            _ => unreachable!("Invalid extension type of complexContent {:?}", e),
-        },
+        ElementType::Restriction(RestrictionType::ComplexContent) => complex_content_restriction(&content),
+        ElementType::Extension(ExtensionType::ComplexContent) => complex_content_extension(&content),
         _ => unreachable!(
             "Complex content must be defined in one of the following ways: [Restriction, Extension]"
         ),
