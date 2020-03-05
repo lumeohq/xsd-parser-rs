@@ -1,6 +1,6 @@
 use crate::generator::Generator;
 use crate::parser::types::{
-    Enum, EnumCase, File, Struct, StructField, StructFieldSource, TupleStruct,
+    Enum, EnumCase, RsFile, Struct, StructField, StructFieldSource, TupleStruct,
 };
 use roxmltree::Namespace;
 use std::borrow::Cow;
@@ -10,7 +10,7 @@ pub struct YaserdeGenerator<'input> {
 }
 
 impl<'input> YaserdeGenerator<'input> {
-    pub fn new(schema: &File<'input>) -> Self {
+    pub fn new(schema: &RsFile<'input>) -> Self {
         YaserdeGenerator {
             target_ns: schema.target_ns.clone(),
         }

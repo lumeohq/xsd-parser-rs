@@ -1,11 +1,11 @@
 use roxmltree::Node;
 
 use crate::parser::node_parser::parse_node;
-use crate::parser::types::File;
+use crate::parser::types::RsFile;
 use crate::parser::utils::target_namespace;
 
-pub fn parse_schema<'input>(schema: &Node<'_, 'input>) -> File<'input> {
-    File {
+pub fn parse_schema<'input>(schema: &Node<'_, 'input>) -> RsFile<'input> {
+    RsFile {
         name: "".into(),
         namespace: None,
         target_ns: target_namespace(&schema).cloned(),

@@ -6,7 +6,7 @@ use crate::parser::xsd_elements::FacetType;
 use roxmltree::Namespace;
 
 #[derive(Debug, Clone)]
-pub struct File<'input> {
+pub struct RsFile<'input> {
     pub name: String,
     pub namespace: Option<String>,
     pub types: Vec<RsEntity>,

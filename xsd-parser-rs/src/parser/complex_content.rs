@@ -71,10 +71,9 @@ fn complex_content_extension(node: &Node) -> RsEntity {
     }
 
     RsEntity::Struct(Struct {
-        name: String::default(),
-        subtypes: vec![],
         comment: get_documentation(node),
         fields: RefCell::new(fields),
+        ..Default::default()
     })
 }
 

@@ -4,6 +4,7 @@ mod attribute;
 mod choice;
 mod complex_content;
 mod complex_type;
+pub mod constants;
 mod element;
 mod import;
 mod list;
@@ -13,16 +14,15 @@ mod sequence;
 mod simple_content;
 mod simple_type;
 mod tests;
-mod utils;
-pub mod constants;
 pub mod types;
+mod utils;
 pub mod xsd_elements;
 
 use crate::parser::schema::parse_schema;
-use crate::parser::types::{File, RsEntity};
+use crate::parser::types::{RsEntity, RsFile};
 use std::collections::HashMap;
 
-pub fn parse(text: &str) -> Result<File, ()> {
+pub fn parse(text: &str) -> Result<RsFile, ()> {
     let doc = roxmltree::Document::parse(&text).expect("Parse document error");
     let root = doc.root();
 
