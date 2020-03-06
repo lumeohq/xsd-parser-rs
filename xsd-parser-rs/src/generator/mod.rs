@@ -13,7 +13,7 @@ use crate::generator::validator::{gen_facet_validation, gen_validate_impl};
 use roxmltree::Namespace;
 use std::borrow::Cow;
 
-pub trait Generator<'input> {
+pub trait Generator {
     fn target_ns(&self) -> &Option<Namespace<'_>>;
 
     fn tuple_struct_macro(&self, _: &TupleStruct) -> Cow<'static, str> {
@@ -82,19 +82,27 @@ pub trait Generator<'input> {
     }
 
     fn gen_struct(&self, st: &Struct) -> String {
+        let fields = st
+            .fields
+            .borrow()
+            .iter()
+            .map(|f| self.get_struct_field(f))
+            .filter(|s| !s.is_empty())
+            .collect::<Vec<String>>()
+            .join("\n\n");
+
         let name = self.format_type(st.name.as_str());
+
         format!(
-            "{comment}{macros}pub struct {name} {{\n{fields}\n}}\n\n{validation}\n{subtypes}\n{fields_subtypes}",
+            "{comment}{macros}pub struct {name} {{{fields}}}\n\n{validation}\n{subtypes}\n{fields_subtypes}",
             comment = self.format_comment(st.comment.as_deref(), 0),
             macros = self.struct_macro(st),
             name = name,
-            fields = st
-                .fields
-                .borrow()
-                .iter()
-                .map(|f| self.get_struct_field(f))
-                .collect::<Vec<String>>()
-                .join("\n\n"),
+            fields = if fields.is_empty() {
+                fields
+            } else {
+                format!("\n{}\n", fields)
+            },
             subtypes = st
                 .subtypes
                 .iter()
@@ -184,6 +192,9 @@ pub trait Generator<'input> {
     }
 
     fn get_struct_field(&self, sf: &StructField) -> String {
+        if sf.type_modifiers.contains(&TypeModifier::Empty) {
+            return "".into();
+        }
         let typename = self.modify_type(
             self.format_type(sf.type_name.as_str()).as_ref(),
             &sf.type_modifiers,

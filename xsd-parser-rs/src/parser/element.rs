@@ -1,9 +1,9 @@
 use roxmltree::Node;
 
 use crate::parser::constants::attribute;
-use crate::parser::parser::parse_node;
+use crate::parser::node_parser::parse_node;
 use crate::parser::types::{
-    Alias, EnumCase, RsEntity, StructField, StructFieldSource, TypeModifier,
+    Alias, EnumCase, RsEntity, Struct, StructField, StructFieldSource, TypeModifier,
 };
 use crate::parser::utils::get_documentation;
 use crate::parser::xsd_elements::{max_occurs, min_occurs, ElementType, MaxOccurs, XsdNode};
@@ -128,12 +128,20 @@ fn parse_global_element(node: &Node) -> RsEntity {
     let content_node = node
         .children()
         .filter(|n| SUPPORTED_CONTENT_TYPES.contains(&n.xsd_type()))
-        .last()
-        .expect("MUST HAVE CONTENT");
+        .last();
 
-    let mut content = parse_node(&content_node, node);
-    content.set_name(name);
-    content
+    if let Some(content) = content_node {
+        let mut content_entity = parse_node(&content, node);
+        content_entity.set_name(name);
+        return content_entity;
+    }
+
+    // No content => empty struct
+    RsEntity::Struct(Struct {
+        name: name.to_string(),
+        comment: get_documentation(node),
+        ..Default::default()
+    })
 }
 
 pub fn element_modifier(node: &Node) -> TypeModifier {
@@ -163,5 +171,37 @@ pub fn element_modifier(node: &Node) -> TypeModifier {
             }
         },
         _ => TypeModifier::Array,
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use crate::parser::element::*;
+    use crate::parser::types::RsEntity;
+    use crate::parser::utils::find_child;
+
+    #[test]
+    fn test_global_element_without_type() {
+        let doc = roxmltree::Document::parse(
+            r#"
+            <xs:schema xmlns:tt="http://www.onvif.org/ver10/schema" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.onvif.org/ver10/schema">
+                <xs:element name="ChangedOnly">
+                    <xs:annotation> <xs:documentation>Doc Text</xs:documentation> </xs:annotation>
+                </xs:element>
+            </xs:schema>
+        "#).unwrap();
+
+        let schema = doc.root_element();
+        let element = find_child(&schema, "element").unwrap();
+
+        match parse_global_element(&element) {
+            RsEntity::Struct(st) => {
+                assert_eq!(st.name, "ChangedOnly");
+                assert_eq!(st.comment.unwrap().trim(), "Doc Text");
+                assert!(st.subtypes.is_empty());
+                assert!(st.fields.borrow().is_empty());
+            }
+            _ => unreachable!("Test failed!"),
+        }
     }
 }

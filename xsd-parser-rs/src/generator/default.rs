@@ -54,6 +54,7 @@ pub fn default_modify_type(type_name: &str, modifiers: &[TypeModifier]) -> Cow<'
     if modifiers.contains(&TypeModifier::Empty) {
         return "()".into();
     }
+
     if modifiers.contains(&TypeModifier::Recursive) {
         return format!("Vec<{}>", type_name).into();
     }

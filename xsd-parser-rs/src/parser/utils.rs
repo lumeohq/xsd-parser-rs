@@ -5,19 +5,9 @@ extern crate inflector;
 use roxmltree::{Namespace, Node};
 
 use crate::parser::constants::attribute;
-use crate::parser::parser::parse_node;
-use crate::parser::types::{RsEntity, StructField, StructFieldSource, TypeModifier};
+use crate::parser::node_parser::parse_node;
+use crate::parser::types::{RsEntity, StructField};
 use crate::parser::xsd_elements::{ElementType, XsdNode};
-
-pub fn any_attribute_field() -> StructField {
-    StructField {
-        name: "any_attribute".to_string(),
-        type_name: "String".to_string(),
-        source: StructFieldSource::Attribute,
-        type_modifiers: vec![TypeModifier::Option],
-        ..Default::default()
-    }
-}
 
 pub fn target_namespace<'a, 'input>(node: &Node<'a, 'input>) -> Option<&'a Namespace<'input>> {
     match node.attribute(attribute::TARGET_NAMESPACE) {
@@ -55,7 +45,9 @@ pub fn get_parent_name<'a>(node: &Node<'a, '_>) -> &'a str {
 
 pub fn attributes_to_fields(node: &Node) -> Vec<StructField> {
     node.children()
-        .filter(|n| n.is_element() && n.xsd_type() == ElementType::Attribute)
+        .filter(|n| {
+            n.xsd_type() == ElementType::Attribute || n.xsd_type() == ElementType::AnyAttribute
+        })
         .map(|n| match parse_node(&n, node) {
             RsEntity::StructField(sf) => sf,
             _ => unreachable!("Invalid attribute parsing: {:?}", n),
