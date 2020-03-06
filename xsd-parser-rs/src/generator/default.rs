@@ -51,6 +51,10 @@ pub fn default_format_type(type_name: &str, target_ns: &Option<Namespace>) -> Co
 }
 
 pub fn default_modify_type(type_name: &str, modifiers: &[TypeModifier]) -> Cow<'static, str> {
+    if modifiers.contains(&TypeModifier::Empty) {
+        return "()".into();
+    }
+
     if modifiers.contains(&TypeModifier::Recursive) {
         return format!("Vec<{}>", type_name).into();
     }

@@ -96,7 +96,11 @@ pub trait Generator {
             comment = self.format_comment(st.comment.as_deref(), 0),
             macros = self.struct_macro(st),
             name = self.format_type(st.name.as_str()),
-            fields = if fields.is_empty() {fields} else {format!("\n{}\n", fields)},
+            fields = if fields.is_empty() {
+                fields
+            } else {
+                format!("\n{}\n", fields)
+            },
             subtypes = st
                 .subtypes
                 .iter()
