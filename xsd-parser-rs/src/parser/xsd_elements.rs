@@ -40,16 +40,16 @@ pub enum ElementType {
 #[derive(Debug, Clone, PartialEq)]
 pub enum FacetType {
     Enumeration(String),
-    FractionDigits(usize),
-    Length(usize),
+    FractionDigits(String),
+    Length(String),
     MaxExclusive(String),
     MaxInclusive(String),
-    MaxLength(usize),
+    MaxLength(String),
     MinExclusive(String),
     MinInclusive(String),
-    MinLength(usize),
+    MinLength(String),
     Pattern(String),
-    TotalDigits(usize),
+    TotalDigits(String),
     WhiteSpace(WhiteSpace),
 }
 
@@ -139,16 +139,16 @@ impl<'a> XsdNode for roxmltree::Node<'a, '_> {
             "unique" => Unique,
 
             "enumeration" => Facet(FacetType::Enumeration(get_string_value(self))),
-            "fractionDigits" => Facet(FacetType::FractionDigits(get_usize_value(self))),
-            "length" => Facet(FacetType::Length(get_usize_value(self))),
+            "fractionDigits" => Facet(FacetType::FractionDigits(get_string_value(self))),
+            "length" => Facet(FacetType::Length(get_string_value(self))),
             "maxExclusive" => Facet(FacetType::MaxExclusive(get_string_value(self))),
             "maxInclusive" => Facet(FacetType::MaxInclusive(get_string_value(self))),
-            "maxLength" => Facet(FacetType::MaxLength(get_usize_value(self))),
+            "maxLength" => Facet(FacetType::MaxLength(get_string_value(self))),
             "minExclusive" => Facet(FacetType::MinExclusive(get_string_value(self))),
             "minInclusive" => Facet(FacetType::MinInclusive(get_string_value(self))),
-            "minLength" => Facet(FacetType::MinLength(get_usize_value(self))),
+            "minLength" => Facet(FacetType::MinLength(get_string_value(self))),
             "pattern" => Facet(FacetType::Pattern(get_string_value(self))),
-            "totalDigits" => Facet(FacetType::TotalDigits(get_usize_value(self))),
+            "totalDigits" => Facet(FacetType::TotalDigits(get_string_value(self))),
             "whiteSpace" => match self.attr_value() {
                 Some(val) => match val {
                     "preserve" => Facet(FacetType::WhiteSpace(WhiteSpace::Preserve)),
@@ -189,12 +189,6 @@ impl<'a> XsdNode for roxmltree::Node<'a, '_> {
     fn attr_value(&self) -> Option<&str> {
         self.attribute(attribute::VALUE)
     }
-}
-
-fn get_usize_value(node: &roxmltree::Node) -> usize {
-    node.attr_value()
-        .and_then(|s| s.parse::<usize>().ok())
-        .unwrap_or_else(|| panic!("Value is required. {:?}", node))
 }
 
 fn get_string_value(node: &roxmltree::Node) -> String {
