@@ -91,11 +91,13 @@ pub trait Generator {
             .collect::<Vec<String>>()
             .join("\n\n");
 
+        let name = self.format_type(st.name.as_str());
+
         format!(
             "{comment}{macros}pub struct {name} {{{fields}}}\n\n{validation}\n{subtypes}\n{fields_subtypes}",
             comment = self.format_comment(st.comment.as_deref(), 0),
             macros = self.struct_macro(st),
-            name = self.format_type(st.name.as_str()),
+            name = name,
             fields = if fields.is_empty() {
                 fields
             } else {
