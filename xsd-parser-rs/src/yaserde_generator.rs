@@ -70,12 +70,12 @@ impl<'input> Generator for YaserdeGenerator<'input> {
 fn yaserde_for_attribute(name: &str) -> String {
     if let Some(index) = name.find(':') {
         format!(
-            "  #[yaserde(attribute, prefix = \"{}\" rename = \"{}\")]\n",
+            "    #[yaserde(attribute, prefix = \"{}\" rename = \"{}\")]\n",
             &name[0..index],
             &name[index + 1..]
         )
     } else {
-        format!("  #[yaserde(attribute, rename = \"{}\")]\n", name)
+        format!("    #[yaserde(attribute, rename = \"{}\")]\n", name)
     }
 }
 
@@ -88,19 +88,19 @@ fn yaserde_for_element(name: &str, target_namespace: Option<&roxmltree::Namespac
 
     match prefix {
         Some(p) => format!(
-            "  #[yaserde(prefix = \"{}\", rename = \"{}\")]\n",
+            "    #[yaserde(prefix = \"{}\", rename = \"{}\")]\n",
             p, field_name
         ),
-        None => format!("  #[yaserde(rename = \"{}\")]\n", field_name),
+        None => format!("    #[yaserde(rename = \"{}\")]\n", field_name),
     }
 }
 
 fn yaserde_rename_macro(name: &str) -> String {
-    format!("  #[yaserde(rename = \"{}\")]\n", name)
+    format!("    #[yaserde(rename = \"{}\")]\n", name)
 }
 
 fn yaserde_for_flatten_element() -> String {
-    "  #[yaserde(flatten)]\n".to_string()
+    "    #[yaserde(flatten)]\n".to_string()
 }
 
 #[cfg(test)]
@@ -114,7 +114,7 @@ mod test {
         let ns = Some(&doc.root_element().namespaces()[0]);
         assert_eq!(
             yaserde_for_element("xop:Include", ns),
-            "  #[yaserde(prefix = \"xop\", rename = \"Include\")]\n"
+            "    #[yaserde(prefix = \"xop\", rename = \"Include\")]\n"
         );
     }
 
@@ -122,7 +122,7 @@ mod test {
     fn test_yaserde_rename_macro() {
         assert_eq!(
             yaserde_rename_macro("NTP"),
-            "  #[yaserde(rename = \"NTP\")]\n"
+            "    #[yaserde(rename = \"NTP\")]\n"
         )
     }
 }

@@ -8,12 +8,16 @@ pub struct BarType {
     pub bb: String,
 }
 
+impl Validate for BarType {}
+
 #[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]
 #[yaserde(prefix = "tns", namespace = "tns: http://example.com")]
 pub struct FooType {
     #[yaserde(prefix = "tns", rename = "Messages")]
     pub messages: MessagesType,
 }
+
+impl Validate for FooType {}
 
 #[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]
 #[yaserde(prefix = "tns", namespace = "tns: http://example.com")]
@@ -27,3 +31,5 @@ pub struct MessagesType {
     #[yaserde(prefix = "tns", rename = "bb")]
     pub bb: String,
 }
+
+impl Validate for MessagesType {}
