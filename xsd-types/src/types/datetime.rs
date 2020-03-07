@@ -1,5 +1,5 @@
 use crate::utils;
-use chrono::{DateTime as CDateTime, FixedOffset};
+use chrono::{DateTime as CDateTime, FixedOffset, format::ParseError};
 use std::fmt;
 use std::io::{Read, Write};
 use std::str::FromStr;
@@ -27,12 +27,26 @@ impl Default for DateTime {
 }
 
 impl FromStr for DateTime {
-    type Err = chrono::format::ParseError;
+    type Err = ParseError;
 
+    // Note:
+    // `parse_from_rfc3339` parses an RFC 3339 and ISO 8601 date and time string.
+    // XSD follows ISO 8601, which allows no time zone at the end of literal.
+    // Since RFC 3339 does not allow such behavior, the function tries to add
+    // 'Z' (which equals "+00:00") at the end of literal in case of ParseError,
+    // and parse literal again.
+    // In case of a second failure, the function returns the FIRST error.
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(DateTime {
-            value: CDateTime::parse_from_rfc3339(s)?,
-        })
+        match CDateTime::parse_from_rfc3339(s) {
+            Ok(cdt) => Ok(DateTime { value: cdt }),
+            Err(err) => {
+                let s_with_timezone = format!("{}Z", s);
+                match CDateTime::parse_from_rfc3339(&s_with_timezone) {
+                    Ok(cdt) => Ok(DateTime { value: cdt }),
+                    Err(_) => Err(err)
+                }
+            }
+        }
     }
 }
 
@@ -79,7 +93,7 @@ mod tests {
             </t:Message>
             "#;
         let i = Message {
-            created_at: DateTime::from_str("2020-03-07T04:40:00Z").unwrap(),
+            created_at: DateTime::from_str("2020-03-07T04:40:00").unwrap(),
             text: "Hello world".to_string(),
         };
         let actual = yaserde::ser::to_string(&i).unwrap();
@@ -91,7 +105,7 @@ mod tests {
         let s = r#"
             <?xml version="1.0" encoding="utf-8"?>
             <t:Message xmlns:t="test">
-                <t:CreatedAt>2020-03-07T04:40:00+00:00</t:CreatedAt>
+                <t:CreatedAt>2020-03-07T04:40:00</t:CreatedAt>
                 <t:Text>Hello world</t:Text>
             </t:Message>
             "#;
