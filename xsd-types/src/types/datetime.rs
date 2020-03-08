@@ -92,11 +92,11 @@ mod tests {
                 <t:Text>Hello world</t:Text>
             </t:Message>
             "#;
-        let i = Message {
+        let m = Message {
             created_at: DateTime::from_str("2020-03-07T04:40:00").unwrap(),
             text: "Hello world".to_string(),
         };
-        let actual = yaserde::ser::to_string(&i).unwrap();
+        let actual = yaserde::ser::to_string(&m).unwrap();
         assert_xml_eq(&actual, expected);
     }
 
