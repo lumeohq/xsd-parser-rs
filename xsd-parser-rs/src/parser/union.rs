@@ -9,12 +9,6 @@ use crate::parser::utils::{
 use crate::parser::xsd_elements::{ElementType, XsdNode};
 use std::cell::RefCell;
 
-fn enum_subtype_from_node(node: &Node, parent: &Node, index: usize) -> RsEntity {
-    let mut entity = parse_node(node, parent);
-    entity.set_name(format!("EnumCaseType_{}", index).as_str());
-    entity
-}
-
 pub fn parse_union(union: &Node) -> RsEntity {
     let mut cases = union
         .attribute(attribute::MEMBER_TYPES)
@@ -31,9 +25,10 @@ pub fn parse_union(union: &Node) -> RsEntity {
     cases.append(
         &mut subtypes
             .iter()
-            .map(|rs_entity| EnumCase {
-                name: rs_entity.name().to_string(),
-                type_name: Some(rs_entity.name().to_string()),
+            .enumerate()
+            .map(|val| EnumCase {
+                name: format!("EnumCase_{}", val.0),
+                type_name: Some(val.1.name().to_string()),
                 ..Default::default()
             })
             .collect(),
@@ -71,6 +66,12 @@ fn create_enum_cases(member_types: &str) -> Vec<EnumCase> {
             ..Default::default()
         })
         .collect()
+}
+
+fn enum_subtype_from_node(node: &Node, parent: &Node, index: usize) -> RsEntity {
+    let mut entity = parse_node(node, parent);
+    entity.set_name(format!("EnumCaseType_{}", index).as_str());
+    entity
 }
 
 #[cfg(test)]
@@ -116,7 +117,7 @@ mod test {
     }
 
     #[test]
-    fn test_parse_union_with_nested_type() {
+    fn test_parse_union_with_nested_types() {
         let doc = roxmltree::Document::parse(
             r#"
     <xs:schema xmlns:tt="http://www.onvif.org/ver10/schema" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.onvif.org/ver10/schema">
@@ -147,13 +148,78 @@ mod test {
                 assert_eq!(en.cases.len(), 5);
                 assert_eq!(en.cases[0].name, "Type1");
                 assert_eq!(en.cases[1].name, "Type2");
-                assert_eq!(en.cases[2].name, "EnumCaseType_0");
-                assert_eq!(en.cases[3].name, "EnumCaseType_1");
-                assert_eq!(en.cases[4].name, "EnumCaseType_2");
+                assert_eq!(en.cases[2].name, "EnumCase_0");
+                assert_eq!(en.cases[3].name, "EnumCase_1");
+                assert_eq!(en.cases[4].name, "EnumCase_2");
+
+                assert_eq!(en.cases[2].type_name.as_ref().unwrap(), "EnumCaseType_0");
+                assert_eq!(en.cases[3].type_name.as_ref().unwrap(), "EnumCaseType_1");
+                assert_eq!(en.cases[4].type_name.as_ref().unwrap(), "EnumCaseType_2");
 
                 assert_eq!(en.subtypes.len(), 3);
                 assert_eq!(en.subtypes[0].name(), "EnumCaseType_0");
                 assert_eq!(en.name, String::default());
+            }
+            _ => unreachable!("Test Failed"),
+        }
+    }
+
+    #[test]
+    fn test_parse_union_with_nested_types_and_attributes() {
+        let doc = roxmltree::Document::parse(
+            r#"
+    <xs:schema xmlns:tt="http://www.onvif.org/ver10/schema" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.onvif.org/ver10/schema">
+        <xs:simpleType name="SomeType">
+            <xs:annotation><xs:documentation>Some text</xs:documentation></xs:annotation>
+            <xs:union memberTypes="Type1 Type2">
+                <xs:simpleType>
+                    <xs:list itemType="ListOfType" />
+                </xs:simpleType>
+                <xs:simpleType>
+                    <xs:list itemType="ListOfType1" />
+                </xs:simpleType>
+                <xs:simpleType>
+                    <xs:list itemType="ListOfType2" />
+                </xs:simpleType>
+                <xs:attribute name="Attr1" type="AttrType1"/>
+                <xs:attribute name="Attr2" type="AttrType2"/>
+            </xs:union>
+        </xs:simpleType>
+    </xs:schema>
+    "#
+        ).unwrap();
+
+        let simple_type = find_child(&doc.root_element(), "simpleType").unwrap();
+        let union = find_child(&simple_type, "union").unwrap();
+
+        let result = parse_union(&union);
+        let subtype = match &result {
+            RsEntity::Struct(st) => {
+                assert!(st.name.is_empty());
+                assert_eq!(st.subtypes.len(), 0);
+                assert_eq!(st.fields.borrow().len(), 3);
+                let ty = &st.fields.borrow()[2];
+                ty.subtypes[0].clone()
+            }
+            _ => unreachable!("Test Failed!"),
+        };
+
+        match subtype {
+            RsEntity::Enum(en) => {
+                assert_eq!(en.cases.len(), 5);
+                assert_eq!(en.cases[0].name, "Type1");
+                assert_eq!(en.cases[1].name, "Type2");
+                assert_eq!(en.cases[2].name, "EnumCase_0");
+                assert_eq!(en.cases[3].name, "EnumCase_1");
+                assert_eq!(en.cases[4].name, "EnumCase_2");
+
+                assert_eq!(en.cases[2].type_name.as_ref().unwrap(), "EnumCaseType_0");
+                assert_eq!(en.cases[3].type_name.as_ref().unwrap(), "EnumCaseType_1");
+                assert_eq!(en.cases[4].type_name.as_ref().unwrap(), "EnumCaseType_2");
+
+                assert_eq!(en.subtypes.len(), 3);
+                assert_eq!(en.subtypes[0].name(), "EnumCaseType_0");
+                assert_eq!(en.name, "SomeTypeChoice");
             }
             _ => unreachable!("Test Failed"),
         }
