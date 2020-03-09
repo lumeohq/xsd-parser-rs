@@ -145,7 +145,7 @@ pub struct EnumCase {
     pub type_modifiers: Vec<TypeModifier>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct Alias {
     pub name: String,
     pub original: String,
