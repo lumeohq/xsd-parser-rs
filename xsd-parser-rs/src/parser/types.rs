@@ -118,7 +118,7 @@ pub struct TupleStruct {
     pub facets: Vec<Facet>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct Enum {
     pub name: String,
     pub cases: Vec<EnumCase>,
@@ -136,7 +136,7 @@ pub enum TypeModifier {
     Empty,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct EnumCase {
     pub name: String,
     pub comment: Option<String>,

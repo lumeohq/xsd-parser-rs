@@ -131,7 +131,7 @@ pub trait Generator {
     fn gen_enum(&self, en: &Enum) -> String {
         let name = self.format_type(en.name.as_str());
         format!(
-            "{comment}{macros}\npub enum {name} {{\n{cases}\n __Unknown__({typename})\n\
+            "{comment}{macros}\npub enum {name} {{\n{cases}\n    __Unknown__({typename})\n\
             }}\n\n\
             {default}\n\n\
             {validation}\n\n\
@@ -164,11 +164,12 @@ pub trait Generator {
     }
 
     fn gen_enum_case(&self, ec: &EnumCase) -> String {
-        let name = self.format_type(ec.name.as_str());
-        let comment = self.format_comment(ec.comment.as_deref(), 2);
-        let macros: Cow<'static, str> = if name.as_ref() == ec.name.as_str() {
+        let name = self.get_enum_case_name(ec);
+        let comment = self.format_comment(ec.comment.as_deref(), 4);
+        let macros: Cow<'static, str> = if name == ec.name {
             "".into()
         } else {
+            // if rename required
             self.enum_case_macro(ec)
         };
         match &ec.type_name {
@@ -189,6 +190,14 @@ pub trait Generator {
                 macros = macros
             ),
         }
+    }
+
+    fn get_enum_case_name(&self, ec: &EnumCase) -> String {
+        self.format_type(ec.name.as_str())
+            .split("::")
+            .last()
+            .unwrap()
+            .to_string()
     }
 
     fn get_struct_field(&self, sf: &StructField) -> String {

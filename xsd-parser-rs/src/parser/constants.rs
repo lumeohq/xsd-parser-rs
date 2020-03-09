@@ -15,4 +15,5 @@ pub mod attribute {
     pub const SCHEMA_LOCATION: &str = "schemaLocation";
     pub const MIN_OCCURS: &str = "minOccurs";
     pub const MAX_OCCURS: &str = "maxOccurs";
+    pub const MEMBER_TYPES: &str = "memberTypes";
 }

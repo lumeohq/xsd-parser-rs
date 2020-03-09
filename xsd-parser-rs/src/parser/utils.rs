@@ -6,7 +6,7 @@ use roxmltree::{Namespace, Node};
 
 use crate::parser::constants::attribute;
 use crate::parser::node_parser::parse_node;
-use crate::parser::types::{RsEntity, StructField};
+use crate::parser::types::{Enum, RsEntity, StructField, StructFieldSource};
 use crate::parser::xsd_elements::{ElementType, XsdNode};
 
 pub fn target_namespace<'a, 'input>(node: &Node<'a, 'input>) -> Option<&'a Namespace<'input>> {
@@ -53,4 +53,14 @@ pub fn attributes_to_fields(node: &Node) -> Vec<StructField> {
             _ => unreachable!("Invalid attribute parsing: {:?}", n),
         })
         .collect()
+}
+
+pub fn enum_to_field(en: Enum) -> StructField {
+    StructField {
+        name: en.name.clone(),
+        type_name: en.name.clone(),
+        subtypes: vec![RsEntity::Enum(en)],
+        source: StructFieldSource::Element,
+        ..Default::default()
+    }
 }

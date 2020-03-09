@@ -63,7 +63,7 @@ impl<'input> Generator for YaserdeGenerator<'input> {
     }
 
     fn enum_case_macro(&self, ec: &EnumCase) -> Cow<'static, str> {
-        yaserde_rename_macro(ec.name.as_str()).into()
+        yaserde_for_enum_case(ec.name.as_str(), self.target_ns.as_ref()).into()
     }
 }
 
@@ -84,6 +84,22 @@ fn yaserde_for_element(name: &str, target_namespace: Option<&roxmltree::Namespac
         (Some(&name[0..index]), &name[index + 1..])
     } else {
         (target_namespace.and_then(|ns| ns.name()), name)
+    };
+
+    match prefix {
+        Some(p) => format!(
+            "    #[yaserde(prefix = \"{}\", rename = \"{}\")]\n",
+            p, field_name
+        ),
+        None => format!("    #[yaserde(rename = \"{}\")]\n", field_name),
+    }
+}
+
+fn yaserde_for_enum_case(name: &str, target_namespace: Option<&roxmltree::Namespace>) -> String {
+    let (prefix, field_name) = if let Some(index) = name.find(':') {
+        (Some(&name[0..index]), &name[index + 1..])
+    } else {
+        (None, name)
     };
 
     match prefix {
