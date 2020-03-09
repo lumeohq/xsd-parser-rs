@@ -4,10 +4,16 @@ use crate::parser::constants::attribute;
 use crate::parser::node_parser::parse_node;
 use crate::parser::types::{Enum, EnumCase, RsEntity, Struct};
 use crate::parser::utils::{
-    attributes_to_fields, enum_to_field, find_child, get_documentation, get_parent_name,
+    attributes_to_fields, enum_to_field, get_documentation, get_parent_name,
 };
 use crate::parser::xsd_elements::{ElementType, XsdNode};
 use std::cell::RefCell;
+
+fn enum_subtype_from_node(node: &Node, parent: &Node, index: usize) -> RsEntity {
+    let mut entity = parse_node(node, parent);
+    entity.set_name(format!("EnumCaseType_{}", index).as_str());
+    entity
+}
 
 pub fn parse_union(union: &Node) -> RsEntity {
     let mut cases = union
@@ -18,7 +24,8 @@ pub fn parse_union(union: &Node) -> RsEntity {
     let subtypes = union
         .children()
         .filter(|e| e.is_element() && e.xsd_type() == ElementType::SimpleType)
-        .map(|st| parse_node(&st, union))
+        .enumerate()
+        .map(|st| enum_subtype_from_node(&st.1, union, st.0))
         .collect::<Vec<RsEntity>>();
 
     cases.append(
@@ -56,7 +63,7 @@ pub fn parse_union(union: &Node) -> RsEntity {
 
 fn create_enum_cases(member_types: &str) -> Vec<EnumCase> {
     member_types
-        .split(" ")
+        .split(' ')
         .filter(|s| !s.is_empty())
         .map(|mt| EnumCase {
             name: mt.to_string(),
@@ -102,6 +109,50 @@ mod test {
                 assert_eq!(en.cases.len(), 2);
                 assert_eq!(en.cases[0].name, "Type1");
                 assert_eq!(en.cases[1].name, "Type2");
+                assert_eq!(en.name, String::default());
+            }
+            _ => unreachable!("Test Failed"),
+        }
+    }
+
+    #[test]
+    fn test_parse_union_with_nested_type() {
+        let doc = roxmltree::Document::parse(
+            r#"
+    <xs:schema xmlns:tt="http://www.onvif.org/ver10/schema" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.onvif.org/ver10/schema">
+        <xs:simpleType name="SomeType">
+            <xs:annotation><xs:documentation>Some text</xs:documentation></xs:annotation>
+            <xs:union memberTypes="Type1 Type2">
+                <xs:simpleType>
+                    <xs:list itemType="ListOfType" />
+                </xs:simpleType>
+                <xs:simpleType>
+                    <xs:list itemType="ListOfType1" />
+                </xs:simpleType>
+                <xs:simpleType>
+                    <xs:list itemType="ListOfType2" />
+                </xs:simpleType>
+            </xs:union>
+        </xs:simpleType>
+    </xs:schema>
+    "#
+        ).unwrap();
+
+        let simple_type = find_child(&doc.root_element(), "simpleType").unwrap();
+        let union = find_child(&simple_type, "union").unwrap();
+
+        let result = parse_union(&union);
+        match result {
+            RsEntity::Enum(en) => {
+                assert_eq!(en.cases.len(), 5);
+                assert_eq!(en.cases[0].name, "Type1");
+                assert_eq!(en.cases[1].name, "Type2");
+                assert_eq!(en.cases[2].name, "EnumCaseType_0");
+                assert_eq!(en.cases[3].name, "EnumCaseType_1");
+                assert_eq!(en.cases[4].name, "EnumCaseType_2");
+
+                assert_eq!(en.subtypes.len(), 3);
+                assert_eq!(en.subtypes[0].name(), "EnumCaseType_0");
                 assert_eq!(en.name, String::default());
             }
             _ => unreachable!("Test Failed"),
