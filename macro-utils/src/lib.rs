@@ -5,6 +5,7 @@ extern crate quote;
 extern crate syn;
 
 mod tuple;
+mod union;
 
 #[proc_macro_derive(UtilsTupleSerDe)]
 pub fn tuple_serde(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
@@ -17,6 +18,19 @@ pub fn tuple_serde(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let ts = quote! {
         #from_str
         #display
+        #serde
+    };
+
+    ts.into()
+}
+
+#[proc_macro_derive(UtilsUnionSerDe)]
+pub fn union_serde(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let ast = syn::parse(input).unwrap();
+
+    let serde = union::serde(&ast);
+
+    let ts = quote! {
         #serde
     };
 
