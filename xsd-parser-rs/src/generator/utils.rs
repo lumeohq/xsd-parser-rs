@@ -89,10 +89,13 @@ pub fn match_built_in_type(type_name: &str) -> &'static str {
 }
 
 pub fn sanitize(s: String) -> String {
-    if s.chars().next().unwrap().is_numeric() || RS_KEYWORDS.contains(&s.as_str()) {
-        return format!("_{}", s);
+    if s.is_empty() {
+        s
+    } else if s.chars().next().unwrap().is_numeric() || RS_KEYWORDS.contains(&s.as_str()) {
+        format!("_{}", s)
+    } else {
+        s
     }
-    s
 }
 
 const RS_KEYWORDS: &[&str] = &[

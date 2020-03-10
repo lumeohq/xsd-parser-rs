@@ -63,7 +63,7 @@ impl<'input> Generator for YaserdeGenerator<'input> {
     }
 
     fn enum_case_macro(&self, ec: &EnumCase) -> Cow<'static, str> {
-        yaserde_rename_macro(ec.name.as_str()).into()
+        yaserde_for_enum_case(ec.name.as_str()).into()
     }
 }
 
@@ -95,8 +95,20 @@ fn yaserde_for_element(name: &str, target_namespace: Option<&roxmltree::Namespac
     }
 }
 
-fn yaserde_rename_macro(name: &str) -> String {
-    format!("    #[yaserde(rename = \"{}\")]\n", name)
+fn yaserde_for_enum_case(name: &str) -> String {
+    let (prefix, field_name) = if let Some(index) = name.find(':') {
+        (Some(&name[0..index]), &name[index + 1..])
+    } else {
+        (None, name)
+    };
+
+    match prefix {
+        Some(p) => format!(
+            "    #[yaserde(prefix = \"{}\", rename = \"{}\")]\n",
+            p, field_name
+        ),
+        None => format!("    #[yaserde(rename = \"{}\")]\n", field_name),
+    }
 }
 
 fn yaserde_for_flatten_element() -> String {
@@ -116,13 +128,5 @@ mod test {
             yaserde_for_element("xop:Include", ns),
             "    #[yaserde(prefix = \"xop\", rename = \"Include\")]\n"
         );
-    }
-
-    #[test]
-    fn test_yaserde_rename_macro() {
-        assert_eq!(
-            yaserde_rename_macro("NTP"),
-            "    #[yaserde(rename = \"NTP\")]\n"
-        )
     }
 }

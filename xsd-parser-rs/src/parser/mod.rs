@@ -15,6 +15,7 @@ mod simple_content;
 mod simple_type;
 mod tests;
 pub mod types;
+mod union;
 mod utils;
 pub mod xsd_elements;
 

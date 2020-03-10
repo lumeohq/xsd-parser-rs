@@ -19,7 +19,8 @@ use crate::parser::parse;
 use crate::yaserde_generator::YaserdeGenerator;
 
 fn main() {
-    let text = load_file("xsd/onvif.xsd");
+    let text = load_file("xsd_external/b-2.xsd");
+    //let text = load_file("xsd/onvif.xsd");
     if let Ok(f) = parse(text.as_str()) {
         let gen = YaserdeGenerator::new(&f);
         for ty in f.types {

@@ -13,6 +13,7 @@ use crate::parser::sequence::parse_sequence;
 use crate::parser::simple_content::parse_simple_content;
 use crate::parser::simple_type::parse_simple_type;
 use crate::parser::types::RsEntity;
+use crate::parser::union::parse_union;
 use crate::parser::xsd_elements::{ElementType, XsdNode};
 
 pub fn parse_node(node: &Node, parent: &Node) -> RsEntity {
@@ -31,6 +32,7 @@ pub fn parse_node(node: &Node, parent: &Node) -> RsEntity {
         Sequence => parse_sequence(node, parent),
         SimpleContent => parse_simple_content(node),
         SimpleType => parse_simple_type(node, parent),
+        Union => parse_union(node),
 
         _ => {
             unreachable!("{:?}", node);

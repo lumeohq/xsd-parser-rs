@@ -24,7 +24,7 @@ pub fn parse_simple_type(node: &Node, parent: &Node) -> RsEntity {
         );
 
     let mut content_type = match content.xsd_type() {
-        ElementType::Union => unimplemented!(), //TODO: Add union parser (No in ONVIF)
+        ElementType::Union => parse_node(&content, node),
         ElementType::List => parse_node(&content, node),
         ElementType::Restriction(RestrictionType::SimpleType) => simple_type_restriction(&content),
         _ => unreachable!("Invalid content type of SimpleType {:?}", content),
