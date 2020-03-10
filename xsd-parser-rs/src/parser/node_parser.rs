@@ -22,7 +22,7 @@ pub fn parse_node(node: &Node, parent: &Node) -> RsEntity {
     match node.xsd_type() {
         Any => parse_any(node),
         AnyAttribute => parse_any_attribute(node),
-        Attribute => parse_attribute(node),
+        Attribute => parse_attribute(node, parent),
         Choice => parse_choice(node),
         ComplexContent => parse_complex_content(node),
         ComplexType => parse_complex_type(node, parent),
