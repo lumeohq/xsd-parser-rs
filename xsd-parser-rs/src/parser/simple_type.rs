@@ -2,7 +2,7 @@ use roxmltree::Node;
 
 use crate::parser::constants::attribute;
 use crate::parser::node_parser::parse_node;
-use crate::parser::types::{Enum, EnumCase, Facet, RsEntity, TupleStruct};
+use crate::parser::types::{Enum, EnumCase, EnumSource, Facet, RsEntity, TupleStruct};
 use crate::parser::utils::{get_documentation, get_parent_name};
 use crate::parser::xsd_elements::{ElementType, FacetType, RestrictionType, XsdNode};
 
@@ -62,6 +62,7 @@ fn simple_type_restriction(restriction: &Node) -> RsEntity {
                 value: value.clone(),
                 type_name: None,
                 type_modifiers: vec![],
+                source: EnumSource::Restriction,
             }),
             _ => None,
         })
@@ -69,11 +70,11 @@ fn simple_type_restriction(restriction: &Node) -> RsEntity {
 
     if !cases.is_empty() {
         RsEntity::Enum(Enum {
-            comment: None,
             name: format!("{}Enum", get_parent_name(restriction)),
             cases,
             type_name: base.to_string(),
-            subtypes: vec![],
+            source: EnumSource::Restriction,
+            ..Default::default()
         })
     } else {
         RsEntity::TupleStruct(TupleStruct {

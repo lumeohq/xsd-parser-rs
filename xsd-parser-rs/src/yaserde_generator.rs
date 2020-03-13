@@ -1,6 +1,6 @@
 use crate::generator::Generator;
 use crate::parser::types::{
-    Enum, EnumCase, RsFile, Struct, StructField, StructFieldSource, TupleStruct,
+    Enum, EnumCase, EnumSource, RsFile, Struct, StructField, StructFieldSource, TupleStruct,
 };
 use roxmltree::Namespace;
 use std::borrow::Cow;
@@ -47,7 +47,10 @@ impl<'input> Generator for YaserdeGenerator<'input> {
         .into()
     }
 
-    fn enum_macro(&self, _: &Enum) -> Cow<'static, str> {
+    fn enum_macro(&self, en: &Enum) -> Cow<'static, str> {
+        if en.source == EnumSource::Union {
+            return "#[derive(PartialEq, Debug, UtilsUnionSerDe)]".into();
+        }
         "#[derive(PartialEq, Debug, YaSerialize, YaDeserialize)]".into()
     }
 
@@ -63,6 +66,9 @@ impl<'input> Generator for YaserdeGenerator<'input> {
     }
 
     fn enum_case_macro(&self, ec: &EnumCase) -> Cow<'static, str> {
+        if ec.source == EnumSource::Union {
+            return "".into();
+        }
         yaserde_for_enum_case(ec.name.as_str()).into()
     }
 }
