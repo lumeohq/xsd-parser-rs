@@ -25,7 +25,6 @@ fn generator_does_not_panic() {
 }
 
 #[test]
-#[ignore]
 fn generator_output_has_correct_ast() {
     utils::ast_test(include_str!("input.xsd"), include_str!("expected.rs"));
 }
