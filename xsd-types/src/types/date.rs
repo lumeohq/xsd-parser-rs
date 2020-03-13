@@ -27,10 +27,34 @@ impl Default for Date {
   }
 }
 
+pub fn parse_timezone(s: &str) -> Result<FixedOffset, String> {
+    if s == "Z" {
+        return Ok(FixedOffset::east(0))
+    }
+
+    let tokens: Vec<&str>= s[1..].split(":").collect();
+    if tokens.len() != 2 || tokens[0].len() != 2 || tokens[1].len() != 2 {
+        return Err("bad timezone format".to_string())
+    }
+
+    let hours = tokens[0].parse::<i32>().unwrap();
+    let minutes = tokens[1].parse::<i32>().unwrap();
+
+    if hours > 14 || (hours == 14 && minutes != 0) || minutes >= 60 {
+        return Err("bad timezone format".to_string())
+    }
+
+    let offset_secs = 60 * (60 * hours + minutes);
+    match s.chars().next().unwrap() {
+        '+' => Ok(FixedOffset::east(offset_secs)),
+        '-' => Ok(FixedOffset::west(offset_secs)),
+        _ => Err("bad timezone format".to_string())
+    }
+}
+
 impl FromStr for Date {
     type Err = String;
 
-    // TODO: check timezone overflow (use east_opt)
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         if s.ends_with("Z") {
             return match NaiveDate::parse_from_str(&s[..s.len()-1], "%Y-%m-%d") {
@@ -43,22 +67,18 @@ impl FromStr for Date {
         }
 
         if s.contains("+") {
-            let tokens: Vec<&str>= s.split("+").collect();
-            if tokens.len() > 2 {
+            if s.matches("+").count() > 1 {
                 return Err("bad date format".to_string());
             }
 
-            let tz_tokens: Vec<&str>= tokens[1].split(":").collect();
-            if tz_tokens.len() != 2 {
-                return Err("bad timezone format".to_string());
-            }
-
-            let offset = 60 * tz_tokens[0].parse::<i32>().unwrap() + tz_tokens[1].parse::<i32>().unwrap();
-            return match NaiveDate::parse_from_str(tokens[0], "%Y-%m-%d") {
+            let idx: usize = s.match_indices("+").collect::<Vec<_>>()[0].0;
+            let date_token = &s[..idx];
+            let tz_token = &s[idx..];
+            return match NaiveDate::parse_from_str(date_token, "%Y-%m-%d") {
                 Err(e) => Err(e.to_string()),
                 Ok(d) => Ok(Date {
                     value: d,
-                    timezone: Some(FixedOffset::east(60 * offset))
+                    timezone: Some(parse_timezone(tz_token)?)
                 })
             };
         }
@@ -66,18 +86,12 @@ impl FromStr for Date {
         if s.matches("-").count() == 3 {
             let idx: usize = s.match_indices("-").collect::<Vec<_>>()[2].0;
             let date_token = &s[..idx];
-            let tz_tokens: Vec<&str>= (&s[idx+1..]).split(":").collect();
-
-            if tz_tokens.len() != 2 {
-                return Err("bad timezone format".to_string());
-            }
-
-            let offset = 60 * tz_tokens[0].parse::<i32>().unwrap() + tz_tokens[1].parse::<i32>().unwrap();
+            let tz_token = &s[idx..];
             return match NaiveDate::parse_from_str(date_token, "%Y-%m-%d") {
                 Err(e) => Err(e.to_string()),
                 Ok(d) => Ok(Date {
                     value: d,
-                    timezone: Some(FixedOffset::east(60 * -offset))
+                    timezone: Some(parse_timezone(tz_token)?)
                 })
             };
         }
@@ -92,6 +106,7 @@ impl FromStr for Date {
     }
 }
 
+// TODO: timezones
 impl fmt::Display for Date {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let fmt = StrftimeItems::new("%Y-%m-%d");
