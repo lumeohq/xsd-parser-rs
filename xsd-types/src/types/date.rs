@@ -106,11 +106,13 @@ impl FromStr for Date {
     }
 }
 
-// TODO: timezones
 impl fmt::Display for Date {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let fmt = StrftimeItems::new("%Y-%m-%d");
-        write!(f, "{}", self.value.format_with_items(fmt.clone()))
+        match self.timezone {
+            Some(tz) => write!(f, "{}{}", self.value.format_with_items(fmt.clone()), tz),
+            None => write!(f, "{}", self.value.format_with_items(fmt.clone()))
+        }
     }
 }
 
@@ -146,6 +148,21 @@ mod tests {
         assert_eq!(Date::from_str("2020-02-02-06:30"), Ok(Date{ value: NaiveDate::from_ymd(2020, 2, 2), timezone: Some(FixedOffset::west(6 * 3600 + 30 * 60)) }));
     }
 
+    #[test]
+    fn datetime_display_test() {
+        // No timezone.
+        assert_eq!(Date{ value: NaiveDate::from_ymd(2020, 2, 2), timezone: None }.to_string(), "2020-02-02");
+
+        // Timezone "Z".
+        assert_eq!(Date{ value: NaiveDate::from_ymd(2020, 2, 2), timezone: Some(FixedOffset::east(0)) }.to_string(), "2020-02-02+00:00");
+
+        // Positive offset.
+        assert_eq!(Date{ value: NaiveDate::from_ymd(2020, 2, 2), timezone: Some(FixedOffset::east(6 * 3600 + 30 * 60)) }.to_string(), "2020-02-02+06:30");
+
+        // Negative offset.
+        assert_eq!(Date{ value: NaiveDate::from_ymd(2020, 2, 2), timezone: Some(FixedOffset::west(6 * 3600 + 30 * 60)) }.to_string(), "2020-02-02-06:30");
+    }
+
     #[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]
     #[yaserde(prefix = "t", namespace = "t: test")]
     pub struct Message {
@@ -161,12 +178,12 @@ mod tests {
         let expected = r#"
             <?xml version="1.0" encoding="utf-8"?>
             <t:Message xmlns:t="test">
-                <t:CreatedAt>2020-02-02</t:CreatedAt>
+                <t:CreatedAt>2020-02-02+06:30</t:CreatedAt>
                 <t:Text>Hello world</t:Text>
             </t:Message>
             "#;
         let m = Message {
-            created_at: Date::from_chrono_naive_date(NaiveDate::from_ymd(2020, 2, 2)),
+            created_at: Date{ value: NaiveDate::from_ymd(2020, 2, 2), timezone: Some(FixedOffset::east(6 * 3600 + 30 * 60)) },
             text: "Hello world".to_string(),
         };
         let actual = yaserde::ser::to_string(&m).unwrap();
@@ -174,16 +191,17 @@ mod tests {
     }
 
     #[test]
-    fn integer_deserialize_test() {
+    fn datetime_deserialize_test() {
         let s = r#"
             <?xml version="1.0" encoding="utf-8"?>
             <t:Message xmlns:t="test">
-                <t:CreatedAt>2020-02-02</t:CreatedAt>
+                <t:CreatedAt>2020-02-02-06:30</t:CreatedAt>
                 <t:Text>Hello world</t:Text>
             </t:Message>
             "#;
         let m: Message = yaserde::de::from_str(&s).unwrap();
-        assert_eq!(m.created_at.to_chrono_naive_date(), NaiveDate::from_ymd(2020, 2, 2));
+        assert_eq!(m.created_at.value, NaiveDate::from_ymd(2020, 2, 2));
+        assert_eq!(m.created_at.timezone, Some(FixedOffset::west(6 * 3600 + 30 * 60)));
         assert_eq!(m.text, "Hello world".to_string());
     }
 }
