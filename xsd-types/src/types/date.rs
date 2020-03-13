@@ -56,14 +56,15 @@ impl FromStr for Date {
     type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        fn parse_naive_date(s: &str) -> Result<NaiveDate, String> {
+            NaiveDate::parse_from_str(&s, "%Y-%m-%d").map_err(|e| e.to_string())
+        }
+
         if s.ends_with("Z") {
-            return match NaiveDate::parse_from_str(&s[..s.len()-1], "%Y-%m-%d") {
-                Err(e) => Err(e.to_string()),
-                Ok(d) => Ok(Date {
-                    value: d,
-                    timezone: Some(FixedOffset::east(0))
-                })
-            };
+            return Ok(Date {
+                value: parse_naive_date(&s[..s.len()-1])?,
+                timezone: Some(FixedOffset::east(0))
+            });
         }
 
         if s.contains("+") {
@@ -74,35 +75,26 @@ impl FromStr for Date {
             let idx: usize = s.match_indices("+").collect::<Vec<_>>()[0].0;
             let date_token = &s[..idx];
             let tz_token = &s[idx..];
-            return match NaiveDate::parse_from_str(date_token, "%Y-%m-%d") {
-                Err(e) => Err(e.to_string()),
-                Ok(d) => Ok(Date {
-                    value: d,
-                    timezone: Some(parse_timezone(tz_token)?)
-                })
-            };
+            return Ok(Date {
+                value: parse_naive_date(date_token)?,
+                timezone: Some(parse_timezone(tz_token)?)
+            });
         }
 
         if s.matches("-").count() == 3 {
             let idx: usize = s.match_indices("-").collect::<Vec<_>>()[2].0;
             let date_token = &s[..idx];
             let tz_token = &s[idx..];
-            return match NaiveDate::parse_from_str(date_token, "%Y-%m-%d") {
-                Err(e) => Err(e.to_string()),
-                Ok(d) => Ok(Date {
-                    value: d,
-                    timezone: Some(parse_timezone(tz_token)?)
-                })
-            };
+            return Ok(Date {
+                value: parse_naive_date(date_token)?,
+                timezone: Some(parse_timezone(tz_token)?)
+            });
         }
 
-        return match NaiveDate::parse_from_str(s, "%Y-%m-%d") {
-            Err(e) => Err(e.to_string()),
-            Ok(d) => Ok(Date {
-                value: d,
-                timezone: None
-            })
-        };
+        Ok(Date {
+            value: parse_naive_date(s)?,
+            timezone: None
+        })
     }
 }
 
