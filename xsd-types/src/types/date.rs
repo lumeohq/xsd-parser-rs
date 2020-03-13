@@ -1,20 +1,19 @@
 use crate::utils;
-use chrono::{NaiveDate, format::ParseError, format::strftime::StrftimeItems};
+use chrono::{NaiveDate, format::strftime::StrftimeItems, FixedOffset};
 use std::fmt;
 use std::io::{Read, Write};
 use std::str::FromStr;
 use yaserde::{YaDeserialize, YaSerialize};
 
-// Note:
-// time zones are not supported in current implementation.
-#[derive(PartialEq, PartialOrd, Debug)]
+#[derive(PartialEq, Debug)]
 pub struct Date {
     pub value: NaiveDate,
+    pub timezone: Option<FixedOffset>,
 }
 
 impl Date {
     pub fn from_chrono_naive_date(date: NaiveDate) -> Self {
-        Date { value: date }
+        Date { value: date, timezone: None }
     }
 
     pub fn to_chrono_naive_date(&self) -> NaiveDate {
@@ -24,17 +23,72 @@ impl Date {
 
 impl Default for Date {
   fn default() -> Date {
-    Self{ value: NaiveDate::from_ymd(1, 1, 1) }
+    Self{ value: NaiveDate::from_ymd(1, 1, 1), timezone: None }
   }
 }
 
 impl FromStr for Date {
-    type Err = ParseError;
+    type Err = String;
 
+    // TODO: check timezone overflow (use east_opt)
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(Date {
-            value: NaiveDate::parse_from_str(s, "%Y-%m-%d")?,
-        })
+        if s.ends_with("Z") {
+            return match NaiveDate::parse_from_str(&s[..s.len()-1], "%Y-%m-%d") {
+                Err(e) => Err(e.to_string()),
+                Ok(d) => Ok(Date {
+                    value: d,
+                    timezone: Some(FixedOffset::east(0))
+                })
+            };
+        }
+
+        if s.contains("+") {
+            let tokens: Vec<&str>= s.split("+").collect();
+            if tokens.len() > 2 {
+                return Err("bad date format".to_string());
+            }
+
+            let tz_tokens: Vec<&str>= tokens[1].split(":").collect();
+            if tz_tokens.len() != 2 {
+                return Err("bad timezone format".to_string());
+            }
+
+            let offset = 60 * tz_tokens[0].parse::<i32>().unwrap() + tz_tokens[1].parse::<i32>().unwrap();
+            return match NaiveDate::parse_from_str(tokens[0], "%Y-%m-%d") {
+                Err(e) => Err(e.to_string()),
+                Ok(d) => Ok(Date {
+                    value: d,
+                    timezone: Some(FixedOffset::east(60 * offset))
+                })
+            };
+        }
+
+        if s.matches("-").count() == 3 {
+            let idx: usize = s.match_indices("-").collect::<Vec<_>>()[2].0;
+            let date_token = &s[..idx];
+            let tz_tokens: Vec<&str>= (&s[idx+1..]).split(":").collect();
+
+            if tz_tokens.len() != 2 {
+                return Err("bad timezone format".to_string());
+            }
+
+            let offset = 60 * tz_tokens[0].parse::<i32>().unwrap() + tz_tokens[1].parse::<i32>().unwrap();
+            return match NaiveDate::parse_from_str(date_token, "%Y-%m-%d") {
+                Err(e) => Err(e.to_string()),
+                Ok(d) => Ok(Date {
+                    value: d,
+                    timezone: Some(FixedOffset::east(60 * -offset))
+                })
+            };
+        }
+
+        return match NaiveDate::parse_from_str(s, "%Y-%m-%d") {
+            Err(e) => Err(e.to_string()),
+            Ok(d) => Ok(Date {
+                value: d,
+                timezone: None
+            })
+        };
     }
 }
 
@@ -61,6 +115,21 @@ impl YaSerialize for Date {
 mod tests {
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
+
+    #[test]
+    fn datetime_parse_test() {
+        // No timezone.
+        assert_eq!(Date::from_str("2020-02-02"), Ok(Date{ value: NaiveDate::from_ymd(2020, 2, 2), timezone: None }));
+
+        // Timezone "Z".
+        assert_eq!(Date::from_str("2020-02-02Z"), Ok(Date{ value: NaiveDate::from_ymd(2020, 2, 2), timezone: Some(FixedOffset::east(0)) }));
+
+        // Positive offset.
+        assert_eq!(Date::from_str("2020-02-02+06:30"), Ok(Date{ value: NaiveDate::from_ymd(2020, 2, 2), timezone: Some(FixedOffset::east(6 * 3600 + 30 * 60)) }));
+
+        // Negative offset.
+        assert_eq!(Date::from_str("2020-02-02-06:30"), Ok(Date{ value: NaiveDate::from_ymd(2020, 2, 2), timezone: Some(FixedOffset::west(6 * 3600 + 30 * 60)) }));
+    }
 
     #[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]
     #[yaserde(prefix = "t", namespace = "t: test")]
