@@ -1,4 +1,5 @@
 use crate::utils;
+use crate::types::utils::parse_timezone;
 use chrono::{NaiveDate, format::strftime::StrftimeItems, FixedOffset};
 use std::fmt;
 use std::io::{Read, Write};
@@ -25,31 +26,6 @@ impl Default for Date {
   fn default() -> Date {
     Self{ value: NaiveDate::from_ymd(1, 1, 1), timezone: None }
   }
-}
-
-pub fn parse_timezone(s: &str) -> Result<FixedOffset, String> {
-    if s == "Z" {
-        return Ok(FixedOffset::east(0))
-    }
-
-    let tokens: Vec<&str>= s[1..].split(":").collect();
-    if tokens.len() != 2 || tokens[0].len() != 2 || tokens[1].len() != 2 {
-        return Err("bad timezone format".to_string())
-    }
-
-    let hours = tokens[0].parse::<i32>().unwrap();
-    let minutes = tokens[1].parse::<i32>().unwrap();
-
-    if hours > 14 || (hours == 14 && minutes != 0) || minutes >= 60 {
-        return Err("bad timezone format".to_string())
-    }
-
-    let offset_secs = 60 * (60 * hours + minutes);
-    match s.chars().next().unwrap() {
-        '+' => Ok(FixedOffset::east(offset_secs)),
-        '-' => Ok(FixedOffset::west(offset_secs)),
-        _ => Err("bad timezone format".to_string())
-    }
 }
 
 impl FromStr for Date {
@@ -126,7 +102,7 @@ mod tests {
     use crate::utils::xml_eq::assert_xml_eq;
 
     #[test]
-    fn datetime_parse_test() {
+    fn date_parse_test() {
         // No timezone.
         assert_eq!(Date::from_str("2020-02-02"), Ok(Date{ value: NaiveDate::from_ymd(2020, 2, 2), timezone: None }));
 
@@ -141,7 +117,7 @@ mod tests {
     }
 
     #[test]
-    fn datetime_display_test() {
+    fn date_display_test() {
         // No timezone.
         assert_eq!(Date{ value: NaiveDate::from_ymd(2020, 2, 2), timezone: None }.to_string(), "2020-02-02");
 
@@ -166,7 +142,7 @@ mod tests {
     }
 
     #[test]
-    fn datetime_serialize_test() {
+    fn date_serialize_test() {
         let expected = r#"
             <?xml version="1.0" encoding="utf-8"?>
             <t:Message xmlns:t="test">
@@ -183,7 +159,7 @@ mod tests {
     }
 
     #[test]
-    fn datetime_deserialize_test() {
+    fn date_deserialize_test() {
         let s = r#"
             <?xml version="1.0" encoding="utf-8"?>
             <t:Message xmlns:t="test">
