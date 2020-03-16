@@ -125,6 +125,21 @@ pub struct Enum {
     pub comment: Option<String>,
     pub type_name: String,
     pub subtypes: Vec<RsEntity>,
+    pub source: EnumSource,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum EnumSource {
+    Restriction,
+    Choice,
+    Union,
+    NA,
+}
+
+impl Default for EnumSource {
+    fn default() -> Self {
+        EnumSource::NA
+    }
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -143,6 +158,7 @@ pub struct EnumCase {
     pub value: String,
     pub type_name: Option<String>,
     pub type_modifiers: Vec<TypeModifier>,
+    pub source: EnumSource,
 }
 
 #[derive(Debug, Clone, Default)]

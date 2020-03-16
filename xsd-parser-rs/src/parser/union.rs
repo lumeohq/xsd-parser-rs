@@ -2,7 +2,7 @@ use roxmltree::Node;
 
 use crate::parser::constants::attribute;
 use crate::parser::node_parser::parse_node;
-use crate::parser::types::{Enum, EnumCase, RsEntity, Struct};
+use crate::parser::types::{Enum, EnumCase, EnumSource, RsEntity, Struct};
 use crate::parser::utils::{
     attributes_to_fields, enum_to_field, get_documentation, get_parent_name,
 };
@@ -29,6 +29,7 @@ pub fn parse_union(union: &Node) -> RsEntity {
             .map(|val| EnumCase {
                 name: format!("EnumCase_{}", val.0),
                 type_name: Some(val.1.name().to_string()),
+                source: EnumSource::Union,
                 ..Default::default()
             })
             .collect(),
@@ -39,6 +40,7 @@ pub fn parse_union(union: &Node) -> RsEntity {
         subtypes,
         comment: get_documentation(union),
         type_name: "String".into(),
+        source: EnumSource::Union,
         ..Default::default()
     };
 
@@ -63,6 +65,7 @@ fn create_enum_cases(member_types: &str) -> Vec<EnumCase> {
         .map(|mt| EnumCase {
             name: mt.to_string(),
             type_name: Some(mt.to_string()),
+            source: EnumSource::Union,
             ..Default::default()
         })
         .collect()

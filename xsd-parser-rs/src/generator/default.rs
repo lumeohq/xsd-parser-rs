@@ -50,6 +50,34 @@ pub fn default_format_type(type_name: &str, target_ns: &Option<Namespace>) -> Co
     .into()
 }
 
+pub fn default_format_enum_case_name(
+    type_name: &str,
+    target_ns: &Option<Namespace>,
+) -> Cow<'static, str> {
+    fn replace(type_name: &str) -> String {
+        match type_name.find(':') {
+            Some(index) => format!(
+                "{}::{}",
+                &type_name[0..index],
+                to_pascal_case(&type_name[index..])
+            ),
+            None => to_pascal_case(type_name),
+        }
+    }
+
+    sanitize(match target_ns.as_ref().and_then(|ns| ns.name()) {
+        Some(name) => {
+            if type_name.starts_with(name) {
+                to_pascal_case(&type_name[name.len() + 1..])
+            } else {
+                replace(type_name)
+            }
+        }
+        None => replace(type_name),
+    })
+    .into()
+}
+
 pub fn default_modify_type(type_name: &str, modifiers: &[TypeModifier]) -> Cow<'static, str> {
     if modifiers.contains(&TypeModifier::Empty) {
         return "()".into();

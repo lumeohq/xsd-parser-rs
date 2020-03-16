@@ -9,7 +9,7 @@ pub enum FooType {
     #[yaserde(rename = "AUTO")]
     Auto,
 
-    __Unknown__(String)
+    __Unknown__(String),
 }
 
 impl Default for FooType {

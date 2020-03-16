@@ -7,7 +7,8 @@ use crate::parser::types::{
 };
 
 use crate::generator::default::{
-    default_format_comment, default_format_name, default_format_type, default_modify_type,
+    default_format_comment, default_format_enum_case_name, default_format_name,
+    default_format_type, default_modify_type,
 };
 use crate::generator::validator::{gen_facet_validation, gen_validate_impl};
 use roxmltree::Namespace;
@@ -131,7 +132,7 @@ pub trait Generator {
     fn gen_enum(&self, en: &Enum) -> String {
         let name = self.format_type(en.name.as_str());
         format!(
-            "{comment}{macros}\npub enum {name} {{\n{cases}\n    __Unknown__({typename})\n\
+            "{comment}{macros}\npub enum {name} {{\n{cases}\n    __Unknown__({typename}),\n\
             }}\n\n\
             {default}\n\n\
             {validation}\n\n\
@@ -147,7 +148,7 @@ pub trait Generator {
                 .collect::<Vec<String>>()
                 .join("\n"),
             typename = self.format_type(en.type_name.as_str()),
-            default = format!("impl Default for {name} {{\n  fn default() -> {name} {{\n    Self::__Unknown__(\"No valid variants\".into())\n  }}\n}}",
+            default = format!("impl Default for {name} {{\n    fn default() -> {name} {{\n        Self::__Unknown__(\"No valid variants\".into())\n    }}\n}}",
                               name = name
             ),
             subtypes = en
@@ -193,7 +194,7 @@ pub trait Generator {
     }
 
     fn get_enum_case_name(&self, ec: &EnumCase) -> String {
-        self.format_type(ec.name.as_str())
+        self.format_enum_case_name(ec.name.as_str())
             .split("::")
             .last()
             .unwrap()
@@ -244,5 +245,9 @@ pub trait Generator {
 
     fn format_type(&self, type_name: &str) -> Cow<'_, str> {
         default_format_type(type_name, self.target_ns())
+    }
+
+    fn format_enum_case_name(&self, name: &str) -> Cow<'_, str> {
+        default_format_enum_case_name(name, self.target_ns())
     }
 }

@@ -3,7 +3,7 @@ use roxmltree::Node;
 use crate::parser::constants::attribute;
 use crate::parser::node_parser::parse_node;
 use crate::parser::types::{
-    Alias, EnumCase, RsEntity, Struct, StructField, StructFieldSource, TypeModifier,
+    Alias, EnumCase, EnumSource, RsEntity, Struct, StructField, StructFieldSource, TypeModifier,
 };
 use crate::parser::utils::get_documentation;
 use crate::parser::xsd_elements::{max_occurs, min_occurs, ElementType, MaxOccurs, XsdNode};
@@ -40,6 +40,7 @@ fn parse_case_of_choice(element: &Node) -> RsEntity {
             type_name: Some(ref_attr.to_string()),
             comment: get_documentation(element),
             type_modifiers: vec![element_modifier(element)],
+            source: EnumSource::Choice,
         });
     }
 
@@ -52,6 +53,7 @@ fn parse_case_of_choice(element: &Node) -> RsEntity {
             type_name: Some(element.attr_type().unwrap().to_string()),
             comment: get_documentation(element),
             type_modifiers: vec![element_modifier(element)],
+            source: EnumSource::Choice,
         });
     }
 
@@ -61,6 +63,7 @@ fn parse_case_of_choice(element: &Node) -> RsEntity {
         type_name: None,
         comment: get_documentation(element),
         type_modifiers: vec![element_modifier(element)],
+        source: EnumSource::Choice,
     })
 }
 
