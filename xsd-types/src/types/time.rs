@@ -42,19 +42,19 @@ impl FromStr for Time {
             NaiveTime::parse_from_str(s, "%H:%M:%S").map_err(|e| e.to_string())
         }
 
-        if s.ends_with("Z") {
+        if s.ends_with('Z') {
             return Ok(Time {
                 value: parse_naive_time(&s[..s.len() - 1])?,
                 timezone: Some(FixedOffset::east(0)),
             });
         }
 
-        if s.contains("+") {
-            if s.matches("+").count() > 1 {
+        if s.contains('+') {
+            if s.matches('+').count() > 1 {
                 return Err("bad date format".to_string());
             }
 
-            let idx: usize = s.match_indices("+").collect::<Vec<_>>()[0].0;
+            let idx: usize = s.match_indices('+').collect::<Vec<_>>()[0].0;
             let time_token = &s[..idx];
             let tz_token = &s[idx..];
             return Ok(Time {
@@ -63,12 +63,12 @@ impl FromStr for Time {
             });
         }
 
-        if s.contains("-") {
-            if s.matches("-").count() > 1 {
+        if s.contains('-') {
+            if s.matches('-').count() > 1 {
                 return Err("bad date format".to_string());
             }
 
-            let idx: usize = s.match_indices("-").collect::<Vec<_>>()[0].0;
+            let idx: usize = s.match_indices('-').collect::<Vec<_>>()[0].0;
             let time_token = &s[..idx];
             let tz_token = &s[idx..];
             return Ok(Time {
@@ -96,7 +96,7 @@ impl fmt::Display for Time {
 
 impl YaDeserialize for Time {
     fn deserialize<R: Read>(reader: &mut yaserde::de::Deserializer<R>) -> Result<Self, String> {
-        utils::yaserde::deserialize(reader, |s| Time::from_str(s).map_err(|e| e.to_string()))
+        utils::yaserde::deserialize(reader, |s| Time::from_str(s))
     }
 }
 

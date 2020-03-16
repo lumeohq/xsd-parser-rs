@@ -42,19 +42,19 @@ impl FromStr for Date {
             NaiveDate::parse_from_str(&s, "%Y-%m-%d").map_err(|e| e.to_string())
         }
 
-        if s.ends_with("Z") {
+        if s.ends_with('Z') {
             return Ok(Date {
                 value: parse_naive_date(&s[..s.len() - 1])?,
                 timezone: Some(FixedOffset::east(0)),
             });
         }
 
-        if s.contains("+") {
-            if s.matches("+").count() > 1 {
+        if s.contains('+') {
+            if s.matches('+').count() > 1 {
                 return Err("bad date format".to_string());
             }
 
-            let idx: usize = s.match_indices("+").collect::<Vec<_>>()[0].0;
+            let idx: usize = s.match_indices('+').collect::<Vec<_>>()[0].0;
             let date_token = &s[..idx];
             let tz_token = &s[idx..];
             return Ok(Date {
@@ -63,8 +63,8 @@ impl FromStr for Date {
             });
         }
 
-        if s.matches("-").count() == 3 {
-            let idx: usize = s.match_indices("-").collect::<Vec<_>>()[2].0;
+        if s.matches('-').count() == 3 {
+            let idx: usize = s.match_indices('-').collect::<Vec<_>>()[2].0;
             let date_token = &s[..idx];
             let tz_token = &s[idx..];
             return Ok(Date {
@@ -92,7 +92,7 @@ impl fmt::Display for Date {
 
 impl YaDeserialize for Date {
     fn deserialize<R: Read>(reader: &mut yaserde::de::Deserializer<R>) -> Result<Self, String> {
-        utils::yaserde::deserialize(reader, |s| Date::from_str(s).map_err(|e| e.to_string()))
+        utils::yaserde::deserialize(reader, |s| Date::from_str(s))
     }
 }
 

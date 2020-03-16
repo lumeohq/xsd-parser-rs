@@ -6,7 +6,7 @@ pub fn parse_timezone(s: &str) -> Result<FixedOffset, String> {
         return Ok(FixedOffset::east(0));
     }
 
-    let tokens: Vec<&str> = s[1..].split(":").collect();
+    let tokens: Vec<&str> = s[1..].split(':').collect();
     if tokens.len() != 2 || tokens[0].len() != 2 || tokens[1].len() != 2 {
         return Err("bad timezone format".to_string());
     }

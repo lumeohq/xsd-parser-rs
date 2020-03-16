@@ -37,10 +37,11 @@ impl FromStr for DateTime {
     // Since RFC 3339 does not allow such behavior, the function tries to add
     // 'Z' (which equals "+00:00") in case there is no timezone provided.
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let tz_provided = s.ends_with("Z") || s.contains("+") || s.matches("-").count() == 3;
-        let s_with_timezone = match tz_provided {
-            true => s.to_string(),
-            false => format!("{}Z", s),
+        let tz_provided = s.ends_with('Z') || s.contains('+') || s.matches('-').count() == 3;
+        let s_with_timezone = if tz_provided {
+            s.to_string()
+        } else {
+            format!("{}Z", s)
         };
         match CDateTime::parse_from_rfc3339(&s_with_timezone) {
             Ok(cdt) => Ok(DateTime { value: cdt }),
