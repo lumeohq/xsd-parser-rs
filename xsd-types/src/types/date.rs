@@ -1,6 +1,6 @@
-use crate::utils;
 use crate::types::utils::parse_timezone;
-use chrono::{NaiveDate, format::strftime::StrftimeItems, FixedOffset};
+use crate::utils;
+use chrono::{format::strftime::StrftimeItems, FixedOffset, NaiveDate};
 use std::fmt;
 use std::io::{Read, Write};
 use std::str::FromStr;
@@ -14,7 +14,10 @@ pub struct Date {
 
 impl Date {
     pub fn from_chrono_naive_date(date: NaiveDate) -> Self {
-        Date { value: date, timezone: None }
+        Date {
+            value: date,
+            timezone: None,
+        }
     }
 
     pub fn to_chrono_naive_date(&self) -> NaiveDate {
@@ -23,9 +26,12 @@ impl Date {
 }
 
 impl Default for Date {
-  fn default() -> Date {
-    Self{ value: NaiveDate::from_ymd(1, 1, 1), timezone: None }
-  }
+    fn default() -> Date {
+        Self {
+            value: NaiveDate::from_ymd(1, 1, 1),
+            timezone: None,
+        }
+    }
 }
 
 impl FromStr for Date {
@@ -38,8 +44,8 @@ impl FromStr for Date {
 
         if s.ends_with("Z") {
             return Ok(Date {
-                value: parse_naive_date(&s[..s.len()-1])?,
-                timezone: Some(FixedOffset::east(0))
+                value: parse_naive_date(&s[..s.len() - 1])?,
+                timezone: Some(FixedOffset::east(0)),
             });
         }
 
@@ -53,7 +59,7 @@ impl FromStr for Date {
             let tz_token = &s[idx..];
             return Ok(Date {
                 value: parse_naive_date(date_token)?,
-                timezone: Some(parse_timezone(tz_token)?)
+                timezone: Some(parse_timezone(tz_token)?),
             });
         }
 
@@ -63,13 +69,13 @@ impl FromStr for Date {
             let tz_token = &s[idx..];
             return Ok(Date {
                 value: parse_naive_date(date_token)?,
-                timezone: Some(parse_timezone(tz_token)?)
+                timezone: Some(parse_timezone(tz_token)?),
             });
         }
 
         Ok(Date {
             value: parse_naive_date(s)?,
-            timezone: None
+            timezone: None,
         })
     }
 }
@@ -79,7 +85,7 @@ impl fmt::Display for Date {
         let fmt = StrftimeItems::new("%Y-%m-%d");
         match self.timezone {
             Some(tz) => write!(f, "{}{}", self.value.format_with_items(fmt.clone()), tz),
-            None => write!(f, "{}", self.value.format_with_items(fmt.clone()))
+            None => write!(f, "{}", self.value.format_with_items(fmt.clone())),
         }
     }
 }
@@ -104,31 +110,83 @@ mod tests {
     #[test]
     fn date_parse_test() {
         // No timezone.
-        assert_eq!(Date::from_str("2020-02-02"), Ok(Date{ value: NaiveDate::from_ymd(2020, 2, 2), timezone: None }));
+        assert_eq!(
+            Date::from_str("2020-02-02"),
+            Ok(Date {
+                value: NaiveDate::from_ymd(2020, 2, 2),
+                timezone: None
+            })
+        );
 
         // Timezone "Z".
-        assert_eq!(Date::from_str("2020-02-02Z"), Ok(Date{ value: NaiveDate::from_ymd(2020, 2, 2), timezone: Some(FixedOffset::east(0)) }));
+        assert_eq!(
+            Date::from_str("2020-02-02Z"),
+            Ok(Date {
+                value: NaiveDate::from_ymd(2020, 2, 2),
+                timezone: Some(FixedOffset::east(0))
+            })
+        );
 
         // Positive offset.
-        assert_eq!(Date::from_str("2020-02-02+06:30"), Ok(Date{ value: NaiveDate::from_ymd(2020, 2, 2), timezone: Some(FixedOffset::east(6 * 3600 + 30 * 60)) }));
+        assert_eq!(
+            Date::from_str("2020-02-02+06:30"),
+            Ok(Date {
+                value: NaiveDate::from_ymd(2020, 2, 2),
+                timezone: Some(FixedOffset::east(6 * 3600 + 30 * 60))
+            })
+        );
 
         // Negative offset.
-        assert_eq!(Date::from_str("2020-02-02-06:30"), Ok(Date{ value: NaiveDate::from_ymd(2020, 2, 2), timezone: Some(FixedOffset::west(6 * 3600 + 30 * 60)) }));
+        assert_eq!(
+            Date::from_str("2020-02-02-06:30"),
+            Ok(Date {
+                value: NaiveDate::from_ymd(2020, 2, 2),
+                timezone: Some(FixedOffset::west(6 * 3600 + 30 * 60))
+            })
+        );
     }
 
     #[test]
     fn date_display_test() {
         // No timezone.
-        assert_eq!(Date{ value: NaiveDate::from_ymd(2020, 2, 2), timezone: None }.to_string(), "2020-02-02");
+        assert_eq!(
+            Date {
+                value: NaiveDate::from_ymd(2020, 2, 2),
+                timezone: None
+            }
+            .to_string(),
+            "2020-02-02"
+        );
 
         // Timezone +00:00.
-        assert_eq!(Date{ value: NaiveDate::from_ymd(2020, 2, 2), timezone: Some(FixedOffset::east(0)) }.to_string(), "2020-02-02+00:00");
+        assert_eq!(
+            Date {
+                value: NaiveDate::from_ymd(2020, 2, 2),
+                timezone: Some(FixedOffset::east(0))
+            }
+            .to_string(),
+            "2020-02-02+00:00"
+        );
 
         // Positive offset.
-        assert_eq!(Date{ value: NaiveDate::from_ymd(2020, 2, 2), timezone: Some(FixedOffset::east(6 * 3600 + 30 * 60)) }.to_string(), "2020-02-02+06:30");
+        assert_eq!(
+            Date {
+                value: NaiveDate::from_ymd(2020, 2, 2),
+                timezone: Some(FixedOffset::east(6 * 3600 + 30 * 60))
+            }
+            .to_string(),
+            "2020-02-02+06:30"
+        );
 
         // Negative offset.
-        assert_eq!(Date{ value: NaiveDate::from_ymd(2020, 2, 2), timezone: Some(FixedOffset::west(6 * 3600 + 30 * 60)) }.to_string(), "2020-02-02-06:30");
+        assert_eq!(
+            Date {
+                value: NaiveDate::from_ymd(2020, 2, 2),
+                timezone: Some(FixedOffset::west(6 * 3600 + 30 * 60))
+            }
+            .to_string(),
+            "2020-02-02-06:30"
+        );
     }
 
     #[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]
@@ -151,7 +209,10 @@ mod tests {
             </t:Message>
             "#;
         let m = Message {
-            created_at: Date{ value: NaiveDate::from_ymd(2020, 2, 2), timezone: Some(FixedOffset::east(6 * 3600 + 30 * 60)) },
+            created_at: Date {
+                value: NaiveDate::from_ymd(2020, 2, 2),
+                timezone: Some(FixedOffset::east(6 * 3600 + 30 * 60)),
+            },
             text: "Hello world".to_string(),
         };
         let actual = yaserde::ser::to_string(&m).unwrap();
@@ -169,7 +230,10 @@ mod tests {
             "#;
         let m: Message = yaserde::de::from_str(&s).unwrap();
         assert_eq!(m.created_at.value, NaiveDate::from_ymd(2020, 2, 2));
-        assert_eq!(m.created_at.timezone, Some(FixedOffset::west(6 * 3600 + 30 * 60)));
+        assert_eq!(
+            m.created_at.timezone,
+            Some(FixedOffset::west(6 * 3600 + 30 * 60)),
+        );
         assert_eq!(m.text, "Hello world".to_string());
     }
 }

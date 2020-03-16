@@ -1,5 +1,5 @@
 use crate::utils;
-use chrono::{DateTime as CDateTime, FixedOffset, format::ParseError};
+use chrono::{format::ParseError, DateTime as CDateTime, FixedOffset};
 use std::fmt;
 use std::io::{Read, Write};
 use std::str::FromStr;
@@ -21,9 +21,11 @@ impl DateTime {
 }
 
 impl Default for DateTime {
-  fn default() -> DateTime {
-    Self{value: CDateTime::parse_from_rfc3339("0001-01-01T00:00:00Z").unwrap()}
-  }
+    fn default() -> DateTime {
+        Self {
+            value: CDateTime::parse_from_rfc3339("0001-01-01T00:00:00Z").unwrap(),
+        }
+    }
 }
 
 impl FromStr for DateTime {
@@ -38,7 +40,7 @@ impl FromStr for DateTime {
         let tz_provided = s.ends_with("Z") || s.contains("+") || s.matches("-").count() == 3;
         let s_with_timezone = match tz_provided {
             true => s.to_string(),
-            false => format!("{}Z", s)
+            false => format!("{}Z", s),
         };
         match CDateTime::parse_from_rfc3339(&s_with_timezone) {
             Ok(cdt) => Ok(DateTime { value: cdt }),
@@ -87,21 +89,33 @@ mod tests {
         let offset = FixedOffset::east(0);
         let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;
         let dt = CDateTime::<FixedOffset>::from_utc(dt_utc, offset);
-        assert_eq!(DateTime::from_str("2020-03-07T04:40:00"), Ok(DateTime{ value: dt }));
+        assert_eq!(
+            DateTime::from_str("2020-03-07T04:40:00"),
+            Ok(DateTime { value: dt })
+        );
         // Timezone "Z".
-        assert_eq!(DateTime::from_str("2020-03-07T04:40:00Z"), Ok(DateTime{ value: dt }));
+        assert_eq!(
+            DateTime::from_str("2020-03-07T04:40:00Z"),
+            Ok(DateTime { value: dt })
+        );
 
         // Positive offset.
         let offset = FixedOffset::east(6 * 3600 + 30 * 60);
         let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;
         let dt = CDateTime::<FixedOffset>::from_utc(dt_utc, offset);
-        assert_eq!(DateTime::from_str("2020-03-07T04:40:00+06:30"), Ok(DateTime{ value: dt }));
+        assert_eq!(
+            DateTime::from_str("2020-03-07T04:40:00+06:30"),
+            Ok(DateTime { value: dt })
+        );
 
         // Negative offset.
         let offset = FixedOffset::west(6 * 3600 + 30 * 60);
         let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;
         let dt = CDateTime::<FixedOffset>::from_utc(dt_utc, offset);
-        assert_eq!(DateTime::from_str("2020-03-07T04:40:00-06:30"), Ok(DateTime{ value: dt }));
+        assert_eq!(
+            DateTime::from_str("2020-03-07T04:40:00-06:30"),
+            Ok(DateTime { value: dt })
+        );
     }
 
     #[test]
@@ -110,19 +124,28 @@ mod tests {
         let offset = FixedOffset::east(0);
         let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;
         let dt = CDateTime::<FixedOffset>::from_utc(dt_utc, offset);
-        assert_eq!(DateTime{ value: dt }.to_string(), "2020-03-07T04:40:00+00:00");
+        assert_eq!(
+            DateTime { value: dt }.to_string(),
+            "2020-03-07T04:40:00+00:00"
+        );
 
         // Positive offset.
         let offset = FixedOffset::east(6 * 3600 + 30 * 60);
         let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;
         let dt = CDateTime::<FixedOffset>::from_utc(dt_utc, offset);
-        assert_eq!(DateTime{ value: dt }.to_string(), "2020-03-07T04:40:00+06:30");
+        assert_eq!(
+            DateTime { value: dt }.to_string(),
+            "2020-03-07T04:40:00+06:30"
+        );
 
         // Negative offset.
         let offset = FixedOffset::west(6 * 3600 + 30 * 60);
         let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;
         let dt = CDateTime::<FixedOffset>::from_utc(dt_utc, offset);
-        assert_eq!(DateTime{ value: dt }.to_string(), "2020-03-07T04:40:00-06:30");
+        assert_eq!(
+            DateTime { value: dt }.to_string(),
+            "2020-03-07T04:40:00-06:30"
+        );
     }
 
     #[test]
@@ -139,7 +162,7 @@ mod tests {
         let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;
         let dt = CDateTime::<FixedOffset>::from_utc(dt_utc, offset);
         let m = Message {
-            created_at: DateTime{ value: dt },
+            created_at: DateTime { value: dt },
             text: "Hello world".to_string(),
         };
         let actual = yaserde::ser::to_string(&m).unwrap();

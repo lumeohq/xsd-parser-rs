@@ -1,6 +1,6 @@
-use crate::utils;
 use crate::types::utils::parse_timezone;
-use chrono::{NaiveTime, format::strftime::StrftimeItems, FixedOffset};
+use crate::utils;
+use chrono::{format::strftime::StrftimeItems, FixedOffset, NaiveTime};
 use std::fmt;
 use std::io::{Read, Write};
 use std::str::FromStr;
@@ -14,7 +14,10 @@ pub struct Time {
 
 impl Time {
     pub fn from_chrono_naive_time(time: NaiveTime) -> Self {
-        Time { value: time, timezone: None }
+        Time {
+            value: time,
+            timezone: None,
+        }
     }
 
     pub fn to_chrono_naive_time(&self) -> NaiveTime {
@@ -23,9 +26,12 @@ impl Time {
 }
 
 impl Default for Time {
-  fn default() -> Time {
-    Self{ value: NaiveTime::from_hms(0, 0, 0), timezone: None }
-  }
+    fn default() -> Time {
+        Self {
+            value: NaiveTime::from_hms(0, 0, 0),
+            timezone: None,
+        }
+    }
 }
 
 impl FromStr for Time {
@@ -38,8 +44,8 @@ impl FromStr for Time {
 
         if s.ends_with("Z") {
             return Ok(Time {
-                value: parse_naive_time(&s[..s.len()-1])?,
-                timezone: Some(FixedOffset::east(0))
+                value: parse_naive_time(&s[..s.len() - 1])?,
+                timezone: Some(FixedOffset::east(0)),
             });
         }
 
@@ -53,7 +59,7 @@ impl FromStr for Time {
             let tz_token = &s[idx..];
             return Ok(Time {
                 value: parse_naive_time(time_token)?,
-                timezone: Some(parse_timezone(tz_token)?)
+                timezone: Some(parse_timezone(tz_token)?),
             });
         }
 
@@ -67,13 +73,13 @@ impl FromStr for Time {
             let tz_token = &s[idx..];
             return Ok(Time {
                 value: parse_naive_time(time_token)?,
-                timezone: Some(parse_timezone(tz_token)?)
+                timezone: Some(parse_timezone(tz_token)?),
             });
         }
 
         Ok(Time {
             value: parse_naive_time(s)?,
-            timezone: None
+            timezone: None,
         })
     }
 }
@@ -82,8 +88,8 @@ impl fmt::Display for Time {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let fmt = StrftimeItems::new("%H:%M:%S");
         match self.timezone {
-            Some(tz) =>  write!(f, "{}{}", self.value.format_with_items(fmt.clone()), tz),
-            None =>  write!(f, "{}", self.value.format_with_items(fmt.clone()))
+            Some(tz) => write!(f, "{}{}", self.value.format_with_items(fmt.clone()), tz),
+            None => write!(f, "{}", self.value.format_with_items(fmt.clone())),
         }
     }
 }
@@ -108,31 +114,83 @@ mod tests {
     #[test]
     fn time_parse_test() {
         // No timezone.
-        assert_eq!(Time::from_str("04:40:00"), Ok(Time{ value: NaiveTime::from_hms(4, 40, 0), timezone: None }));
+        assert_eq!(
+            Time::from_str("04:40:00"),
+            Ok(Time {
+                value: NaiveTime::from_hms(4, 40, 0),
+                timezone: None
+            })
+        );
 
         // Timezone "Z".
-        assert_eq!(Time::from_str("04:40:00Z"), Ok(Time{ value: NaiveTime::from_hms(4, 40, 0), timezone: Some(FixedOffset::east(0)) }));
+        assert_eq!(
+            Time::from_str("04:40:00Z"),
+            Ok(Time {
+                value: NaiveTime::from_hms(4, 40, 0),
+                timezone: Some(FixedOffset::east(0))
+            })
+        );
 
         // Positive offset.
-        assert_eq!(Time::from_str("04:40:00+06:30"), Ok(Time{ value: NaiveTime::from_hms(4, 40, 0), timezone: Some(FixedOffset::east(6 * 3600 + 30 * 60)) }));
+        assert_eq!(
+            Time::from_str("04:40:00+06:30"),
+            Ok(Time {
+                value: NaiveTime::from_hms(4, 40, 0),
+                timezone: Some(FixedOffset::east(6 * 3600 + 30 * 60))
+            })
+        );
 
         // Negative offset.
-        assert_eq!(Time::from_str("04:40:00-06:30"), Ok(Time{ value: NaiveTime::from_hms(4, 40, 0), timezone: Some(FixedOffset::west(6 * 3600 + 30 * 60)) }));
+        assert_eq!(
+            Time::from_str("04:40:00-06:30"),
+            Ok(Time {
+                value: NaiveTime::from_hms(4, 40, 0),
+                timezone: Some(FixedOffset::west(6 * 3600 + 30 * 60))
+            })
+        );
     }
 
     #[test]
     fn time_display_test() {
         // No timezone.
-        assert_eq!(Time{ value: NaiveTime::from_hms(4, 40, 0), timezone: None }.to_string(), "04:40:00");
+        assert_eq!(
+            Time {
+                value: NaiveTime::from_hms(4, 40, 0),
+                timezone: None
+            }
+            .to_string(),
+            "04:40:00"
+        );
 
         // Timezone +00:00.
-        assert_eq!(Time{ value: NaiveTime::from_hms(4, 40, 0), timezone: Some(FixedOffset::east(0)) }.to_string(), "04:40:00+00:00");
+        assert_eq!(
+            Time {
+                value: NaiveTime::from_hms(4, 40, 0),
+                timezone: Some(FixedOffset::east(0))
+            }
+            .to_string(),
+            "04:40:00+00:00"
+        );
 
         // Positive offset.
-        assert_eq!(Time{ value: NaiveTime::from_hms(4, 40, 0), timezone: Some(FixedOffset::east(6 * 3600 + 30 * 60)) }.to_string(), "04:40:00+06:30");
+        assert_eq!(
+            Time {
+                value: NaiveTime::from_hms(4, 40, 0),
+                timezone: Some(FixedOffset::east(6 * 3600 + 30 * 60))
+            }
+            .to_string(),
+            "04:40:00+06:30"
+        );
 
         // Negative offset.
-        assert_eq!(Time{ value: NaiveTime::from_hms(4, 40, 0), timezone: Some(FixedOffset::west(6 * 3600 + 30 * 60)) }.to_string(), "04:40:00-06:30");
+        assert_eq!(
+            Time {
+                value: NaiveTime::from_hms(4, 40, 0),
+                timezone: Some(FixedOffset::west(6 * 3600 + 30 * 60))
+            }
+            .to_string(),
+            "04:40:00-06:30"
+        );
     }
 
     #[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]
@@ -155,7 +213,10 @@ mod tests {
             </t:Message>
             "#;
         let m = Message {
-            created_at: Time{ value: NaiveTime::from_hms(4, 40, 0), timezone: Some(FixedOffset::east(6 * 3600 + 30 * 60)) },
+            created_at: Time {
+                value: NaiveTime::from_hms(4, 40, 0),
+                timezone: Some(FixedOffset::east(6 * 3600 + 30 * 60)),
+            },
             text: "Hello world".to_string(),
         };
         let actual = yaserde::ser::to_string(&m).unwrap();
@@ -173,7 +234,10 @@ mod tests {
             "#;
         let m: Message = yaserde::de::from_str(&s).unwrap();
         assert_eq!(m.created_at.value, NaiveTime::from_hms(4, 40, 0));
-        assert_eq!(m.created_at.timezone, Some(FixedOffset::west(6 * 3600 + 30 * 60)));
+        assert_eq!(
+            m.created_at.timezone,
+            Some(FixedOffset::west(6 * 3600 + 30 * 60))
+        );
         assert_eq!(m.text, "Hello world".to_string());
     }
 }
