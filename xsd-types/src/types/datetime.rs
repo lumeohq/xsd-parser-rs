@@ -1,5 +1,5 @@
 use crate::utils;
-use chrono::{DateTime as CDateTime, FixedOffset, format::ParseError, NaiveDate};
+use chrono::{DateTime as CDateTime, FixedOffset, format::ParseError};
 use std::fmt;
 use std::io::{Read, Write};
 use std::str::FromStr;
@@ -33,19 +33,16 @@ impl FromStr for DateTime {
     // `parse_from_rfc3339` parses an RFC 3339 and ISO 8601 date and time string.
     // XSD follows ISO 8601, which allows no time zone at the end of literal.
     // Since RFC 3339 does not allow such behavior, the function tries to add
-    // 'Z' (which equals "+00:00") at the end of literal in case of ParseError,
-    // and parse literal again.
-    // In case of a second failure, the function returns the FIRST error.
+    // 'Z' (which equals "+00:00") in case there is no timezone provided.
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match CDateTime::parse_from_rfc3339(s) {
+        let tz_provided = s.ends_with("Z") || s.contains("+") || s.matches("-").count() == 3;
+        let s_with_timezone = match tz_provided {
+            true => s.to_string(),
+            false => format!("{}Z", s)
+        };
+        match CDateTime::parse_from_rfc3339(&s_with_timezone) {
             Ok(cdt) => Ok(DateTime { value: cdt }),
-            Err(err) => {
-                let s_with_timezone = format!("{}Z", s);
-                match CDateTime::parse_from_rfc3339(&s_with_timezone) {
-                    Ok(cdt) => Ok(DateTime { value: cdt }),
-                    Err(_) => Err(err)
-                }
-            }
+            Err(err) => Err(err),
         }
     }
 }
@@ -72,7 +69,7 @@ impl YaSerialize for DateTime {
 mod tests {
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
-    use chrono::NaiveDateTime;
+    use chrono::NaiveDate;
 
     #[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]
     #[yaserde(prefix = "t", namespace = "t: test")]
