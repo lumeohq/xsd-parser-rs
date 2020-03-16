@@ -1,5 +1,5 @@
 use crate::utils;
-use chrono::{DateTime as CDateTime, FixedOffset, format::ParseError};
+use chrono::{DateTime as CDateTime, FixedOffset, format::ParseError, NaiveDate};
 use std::fmt;
 use std::io::{Read, Write};
 use std::str::FromStr;
@@ -72,6 +72,7 @@ impl YaSerialize for DateTime {
 mod tests {
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
+    use chrono::NaiveDateTime;
 
     #[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]
     #[yaserde(prefix = "t", namespace = "t: test")]
@@ -88,12 +89,16 @@ mod tests {
         let expected = r#"
             <?xml version="1.0" encoding="utf-8"?>
             <t:Message xmlns:t="test">
-                <t:CreatedAt>2020-03-07T04:40:00+00:00</t:CreatedAt>
+                <t:CreatedAt>2020-03-07T04:40:00+06:30</t:CreatedAt>
                 <t:Text>Hello world</t:Text>
             </t:Message>
             "#;
+
+        let offset = FixedOffset::east(6 * 3600 + 30 * 60);
+        let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;
+        let dt = CDateTime::<FixedOffset>::from_utc(dt_utc, offset);
         let m = Message {
-            created_at: DateTime::from_str("2020-03-07T04:40:00").unwrap(),
+            created_at: DateTime{ value: dt },
             text: "Hello world".to_string(),
         };
         let actual = yaserde::ser::to_string(&m).unwrap();
@@ -101,16 +106,21 @@ mod tests {
     }
 
     #[test]
-    fn integer_deserialize_test() {
+    fn datetime_deserialize_test() {
         let s = r#"
             <?xml version="1.0" encoding="utf-8"?>
             <t:Message xmlns:t="test">
-                <t:CreatedAt>2020-03-07T04:40:00</t:CreatedAt>
+                <t:CreatedAt>2020-03-07T04:40:00-06:30</t:CreatedAt>
                 <t:Text>Hello world</t:Text>
             </t:Message>
             "#;
         let m: Message = yaserde::de::from_str(&s).unwrap();
-        assert_eq!(m.created_at.to_chrono_datetime(), CDateTime::parse_from_rfc3339("2020-03-07T04:40:00Z").unwrap());
+
+        let offset = FixedOffset::west(6 * 3600 + 30 * 60);
+        let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;
+        let dt = CDateTime::<FixedOffset>::from_utc(dt_utc, offset);
+
+        assert_eq!(m.created_at.value, dt);
         assert_eq!(m.text, "Hello world".to_string());
     }
 }
