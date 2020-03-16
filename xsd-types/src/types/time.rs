@@ -125,7 +125,7 @@ mod tests {
         // No timezone.
         assert_eq!(Time{ value: NaiveTime::from_hms(4, 40, 0), timezone: None }.to_string(), "04:40:00");
 
-        // Timezone "Z".
+        // Timezone +00:00.
         assert_eq!(Time{ value: NaiveTime::from_hms(4, 40, 0), timezone: Some(FixedOffset::east(0)) }.to_string(), "04:40:00+00:00");
 
         // Positive offset.

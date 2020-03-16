@@ -82,6 +82,50 @@ mod tests {
     }
 
     #[test]
+    fn datetime_parse_test() {
+        // No timezone.
+        let offset = FixedOffset::east(0);
+        let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;
+        let dt = CDateTime::<FixedOffset>::from_utc(dt_utc, offset);
+        assert_eq!(DateTime::from_str("2020-03-07T04:40:00"), Ok(DateTime{ value: dt }));
+        // Timezone "Z".
+        assert_eq!(DateTime::from_str("2020-03-07T04:40:00Z"), Ok(DateTime{ value: dt }));
+
+        // Positive offset.
+        let offset = FixedOffset::east(6 * 3600 + 30 * 60);
+        let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;
+        let dt = CDateTime::<FixedOffset>::from_utc(dt_utc, offset);
+        assert_eq!(DateTime::from_str("2020-03-07T04:40:00+06:30"), Ok(DateTime{ value: dt }));
+
+        // Negative offset.
+        let offset = FixedOffset::west(6 * 3600 + 30 * 60);
+        let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;
+        let dt = CDateTime::<FixedOffset>::from_utc(dt_utc, offset);
+        assert_eq!(DateTime::from_str("2020-03-07T04:40:00-06:30"), Ok(DateTime{ value: dt }));
+    }
+
+    #[test]
+    fn datetime_display_test() {
+        // No timezone.
+        let offset = FixedOffset::east(0);
+        let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;
+        let dt = CDateTime::<FixedOffset>::from_utc(dt_utc, offset);
+        assert_eq!(DateTime{ value: dt }.to_string(), "2020-03-07T04:40:00+00:00");
+
+        // Positive offset.
+        let offset = FixedOffset::east(6 * 3600 + 30 * 60);
+        let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;
+        let dt = CDateTime::<FixedOffset>::from_utc(dt_utc, offset);
+        assert_eq!(DateTime{ value: dt }.to_string(), "2020-03-07T04:40:00+06:30");
+
+        // Negative offset.
+        let offset = FixedOffset::west(6 * 3600 + 30 * 60);
+        let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;
+        let dt = CDateTime::<FixedOffset>::from_utc(dt_utc, offset);
+        assert_eq!(DateTime{ value: dt }.to_string(), "2020-03-07T04:40:00-06:30");
+    }
+
+    #[test]
     fn datetime_serialize_test() {
         let expected = r#"
             <?xml version="1.0" encoding="utf-8"?>

@@ -121,7 +121,7 @@ mod tests {
         // No timezone.
         assert_eq!(Date{ value: NaiveDate::from_ymd(2020, 2, 2), timezone: None }.to_string(), "2020-02-02");
 
-        // Timezone "Z".
+        // Timezone +00:00.
         assert_eq!(Date{ value: NaiveDate::from_ymd(2020, 2, 2), timezone: Some(FixedOffset::east(0)) }.to_string(), "2020-02-02+00:00");
 
         // Positive offset.
