@@ -44,13 +44,10 @@ pub fn match_built_in_type(type_name: &str) -> &'static str {
         "xs:double" => "f64",
         "xs:float" => "f64",
 
-        // TODO: might use types from chrono crate instead, but with a wrap that implements Yaserde
-        // (de)serialization. For that we need to use the "flatten" from yaserde, as it will be
-        // updated on the crates.io.
-        "xs:date" => "String",
-        "xs:time" => "String",
-        "xs:dateTime" => "String",
-        "xs:dateTimeStamp" => "String",
+        "xs:date" => "xs::Date",
+        "xs:time" => "xs::Time",
+        "xs:dateTime" => "xs::DateTime",
+        "xs:dateTimeStamp" => "xs::DateTimeStamp",
 
         "xs:duration" => "xs::Duration",
 
