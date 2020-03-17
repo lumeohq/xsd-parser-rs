@@ -1,70 +1,43 @@
-use crate::utils;
+use crate::types::datetime::DateTime;
 use chrono::{format::ParseError, DateTime as CDateTime, FixedOffset};
 use std::fmt;
 use std::io::{Read, Write};
 use std::str::FromStr;
 use yaserde::{YaDeserialize, YaSerialize};
 
-#[derive(PartialEq, PartialOrd, Debug)]
-pub struct DateTime {
-    pub value: CDateTime<FixedOffset>,
+// The only difference from DateTime is that the time zone expression is required at the end of the value.
+#[derive(Default, PartialEq, PartialOrd, Debug, YaSerialize, YaDeserialize)]
+pub struct DateTimeStamp {
+    #[yaserde(flatten)]
+    pub value: DateTime,
 }
 
-impl DateTime {
+impl DateTimeStamp {
     pub fn from_chrono_datetime(datetime: CDateTime<FixedOffset>) -> Self {
-        DateTime { value: datetime }
+        DateTimeStamp {
+            value: DateTime::from_chrono_datetime(datetime),
+        }
     }
 
     pub fn to_chrono_datetime(&self) -> CDateTime<FixedOffset> {
-        self.value
+        self.value.to_chrono_datetime()
     }
 }
 
-impl Default for DateTime {
-    fn default() -> DateTime {
-        Self {
-            value: CDateTime::parse_from_rfc3339("0001-01-01T00:00:00Z").unwrap(),
-        }
-    }
-}
-
-impl FromStr for DateTime {
+impl FromStr for DateTimeStamp {
     type Err = ParseError;
 
-    // Note:
-    // `parse_from_rfc3339` parses an RFC 3339 and ISO 8601 date and time string.
-    // XSD follows ISO 8601, which allows no time zone at the end of literal.
-    // Since RFC 3339 does not allow such behavior, the function tries to add
-    // 'Z' (which equals "+00:00") in case there is no timezone provided.
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let tz_provided = s.ends_with('Z') || s.contains('+') || s.matches('-').count() == 3;
-        let s_with_timezone = if tz_provided {
-            s.to_string()
-        } else {
-            format!("{}Z", s)
-        };
-        match CDateTime::parse_from_rfc3339(&s_with_timezone) {
-            Ok(cdt) => Ok(DateTime { value: cdt }),
+        match CDateTime::parse_from_rfc3339(s) {
+            Ok(cdt) => Ok(DateTimeStamp::from_chrono_datetime(cdt)),
             Err(err) => Err(err),
         }
     }
 }
 
-impl fmt::Display for DateTime {
+impl fmt::Display for DateTimeStamp {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.value.to_rfc3339())
-    }
-}
-
-impl YaDeserialize for DateTime {
-    fn deserialize<R: Read>(reader: &mut yaserde::de::Deserializer<R>) -> Result<Self, String> {
-        utils::yaserde::deserialize(reader, |s| DateTime::from_str(s).map_err(|e| e.to_string()))
-    }
-}
-
-impl YaSerialize for DateTime {
-    fn serialize<W: Write>(&self, writer: &mut yaserde::ser::Serializer<W>) -> Result<(), String> {
-        utils::yaserde::serialize(self, "DateTime", writer, |s| s.to_string())
+        write!(f, "{}", self.value)
     }
 }
 
@@ -80,14 +53,11 @@ mod tests {
         let offset = FixedOffset::east(0);
         let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;
         let dt = CDateTime::<FixedOffset>::from_utc(dt_utc, offset);
-        assert_eq!(
-            DateTime::from_str("2020-03-07T04:40:00"),
-            Ok(DateTime { value: dt })
-        );
+        assert!(DateTimeStamp::from_str("2020-03-07T04:40:00").is_err());
         // Timezone "Z".
         assert_eq!(
-            DateTime::from_str("2020-03-07T04:40:00Z"),
-            Ok(DateTime { value: dt })
+            DateTimeStamp::from_str("2020-03-07T04:40:00Z"),
+            Ok(DateTimeStamp::from_chrono_datetime(dt))
         );
 
         // Positive offset.
@@ -95,8 +65,8 @@ mod tests {
         let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;
         let dt = CDateTime::<FixedOffset>::from_utc(dt_utc, offset);
         assert_eq!(
-            DateTime::from_str("2020-03-07T04:40:00+06:30"),
-            Ok(DateTime { value: dt })
+            DateTimeStamp::from_str("2020-03-07T04:40:00+06:30"),
+            Ok(DateTimeStamp::from_chrono_datetime(dt))
         );
 
         // Negative offset.
@@ -104,8 +74,8 @@ mod tests {
         let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;
         let dt = CDateTime::<FixedOffset>::from_utc(dt_utc, offset);
         assert_eq!(
-            DateTime::from_str("2020-03-07T04:40:00-06:30"),
-            Ok(DateTime { value: dt })
+            DateTimeStamp::from_str("2020-03-07T04:40:00-06:30"),
+            Ok(DateTimeStamp::from_chrono_datetime(dt))
         );
     }
 
@@ -116,7 +86,7 @@ mod tests {
         let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;
         let dt = CDateTime::<FixedOffset>::from_utc(dt_utc, offset);
         assert_eq!(
-            DateTime { value: dt }.to_string(),
+            DateTimeStamp::from_chrono_datetime(dt).to_string(),
             "2020-03-07T04:40:00+00:00"
         );
 
@@ -125,7 +95,7 @@ mod tests {
         let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;
         let dt = CDateTime::<FixedOffset>::from_utc(dt_utc, offset);
         assert_eq!(
-            DateTime { value: dt }.to_string(),
+            DateTimeStamp::from_chrono_datetime(dt).to_string(),
             "2020-03-07T04:40:00+06:30"
         );
 
@@ -134,7 +104,7 @@ mod tests {
         let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;
         let dt = CDateTime::<FixedOffset>::from_utc(dt_utc, offset);
         assert_eq!(
-            DateTime { value: dt }.to_string(),
+            DateTimeStamp::from_chrono_datetime(dt).to_string(),
             "2020-03-07T04:40:00-06:30"
         );
     }
@@ -143,7 +113,7 @@ mod tests {
     #[yaserde(prefix = "t", namespace = "t: test")]
     pub struct Message {
         #[yaserde(prefix = "t", rename = "CreatedAt")]
-        pub created_at: DateTime,
+        pub created_at: DateTimeStamp,
 
         #[yaserde(prefix = "t", rename = "Text")]
         pub text: String,
@@ -163,7 +133,7 @@ mod tests {
         let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;
         let dt = CDateTime::<FixedOffset>::from_utc(dt_utc, offset);
         let m = Message {
-            created_at: DateTime { value: dt },
+            created_at: DateTimeStamp::from_chrono_datetime(dt),
             text: "Hello world".to_string(),
         };
         let actual = yaserde::ser::to_string(&m).unwrap();
@@ -185,7 +155,7 @@ mod tests {
         let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;
         let dt = CDateTime::<FixedOffset>::from_utc(dt_utc, offset);
 
-        assert_eq!(m.created_at.value, dt);
+        assert_eq!(m.created_at.value, DateTime::from_chrono_datetime(dt));
         assert_eq!(m.text, "Hello world".to_string());
     }
 }

@@ -2,6 +2,8 @@ pub mod date;
 pub use date::*;
 pub mod datetime;
 pub use datetime::*;
+pub mod datetimestamp;
+pub use datetimestamp::*;
 pub mod decimal;
 pub use decimal::*;
 pub mod duration;
