@@ -16,6 +16,7 @@ use std::borrow::Cow;
 
 pub trait Generator {
     fn target_ns(&self) -> &Option<Namespace<'_>>;
+    fn indent(&self) -> &str { "    " }
 
     fn tuple_struct_macro(&self, _: &TupleStruct) -> Cow<'static, str> {
         "".into()
@@ -43,7 +44,7 @@ pub trait Generator {
             Struct(st) => self.gen_struct(st),
             Enum(en) => self.gen_enum(en),
             Import(im) => self.gen_import(im),
-            Alias(al) => self.get_alias(al),
+            Alias(al) => self.gen_alias(al),
             EnumCase(ec) => self.gen_enum_case(ec),
             StructField(sf) => self.get_struct_field(sf),
         }
@@ -132,12 +133,13 @@ pub trait Generator {
     fn gen_enum(&self, en: &Enum) -> String {
         let name = self.format_type(en.name.as_str());
         format!(
-            "{comment}{macros}\npub enum {name} {{\n{cases}\n    __Unknown__({typename}),\n\
+            "{comment}{macros}\npub enum {name} {{\n{cases}\n{indent}__Unknown__({typename}),\n\
             }}\n\n\
             {default}\n\n\
             {validation}\n\n\
             {subtypes}\n\n
             ",
+            indent = self.indent(),
             comment = self.format_comment(en.comment.as_deref(), 0),
             macros = self.enum_macro(en),
             name = name,
@@ -148,8 +150,10 @@ pub trait Generator {
                 .collect::<Vec<String>>()
                 .join("\n"),
             typename = self.format_type(en.type_name.as_str()),
-            default = format!("impl Default for {name} {{\n    fn default() -> {name} {{\n        Self::__Unknown__(\"No valid variants\".into())\n    }}\n}}",
-                              name = name
+            default = format!(
+                "impl Default for {name} {{\n{indent}fn default() -> {name} {{\n{indent}{indent}Self::__Unknown__(\"No valid variants\".into())\n{indent}}}\n}}",
+                name = name,
+                indent = self.indent()
             ),
             subtypes = en
                 .subtypes
@@ -175,17 +179,19 @@ pub trait Generator {
         };
         match &ec.type_name {
             Some(typename) => format!(
-                "{comment}{macros}    {name}({typename}),",
+                "{comment}{macros}{indent}{name}({typename}),",
                 name = name,
                 typename = self.modify_type(
                     self.format_type(typename.as_str()).as_ref(),
                     &ec.type_modifiers
                 ),
+                indent = self.indent(),
                 comment = comment,
                 macros = macros
             ),
             None => format!(
-                "{comment}{macros}    {name},",
+                "{comment}{macros}{indent}{name},",
+                indent = self.indent(),
                 name = name,
                 comment = comment,
                 macros = macros
@@ -210,7 +216,8 @@ pub trait Generator {
             &sf.type_modifiers,
         );
         format!(
-            "{comment}{macros}    pub {name}: {typename},",
+            "{comment}{macros}{indent}pub {name}: {typename},",
+            indent = self.indent(),
             macros = self.struct_field_macro(sf),
             name = self.format_name(sf.name.as_str()),
             typename = typename,
@@ -218,7 +225,7 @@ pub trait Generator {
         )
     }
 
-    fn get_alias(&self, al: &Alias) -> String {
+    fn gen_alias(&self, al: &Alias) -> String {
         format!(
             "//{comment} pub type {name} = {original};",
             comment = self.format_comment(al.comment.as_deref(), 0),
