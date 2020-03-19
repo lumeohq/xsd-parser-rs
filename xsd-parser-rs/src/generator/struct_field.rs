@@ -1,8 +1,6 @@
-use crate::parser::types::{StructField, TypeModifier};
-use crate::generator::Generator2;
 use crate::generator::base::BaseGenerator;
-use std::borrow::Cow;
-
+use crate::generator::Generator2;
+use crate::parser::types::{StructField, TypeModifier};
 
 pub trait StructFieldGenerator {
     fn generate(&self, entity: &StructField, gen: &Generator2) -> String {
@@ -25,8 +23,9 @@ pub trait StructFieldGenerator {
     fn get_type_name(&self, entity: &StructField, base: &Box<dyn BaseGenerator>) -> String {
         base.modify_type(
             base.format_type_name(entity.type_name.as_str()).as_ref(),
-            &entity.type_modifiers
-        ).into()
+            &entity.type_modifiers,
+        )
+        .into()
     }
 
     fn get_name(&self, entity: &StructField, base: &Box<dyn BaseGenerator>) -> String {
@@ -37,8 +36,10 @@ pub trait StructFieldGenerator {
         base.format_comment(comment, base.indent_size()).into()
     }
 
-    fn macros(&self, _: &StructField) -> String { "".into() }
+    fn macros(&self, _: &StructField) -> String {
+        "".into()
+    }
 }
 
 pub struct DefaultStructFieldGen;
-impl StructFieldGenerator for DefaultStructFieldGen{}
+impl StructFieldGenerator for DefaultStructFieldGen {}

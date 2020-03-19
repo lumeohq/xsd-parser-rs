@@ -1,9 +1,6 @@
-use crate::parser::types::{EnumCase, TypeModifier};
-use crate::generator::Generator2;
 use crate::generator::base::BaseGenerator;
-use std::borrow::Cow;
-use crate::generator::default::default_format_enum_case_name;
-
+use crate::generator::Generator2;
+use crate::parser::types::EnumCase;
 
 pub trait EnumCaseGenerator {
     fn generate(&self, entity: &EnumCase, gen: &Generator2) -> String {
@@ -26,8 +23,6 @@ pub trait EnumCaseGenerator {
                 macros = self.macros(entity)
             ),
         }
-
-
     }
 
     fn get_name(&self, entity: &EnumCase, base: &Box<dyn BaseGenerator>) -> String {
@@ -40,18 +35,18 @@ pub trait EnumCaseGenerator {
 
     fn get_type_name(&self, entity: &EnumCase, base: &Box<dyn BaseGenerator>) -> String {
         let formatted_type = base.format_type_name(entity.type_name.as_ref().unwrap());
-        base.modify_type(
-            formatted_type.as_ref(),
-            &entity.type_modifiers
-        ).into()
+        base.modify_type(formatted_type.as_ref(), &entity.type_modifiers)
+            .into()
     }
 
     fn format_comment(&self, comment: Option<&str>, base: &Box<dyn BaseGenerator>) -> String {
         base.format_comment(comment, base.indent_size()).into()
     }
 
-    fn macros(&self, _: &EnumCase) -> String { "".into() }
- }
+    fn macros(&self, _: &EnumCase) -> String {
+        "".into()
+    }
+}
 
 pub struct DefaultEnumCaseGen;
-impl EnumCaseGenerator for DefaultEnumCaseGen{}
+impl EnumCaseGenerator for DefaultEnumCaseGen {}

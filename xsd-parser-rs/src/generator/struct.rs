@@ -1,10 +1,10 @@
-use crate::parser::types::{Struct, RsEntity, StructField};
-use crate::generator::Generator2;
 use crate::generator::base::BaseGenerator;
+use crate::generator::validator::gen_validate_impl;
+use crate::generator::Generator2;
+use crate::parser::types::{RsEntity, Struct};
 use std::borrow::Cow;
-use crate::generator::validator::{gen_facet_validation, gen_validate_impl};
 
-pub trait StructGen {
+pub trait StructGenerator {
     fn generate(&self, entity: &Struct, gen: &Generator2) -> String {
         let base = gen.base();
         let name = self.get_type_name(entity, base);
@@ -60,20 +60,19 @@ pub trait StructGen {
         base.format_type_name(entity.name.as_str()).into()
     }
 
-    fn macros(&self, _: &Struct) -> Cow<'static, str> { "".into() }
+    fn macros(&self, _: &Struct) -> Cow<'static, str> {
+        "".into()
+    }
 
     fn format_comment(&self, comment: Option<&str>, base: &Box<dyn BaseGenerator>) -> String {
         base.format_comment(comment, base.indent_size())
     }
 
-    fn validation(&self, entity: &Struct, formatted_type_name: &str) -> Cow<'static, str> {
+    fn validation(&self, _entity: &Struct, formatted_type_name: &str) -> Cow<'static, str> {
         // Empty validation
-        Cow::Owned(gen_validate_impl(
-            formatted_type_name,
-            "",
-        ))
+        Cow::Owned(gen_validate_impl(formatted_type_name, ""))
     }
 }
 
 pub struct DefaultStructGen;
-impl StructGen for DefaultStructGen{}
+impl StructGenerator for DefaultStructGen {}

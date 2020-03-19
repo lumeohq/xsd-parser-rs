@@ -1,4 +1,6 @@
-use crate::generator::utils::{match_built_in_type, sanitize, split_comment_line, split_name, filter_type_name};
+use crate::generator::utils::{
+    filter_type_name, match_built_in_type, sanitize, split_comment_line, split_name,
+};
 use crate::parser::types::TypeModifier;
 use inflector::cases::pascalcase::to_pascal_case;
 use inflector::cases::snakecase::to_snake_case;
@@ -39,7 +41,7 @@ pub fn default_format_type(type_name: &str, target_ns: &Option<Namespace>) -> Co
             }
         }
         (Some(ns), None) => qname(ns),
-        _ => pascalized_ty
+        _ => pascalized_ty,
     };
 
     sanitize(res).into()
@@ -169,8 +171,10 @@ mod test {
         assert_eq!(default_format_type("ttEnum", &ns), "TtEnum");
         assert_eq!(default_format_type("xs:TyName", &ns), "xs::TyName");
 
-        assert_eq!(default_format_type("http://www.w3.org/2005/08/addressing/reply", &ns),
-                   "http::Wwww3Org200508Addressingreply");
+        assert_eq!(
+            default_format_type("http://www.w3.org/2005/08/addressing/reply", &ns),
+            "http::Wwww3Org200508Addressingreply"
+        );
     }
 
     #[test]
