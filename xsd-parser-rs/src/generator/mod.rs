@@ -2,9 +2,13 @@ pub mod default;
 mod utils;
 pub mod validator;
 
-use crate::parser::types::{
-    Alias, Enum, EnumCase, Import, RsEntity, Struct, StructField, TupleStruct, TypeModifier,
-};
+pub mod tuple_struct;
+pub mod r#struct;
+pub mod base;
+pub mod struct_field;
+pub mod enum_case;
+
+use crate::parser::types::{Alias, Enum, EnumCase, Import, RsEntity, Struct, StructField, TupleStruct, TypeModifier, RsFile};
 
 use crate::generator::default::{
     default_format_comment, default_format_enum_case_name, default_format_name,
@@ -13,6 +17,11 @@ use crate::generator::default::{
 use crate::generator::validator::{gen_facet_validation, gen_validate_impl};
 use roxmltree::Namespace;
 use std::borrow::Cow;
+use crate::generator::tuple_struct::{TupleStructGenerator, DefaultTupleStructGen};
+use crate::generator::base::{BaseGenerator, DefaultBaseGenerator};
+use crate::generator::r#struct::{StructGen, DefaultStructGen };
+use crate::generator::struct_field::{StructFieldGenerator, DefaultStructFieldGen};
+
 
 pub trait Generator {
     fn target_ns(&self) -> &Option<Namespace<'_>>;
@@ -256,5 +265,119 @@ pub trait Generator {
 
     fn format_enum_case_name(&self, name: &str) -> Cow<'_, str> {
         default_format_enum_case_name(name, self.target_ns())
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+#[derive(Default)]
+pub struct Generator2<'input> {
+    target_ns: Option<Namespace<'input>>,
+
+    pub tsg: Option<Box<dyn TupleStructGenerator>>,
+    pub sg: Option<Box<dyn StructGen>>,
+    pub struct_field_gen: Option<Box<dyn StructFieldGenerator>>,
+    pub base: Option<Box<dyn BaseGenerator>>
+}
+
+impl<'input> Generator2<'input> {
+    pub fn new(schema: &RsFile<'input>) -> GeneratorBuilder<'input>{
+        GeneratorBuilder {
+            gen: Self {
+                target_ns: schema.target_ns.clone(),
+                ..Default::default()
+            }
+        }
+    }
+    pub fn generate(&self, entity: &RsEntity) -> String {
+        match entity {
+            RsEntity::TupleStruct(ts) => self.tsg.as_ref().unwrap().generate(ts, self),
+            RsEntity::Struct(st) => self.sg.as_ref().unwrap().generate(st, self),
+            RsEntity::StructField(sf) => self.struct_field_gen.as_ref().unwrap().generate(sf, self),
+            _ => unreachable!()
+        }
+    }
+
+    pub fn base(&self) -> &Box<dyn BaseGenerator> {
+        self.base.as_ref().unwrap()
+    }
+
+    pub fn struct_field_gen(&self) ->  &Box<dyn StructFieldGenerator> {
+        self.struct_field_gen.as_ref().unwrap()
+    }
+}
+
+#[derive(Default)]
+pub struct GeneratorBuilder<'input>{
+    gen: Generator2<'input>
+}
+
+impl<'input> GeneratorBuilder<'input> {
+    pub fn with_base_gen(mut self, base: Box<dyn BaseGenerator>) -> Self {
+        self.gen.base = Some(base);
+        self
+    }
+
+    pub fn with_tuple_struct_gen(mut self, tsg: Box<dyn TupleStructGenerator>) -> Self {
+        self.gen.tsg = Some(tsg);
+        self
+    }
+
+    pub fn with_struct_gen(mut self, sg: Box<dyn StructGen>) -> Self {
+        self.gen.sg = Some(sg);
+        self
+    }
+
+    pub fn build(mut self) -> Generator2<'input> {
+        let mut gen = self.gen;
+        gen.base.get_or_insert_with(
+            || Box::new(DefaultBaseGenerator{target_ns: None})
+        );  //.set_target_ns(&gen.target_ns);
+
+        gen.tsg.get_or_insert_with(
+            || Box::new(DefaultTupleStructGen{})
+        );
+
+        gen.sg.get_or_insert_with(
+            || Box::new(DefaultStructGen{})
+        );
+
+        gen.struct_field_gen.get_or_insert_with(
+            || Box::new(DefaultStructFieldGen{})
+        );
+        gen
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+#[cfg(test)]
+mod test {
+    use crate::parser::types::{TupleStruct, RsEntity, Struct};
+    use std::borrow::{Cow};
+    use crate::generator::default::default_format_type;
+    use crate::generator::Generator2;
+
+
+    #[test]
+    fn foo() {
     }
 }

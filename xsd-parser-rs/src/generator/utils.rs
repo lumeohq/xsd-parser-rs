@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 pub fn split_comment_line(s: &str, max_len: usize, indent: usize) -> String {
     let indent_str = " ".repeat(indent);
 
@@ -16,8 +18,8 @@ pub fn split_comment_line(s: &str, max_len: usize, indent: usize) -> String {
     format!("{}\n", splitted)
 }
 
-pub fn match_built_in_type(type_name: &str) -> &'static str {
-    match type_name {
+pub fn match_built_in_type(type_name: &str) -> Option<&'static str> {
+    let res = match type_name {
         "xs:hexBinary" => "String",
         "xs:base64Binary" => "String",
 
@@ -85,6 +87,12 @@ pub fn match_built_in_type(type_name: &str) -> &'static str {
         "xs:IDREFS" => "Vec<String>",
         "xs:NMTOKENS" => "Vec<String>",
         _ => "",
+    };
+
+    if res.is_empty() {
+        None
+    } else {
+        Some(res)
     }
 }
 
@@ -95,6 +103,23 @@ pub fn sanitize(s: String) -> String {
         format!("_{}", s)
     } else {
         s
+    }
+}
+
+pub fn filter_type_name(name: &str) -> String {
+    fn is_valid_symbol(c: &char) -> bool {
+        (c.is_alphanumeric() || c == &'_')
+            && c.is_ascii()
+            && !c.is_whitespace()
+    }
+
+    name.chars().filter(is_valid_symbol).collect()
+}
+
+pub fn split_name(type_name: &str) -> (Option<&str>, &str) {
+    match type_name.find(':') {
+        Some(index) => (Some(&type_name[0..index]), &type_name[index+1..]),
+        None => (None, type_name),
     }
 }
 
@@ -154,3 +179,31 @@ const RS_KEYWORDS: &[&str] = &[
     "while",
     "yield",
 ];
+
+
+#[cfg(test)]
+mod test {
+    use crate::generator::utils::{filter_type_name, split_name};
+
+    #[test]
+    fn test_filter_type_name() {
+        assert_eq!(filter_type_name("SomeType"), "SomeType");
+        assert_eq!(filter_type_name("Some-Type"), "SomeType");
+        assert_eq!(filter_type_name("Some Type"), "SomeType");
+        assert_eq!(filter_type_name("Some@Type"), "SomeType");
+        assert_eq!(filter_type_name("Some❤Type"), "SomeType");
+        assert_eq!(filter_type_name("Some_Type"), "Some_Type");
+
+        assert_eq!(filter_type_name("http://www.w3.org/2005/08/addressing/reply"),
+                   "httpwwww3org200508addressingreply");
+        assert_eq!(filter_type_name("https://www.youtube.com/watch?v=dQw4w9WgXcQ"),
+                   "httpswwwyoutubecomwatchvdQw4w9WgXcQ");
+
+    }
+
+    #[test]
+    fn test_split_name() {
+        assert_eq!(split_name("xs:Type"), (Some("xs"), "Type"));
+        assert_eq!(split_name("xsType"), (None, "xsType"));
+    }
+}

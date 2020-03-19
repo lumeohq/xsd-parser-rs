@@ -1,4 +1,4 @@
-use crate::generator::utils::{match_built_in_type, sanitize, split_comment_line};
+use crate::generator::utils::{match_built_in_type, sanitize, split_comment_line, split_name, filter_type_name};
 use crate::parser::types::TypeModifier;
 use inflector::cases::pascalcase::to_pascal_case;
 use inflector::cases::snakecase::to_snake_case;
@@ -19,35 +19,30 @@ pub fn default_format_name(name: &str) -> String {
 }
 
 pub fn default_format_type(type_name: &str, target_ns: &Option<Namespace>) -> Cow<'static, str> {
-    fn replace(type_name: &str) -> String {
-        match type_name.find(':') {
-            Some(index) => format!(
-                "{}::{}",
-                &type_name[0..index],
-                to_pascal_case(&type_name[index..])
-            ),
-            None => to_pascal_case(type_name),
-        }
+    if let Some(t) = match_built_in_type(type_name) {
+        return t.into();
     }
 
-    {
-        let built_in_type = match_built_in_type(type_name);
-        if !built_in_type.is_empty() {
-            return built_in_type.into();
-        }
-    }
+    let (option_ns, ty) = split_name(type_name);
+    let option_tns = target_ns.as_ref().and_then(|ns| ns.name());
 
-    sanitize(match target_ns.as_ref().and_then(|ns| ns.name()) {
-        Some(name) => {
-            if type_name.starts_with(name) {
-                to_pascal_case(&type_name[name.len() + 1..])
+    let pascalized_ty = to_pascal_case(filter_type_name(ty).as_str());
+
+    let qname = |ns| format!("{}::{}", ns, pascalized_ty);
+
+    let res = match (option_ns, option_tns) {
+        (Some(ns), Some(tns)) => {
+            if ns == tns {
+                pascalized_ty
             } else {
-                replace(type_name)
+                qname(ns)
             }
         }
-        None => replace(type_name),
-    })
-    .into()
+        (Some(ns), None) => qname(ns),
+        _ => pascalized_ty
+    };
+
+    sanitize(res).into()
 }
 
 pub fn default_format_enum_case_name(
@@ -171,7 +166,11 @@ mod test {
         assert_eq!(default_format_type("tt:0_type-Name", &ns), "_0TypeName");
         assert_eq!(default_format_type("tt:IANA_IfTypes ", &ns), "IanaIfTypes");
         assert_eq!(default_format_type("tt:Enum", &ns), "Enum");
+        assert_eq!(default_format_type("ttEnum", &ns), "TtEnum");
         assert_eq!(default_format_type("xs:TyName", &ns), "xs::TyName");
+
+        assert_eq!(default_format_type("http://www.w3.org/2005/08/addressing/reply", &ns),
+                   "http::Wwww3Org200508Addressingreply");
     }
 
     #[test]
