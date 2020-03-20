@@ -1,11 +1,10 @@
-use crate::generator::Generator2;
+use crate::generator::Generator;
 use crate::parser::parse;
-use crate::yaserde_generator::YaserdeGenerator;
 use std::fmt::Write;
 
 pub fn generate(input: &str) -> String {
     let f = parse(input).unwrap();
-    let gen = Generator2::new().build();
+    let gen = Generator::new().build();
     gen.generate_rs_file(&f)
 }
 

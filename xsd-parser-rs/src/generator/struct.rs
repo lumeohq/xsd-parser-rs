@@ -1,11 +1,11 @@
 use crate::generator::base::BaseGenerator;
 use crate::generator::validator::gen_validate_impl;
-use crate::generator::Generator2;
-use crate::parser::types::{RsEntity, Struct};
-use std::borrow::{Cow, Borrow};
+use crate::generator::Generator;
+use crate::parser::types::Struct;
+use std::borrow::{Borrow, Cow};
 
 pub trait StructGenerator {
-    fn generate(&self, entity: &Struct, gen: &Generator2) -> String {
+    fn generate(&self, entity: &Struct, gen: &Generator) -> String {
         format!(
             "{comment}{macros}pub struct {name} {{{fields}}}\n\n{validation}\n{subtypes}\n{fields_subtypes}",
             comment = self.format_comment(entity, gen),
@@ -18,7 +18,7 @@ pub trait StructGenerator {
         )
     }
 
-    fn fields(&self, entity: &Struct, gen: &Generator2) -> String {
+    fn fields(&self, entity: &Struct, gen: &Generator) -> String {
         let fields = entity
             .fields
             .borrow()
@@ -35,11 +35,11 @@ pub trait StructGenerator {
         }
     }
 
-    fn subtypes(&self, entity: &Struct, gen: &Generator2) -> String {
+    fn subtypes(&self, entity: &Struct, gen: &Generator) -> String {
         gen.base().join_subtypes(entity.subtypes.as_ref(), gen)
     }
 
-    fn fields_subtypes(&self, entity: &Struct, gen: &Generator2) -> String {
+    fn fields_subtypes(&self, entity: &Struct, gen: &Generator) -> String {
         entity
             .fields
             .borrow()
@@ -49,11 +49,13 @@ pub trait StructGenerator {
             .join("")
     }
 
-    fn get_type_name(&self, entity: &Struct, gen: &Generator2) -> String {
-        gen.base().format_type_name(entity.name.as_str(), gen).into()
+    fn get_type_name(&self, entity: &Struct, gen: &Generator) -> String {
+        gen.base()
+            .format_type_name(entity.name.as_str(), gen)
+            .into()
     }
 
-    fn macros(&self, _entity: &Struct, gen: &Generator2) -> Cow<'static, str> {
+    fn macros(&self, _entity: &Struct, gen: &Generator) -> Cow<'static, str> {
         let derives = "#[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]\n";
         let tns = gen.target_ns.borrow();
         match tns.as_ref() {
@@ -72,16 +74,19 @@ pub trait StructGenerator {
             },
             None => format!("{derives}#[yaserde()]\n", derives = derives),
         }
-            .into()
+        .into()
     }
 
-    fn format_comment(&self, entity: &Struct, gen: &Generator2) -> String {
+    fn format_comment(&self, entity: &Struct, gen: &Generator) -> String {
         gen.base().format_comment(entity.comment.as_deref(), 0)
     }
 
-    fn validation(&self, entity: &Struct, gen: &Generator2) -> Cow<'static, str> {
+    fn validation(&self, entity: &Struct, gen: &Generator) -> Cow<'static, str> {
         // Empty validation
-        Cow::Owned(gen_validate_impl(self.get_type_name(entity, gen).as_str(), ""))
+        Cow::Owned(gen_validate_impl(
+            self.get_type_name(entity, gen).as_str(),
+            "",
+        ))
     }
 }
 

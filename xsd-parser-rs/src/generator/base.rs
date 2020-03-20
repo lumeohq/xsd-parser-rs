@@ -1,20 +1,21 @@
 use crate::generator::default::{
     default_format_comment, default_format_name, default_format_type, default_modify_type,
 };
-use crate::parser::types::{TypeModifier, RsFile, RsEntity};
-use roxmltree::Namespace;
-use std::borrow::Cow;
-use crate::generator::Generator2;
 use crate::generator::utils::match_built_in_type;
+use crate::generator::Generator;
+use crate::parser::types::{RsEntity, TypeModifier};
+use std::borrow::Cow;
 
 pub trait BaseGenerator {
     fn indent(&self) -> String {
         " ".repeat(self.indent_size())
     }
 
-    fn indent_size(&self) -> usize { 4 }
+    fn indent_size(&self) -> usize {
+        4
+    }
 
-    fn format_type_name(&self, type_name: &str, gen: &Generator2) -> Cow<'_, str> {
+    fn format_type_name(&self, type_name: &str, gen: &Generator) -> Cow<'_, str> {
         if let Some(t) = match_built_in_type(type_name) {
             return t.into();
         }
@@ -33,7 +34,7 @@ pub trait BaseGenerator {
         default_modify_type(type_name, modifiers)
     }
 
-    fn join_subtypes(&self, subtypes: &[RsEntity], gen: &Generator2) -> String {
+    fn join_subtypes(&self, subtypes: &[RsEntity], gen: &Generator) -> String {
         subtypes
             .iter()
             .map(|f| gen.generate(f))
@@ -43,4 +44,4 @@ pub trait BaseGenerator {
 }
 
 pub struct DefaultBaseGenerator;
-impl BaseGenerator for DefaultBaseGenerator{}
+impl BaseGenerator for DefaultBaseGenerator {}

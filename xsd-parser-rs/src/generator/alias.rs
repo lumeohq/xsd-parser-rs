@@ -1,9 +1,9 @@
 use crate::generator::base::BaseGenerator;
-use crate::generator::Generator2;
+use crate::generator::Generator;
 use crate::parser::types::Alias;
 
 pub trait AliasGenerator {
-    fn generate(&self, entity: &Alias, gen: &Generator2) -> String {
+    fn generate(&self, entity: &Alias, gen: &Generator) -> String {
         format!(
             "//{comment} pub type {name} = {original};\n",
             comment = self.format_comment(entity.comment.as_deref(), gen),
@@ -12,15 +12,15 @@ pub trait AliasGenerator {
         )
     }
 
-    fn format_comment(&self, comment: Option<&str>, gen: &Generator2) -> String {
+    fn format_comment(&self, comment: Option<&str>, gen: &Generator) -> String {
         gen.base().format_comment(comment, 0).into()
     }
 
-    fn format_name(&self, name: &str, gen: &Generator2) -> String {
+    fn format_name(&self, name: &str, gen: &Generator) -> String {
         gen.base().format_type_name(name, gen).into()
     }
 
-    fn format_original_type(&self, name: &str, gen: &Generator2) -> String {
+    fn format_original_type(&self, name: &str, gen: &Generator) -> String {
         gen.base().format_type_name(name, gen).into()
     }
 }

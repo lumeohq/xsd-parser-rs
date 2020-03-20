@@ -1,13 +1,13 @@
 use crate::generator::base::BaseGenerator;
-use crate::generator::Generator2;
-use crate::parser::types::{EnumCase, EnumSource};
-use crate::generator::utils::split_name;
 use crate::generator::default::default_format_type;
+use crate::generator::utils::split_name;
+use crate::generator::Generator;
+use crate::parser::types::{EnumCase, EnumSource};
 
 pub trait EnumCaseGenerator {
-    fn generate(&self, entity: &EnumCase, gen: &Generator2) -> String {
+    fn generate(&self, entity: &EnumCase, gen: &Generator) -> String {
         let typename = if entity.type_name.is_some() {
-            format!("({})",self.get_type_name(entity, gen))
+            format!("({})", self.get_type_name(entity, gen))
         } else {
             "".into()
         };
@@ -21,7 +21,7 @@ pub trait EnumCaseGenerator {
         )
     }
 
-    fn get_name(&self, entity: &EnumCase, gen: &Generator2) -> String {
+    fn get_name(&self, entity: &EnumCase, gen: &Generator) -> String {
         default_format_type(entity.name.as_str(), &*gen.target_ns.borrow())
             .split("::")
             .last()
@@ -29,24 +29,22 @@ pub trait EnumCaseGenerator {
             .to_string()
     }
 
-    fn get_type_name(&self, entity: &EnumCase, gen: &Generator2) -> String {
+    fn get_type_name(&self, entity: &EnumCase, gen: &Generator) -> String {
         let formatted_type = gen
             .base()
             .format_type_name(entity.type_name.as_ref().unwrap(), gen);
-        gen
-            .base()
+        gen.base()
             .modify_type(formatted_type.as_ref(), &entity.type_modifiers)
             .into()
     }
 
-    fn format_comment(&self, entity: &EnumCase, gen: &Generator2) -> String {
-        gen
-            .base()
+    fn format_comment(&self, entity: &EnumCase, gen: &Generator) -> String {
+        gen.base()
             .format_comment(entity.comment.as_deref(), gen.base().indent_size())
             .into()
     }
 
-    fn macros(&self, entity: &EnumCase, gen: &Generator2) -> String {
+    fn macros(&self, entity: &EnumCase, gen: &Generator) -> String {
         if entity.source == EnumSource::Union {
             return "".into();
         }
@@ -59,9 +57,10 @@ pub trait EnumCaseGenerator {
                 prefix = p,
                 rename = field_name
             ),
-            None => format!("{indent}#[yaserde(rename = \"{rename}\")]\n",
-                            indent = gen.base().indent(),
-                            rename = field_name
+            None => format!(
+                "{indent}#[yaserde(rename = \"{rename}\")]\n",
+                indent = gen.base().indent(),
+                rename = field_name
             ),
         }
     }

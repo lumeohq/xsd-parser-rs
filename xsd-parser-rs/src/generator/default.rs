@@ -1,6 +1,4 @@
-use crate::generator::utils::{
-    filter_type_name, match_built_in_type, sanitize, split_comment_line, split_name,
-};
+use crate::generator::utils::{filter_type_name, sanitize, split_comment_line, split_name};
 use crate::parser::types::TypeModifier;
 use inflector::cases::pascalcase::to_pascal_case;
 use inflector::cases::snakecase::to_snake_case;

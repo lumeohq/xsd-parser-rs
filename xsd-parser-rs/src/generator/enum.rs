@@ -1,11 +1,11 @@
 use crate::generator::base::BaseGenerator;
 use crate::generator::validator::gen_validate_impl;
-use crate::generator::Generator2;
-use crate::parser::types::{Enum, RsEntity, EnumSource};
+use crate::generator::Generator;
+use crate::parser::types::{Enum, EnumSource};
 use std::borrow::Cow;
 
 pub trait EnumGenerator {
-    fn generate(&self, entity: &Enum, gen: &Generator2) -> String {
+    fn generate(&self, entity: &Enum, gen: &Generator) -> String {
         let name = self.get_name(entity, gen);
         let default_case = format!(
             "impl Default for {name} {{\n\
@@ -38,7 +38,7 @@ pub trait EnumGenerator {
         )
     }
 
-    fn cases(&self, entity: &Enum, gen: &Generator2) -> String {
+    fn cases(&self, entity: &Enum, gen: &Generator) -> String {
         entity
             .cases
             .iter()
@@ -47,30 +47,34 @@ pub trait EnumGenerator {
             .join("\n")
     }
 
-    fn subtypes(&self, entity: &Enum, gen: &Generator2) -> String {
+    fn subtypes(&self, entity: &Enum, gen: &Generator) -> String {
         gen.base().join_subtypes(entity.subtypes.as_ref(), gen)
     }
 
-    fn get_type_name(&self, entity: &Enum, gen: &Generator2) -> String {
-        gen.base().format_type_name(entity.type_name.as_str(), gen).into()
+    fn get_type_name(&self, entity: &Enum, gen: &Generator) -> String {
+        gen.base()
+            .format_type_name(entity.type_name.as_str(), gen)
+            .into()
     }
 
-    fn get_name(&self, entity: &Enum, gen: &Generator2) -> String {
-        gen.base().format_type_name(entity.name.as_str(), gen).into()
+    fn get_name(&self, entity: &Enum, gen: &Generator) -> String {
+        gen.base()
+            .format_type_name(entity.name.as_str(), gen)
+            .into()
     }
 
-    fn macros(&self, entity: &Enum, _gen: &Generator2) -> Cow<'static, str> {
+    fn macros(&self, entity: &Enum, _gen: &Generator) -> Cow<'static, str> {
         if entity.source == EnumSource::Union {
             return "#[derive(PartialEq, Debug, UtilsUnionSerDe)]".into();
         }
         "#[derive(PartialEq, Debug, YaSerialize, YaDeserialize)]".into()
     }
 
-    fn format_comment(&self, entity: &Enum, gen: &Generator2) -> String {
+    fn format_comment(&self, entity: &Enum, gen: &Generator) -> String {
         gen.base().format_comment(entity.comment.as_deref(), 0)
     }
 
-    fn validation(&self, entity: &Enum, gen: &Generator2) -> Cow<'static, str> {
+    fn validation(&self, entity: &Enum, gen: &Generator) -> Cow<'static, str> {
         // Empty validation
         Cow::Owned(gen_validate_impl(self.get_name(entity, gen).as_str(), ""))
     }

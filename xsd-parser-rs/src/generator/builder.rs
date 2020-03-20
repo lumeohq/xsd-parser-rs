@@ -6,11 +6,11 @@ use crate::generator::r#enum::{DefaultEnumGen, EnumGenerator};
 use crate::generator::r#struct::{DefaultStructGen, StructGenerator};
 use crate::generator::struct_field::{DefaultStructFieldGen, StructFieldGenerator};
 use crate::generator::tuple_struct::{DefaultTupleStructGen, TupleStructGenerator};
-use crate::generator::Generator2;
+use crate::generator::Generator;
 
 #[derive(Default)]
 pub struct GeneratorBuilder<'input> {
-    gen: Generator2<'input>,
+    gen: Generator<'input>,
 }
 
 #[allow(dead_code)]
@@ -55,7 +55,7 @@ impl<'input> GeneratorBuilder<'input> {
         self
     }
 
-    pub fn build(self) -> Generator2<'input> {
+    pub fn build(self) -> Generator<'input> {
         let mut gen = self.gen;
         gen.base
             .get_or_insert_with(|| Box::new(DefaultBaseGenerator {})); //.set_target_ns(&gen.target_ns);
