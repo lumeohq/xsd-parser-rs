@@ -1,4 +1,3 @@
-use crate::generator::base::BaseGenerator;
 use crate::generator::Generator;
 use crate::parser::types::{StructField, StructFieldSource, TypeModifier};
 
@@ -35,7 +34,6 @@ pub trait StructFieldGenerator {
     fn format_comment(&self, entity: &StructField, gen: &Generator) -> String {
         gen.base()
             .format_comment(entity.comment.as_deref(), gen.base().indent_size())
-            .into()
     }
 
     fn macros(&self, entity: &StructField, gen: &Generator) -> String {

@@ -105,11 +105,11 @@ pub fn sanitize(s: String) -> String {
 }
 
 pub fn filter_type_name(name: &str) -> String {
-    fn is_valid_symbol(c: &char) -> bool {
-        (c.is_alphanumeric() || c == &'_') && c.is_ascii() && !c.is_whitespace()
+    fn is_valid_symbol(c: char) -> bool {
+        (c.is_alphanumeric() || c == '_') && c.is_ascii() && !c.is_whitespace()
     }
 
-    name.chars().filter(is_valid_symbol).collect()
+    name.chars().filter(|c| is_valid_symbol(*c)).collect()
 }
 
 pub fn split_name(name: &str) -> (Option<&str>, &str) {

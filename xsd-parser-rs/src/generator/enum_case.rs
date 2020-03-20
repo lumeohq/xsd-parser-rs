@@ -1,4 +1,3 @@
-use crate::generator::base::BaseGenerator;
 use crate::generator::default::default_format_type;
 use crate::generator::utils::split_name;
 use crate::generator::Generator;
@@ -41,7 +40,6 @@ pub trait EnumCaseGenerator {
     fn format_comment(&self, entity: &EnumCase, gen: &Generator) -> String {
         gen.base()
             .format_comment(entity.comment.as_deref(), gen.base().indent_size())
-            .into()
     }
 
     fn macros(&self, entity: &EnumCase, gen: &Generator) -> String {

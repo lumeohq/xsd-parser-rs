@@ -25,6 +25,7 @@ use crate::generator::r#enum::EnumGenerator;
 use crate::generator::r#struct::StructGenerator;
 use crate::generator::struct_field::StructFieldGenerator;
 use crate::generator::tuple_struct::TupleStructGenerator;
+use std::borrow::Borrow;
 
 #[derive(Default)]
 pub struct Generator<'input> {
@@ -66,16 +67,16 @@ impl<'input> Generator<'input> {
         }
     }
 
-    pub fn base(&self) -> &Box<dyn BaseGenerator> {
-        self.base.as_ref().unwrap()
+    pub fn base(&self) -> &dyn BaseGenerator {
+        self.base.as_ref().unwrap().borrow()
     }
 
-    pub fn struct_field_gen(&self) -> &Box<dyn StructFieldGenerator> {
-        self.struct_field_gen.as_ref().unwrap()
+    pub fn struct_field_gen(&self) -> &dyn StructFieldGenerator {
+        self.struct_field_gen.as_ref().unwrap().borrow()
     }
 
-    pub fn enum_case_gen(&self) -> &Box<dyn EnumCaseGenerator> {
-        self.enum_case_gen.as_ref().unwrap()
+    pub fn enum_case_gen(&self) -> &dyn EnumCaseGenerator {
+        self.enum_case_gen.as_ref().unwrap().borrow()
     }
 }
 

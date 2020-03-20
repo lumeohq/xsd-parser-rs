@@ -1,8 +1,7 @@
-use crate::generator::base::BaseGenerator;
 use crate::generator::validator::gen_validate_impl;
 use crate::generator::Generator;
 use crate::parser::types::Struct;
-use std::borrow::{Borrow, Cow};
+use std::borrow::Cow;
 
 pub trait StructGenerator {
     fn generate(&self, entity: &Struct, gen: &Generator) -> String {

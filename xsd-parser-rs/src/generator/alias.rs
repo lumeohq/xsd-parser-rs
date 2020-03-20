@@ -1,4 +1,3 @@
-use crate::generator::base::BaseGenerator;
 use crate::generator::Generator;
 use crate::parser::types::Alias;
 
@@ -13,7 +12,7 @@ pub trait AliasGenerator {
     }
 
     fn format_comment(&self, comment: Option<&str>, gen: &Generator) -> String {
-        gen.base().format_comment(comment, 0).into()
+        gen.base().format_comment(comment, 0)
     }
 
     fn format_name(&self, name: &str, gen: &Generator) -> String {

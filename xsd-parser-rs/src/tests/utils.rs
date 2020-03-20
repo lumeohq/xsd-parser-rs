@@ -1,6 +1,5 @@
 use crate::generator::Generator;
 use crate::parser::parse;
-use std::fmt::Write;
 
 pub fn generate(input: &str) -> String {
     let f = parse(input).unwrap();

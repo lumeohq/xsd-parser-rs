@@ -1,4 +1,3 @@
-use crate::generator::base::BaseGenerator;
 use crate::generator::validator::gen_validate_impl;
 use crate::generator::Generator;
 use crate::parser::types::{Enum, EnumSource};
