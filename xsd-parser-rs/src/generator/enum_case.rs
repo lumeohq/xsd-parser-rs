@@ -7,7 +7,7 @@ pub trait EnumCaseGenerator {
         let base = gen.base();
 
         match &entity.type_name {
-            Some(typename) => format!(
+            Some(_) => format!(
                 "{comment}{macros}{indent}{name}({typename}),",
                 name = self.get_name(entity, base),
                 typename = self.get_type_name(entity, base),

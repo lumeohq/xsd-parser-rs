@@ -1,31 +1,37 @@
-pub mod default;
-mod utils;
-pub mod validator;
-
+pub mod alias;
 pub mod base;
 pub mod builder;
+pub mod default;
+pub mod r#enum;
 pub mod enum_case;
+pub mod import;
 pub mod r#struct;
 pub mod struct_field;
 pub mod tuple_struct;
+mod utils;
+pub mod validator;
+
+use roxmltree::Namespace;
+use std::borrow::Cow;
 
 use crate::parser::types::{
     Alias, Enum, EnumCase, Import, RsEntity, RsFile, Struct, StructField, TupleStruct, TypeModifier,
 };
 
-use crate::generator::base::{BaseGenerator, DefaultBaseGenerator};
+use crate::generator::alias::AliasGenerator;
+use crate::generator::base::BaseGenerator;
+use crate::generator::builder::GeneratorBuilder;
 use crate::generator::default::{
     default_format_comment, default_format_enum_case_name, default_format_name,
     default_format_type, default_modify_type,
 };
-use crate::generator::enum_case::{DefaultEnumCaseGen, EnumCaseGenerator};
-use crate::generator::r#struct::{DefaultStructGen, StructGenerator};
-use crate::generator::struct_field::{DefaultStructFieldGen, StructFieldGenerator};
-use crate::generator::tuple_struct::{DefaultTupleStructGen, TupleStructGenerator};
+use crate::generator::enum_case::EnumCaseGenerator;
+use crate::generator::import::ImportGenerator;
+use crate::generator::r#enum::EnumGenerator;
+use crate::generator::r#struct::StructGenerator;
+use crate::generator::struct_field::StructFieldGenerator;
+use crate::generator::tuple_struct::TupleStructGenerator;
 use crate::generator::validator::{gen_facet_validation, gen_validate_impl};
-use roxmltree::Namespace;
-use std::borrow::Cow;
-use crate::generator::builder::GeneratorBuilder;
 
 pub trait Generator {
     fn target_ns(&self) -> &Option<Namespace<'_>>;
@@ -283,6 +289,9 @@ pub struct Generator2<'input> {
     pub struct_field_gen: Option<Box<dyn StructFieldGenerator>>,
     pub base: Option<Box<dyn BaseGenerator>>,
     pub enum_case_gen: Option<Box<dyn EnumCaseGenerator>>,
+    pub enum_gen: Option<Box<dyn EnumGenerator>>,
+    pub alias_gen: Option<Box<dyn AliasGenerator>>,
+    pub import_gen: Option<Box<dyn ImportGenerator>>,
 }
 
 impl<'input> Generator2<'input> {
@@ -297,8 +306,10 @@ impl<'input> Generator2<'input> {
             RsEntity::TupleStruct(ts) => self.tuple_struct_gen.as_ref().unwrap().generate(ts, self),
             RsEntity::Struct(st) => self.struct_gen.as_ref().unwrap().generate(st, self),
             RsEntity::StructField(sf) => self.struct_field_gen().generate(sf, self),
+            RsEntity::Enum(en) => self.enum_gen.as_ref().unwrap().generate(en, self),
             RsEntity::EnumCase(ec) => self.enum_case_gen().generate(ec, self),
-            _ => unreachable!(),
+            RsEntity::Alias(al) => self.alias_gen.as_ref().unwrap().generate(al, self),
+            RsEntity::Import(im) => self.import_gen.as_ref().unwrap().generate(im, self),
         }
     }
 

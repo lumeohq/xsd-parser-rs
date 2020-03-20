@@ -1,8 +1,11 @@
+use crate::generator::alias::{AliasGenerator, DefaultAliasGen};
 use crate::generator::base::{BaseGenerator, DefaultBaseGenerator};
-use crate::generator::enum_case::{EnumCaseGenerator, DefaultEnumCaseGen};
+use crate::generator::enum_case::{DefaultEnumCaseGen, EnumCaseGenerator};
+use crate::generator::import::{DefaultImportGen, ImportGenerator};
+use crate::generator::r#enum::{DefaultEnumGen, EnumGenerator};
 use crate::generator::r#struct::{DefaultStructGen, StructGenerator};
-use crate::generator::struct_field::{StructFieldGenerator, DefaultStructFieldGen};
-use crate::generator::tuple_struct::{TupleStructGenerator, DefaultTupleStructGen};
+use crate::generator::struct_field::{DefaultStructFieldGen, StructFieldGenerator};
+use crate::generator::tuple_struct::{DefaultTupleStructGen, TupleStructGenerator};
 use crate::generator::Generator2;
 
 #[derive(Default)]
@@ -39,6 +42,21 @@ impl<'input> GeneratorBuilder<'input> {
         self
     }
 
+    pub fn with_enum_gen(mut self, eg: Box<dyn EnumGenerator>) -> Self {
+        self.gen.enum_gen = Some(eg);
+        self
+    }
+
+    pub fn with_alias_gen(mut self, al: Box<dyn AliasGenerator>) -> Self {
+        self.gen.alias_gen = Some(al);
+        self
+    }
+
+    pub fn with_import_gen(mut self, im: Box<dyn ImportGenerator>) -> Self {
+        self.gen.import_gen = Some(im);
+        self
+    }
+
     pub fn build(mut self) -> Generator2<'input> {
         let mut gen = self.gen;
         gen.base
@@ -55,6 +73,15 @@ impl<'input> GeneratorBuilder<'input> {
 
         gen.enum_case_gen
             .get_or_insert_with(|| Box::new(DefaultEnumCaseGen {}));
+
+        gen.enum_gen
+            .get_or_insert_with(|| Box::new(DefaultEnumGen {}));
+
+        gen.alias_gen
+            .get_or_insert_with(|| Box::new(DefaultAliasGen {}));
+
+        gen.import_gen
+            .get_or_insert_with(|| Box::new(DefaultImportGen {}));
 
         gen
     }
