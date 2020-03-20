@@ -8,6 +8,8 @@ pub mod decimal;
 pub use decimal::*;
 pub mod duration;
 pub use duration::*;
+pub mod gday;
+pub use gday::*;
 pub mod integer;
 pub use integer::*;
 pub mod time;
