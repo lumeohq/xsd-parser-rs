@@ -12,6 +12,8 @@ pub mod gday;
 pub use gday::*;
 pub mod gmonth;
 pub use gmonth::*;
+pub mod gmonthday;
+pub use gmonthday::*;
 pub mod integer;
 pub use integer::*;
 pub mod time;
