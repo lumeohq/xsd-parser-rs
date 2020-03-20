@@ -12,20 +12,18 @@ mod utils;
 pub mod validator;
 
 use roxmltree::Namespace;
+use std::borrow::Borrow;
 use std::cell::RefCell;
-
-use crate::parser::types::{RsEntity, RsFile};
 
 use crate::generator::alias::AliasGenerator;
 use crate::generator::base::BaseGenerator;
-use crate::generator::builder::GeneratorBuilder;
 use crate::generator::enum_case::EnumCaseGenerator;
 use crate::generator::import::ImportGenerator;
 use crate::generator::r#enum::EnumGenerator;
 use crate::generator::r#struct::StructGenerator;
 use crate::generator::struct_field::StructFieldGenerator;
 use crate::generator::tuple_struct::TupleStructGenerator;
-use std::borrow::Borrow;
+use crate::parser::types::{RsEntity, RsFile};
 
 #[derive(Default)]
 pub struct Generator<'input> {
@@ -42,10 +40,6 @@ pub struct Generator<'input> {
 }
 
 impl<'input> Generator<'input> {
-    pub fn new() -> GeneratorBuilder<'input> {
-        GeneratorBuilder::default()
-    }
-
     pub fn generate_rs_file(&self, schema: &RsFile<'input>) -> String {
         *self.target_ns.borrow_mut() = schema.target_ns.clone();
         schema

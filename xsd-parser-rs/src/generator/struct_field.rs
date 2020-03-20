@@ -1,3 +1,6 @@
+use crate::generator::default::{
+    yaserde_for_attribute, yaserde_for_element, yaserde_for_flatten_element,
+};
 use crate::generator::Generator;
 use crate::parser::types::{StructField, StructFieldSource, TypeModifier};
 
@@ -37,12 +40,17 @@ pub trait StructFieldGenerator {
     }
 
     fn macros(&self, entity: &StructField, gen: &Generator) -> String {
+        let indent = gen.base().indent();
         match entity.source {
-            StructFieldSource::Choice => yaserde_for_flatten_element(),
-            StructFieldSource::Attribute => yaserde_for_attribute(entity.name.as_str()),
-            StructFieldSource::Element => {
-                yaserde_for_element(entity.name.as_str(), gen.target_ns.borrow().as_ref())
+            StructFieldSource::Choice => yaserde_for_flatten_element(indent.as_str()),
+            StructFieldSource::Attribute => {
+                yaserde_for_attribute(entity.name.as_str(), indent.as_str())
             }
+            StructFieldSource::Element => yaserde_for_element(
+                entity.name.as_str(),
+                gen.target_ns.borrow().as_ref(),
+                indent.as_str(),
+            ),
             _ => "".into(),
         }
     }
@@ -50,35 +58,3 @@ pub trait StructFieldGenerator {
 
 pub struct DefaultStructFieldGen;
 impl StructFieldGenerator for DefaultStructFieldGen {}
-
-fn yaserde_for_attribute(name: &str) -> String {
-    if let Some(index) = name.find(':') {
-        format!(
-            "    #[yaserde(attribute, prefix = \"{}\" rename = \"{}\")]\n",
-            &name[0..index],
-            &name[index + 1..]
-        )
-    } else {
-        format!("    #[yaserde(attribute, rename = \"{}\")]\n", name)
-    }
-}
-
-fn yaserde_for_element(name: &str, target_namespace: Option<&roxmltree::Namespace>) -> String {
-    let (prefix, field_name) = if let Some(index) = name.find(':') {
-        (Some(&name[0..index]), &name[index + 1..])
-    } else {
-        (target_namespace.and_then(|ns| ns.name()), name)
-    };
-
-    match prefix {
-        Some(p) => format!(
-            "    #[yaserde(prefix = \"{}\", rename = \"{}\")]\n",
-            p, field_name
-        ),
-        None => format!("    #[yaserde(rename = \"{}\")]\n", field_name),
-    }
-}
-
-fn yaserde_for_flatten_element() -> String {
-    "    #[yaserde(flatten)]\n".to_string()
-}

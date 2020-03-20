@@ -1,9 +1,9 @@
-use crate::generator::Generator;
+use crate::generator::builder::GeneratorBuilder;
 use crate::parser::parse;
 
 pub fn generate(input: &str) -> String {
     let f = parse(input).unwrap();
-    let gen = Generator::new().build();
+    let gen = GeneratorBuilder::default().build();
     gen.generate_rs_file(&f)
 }
 

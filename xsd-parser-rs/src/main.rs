@@ -13,14 +13,14 @@ mod tests;
 use std::fs;
 use std::io::Read;
 
-use crate::generator::Generator;
+use crate::generator::builder::GeneratorBuilder;
 use crate::parser::parse;
 
 fn main() {
     //let text = load_file("xsd_external/b-2.xsd");
     let text = load_file("xsd/onvif.xsd");
     if let Ok(f) = parse(text.as_str()) {
-        let gen = Generator::new().build();
+        let gen = GeneratorBuilder::default().build();
         println!("{}", gen.generate_rs_file(&f));
     }
 }
