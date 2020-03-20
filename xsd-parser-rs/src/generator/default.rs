@@ -22,7 +22,7 @@ pub fn default_format_type(type_name: &str, target_ns: &Option<Namespace>) -> Co
     let (prefix, name) = split_name(type_name);
     let option_tns = target_ns.as_ref().and_then(|ns| ns.name());
 
-    let pascalized_name = to_pascal_case(filter_type_name(name).as_str());
+    let pascalized_name = filter_type_name(to_pascal_case(name).as_str());
 
     let qname = |prefix| format!("{}::{}", prefix, pascalized_name);
 
@@ -170,7 +170,7 @@ mod test {
 
         assert_eq!(
             default_format_type("http://www.w3.org/2005/08/addressing/reply", &ns),
-            "http::Wwww3Org200508Addressingreply"
+            "http::WwwW3Org200508AddressingReply"
         );
     }
 

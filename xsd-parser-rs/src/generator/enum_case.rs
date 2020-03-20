@@ -55,11 +55,17 @@ pub trait EnumCaseGenerator {
                 prefix = p,
                 rename = field_name
             ),
-            None => format!(
-                "{indent}#[yaserde(rename = \"{rename}\")]\n",
-                indent = gen.base().indent(),
-                rename = field_name
-            ),
+            None => {
+                if field_name == self.get_name(entity, gen) {
+                    "".into()
+                } else {
+                    format!(
+                        "{indent}#[yaserde(rename = \"{rename}\")]\n",
+                        indent = gen.base().indent(),
+                        rename = field_name
+                    )
+                }
+            }
         }
     }
 }
