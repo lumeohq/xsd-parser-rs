@@ -10,6 +10,8 @@ pub mod duration;
 pub use duration::*;
 pub mod gday;
 pub use gday::*;
+pub mod gmonth;
+pub use gmonth::*;
 pub mod integer;
 pub use integer::*;
 pub mod time;
