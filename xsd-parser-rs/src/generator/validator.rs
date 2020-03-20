@@ -15,12 +15,10 @@ pub fn gen_validate_impl(name: &str, body: &str) -> String {
     } else {
         format!(
             r#"impl Validate for {name} {{
-    fn validate(&self) -> Result<(), String> {{
-        {body}
+    fn validate(&self) -> Result<(), String> {{ {body}
         Ok(())
     }}
 }}
-
 "#,
             name = name,
             body = body

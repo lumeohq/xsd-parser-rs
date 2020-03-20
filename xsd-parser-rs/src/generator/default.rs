@@ -21,58 +21,26 @@ pub fn default_format_name(name: &str) -> String {
 }
 
 pub fn default_format_type(type_name: &str, target_ns: &Option<Namespace>) -> Cow<'static, str> {
-    if let Some(t) = match_built_in_type(type_name) {
-        return t.into();
-    }
-
-    let (option_ns, ty) = split_name(type_name);
+    let (prefix, name) = split_name(type_name);
     let option_tns = target_ns.as_ref().and_then(|ns| ns.name());
 
-    let pascalized_ty = to_pascal_case(filter_type_name(ty).as_str());
+    let pascalized_name = to_pascal_case(filter_type_name(name).as_str());
 
-    let qname = |ns| format!("{}::{}", ns, pascalized_ty);
+    let qname = |prefix| format!("{}::{}", prefix, pascalized_name);
 
-    let res = match (option_ns, option_tns) {
+    let res = match (prefix, option_tns) {
         (Some(ns), Some(tns)) => {
             if ns == tns {
-                pascalized_ty
+                pascalized_name
             } else {
                 qname(ns)
             }
         }
         (Some(ns), None) => qname(ns),
-        _ => pascalized_ty,
+        _ => pascalized_name,
     };
 
     sanitize(res).into()
-}
-
-pub fn default_format_enum_case_name(
-    type_name: &str,
-    target_ns: &Option<Namespace>,
-) -> Cow<'static, str> {
-    fn replace(type_name: &str) -> String {
-        match type_name.find(':') {
-            Some(index) => format!(
-                "{}::{}",
-                &type_name[0..index],
-                to_pascal_case(&type_name[index..])
-            ),
-            None => to_pascal_case(type_name),
-        }
-    }
-
-    sanitize(match target_ns.as_ref().and_then(|ns| ns.name()) {
-        Some(name) => {
-            if type_name.starts_with(name) {
-                to_pascal_case(&type_name[name.len() + 1..])
-            } else {
-                replace(type_name)
-            }
-        }
-        None => replace(type_name),
-    })
-    .into()
 }
 
 pub fn default_modify_type(type_name: &str, modifiers: &[TypeModifier]) -> Cow<'static, str> {
@@ -139,12 +107,6 @@ mod test {
         assert_eq!(default_format_type("tt:TyName", &None), "tt::TyName");
         assert_eq!(default_format_type("0type_name", &None), "_0TypeName");
         assert_eq!(default_format_type("Enum", &None), "Enum");
-
-        assert_eq!(default_format_type("xs:integer", &None), "xs::Integer");
-        assert_eq!(
-            default_format_type("xs:nonNegativeInteger", &None),
-            "xs::Integer"
-        );
     }
 
     #[test]

@@ -112,10 +112,10 @@ pub fn filter_type_name(name: &str) -> String {
     name.chars().filter(is_valid_symbol).collect()
 }
 
-pub fn split_name(type_name: &str) -> (Option<&str>, &str) {
-    match type_name.find(':') {
-        Some(index) => (Some(&type_name[0..index]), &type_name[index + 1..]),
-        None => (None, type_name),
+pub fn split_name(name: &str) -> (Option<&str>, &str) {
+    match name.find(':') {
+        Some(index) => (Some(&name[0..index]), &name[index + 1..]),
+        None => (None, name),
     }
 }
 

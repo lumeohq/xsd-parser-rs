@@ -1,13 +1,21 @@
 use crate::generator::base::BaseGenerator;
 use crate::generator::validator::gen_validate_impl;
 use crate::generator::Generator2;
-use crate::parser::types::{Enum, RsEntity};
+use crate::parser::types::{Enum, RsEntity, EnumSource};
 use std::borrow::Cow;
 
 pub trait EnumGenerator {
     fn generate(&self, entity: &Enum, gen: &Generator2) -> String {
-        let base = gen.base();
-        let name = self.get_type_name(entity, base);
+        let name = self.get_name(entity, gen);
+        let default_case = format!(
+            "impl Default for {name} {{\n\
+            {indent}fn default() -> {name} {{\n\
+            {indent}{indent}Self::__Unknown__(\"No valid variants\".into())\n\
+            {indent}}}\n\
+            }}",
+            name = name,
+            indent = gen.base().indent()
+        );
 
         format!(
             "{comment}{macros}\n\
@@ -17,25 +25,16 @@ pub trait EnumGenerator {
             }}\n\n\
             {default}\n\n\
             {validation}\n\n\
-            {subtypes}\n\n
-            ",
-            indent = base.indent(),
-            comment = self.format_comment(entity.comment.as_deref(), base),
-            macros = self.macros(entity),
+            {subtypes}\n\n",
+            indent = gen.base().indent(),
+            comment = self.format_comment(entity, gen),
+            macros = self.macros(entity, gen),
             name = name,
             cases = self.cases(entity, gen),
-            typename = self.get_type_name(entity, base),
-            default = self.impl_default(name.as_str(), base),
-            subtypes = self.subtypes(entity.subtypes.as_ref(), gen),
-            validation = self.validation(entity, name.as_ref()),
-        )
-    }
-
-    fn impl_default(&self, name: &str, base: &Box<dyn BaseGenerator>) -> String {
-        format!(
-            "impl Default for {name} {{\n{indent}fn default() -> {name} {{\n{indent}{indent}Self::__Unknown__(\"No valid variants\".into())\n{indent}}}\n}}",
-            name = name,
-            indent = base.indent()
+            typename = self.get_type_name(entity, gen),
+            default = default_case,
+            subtypes = self.subtypes(entity, gen),
+            validation = self.validation(entity, gen),
         )
     }
 
@@ -48,29 +47,32 @@ pub trait EnumGenerator {
             .join("\n")
     }
 
-    fn subtypes(&self, subtypes: &[RsEntity], gen: &Generator2) -> String {
-        subtypes
-            .iter()
-            .map(|f| gen.generate(f))
-            .collect::<Vec<String>>()
-            .join("\n")
+    fn subtypes(&self, entity: &Enum, gen: &Generator2) -> String {
+        gen.base().join_subtypes(entity.subtypes.as_ref(), gen)
     }
 
-    fn get_type_name(&self, entity: &Enum, base: &Box<dyn BaseGenerator>) -> String {
-        base.format_type_name(entity.name.as_str()).into()
+    fn get_type_name(&self, entity: &Enum, gen: &Generator2) -> String {
+        gen.base().format_type_name(entity.type_name.as_str(), gen).into()
     }
 
-    fn macros(&self, _: &Enum) -> Cow<'static, str> {
-        "".into()
+    fn get_name(&self, entity: &Enum, gen: &Generator2) -> String {
+        gen.base().format_type_name(entity.name.as_str(), gen).into()
     }
 
-    fn format_comment(&self, comment: Option<&str>, base: &Box<dyn BaseGenerator>) -> String {
-        base.format_comment(comment, base.indent_size())
+    fn macros(&self, entity: &Enum, _gen: &Generator2) -> Cow<'static, str> {
+        if entity.source == EnumSource::Union {
+            return "#[derive(PartialEq, Debug, UtilsUnionSerDe)]".into();
+        }
+        "#[derive(PartialEq, Debug, YaSerialize, YaDeserialize)]".into()
     }
 
-    fn validation(&self, _entity: &Enum, formatted_type_name: &str) -> Cow<'static, str> {
+    fn format_comment(&self, entity: &Enum, gen: &Generator2) -> String {
+        gen.base().format_comment(entity.comment.as_deref(), 0)
+    }
+
+    fn validation(&self, entity: &Enum, gen: &Generator2) -> Cow<'static, str> {
         // Empty validation
-        Cow::Owned(gen_validate_impl(formatted_type_name, ""))
+        Cow::Owned(gen_validate_impl(self.get_name(entity, gen).as_str(), ""))
     }
 }
 

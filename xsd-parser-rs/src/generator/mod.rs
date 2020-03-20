@@ -12,7 +12,8 @@ mod utils;
 pub mod validator;
 
 use roxmltree::Namespace;
-use std::borrow::Cow;
+use std::borrow::{Cow, Borrow};
+use std::cell::{RefCell};
 
 use crate::parser::types::{
     Alias, Enum, EnumCase, Import, RsEntity, RsFile, Struct, StructField, TupleStruct, TypeModifier,
@@ -22,7 +23,7 @@ use crate::generator::alias::AliasGenerator;
 use crate::generator::base::BaseGenerator;
 use crate::generator::builder::GeneratorBuilder;
 use crate::generator::default::{
-    default_format_comment, default_format_enum_case_name, default_format_name,
+    default_format_comment, default_format_name,
     default_format_type, default_modify_type,
 };
 use crate::generator::enum_case::EnumCaseGenerator;
@@ -32,6 +33,7 @@ use crate::generator::r#struct::StructGenerator;
 use crate::generator::struct_field::StructFieldGenerator;
 use crate::generator::tuple_struct::TupleStructGenerator;
 use crate::generator::validator::{gen_facet_validation, gen_validate_impl};
+
 
 pub trait Generator {
     fn target_ns(&self) -> &Option<Namespace<'_>>;
@@ -275,14 +277,14 @@ pub trait Generator {
         default_format_type(type_name, self.target_ns())
     }
 
-    fn format_enum_case_name(&self, name: &str) -> Cow<'_, str> {
-        default_format_enum_case_name(name, self.target_ns())
+    fn format_enum_case_name(&self, _name: &str) -> Cow<'_, str> {
+        "enum".into()
     }
 }
 
 #[derive(Default)]
 pub struct Generator2<'input> {
-    target_ns: Option<Namespace<'input>>,
+    pub target_ns: RefCell<Option<Namespace<'input>>>,
 
     pub tuple_struct_gen: Option<Box<dyn TupleStructGenerator>>,
     pub struct_gen: Option<Box<dyn StructGenerator>>,
@@ -295,12 +297,19 @@ pub struct Generator2<'input> {
 }
 
 impl<'input> Generator2<'input> {
-    pub fn new(schema: &RsFile<'input>) -> GeneratorBuilder<'input> {
-        GeneratorBuilder::new(Self {
-            target_ns: schema.target_ns.clone(),
-            ..Default::default()
-        })
+    pub fn new() -> GeneratorBuilder<'input> {
+        GeneratorBuilder::default()
     }
+
+    pub fn generate_rs_file(&self, schema: &RsFile<'input>) -> String {
+        *self.target_ns.borrow_mut() = schema.target_ns.clone();
+        schema
+            .types
+            .iter()
+            .map(|entity| self.generate(entity))
+            .collect()
+    }
+
     pub fn generate(&self, entity: &RsEntity) -> String {
         match entity {
             RsEntity::TupleStruct(ts) => self.tuple_struct_gen.as_ref().unwrap().generate(ts, self),

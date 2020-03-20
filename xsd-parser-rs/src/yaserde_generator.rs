@@ -1,3 +1,5 @@
+#[allow(dead_code)]
+
 use crate::generator::Generator;
 use crate::parser::types::{
     Enum, EnumCase, EnumSource, RsFile, Struct, StructField, StructFieldSource, TupleStruct,

@@ -13,10 +13,8 @@ pub struct GeneratorBuilder<'input> {
     gen: Generator2<'input>,
 }
 
+#[allow(dead_code)]
 impl<'input> GeneratorBuilder<'input> {
-    pub fn new(gen: Generator2<'input>) -> Self {
-        Self { gen }
-    }
     pub fn with_base_gen(mut self, base: Box<dyn BaseGenerator>) -> Self {
         self.gen.base = Some(base);
         self
@@ -57,10 +55,10 @@ impl<'input> GeneratorBuilder<'input> {
         self
     }
 
-    pub fn build(mut self) -> Generator2<'input> {
+    pub fn build(self) -> Generator2<'input> {
         let mut gen = self.gen;
         gen.base
-            .get_or_insert_with(|| Box::new(DefaultBaseGenerator { target_ns: None })); //.set_target_ns(&gen.target_ns);
+            .get_or_insert_with(|| Box::new(DefaultBaseGenerator {})); //.set_target_ns(&gen.target_ns);
 
         gen.tuple_struct_gen
             .get_or_insert_with(|| Box::new(DefaultTupleStructGen {}));

@@ -6,50 +6,51 @@ use std::borrow::Cow;
 
 pub trait TupleStructGenerator {
     fn generate(&self, entity: &TupleStruct, gen: &Generator2) -> String {
-        let base = gen.base();
-        let type_name = self.get_type_name(entity, base);
         format!(
             "{comment}{macros}pub struct {name} (pub {typename});\n{subtypes}\n{validation}\n",
-            comment = self.format_comment(entity.comment.as_deref(), base),
-            name = base.format_type_name(entity.name.as_str()),
-            macros = self.macros(entity),
-            typename = type_name,
-            subtypes = self.subtypes(entity.subtypes.as_ref(), gen),
-            validation = self.validation(entity, type_name.as_str()),
+            comment = self.format_comment(entity, gen),
+            name = self.get_name(entity, gen),
+            macros = self.macros(entity, gen),
+            typename = self.get_type_name(entity, gen),
+            subtypes = self.subtypes(entity, gen),
+            validation = self.validation(entity, gen),
         )
     }
 
-    fn subtypes(&self, subtypes: &[RsEntity], gen: &Generator2) -> String {
-        subtypes
-            .iter()
-            .map(|f| gen.generate(f))
-            .collect::<Vec<String>>()
-            .join("\n")
+    fn subtypes(&self, entity: &TupleStruct, gen: &Generator2) -> String {
+        gen.base().join_subtypes(entity.subtypes.as_ref(), gen)
     }
 
-    fn get_type_name(&self, entity: &TupleStruct, base: &Box<dyn BaseGenerator>) -> String {
-        base.modify_type(
-            base.format_type_name(entity.type_name.as_str()).as_ref(),
+    fn get_type_name(&self, entity: &TupleStruct, gen: &Generator2) -> String {
+        gen.base().modify_type(
+            gen.base().format_type_name(entity.type_name.as_str(), gen).as_ref(),
             &entity.type_modifiers,
         )
         .into()
     }
 
-    fn macros(&self, _: &TupleStruct) -> Cow<'static, str> {
-        "".into()
+    fn get_name(&self, entity: &TupleStruct, gen: &Generator2) -> String {
+        gen
+            .base()
+            .format_type_name(entity.name.as_str(), gen)
+            .into()
     }
 
-    fn format_comment(&self, comment: Option<&str>, base: &Box<dyn BaseGenerator>) -> String {
-        base.format_comment(comment, base.indent_size())
+    fn macros(&self, _entity: &TupleStruct, _gen: &Generator2) -> Cow<'static, str> {
+        "#[derive(Default, PartialEq, Debug, UtilsTupleSerDe)]\n".into()
     }
 
-    fn validation(&self, entity: &TupleStruct, formatted_type_name: &str) -> Cow<'static, str> {
+    fn format_comment(&self, entity: &TupleStruct, gen: &Generator2) -> String {
+        gen.base().format_comment(entity.comment.as_deref(), 0)
+    }
+
+    fn validation(&self, entity: &TupleStruct, gen: &Generator2) -> Cow<'static, str> {
         let body = entity
             .facets
             .iter()
             .map(|f| gen_facet_validation(&f.facet_type, "0"))
             .fold(String::new(), |x, y| (x + &y));
-        Cow::Owned(gen_validate_impl(formatted_type_name, body.as_str()))
+        Cow::Owned(gen_validate_impl(self.get_name(entity, gen).as_str(), body.as_str()))
     }
 }
 
