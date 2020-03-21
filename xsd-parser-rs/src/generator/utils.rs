@@ -51,14 +51,11 @@ pub fn match_built_in_type(type_name: &str) -> &'static str {
 
         "xs:duration" => "xs::Duration",
 
-        // TODO: would be nice to have types with both numeric representation of value and proper
-        // (de)serialization. For that we might use the "flatten" from yaserde, as it will be
-        // updated on the crates.io.
-        "xs:gDay" => "String",
-        "xs:gMonth" => "String",
-        "xs:gMonthDay" => "String",
-        "xs:gYear" => "String",
-        "xs:gYearMonth" => "String",
+        "xs:gDay" => "xs::GDay",
+        "xs:gMonth" => "xs::GMonth",
+        "xs:gMonthDay" => "xs::GMonthDay",
+        "xs:gYear" => "xs::GYear",
+        "xs:gYearMonth" => "xs::GYearMonth",
 
         "xs:string" => "String",
         "xs:normalizedString" => "String",
