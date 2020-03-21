@@ -1,3 +1,5 @@
+use crate::types::gmonth::GMonth;
+use crate::types::gyear::GYear;
 use crate::types::utils::parse_timezone;
 use crate::utils;
 use chrono::FixedOffset;
@@ -28,6 +30,20 @@ impl GYearMonth {
             month,
             timezone,
         })
+    }
+
+    pub fn gyear(self) -> GYear {
+        GYear {
+            value: self.year,
+            timezone: self.timezone,
+        }
+    }
+
+    pub fn gmonth(self) -> GMonth {
+        GMonth {
+            value: self.month,
+            timezone: self.timezone,
+        }
     }
 }
 
