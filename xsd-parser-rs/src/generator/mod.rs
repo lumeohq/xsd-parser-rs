@@ -28,6 +28,7 @@ use crate::parser::types::{RsEntity, RsFile};
 #[derive(Default)]
 pub struct Generator<'input> {
     pub target_ns: RefCell<Option<Namespace<'input>>>,
+    pub xsd_ns: RefCell<Option<Namespace<'input>>>,
 
     pub tuple_struct_gen: Option<Box<dyn TupleStructGenerator>>,
     pub struct_gen: Option<Box<dyn StructGenerator>>,
@@ -42,6 +43,7 @@ pub struct Generator<'input> {
 impl<'input> Generator<'input> {
     pub fn generate_rs_file(&self, schema: &RsFile<'input>) -> String {
         *self.target_ns.borrow_mut() = schema.target_ns.clone();
+        *self.xsd_ns.borrow_mut() = schema.xsd_ns.clone();
         schema
             .types
             .iter()
@@ -82,12 +84,7 @@ mod test {
     #[test]
     fn test_generate_rs_file() {
         let gen = GeneratorBuilder::default().build();
-        let mut rs_file = RsFile {
-            name: "".to_string(),
-            namespace: None,
-            types: vec![],
-            target_ns: None,
-        };
+        let mut rs_file = RsFile::default();
         assert!(gen.generate_rs_file(&rs_file).is_empty());
 
         rs_file.types.push(RsEntity::TupleStruct(TupleStruct {

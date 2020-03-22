@@ -3,6 +3,7 @@ use super::utils;
 #[test]
 fn deserialization_works() {
     mod expected {
+        use crate::generator::validator::Validate;
         use std::io::{Read, Write};
         use yaserde::{YaDeserialize, YaSerialize};
 
@@ -27,7 +28,6 @@ fn generator_does_not_panic() {
 }
 
 #[test]
-#[ignore]
 fn generator_output_has_correct_ast() {
     utils::ast_test(include_str!("input.xsd"), include_str!("expected.rs"));
 }

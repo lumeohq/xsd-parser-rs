@@ -4,3 +4,5 @@ pub struct FooType {
     #[yaserde(prefix = "tns", rename = "Text")]
     pub text: String,
 }
+
+impl Validate for FooType {}
