@@ -84,3 +84,48 @@ impl<'input> GeneratorBuilder<'input> {
         gen
     }
 }
+
+#[cfg(test)]
+mod test {
+    use crate::generator::builder::GeneratorBuilder;
+    use crate::generator::tuple_struct::TupleStructGenerator;
+    use crate::generator::Generator;
+    use crate::parser::types::{RsEntity, TupleStruct};
+
+    fn test_generator_state(gen: &Generator) {
+        assert!(gen.tuple_struct_gen.is_some());
+        assert!(gen.struct_gen.is_some());
+        assert!(gen.struct_field_gen.is_some());
+        assert!(gen.base.is_some());
+        assert!(gen.enum_case_gen.is_some());
+        assert!(gen.enum_gen.is_some());
+        assert!(gen.alias_gen.is_some());
+        assert!(gen.import_gen.is_some());
+    }
+
+    #[test]
+    fn test_builder_default() {
+        let gen = GeneratorBuilder::default().build();
+        test_generator_state(&gen);
+        assert!(gen.target_ns.borrow().is_none());
+    }
+
+    #[test]
+    fn test_builder_with_custom_generators() {
+        struct StubTupleStructGen;
+        impl TupleStructGenerator for StubTupleStructGen {
+            fn generate(&self, _: &TupleStruct, _: &Generator) -> String {
+                "Tuple struct".into()
+            }
+        }
+
+        let gen = GeneratorBuilder::default()
+            .with_tuple_struct_gen(Box::new(StubTupleStructGen {}))
+            .build();
+
+        test_generator_state(&gen);
+
+        let ts = RsEntity::TupleStruct(TupleStruct::default());
+        assert_eq!(gen.generate(&ts), "Tuple struct");
+    }
+}

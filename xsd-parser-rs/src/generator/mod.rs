@@ -76,6 +76,33 @@ impl<'input> Generator<'input> {
 
 #[cfg(test)]
 mod test {
+    use crate::generator::builder::GeneratorBuilder;
+    use crate::parser::types::{RsEntity, RsFile, TupleStruct};
+
     #[test]
-    fn foo() {}
+    fn test_generate_rs_file() {
+        let gen = GeneratorBuilder::default().build();
+        let mut rs_file = RsFile {
+            name: "".to_string(),
+            namespace: None,
+            types: vec![],
+            target_ns: None,
+        };
+        assert!(gen.generate_rs_file(&rs_file).is_empty());
+
+        rs_file.types.push(RsEntity::TupleStruct(TupleStruct {
+            name: "name".to_string(),
+            comment: Some("comment".into()),
+            type_name: "type".to_string(),
+            ..Default::default()
+        }));
+        let comment = "// comment\n";
+        let macros = "#[derive(Default, PartialEq, Debug, UtilsTupleSerDe)]\n";
+        let validation = "impl Validate for Name {}\n";
+        let expected = format!(
+            "{}{}pub struct Name (pub Type);\n\n{}",
+            comment, macros, validation
+        );
+        assert_eq!(gen.generate_rs_file(&rs_file), expected);
+    }
 }
