@@ -1,253 +1,108 @@
+pub mod alias;
+pub mod base;
+pub mod builder;
 pub mod default;
+pub mod r#enum;
+pub mod enum_case;
+pub mod import;
+pub mod r#struct;
+pub mod struct_field;
+pub mod tuple_struct;
 mod utils;
 pub mod validator;
 
-use crate::parser::types::{
-    Alias, Enum, EnumCase, Import, RsEntity, Struct, StructField, TupleStruct, TypeModifier,
-};
-
-use crate::generator::default::{
-    default_format_comment, default_format_enum_case_name, default_format_name,
-    default_format_type, default_modify_type,
-};
-use crate::generator::validator::{gen_facet_validation, gen_validate_impl};
 use roxmltree::Namespace;
-use std::borrow::Cow;
+use std::borrow::Borrow;
+use std::cell::RefCell;
 
-pub trait Generator {
-    fn target_ns(&self) -> &Option<Namespace<'_>>;
+use crate::generator::alias::AliasGenerator;
+use crate::generator::base::BaseGenerator;
+use crate::generator::enum_case::EnumCaseGenerator;
+use crate::generator::import::ImportGenerator;
+use crate::generator::r#enum::EnumGenerator;
+use crate::generator::r#struct::StructGenerator;
+use crate::generator::struct_field::StructFieldGenerator;
+use crate::generator::tuple_struct::TupleStructGenerator;
+use crate::parser::types::{RsEntity, RsFile};
 
-    fn tuple_struct_macro(&self, _: &TupleStruct) -> Cow<'static, str> {
-        "".into()
-    }
-    fn struct_macro(&self, _: &Struct) -> Cow<'static, str> {
-        "".into()
-    }
-    fn enum_macro(&self, _: &Enum) -> Cow<'static, str> {
-        "".into()
-    }
-    fn alias_macro(&self, _: &Alias) -> Cow<'static, str> {
-        "".into()
-    }
-    fn struct_field_macro(&self, _: &StructField) -> Cow<'static, str> {
-        "".into()
-    }
-    fn enum_case_macro(&self, _: &EnumCase) -> Cow<'static, str> {
-        "".into()
+#[derive(Default)]
+pub struct Generator<'input> {
+    pub target_ns: RefCell<Option<Namespace<'input>>>,
+
+    pub tuple_struct_gen: Option<Box<dyn TupleStructGenerator>>,
+    pub struct_gen: Option<Box<dyn StructGenerator>>,
+    pub struct_field_gen: Option<Box<dyn StructFieldGenerator>>,
+    pub base: Option<Box<dyn BaseGenerator>>,
+    pub enum_case_gen: Option<Box<dyn EnumCaseGenerator>>,
+    pub enum_gen: Option<Box<dyn EnumGenerator>>,
+    pub alias_gen: Option<Box<dyn AliasGenerator>>,
+    pub import_gen: Option<Box<dyn ImportGenerator>>,
+}
+
+impl<'input> Generator<'input> {
+    pub fn generate_rs_file(&self, schema: &RsFile<'input>) -> String {
+        *self.target_ns.borrow_mut() = schema.target_ns.clone();
+        schema
+            .types
+            .iter()
+            .map(|entity| self.generate(entity))
+            .collect()
     }
 
-    fn gen_rs_entity(&self, entity: &RsEntity) -> String {
-        use RsEntity::*;
+    pub fn generate(&self, entity: &RsEntity) -> String {
         match entity {
-            TupleStruct(tp) => self.gen_tuple_struct(tp),
-            Struct(st) => self.gen_struct(st),
-            Enum(en) => self.gen_enum(en),
-            Import(im) => self.gen_import(im),
-            Alias(al) => self.get_alias(al),
-            EnumCase(ec) => self.gen_enum_case(ec),
-            StructField(sf) => self.get_struct_field(sf),
+            RsEntity::TupleStruct(ts) => self.tuple_struct_gen.as_ref().unwrap().generate(ts, self),
+            RsEntity::Struct(st) => self.struct_gen.as_ref().unwrap().generate(st, self),
+            RsEntity::StructField(sf) => self.struct_field_gen().generate(sf, self),
+            RsEntity::Enum(en) => self.enum_gen.as_ref().unwrap().generate(en, self),
+            RsEntity::EnumCase(ec) => self.enum_case_gen().generate(ec, self),
+            RsEntity::Alias(al) => self.alias_gen.as_ref().unwrap().generate(al, self),
+            RsEntity::Import(im) => self.import_gen.as_ref().unwrap().generate(im, self),
         }
     }
 
-    fn gen_tuple_struct(&self, ts: &TupleStruct) -> String {
-        let typename = self.modify_type(
-            self.format_type(ts.type_name.as_str()).as_ref(),
-            &ts.type_modifiers,
-        );
-        format!(
-            "{comment}{macros}pub struct {name} (pub {typename});\n{subtypes}\n{validation}\n",
-            comment = self.format_comment(ts.comment.as_deref(), 0),
-            macros = self.tuple_struct_macro(ts),
-            name = self.format_type(ts.name.as_str()),
-            typename = typename,
-            subtypes = ts
-                .subtypes
-                .iter()
-                .map(|f| self.gen_rs_entity(f))
-                .collect::<Vec<String>>()
-                .join("\n"),
-            validation = self.gen_tuple_struct_validation(ts),
-        )
+    pub fn base(&self) -> &dyn BaseGenerator {
+        self.base.as_ref().unwrap().borrow()
     }
 
-    fn gen_tuple_struct_validation(&self, ts: &TupleStruct) -> Cow<'static, str> {
-        let body = ts
-            .facets
-            .iter()
-            .map(|f| gen_facet_validation(&f.facet_type, "0"))
-            .fold(String::new(), |x, y| (x + &y));
-        Cow::Owned(gen_validate_impl(
-            self.format_type(ts.name.as_str()).as_ref(),
-            body.as_str(),
-        ))
+    pub fn struct_field_gen(&self) -> &dyn StructFieldGenerator {
+        self.struct_field_gen.as_ref().unwrap().borrow()
     }
 
-    fn gen_struct(&self, st: &Struct) -> String {
-        let fields = st
-            .fields
-            .borrow()
-            .iter()
-            .map(|f| self.get_struct_field(f))
-            .filter(|s| !s.is_empty())
-            .collect::<Vec<String>>()
-            .join("\n\n");
-
-        let name = self.format_type(st.name.as_str());
-
-        format!(
-            "{comment}{macros}pub struct {name} {{{fields}}}\n\n{validation}\n{subtypes}\n{fields_subtypes}",
-            comment = self.format_comment(st.comment.as_deref(), 0),
-            macros = self.struct_macro(st),
-            name = name,
-            fields = if fields.is_empty() {
-                fields
-            } else {
-                format!("\n{}\n", fields)
-            },
-            subtypes = st
-                .subtypes
-                .iter()
-                .map(|f| self.gen_rs_entity(f))
-                .collect::<Vec<String>>()
-                .join("\n\n"),
-            fields_subtypes = st
-                .fields
-                .borrow()
-                .iter()
-                .map(|f| f
-                    .subtypes
-                    .iter()
-                    .map(|e| self.gen_rs_entity(e))
-                    .collect::<Vec<String>>()
-                    .join("\n"))
-                .collect::<Vec<String>>()
-                .join(""),
-            validation = gen_validate_impl(
-                name.as_ref(),
-                ""
-            ),
-        )
+    pub fn enum_case_gen(&self) -> &dyn EnumCaseGenerator {
+        self.enum_case_gen.as_ref().unwrap().borrow()
     }
+}
 
-    fn gen_enum(&self, en: &Enum) -> String {
-        let name = self.format_type(en.name.as_str());
-        format!(
-            "{comment}{macros}\npub enum {name} {{\n{cases}\n    __Unknown__({typename}),\n\
-            }}\n\n\
-            {default}\n\n\
-            {validation}\n\n\
-            {subtypes}\n\n
-            ",
-            comment = self.format_comment(en.comment.as_deref(), 0),
-            macros = self.enum_macro(en),
-            name = name,
-            cases = en
-                .cases
-                .iter()
-                .map(|case| self.gen_enum_case(case))
-                .collect::<Vec<String>>()
-                .join("\n"),
-            typename = self.format_type(en.type_name.as_str()),
-            default = format!("impl Default for {name} {{\n    fn default() -> {name} {{\n        Self::__Unknown__(\"No valid variants\".into())\n    }}\n}}",
-                              name = name
-            ),
-            subtypes = en
-                .subtypes
-                .iter()
-                .map(|f| self.gen_rs_entity(f))
-                .collect::<Vec<String>>()
-                .join("\n\n"),
-            validation = gen_validate_impl(
-                name.as_ref(),
-                ""
-            ),
-        )
-    }
+#[cfg(test)]
+mod test {
+    use crate::generator::builder::GeneratorBuilder;
+    use crate::parser::types::{RsEntity, RsFile, TupleStruct};
 
-    fn gen_enum_case(&self, ec: &EnumCase) -> String {
-        let name = self.get_enum_case_name(ec);
-        let comment = self.format_comment(ec.comment.as_deref(), 4);
-        let macros: Cow<'static, str> = if name == ec.name {
-            "".into()
-        } else {
-            // if rename required
-            self.enum_case_macro(ec)
+    #[test]
+    fn test_generate_rs_file() {
+        let gen = GeneratorBuilder::default().build();
+        let mut rs_file = RsFile {
+            name: "".to_string(),
+            namespace: None,
+            types: vec![],
+            target_ns: None,
         };
-        match &ec.type_name {
-            Some(typename) => format!(
-                "{comment}{macros}    {name}({typename}),",
-                name = name,
-                typename = self.modify_type(
-                    self.format_type(typename.as_str()).as_ref(),
-                    &ec.type_modifiers
-                ),
-                comment = comment,
-                macros = macros
-            ),
-            None => format!(
-                "{comment}{macros}    {name},",
-                name = name,
-                comment = comment,
-                macros = macros
-            ),
-        }
-    }
+        assert!(gen.generate_rs_file(&rs_file).is_empty());
 
-    fn get_enum_case_name(&self, ec: &EnumCase) -> String {
-        self.format_enum_case_name(ec.name.as_str())
-            .split("::")
-            .last()
-            .unwrap()
-            .to_string()
-    }
-
-    fn get_struct_field(&self, sf: &StructField) -> String {
-        if sf.type_modifiers.contains(&TypeModifier::Empty) {
-            return "".into();
-        }
-        let typename = self.modify_type(
-            self.format_type(sf.type_name.as_str()).as_ref(),
-            &sf.type_modifiers,
+        rs_file.types.push(RsEntity::TupleStruct(TupleStruct {
+            name: "name".to_string(),
+            comment: Some("comment".into()),
+            type_name: "type".to_string(),
+            ..Default::default()
+        }));
+        let comment = "// comment\n";
+        let macros = "#[derive(Default, PartialEq, Debug, UtilsTupleSerDe)]\n";
+        let validation = "impl Validate for Name {}\n";
+        let expected = format!(
+            "{}{}pub struct Name (pub Type);\n\n{}",
+            comment, macros, validation
         );
-        format!(
-            "{comment}{macros}    pub {name}: {typename},",
-            macros = self.struct_field_macro(sf),
-            name = self.format_name(sf.name.as_str()),
-            typename = typename,
-            comment = self.format_comment(sf.comment.as_deref(), 4)
-        )
-    }
-
-    fn get_alias(&self, al: &Alias) -> String {
-        format!(
-            "//{comment} pub type {name} = {original};",
-            comment = self.format_comment(al.comment.as_deref(), 0),
-            name = self.format_type(al.name.as_str()),
-            original = self.format_type(al.original.as_str())
-        )
-    }
-
-    fn modify_type(&self, type_name: &str, modifiers: &[TypeModifier]) -> Cow<'_, str> {
-        default_modify_type(type_name, modifiers)
-    }
-
-    fn gen_import(&self, im: &Import) -> String {
-        format!("//use {}  {};\n", im.location, im.name)
-    }
-
-    fn format_comment(&self, comment: Option<&str>, indent: usize) -> String {
-        default_format_comment(comment, 80, indent)
-    }
-
-    fn format_name(&self, name: &str) -> Cow<'_, str> {
-        Cow::Owned(default_format_name(name))
-    }
-
-    fn format_type(&self, type_name: &str) -> Cow<'_, str> {
-        default_format_type(type_name, self.target_ns())
-    }
-
-    fn format_enum_case_name(&self, name: &str) -> Cow<'_, str> {
-        default_format_enum_case_name(name, self.target_ns())
+        assert_eq!(gen.generate_rs_file(&rs_file), expected);
     }
 }

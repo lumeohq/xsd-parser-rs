@@ -2,13 +2,10 @@
 pub enum FooType {
     #[yaserde(rename = "OFF")]
     Off,
-
     #[yaserde(rename = "ON")]
     On,
-
     #[yaserde(rename = "AUTO")]
     Auto,
-
     __Unknown__(String),
 }
 
@@ -17,5 +14,4 @@ impl Default for FooType {
         Self::__Unknown__("No valid variants".into())
     }
 }
-
 impl Validate for FooType {}

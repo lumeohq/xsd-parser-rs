@@ -1,19 +1,10 @@
-use crate::generator::Generator;
+use crate::generator::builder::GeneratorBuilder;
 use crate::parser::parse;
-use crate::yaserde_generator::YaserdeGenerator;
-use std::fmt::Write;
 
 pub fn generate(input: &str) -> String {
     let f = parse(input).unwrap();
-
-    let gen = YaserdeGenerator::new(&f);
-    let mut output = String::new();
-
-    for ty in f.types {
-        write!(output, "{}", gen.gen_rs_entity(&ty)).unwrap();
-    }
-
-    output
+    let gen = GeneratorBuilder::default().build();
+    gen.generate_rs_file(&f)
 }
 
 /// Checks if AST of two code fragments are equivalent.

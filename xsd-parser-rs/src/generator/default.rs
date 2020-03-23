@@ -1,4 +1,4 @@
-use crate::generator::utils::{match_built_in_type, sanitize, split_comment_line};
+use crate::generator::utils::{filter_type_name, sanitize, split_comment_line, split_name};
 use crate::parser::types::TypeModifier;
 use inflector::cases::pascalcase::to_pascal_case;
 use inflector::cases::snakecase::to_snake_case;
@@ -19,63 +19,26 @@ pub fn default_format_name(name: &str) -> String {
 }
 
 pub fn default_format_type(type_name: &str, target_ns: &Option<Namespace>) -> Cow<'static, str> {
-    fn replace(type_name: &str) -> String {
-        match type_name.find(':') {
-            Some(index) => format!(
-                "{}::{}",
-                &type_name[0..index],
-                to_pascal_case(&type_name[index..])
-            ),
-            None => to_pascal_case(type_name),
-        }
-    }
+    let (prefix, name) = split_name(type_name);
+    let option_tns = target_ns.as_ref().and_then(|ns| ns.name());
 
-    {
-        let built_in_type = match_built_in_type(type_name);
-        if !built_in_type.is_empty() {
-            return built_in_type.into();
-        }
-    }
+    let pascalized_name = filter_type_name(to_pascal_case(name).as_str());
 
-    sanitize(match target_ns.as_ref().and_then(|ns| ns.name()) {
-        Some(name) => {
-            if type_name.starts_with(name) {
-                to_pascal_case(&type_name[name.len() + 1..])
+    let qname = |prefix| format!("{}::{}", prefix, pascalized_name);
+
+    let res = match (prefix, option_tns) {
+        (Some(ns), Some(tns)) => {
+            if ns == tns {
+                pascalized_name
             } else {
-                replace(type_name)
+                qname(ns)
             }
         }
-        None => replace(type_name),
-    })
-    .into()
-}
+        (Some(ns), None) => qname(ns),
+        _ => pascalized_name,
+    };
 
-pub fn default_format_enum_case_name(
-    type_name: &str,
-    target_ns: &Option<Namespace>,
-) -> Cow<'static, str> {
-    fn replace(type_name: &str) -> String {
-        match type_name.find(':') {
-            Some(index) => format!(
-                "{}::{}",
-                &type_name[0..index],
-                to_pascal_case(&type_name[index..])
-            ),
-            None => to_pascal_case(type_name),
-        }
-    }
-
-    sanitize(match target_ns.as_ref().and_then(|ns| ns.name()) {
-        Some(name) => {
-            if type_name.starts_with(name) {
-                to_pascal_case(&type_name[name.len() + 1..])
-            } else {
-                replace(type_name)
-            }
-        }
-        None => replace(type_name),
-    })
-    .into()
+    sanitize(res).into()
 }
 
 pub fn default_modify_type(type_name: &str, modifiers: &[TypeModifier]) -> Cow<'static, str> {
@@ -96,6 +59,43 @@ pub fn default_modify_type(type_name: &str, modifiers: &[TypeModifier]) -> Cow<'
         }
     }
     result.into()
+}
+
+pub fn yaserde_for_attribute(name: &str, indent: &str) -> String {
+    if let Some(index) = name.find(':') {
+        format!(
+            "{}#[yaserde(attribute, prefix = \"{}\" rename = \"{}\")]\n",
+            indent,
+            &name[0..index],
+            &name[index + 1..]
+        )
+    } else {
+        format!("{}#[yaserde(attribute, rename = \"{}\")]\n", indent, name)
+    }
+}
+
+pub fn yaserde_for_element(
+    name: &str,
+    target_namespace: Option<&Namespace>,
+    indent: &str,
+) -> String {
+    let (prefix, field_name) = if let Some(index) = name.find(':') {
+        (Some(&name[0..index]), &name[index + 1..])
+    } else {
+        (target_namespace.and_then(|ns| ns.name()), name)
+    };
+
+    match prefix {
+        Some(p) => format!(
+            "{}#[yaserde(prefix = \"{}\", rename = \"{}\")]\n",
+            indent, p, field_name
+        ),
+        None => format!("{}#[yaserde(rename = \"{}\")]\n", indent, field_name),
+    }
+}
+
+pub fn yaserde_for_flatten_element(indent: &str) -> String {
+    format!("{}#[yaserde(flatten)]\n", indent)
 }
 
 #[cfg(test)]
@@ -142,12 +142,6 @@ mod test {
         assert_eq!(default_format_type("tt:TyName", &None), "tt::TyName");
         assert_eq!(default_format_type("0type_name", &None), "_0TypeName");
         assert_eq!(default_format_type("Enum", &None), "Enum");
-
-        assert_eq!(default_format_type("xs:integer", &None), "xs::Integer");
-        assert_eq!(
-            default_format_type("xs:nonNegativeInteger", &None),
-            "xs::Integer"
-        );
     }
 
     #[test]
@@ -171,7 +165,13 @@ mod test {
         assert_eq!(default_format_type("tt:0_type-Name", &ns), "_0TypeName");
         assert_eq!(default_format_type("tt:IANA_IfTypes ", &ns), "IanaIfTypes");
         assert_eq!(default_format_type("tt:Enum", &ns), "Enum");
+        assert_eq!(default_format_type("ttEnum", &ns), "TtEnum");
         assert_eq!(default_format_type("xs:TyName", &ns), "xs::TyName");
+
+        assert_eq!(
+            default_format_type("http://www.w3.org/2005/08/addressing/reply", &ns),
+            "http::WwwW3Org200508AddressingReply"
+        );
     }
 
     #[test]
