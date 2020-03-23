@@ -15,3 +15,9 @@ impl Default for FooType {
     }
 }
 impl Validate for FooType {}
+
+#[derive(Default, PartialEq, Debug, UtilsTupleSerDe)]
+pub struct FooType2(pub String);
+
+impl Validate for FooType2 {}
+
