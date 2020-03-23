@@ -1,5 +1,5 @@
-use crate::utils;
 use crate::types::datetime::DateTime;
+use crate::utils;
 use chrono::{format::ParseError, DateTime as CDateTime, FixedOffset};
 use macro_utils::UtilsDefaultSerde;
 use std::fmt;

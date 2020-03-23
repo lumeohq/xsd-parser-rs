@@ -97,7 +97,7 @@ mod test {
             ..Default::default()
         }));
         let comment = "// comment\n";
-        let macros = "#[derive(Default, PartialEq, Debug, UtilsTupleSerDe)]\n";
+        let macros = "#[derive(Default, PartialEq, Debug, UtilsTupleIo, UtilsDefaultSerde)]\n";
         let validation = "impl Validate for Name {}\n";
         let expected = format!(
             "{}{}pub struct Name (pub Type);\n\n{}",
