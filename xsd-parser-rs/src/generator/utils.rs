@@ -1,3 +1,5 @@
+use roxmltree::Namespace;
+
 pub fn split_comment_line(s: &str, max_len: usize, indent: usize) -> String {
     let indent_str = " ".repeat(indent);
 
@@ -16,74 +18,79 @@ pub fn split_comment_line(s: &str, max_len: usize, indent: usize) -> String {
     format!("{}\n", splitted)
 }
 
-pub fn match_built_in_type(type_name: &str) -> Option<&'static str> {
-    let res = match type_name {
-        "xs:hexBinary" => "String",
-        "xs:base64Binary" => "String",
+pub fn match_built_in_type(type_name: &str, xsd_ns: &Option<Namespace>) -> Option<&'static str> {
+    let (prefix, name) = split_name(type_name);
+    let xsd_prefix = xsd_ns.as_ref().and_then(|ns| ns.name());
+    if xsd_prefix != prefix {
+        return None;
+    }
+    let res = match name {
+        "hexBinary" => "String",
+        "base64Binary" => "String",
 
-        "xs:boolean" => "bool",
+        "boolean" => "bool",
 
-        "xs:integer" => "xs::Integer",
-        "xs:nonNegativeInteger" => "xs::Integer",
-        "xs:positiveInteger" => "xs::Integer",
-        "xs:nonPositiveInteger" => "xs::Integer",
-        "xs:negativeInteger" => "xs::Integer",
+        "integer" => "xs::Integer",
+        "nonNegativeInteger" => "xs::Integer",
+        "positiveInteger" => "xs::Integer",
+        "nonPositiveInteger" => "xs::Integer",
+        "negativeInteger" => "xs::Integer",
 
-        "xs:long" => "i64",
-        "xs:int" => "i32",
-        "xs:short" => "i16",
-        "xs:byte" => "i8",
+        "long" => "i64",
+        "int" => "i32",
+        "short" => "i16",
+        "byte" => "i8",
 
-        "xs:unsignedLong" => "u64",
-        "xs:unsignedInt" => "u32",
-        "xs:unsignedShort" => "u16",
-        "xs:unsignedByte" => "u8",
+        "unsignedLong" => "u64",
+        "unsignedInt" => "u32",
+        "unsignedShort" => "u16",
+        "unsignedByte" => "u8",
 
-        "xs:decimal" => "xs::Decimal",
+        "decimal" => "xs::Decimal",
 
-        "xs:double" => "f64",
-        "xs:float" => "f64",
+        "double" => "f64",
+        "float" => "f64",
 
         // TODO: might use types from chrono crate instead, but with a wrap that implements Yaserde
         // (de)serialization. For that we need to use the "flatten" from yaserde, as it will be
         // updated on the crates.io.
-        "xs:date" => "String",
-        "xs:time" => "String",
-        "xs:dateTime" => "String",
-        "xs:dateTimeStamp" => "String",
+        "date" => "String",
+        "time" => "String",
+        "dateTime" => "String",
+        "dateTimeStamp" => "String",
 
-        "xs:duration" => "xs::Duration",
+        "duration" => "xs::Duration",
 
         // TODO: would be nice to have types with both numeric representation of value and proper
         // (de)serialization. For that we might use the "flatten" from yaserde, as it will be
         // updated on the crates.io.
-        "xs:gDay" => "String",
-        "xs:gMonth" => "String",
-        "xs:gMonthDay" => "String",
-        "xs:gYear" => "String",
-        "xs:gYearMonth" => "String",
+        "gDay" => "String",
+        "gMonth" => "String",
+        "gMonthDay" => "String",
+        "gYear" => "String",
+        "gYearMonth" => "String",
 
-        "xs:string" => "String",
-        "xs:normalizedString" => "String",
-        "xs:token" => "String",
-        "xs:language" => "String",
-        "xs:Name" => "String",
-        "xs:NCName" => "String",
-        "xs:ENTITY" => "String",
-        "xs:ID" => "String",
-        "xs:IDREF" => "String",
-        "xs:NMTOKEN" => "String",
-        "xs:anyURI" => "String",
-        "xs:QName" => "String",
+        "string" => "String",
+        "normalizedString" => "String",
+        "token" => "String",
+        "language" => "String",
+        "Name" => "String",
+        "NCName" => "String",
+        "ENTITY" => "String",
+        "ID" => "String",
+        "IDREF" => "String",
+        "NMTOKEN" => "String",
+        "anyURI" => "String",
+        "QName" => "String",
 
-        "xs:NOTATION" => "String",
+        "NOTATION" => "String",
 
-        "xs:anySimpleType" => "String",
+        "anySimpleType" => "String",
 
         // Built-in list types:
-        "xs:ENTITIES" => "Vec<String>",
-        "xs:IDREFS" => "Vec<String>",
-        "xs:NMTOKENS" => "Vec<String>",
+        "ENTITIES" => "Vec<String>",
+        "IDREFS" => "Vec<String>",
+        "NMTOKENS" => "Vec<String>",
         _ => "",
     };
 
@@ -178,7 +185,7 @@ const RS_KEYWORDS: &[&str] = &[
 
 #[cfg(test)]
 mod test {
-    use crate::generator::utils::{filter_type_name, split_name};
+    use crate::generator::utils::{filter_type_name, match_built_in_type, split_name};
 
     #[test]
     fn test_filter_type_name() {
@@ -203,5 +210,23 @@ mod test {
     fn test_split_name() {
         assert_eq!(split_name("xs:Type"), (Some("xs"), "Type"));
         assert_eq!(split_name("xsType"), (None, "xsType"));
+    }
+
+    #[test]
+    fn test_match_built_in_types() {
+        let xsd_ns = Some(
+            roxmltree::Document::parse(
+                r#"<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>"#,
+            )
+            .unwrap()
+            .root_element()
+            .namespaces()[0]
+                .clone(),
+        );
+
+        let match_type = |name| match_built_in_type(name, &xsd_ns);
+
+        assert_eq!(match_type("xsd:string"), Some("String"));
+        assert!(match_type("xs:string").is_none());
     }
 }

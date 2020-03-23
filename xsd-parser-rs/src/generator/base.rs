@@ -16,7 +16,7 @@ pub trait BaseGenerator {
     }
 
     fn format_type_name(&self, type_name: &str, gen: &Generator) -> Cow<'_, str> {
-        if let Some(t) = match_built_in_type(type_name) {
+        if let Some(t) = match_built_in_type(type_name, &*gen.xsd_ns.borrow()) {
             return t.into();
         }
         default_format_type(type_name, &*gen.target_ns.borrow())
