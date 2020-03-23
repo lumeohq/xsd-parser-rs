@@ -71,7 +71,7 @@ No other rights are granted by implication, estoppel or otherwise.
 
   <xs:simpleType name="RelationshipType">
 	<xs:restriction base="xs:QName">
-      <xs:enumeration value="http://www.w3.org/2005/08/addressing/reply"/>
+	  <xs:enumeration value="tns:Suppression"/>
 	</xs:restriction>
   </xs:simpleType>
 
@@ -213,6 +213,16 @@ No other rights are granted by implication, estoppel or otherwise.
 
   <!-- //////////////////// General Headers //////////////////// -->
 
-
+  <xs:element name="AppSequence" type="tns:AppSequenceType"/>
+  <xs:complexType name="AppSequenceType">
+    <xs:complexContent>
+      <xs:restriction base="xs:anyType">
+        <xs:attribute name="InstanceId" type="xs:unsignedInt" use="required"/>
+        <xs:attribute name="SequenceId" type="xs:anyURI"/>
+        <xs:attribute name="MessageNumber" type="xs:unsignedInt" use="required"/>
+        <xs:anyAttribute namespace="##other" processContents="lax"/>
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
 
 </xs:schema>
