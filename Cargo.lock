@@ -340,6 +340,7 @@ dependencies = [
  "chrono",
  "itertools",
  "log",
+ "macro-utils",
  "num-bigint",
  "xml-rs",
  "yaserde",

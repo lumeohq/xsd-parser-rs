@@ -1,11 +1,12 @@
 use crate::utils;
 use bigdecimal::{BigDecimal, ParseBigDecimalError};
+use macro_utils::UtilsDefaultSerde;
 use std::fmt;
 use std::io::{Read, Write};
 use std::str::FromStr;
 use yaserde::{YaDeserialize, YaSerialize};
 
-#[derive(Default, PartialEq, PartialOrd, Debug)]
+#[derive(Default, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
 pub struct Decimal {
     pub value: BigDecimal,
 }
@@ -33,18 +34,6 @@ impl FromStr for Decimal {
 impl fmt::Display for Decimal {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.value.to_string())
-    }
-}
-
-impl YaDeserialize for Decimal {
-    fn deserialize<R: Read>(reader: &mut yaserde::de::Deserializer<R>) -> Result<Self, String> {
-        utils::yaserde::deserialize(reader, |s| Decimal::from_str(s).map_err(|e| e.to_string()))
-    }
-}
-
-impl YaSerialize for Decimal {
-    fn serialize<W: Write>(&self, writer: &mut yaserde::ser::Serializer<W>) -> Result<(), String> {
-        utils::yaserde::serialize(self, "Decimal", writer, |s| s.to_string())
     }
 }
 

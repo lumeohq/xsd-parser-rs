@@ -1,11 +1,12 @@
 use crate::utils;
+use macro_utils::UtilsDefaultSerde;
 use num_bigint::{BigInt, ParseBigIntError, ToBigInt};
 use std::fmt;
 use std::io::{Read, Write};
 use std::str::FromStr;
 use yaserde::{YaDeserialize, YaSerialize};
 
-#[derive(Default, PartialEq, PartialOrd, Debug)]
+#[derive(Default, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
 pub struct Integer {
     pub value: BigInt,
 }
@@ -35,18 +36,6 @@ impl FromStr for Integer {
 impl fmt::Display for Integer {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.value.to_str_radix(10))
-    }
-}
-
-impl YaDeserialize for Integer {
-    fn deserialize<R: Read>(reader: &mut yaserde::de::Deserializer<R>) -> Result<Self, String> {
-        utils::yaserde::deserialize(reader, |s| Integer::from_str(s).map_err(|e| e.to_string()))
-    }
-}
-
-impl YaSerialize for Integer {
-    fn serialize<W: Write>(&self, writer: &mut yaserde::ser::Serializer<W>) -> Result<(), String> {
-        utils::yaserde::serialize(self, "Integer", writer, |s| s.to_string())
     }
 }
 

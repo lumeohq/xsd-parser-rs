@@ -103,7 +103,7 @@ pub fn serde(ast: &syn::DeriveInput) -> TokenStream {
 
         impl YaDeserialize for #struct_name {
             fn deserialize<R: Read>(reader: &mut yaserde::de::Deserializer<R>) -> Result<Self, String> {
-                utils::yaserde::deserialize(reader, |s| #struct_name::from_str(s))
+                utils::yaserde::deserialize(reader, |s| #struct_name::from_str(s).map_err(|e| e.to_string()))
             }
         }
     }
