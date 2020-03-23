@@ -34,11 +34,11 @@ A following mapping used to represent built-in XSD types as rust types:
 |dateTime          |DateTime (3)      |
 |dateTimeStamp     |DateTimeStamp (3) |
 |duration          |Duration (4)      |
-|gDay              |String (5)        |
-|gMonth            |String (5)        |
-|gMonthDay         |String (5)        |
-|gYear             |String (5)        |
-|gYearMonth        |String (5)        |
+|gDay              |GDay (5)          |
+|gMonth            |GMonth (5)        |
+|gMonthDay         |GMonthDay (5)     |
+|gYear             |GYear (5)         |
+|gYearMonth        |GYearMonth (5)    |
 |string            |String            |
 |normalizedString  |String            |
 |token             |String            |
@@ -74,8 +74,9 @@ Feel free to suggest an appropriate crate for time handling.
 in rust that supports proper month/years holding and literal representation. You can find
 `Duration` in `xsd-types/src/types/duration.rs`
 
-(5) we are going to implement types that both provide stored value as integer and
-support proper (de)serialization
+(5) we are using our own gregorian calendar types, that provide XML (de)serialization with `yaserde`
+following ISO 8601 strictly. You can find `gDay`, `gMonth`, `gMonthDay`, `gYear` and `gYearMonth`
+in the corresponding files within `xsd-types/src/types/`.
 
 ## License
 
