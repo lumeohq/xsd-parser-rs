@@ -42,26 +42,30 @@ fn main() {
     let input_filename = matches.value_of("input").unwrap_or("xsd/onvif.xsd");
     let output = matches.value_of("output");
 
-    let text = load_file(input_filename);
-    match text {
-        Ok(text) => {
-            let rs_file = parse(text.as_str());
-            match rs_file {
-                Ok(f) => {
-                    let gen = GeneratorBuilder::default().build();
-                    let code = gen.generate_rs_file(&f);
-                    if let Some(output_filename) = output {
-                        if let Err(e) = write_to_file(output_filename, &code) {
-                            println!("Error writing file: {}", e);
-                        }
-                    } else {
-                        println!("{}", code);
-                    }
-                }
-                _ => println!("Error parsing file"),
-            }
+    let text = match load_file(input_filename) {
+        Ok(t) => t,
+        Err(e) => {
+            println!("Error loading file: {}", e);
+            return;
         }
-        Err(e) => println!("Error loading file: {}", e),
+    };
+
+    let rs_file = match parse(text.as_str()) {
+        Ok(f) => f,
+        _ => {
+            println!("Error parsing file");
+            return;
+        }
+    };
+
+    let gen = GeneratorBuilder::default().build();
+    let code = gen.generate_rs_file(&rs_file);
+    if let Some(output_filename) = output {
+        if let Err(e) = write_to_file(output_filename, &code) {
+            println!("Error writing file: {}", e);
+        }
+    } else {
+        println!("{}", code);
     }
 }
 
