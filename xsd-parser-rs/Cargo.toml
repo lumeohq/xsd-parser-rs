@@ -9,6 +9,7 @@ edition = "2018"
 [dependencies]
 roxmltree = "0.7.3"
 Inflector = "*"
+clap = "2.33.0"
 
 [dev-dependencies]
 syn = { version = "1.0", features = ["full"] }
