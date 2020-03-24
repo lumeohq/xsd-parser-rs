@@ -1,11 +1,12 @@
 use crate::utils;
 use chrono::{format::ParseError, DateTime as CDateTime, FixedOffset};
+use macro_utils::UtilsDefaultSerde;
 use std::fmt;
 use std::io::{Read, Write};
 use std::str::FromStr;
 use yaserde::{YaDeserialize, YaSerialize};
 
-#[derive(PartialEq, PartialOrd, Debug)]
+#[derive(PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
 pub struct DateTime {
     pub value: CDateTime<FixedOffset>,
 }
@@ -53,18 +54,6 @@ impl FromStr for DateTime {
 impl fmt::Display for DateTime {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.value.to_rfc3339())
-    }
-}
-
-impl YaDeserialize for DateTime {
-    fn deserialize<R: Read>(reader: &mut yaserde::de::Deserializer<R>) -> Result<Self, String> {
-        utils::yaserde::deserialize(reader, |s| DateTime::from_str(s).map_err(|e| e.to_string()))
-    }
-}
-
-impl YaSerialize for DateTime {
-    fn serialize<W: Write>(&self, writer: &mut yaserde::ser::Serializer<W>) -> Result<(), String> {
-        utils::yaserde::serialize(self, "DateTime", writer, |s| s.to_string())
     }
 }
 

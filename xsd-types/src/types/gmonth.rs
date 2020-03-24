@@ -1,12 +1,13 @@
 use crate::types::utils::parse_timezone;
 use crate::utils;
 use chrono::FixedOffset;
+use macro_utils::UtilsDefaultSerde;
 use std::fmt;
 use std::io::{Read, Write};
 use std::str::FromStr;
 use yaserde::{YaDeserialize, YaSerialize};
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, UtilsDefaultSerde)]
 pub struct GMonth {
     pub value: i32,
     pub timezone: Option<FixedOffset>,
@@ -76,18 +77,6 @@ impl fmt::Display for GMonth {
             Some(tz) => write!(f, "--{:02}{}", self.value, tz),
             None => write!(f, "--{:02}", self.value),
         }
-    }
-}
-
-impl YaDeserialize for GMonth {
-    fn deserialize<R: Read>(reader: &mut yaserde::de::Deserializer<R>) -> Result<Self, String> {
-        utils::yaserde::deserialize(reader, |s| GMonth::from_str(s))
-    }
-}
-
-impl YaSerialize for GMonth {
-    fn serialize<W: Write>(&self, writer: &mut yaserde::ser::Serializer<W>) -> Result<(), String> {
-        utils::yaserde::serialize(self, "GMonth", writer, |s| s.to_string())
     }
 }
 

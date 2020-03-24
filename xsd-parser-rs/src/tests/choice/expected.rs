@@ -1,7 +1,7 @@
-#[derive(Default, PartialEq, Debug, UtilsTupleSerDe)]
+#[derive(Default, PartialEq, Debug, UtilsTupleIo, UtilsDefaultSerde)]
 pub struct BarType(pub String);
 
-#[derive(Default, PartialEq, Debug, UtilsTupleSerDe)]
+#[derive(Default, PartialEq, Debug, UtilsTupleIo, UtilsDefaultSerde)]
 pub struct BazType(pub i32);
 
 #[derive(PartialEq, Debug, YaSerialize, YaDeserialize)]

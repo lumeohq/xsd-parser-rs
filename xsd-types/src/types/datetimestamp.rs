@@ -1,14 +1,15 @@
 use crate::types::datetime::DateTime;
+use crate::utils;
 use chrono::{format::ParseError, DateTime as CDateTime, FixedOffset};
+use macro_utils::UtilsDefaultSerde;
 use std::fmt;
 use std::io::{Read, Write};
 use std::str::FromStr;
 use yaserde::{YaDeserialize, YaSerialize};
 
 // The only difference from DateTime is that the time zone expression is required at the end of the value.
-#[derive(Default, PartialEq, PartialOrd, Debug, YaSerialize, YaDeserialize)]
+#[derive(Default, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
 pub struct DateTimeStamp {
-    #[yaserde(flatten)]
     pub value: DateTime,
 }
 

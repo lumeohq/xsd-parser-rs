@@ -3,12 +3,13 @@ use crate::types::gmonth::GMonth;
 use crate::types::utils::parse_timezone;
 use crate::utils;
 use chrono::FixedOffset;
+use macro_utils::UtilsDefaultSerde;
 use std::fmt;
 use std::io::{Read, Write};
 use std::str::FromStr;
 use yaserde::{YaDeserialize, YaSerialize};
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, UtilsDefaultSerde)]
 pub struct GMonthDay {
     pub month: i32,
     pub day: i32,
@@ -111,18 +112,6 @@ impl fmt::Display for GMonthDay {
             Some(tz) => write!(f, "--{:02}-{:02}{}", self.month, self.day, tz),
             None => write!(f, "--{:02}-{:02}", self.month, self.day),
         }
-    }
-}
-
-impl YaDeserialize for GMonthDay {
-    fn deserialize<R: Read>(reader: &mut yaserde::de::Deserializer<R>) -> Result<Self, String> {
-        utils::yaserde::deserialize(reader, |s| GMonthDay::from_str(s))
-    }
-}
-
-impl YaSerialize for GMonthDay {
-    fn serialize<W: Write>(&self, writer: &mut yaserde::ser::Serializer<W>) -> Result<(), String> {
-        utils::yaserde::serialize(self, "GMonthDay", writer, |s| s.to_string())
     }
 }
 

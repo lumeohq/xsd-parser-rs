@@ -1,12 +1,13 @@
 use crate::types::utils::parse_timezone;
 use crate::utils;
 use chrono::{format::strftime::StrftimeItems, FixedOffset, NaiveTime};
+use macro_utils::UtilsDefaultSerde;
 use std::fmt;
 use std::io::{Read, Write};
 use std::str::FromStr;
 use yaserde::{YaDeserialize, YaSerialize};
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, UtilsDefaultSerde)]
 pub struct Time {
     pub value: NaiveTime,
     pub timezone: Option<FixedOffset>,
@@ -91,18 +92,6 @@ impl fmt::Display for Time {
             Some(tz) => write!(f, "{}{}", self.value.format_with_items(fmt.clone()), tz),
             None => write!(f, "{}", self.value.format_with_items(fmt.clone())),
         }
-    }
-}
-
-impl YaDeserialize for Time {
-    fn deserialize<R: Read>(reader: &mut yaserde::de::Deserializer<R>) -> Result<Self, String> {
-        utils::yaserde::deserialize(reader, |s| Time::from_str(s))
-    }
-}
-
-impl YaSerialize for Time {
-    fn serialize<W: Write>(&self, writer: &mut yaserde::ser::Serializer<W>) -> Result<(), String> {
-        utils::yaserde::serialize(self, "Time", writer, |s| s.to_string())
     }
 }
 

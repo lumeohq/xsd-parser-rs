@@ -1,4 +1,4 @@
-#[derive(Default, PartialEq, Debug, UtilsTupleSerDe)]
+#[derive(Default, PartialEq, Debug, UtilsTupleIo, UtilsDefaultSerde)]
 pub struct Id(pub String);
 
 impl Validate for Id {}

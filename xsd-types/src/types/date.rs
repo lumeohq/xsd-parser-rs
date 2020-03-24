@@ -1,12 +1,13 @@
 use crate::types::utils::parse_timezone;
 use crate::utils;
 use chrono::{format::strftime::StrftimeItems, FixedOffset, NaiveDate};
+use macro_utils::UtilsDefaultSerde;
 use std::fmt;
 use std::io::{Read, Write};
 use std::str::FromStr;
 use yaserde::{YaDeserialize, YaSerialize};
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, UtilsDefaultSerde)]
 pub struct Date {
     pub value: NaiveDate,
     pub timezone: Option<FixedOffset>,
@@ -87,18 +88,6 @@ impl fmt::Display for Date {
             Some(tz) => write!(f, "{}{}", self.value.format_with_items(fmt.clone()), tz),
             None => write!(f, "{}", self.value.format_with_items(fmt.clone())),
         }
-    }
-}
-
-impl YaDeserialize for Date {
-    fn deserialize<R: Read>(reader: &mut yaserde::de::Deserializer<R>) -> Result<Self, String> {
-        utils::yaserde::deserialize(reader, |s| Date::from_str(s))
-    }
-}
-
-impl YaSerialize for Date {
-    fn serialize<W: Write>(&self, writer: &mut yaserde::ser::Serializer<W>) -> Result<(), String> {
-        utils::yaserde::serialize(self, "Date", writer, |s| s.to_string())
     }
 }
 
