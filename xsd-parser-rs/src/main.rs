@@ -61,9 +61,7 @@ fn process_dir(input_path: &Path, output_path: &Path) -> Result<(), String> {
         if path.is_dir() {
             process_dir(&path, &output_path.join(path.file_name().unwrap()))?;
         } else {
-            let output_file_path = PathBuf::new()
-                .with_file_name(path.file_stem().unwrap().to_str().unwrap())
-                .with_extension("rs");
+            let output_file_path = PathBuf::from(path.file_name().unwrap()).with_extension("rs");
             let output_file_path = output_path.join(output_file_path);
             process_single_file(&path, output_file_path.to_str())?;
         }
