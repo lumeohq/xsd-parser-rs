@@ -5,12 +5,13 @@ use crate::parser::constants::tag;
 use crate::parser::xsd_elements::FacetType;
 use roxmltree::Namespace;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct RsFile<'input> {
     pub name: String,
     pub namespace: Option<String>,
     pub types: Vec<RsEntity>,
     pub target_ns: Option<Namespace<'input>>,
+    pub xsd_ns: Option<Namespace<'input>>,
 }
 
 #[derive(Debug, Default, Clone)]

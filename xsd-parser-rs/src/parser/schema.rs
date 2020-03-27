@@ -9,6 +9,11 @@ pub fn parse_schema<'input>(schema: &Node<'_, 'input>) -> RsFile<'input> {
         name: "".into(),
         namespace: None,
         target_ns: target_namespace(&schema).cloned(),
+        xsd_ns: schema
+            .namespaces()
+            .iter()
+            .find(|a| a.uri() == "http://www.w3.org/2001/XMLSchema")
+            .cloned(),
         types: schema
             .children()
             .filter(|n| n.is_element())
