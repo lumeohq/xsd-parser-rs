@@ -14,8 +14,8 @@ mod parser;
 mod tests;
 
 use std::fs;
-use std::io::prelude::*;
-use std::io::Read;
+use std::io::{prelude::*, Read};
+use std::path::{Path, PathBuf};
 
 use crate::generator::builder::GeneratorBuilder;
 use crate::parser::parse;
@@ -39,37 +39,50 @@ fn main() {
         )
         .get_matches();
 
-    let input_filename = matches.value_of("input").unwrap_or("xsd/onvif.xsd");
-    let output = matches.value_of("output");
+    let input_path = matches.value_of("input").unwrap_or("xsd");
+    let input_path = Path::new(input_path);
+    let output_path = matches.value_of("output");
 
-    let text = match load_file(input_filename) {
-        Ok(t) => t,
-        Err(e) => {
-            println!("Error loading file: {}", e);
-            return;
+    let md = fs::metadata(input_path).unwrap();
+    if md.is_dir() {
+        let output_path = Path::new(output_path.unwrap_or("rs"));
+        process_dir(input_path, output_path)
+    } else {
+        process_single_file(input_path, output_path)
+    }
+    .map_err(|e| println!("Error: {}", e))
+    .unwrap();
+}
+
+fn process_dir(input_path: &Path, output_path: &Path) -> Result<(), String> {
+    fs::create_dir(output_path).map_err(|e| e.to_string())?;
+    for entry in fs::read_dir(input_path).map_err(|e| e.to_string())? {
+        let path = entry.map_err(|e| e.to_string())?.path();
+        if path.is_dir() {
+            process_dir(&path, &output_path.join(path.file_name().unwrap()))?;
+        } else {
+            let output_file_path = PathBuf::from(path.file_name().unwrap()).with_extension("rs");
+            let output_file_path = output_path.join(output_file_path);
+            process_single_file(&path, output_file_path.to_str())?;
         }
-    };
+    }
+    Ok(())
+}
 
-    let rs_file = match parse(text.as_str()) {
-        Ok(f) => f,
-        _ => {
-            println!("Error parsing file");
-            return;
-        }
-    };
-
+fn process_single_file(input_path: &Path, output_path: Option<&str>) -> Result<(), String> {
+    let text = load_file(input_path)?;
+    let rs_file = parse(text.as_str()).map_err(|_| "Error parsing file".to_string())?;
     let gen = GeneratorBuilder::default().build();
     let code = gen.generate_rs_file(&rs_file);
-    if let Some(output_filename) = output {
-        if let Err(e) = write_to_file(output_filename, &code) {
-            println!("Error writing file: {}", e);
-        }
+    if let Some(output_filename) = output_path {
+        write_to_file(output_filename, &code).map_err(|e| format!("Error writing file: {}", e))?;
     } else {
         println!("{}", code);
     }
+    Ok(())
 }
 
-fn load_file(path: &str) -> Result<String, String> {
+fn load_file(path: &Path) -> Result<String, String> {
     let mut file = fs::File::open(&path).map_err(|e| e.to_string())?;
     let mut text = String::new();
     file.read_to_string(&mut text).map_err(|e| e.to_string())?;
