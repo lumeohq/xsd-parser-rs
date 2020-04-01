@@ -92,7 +92,7 @@ mod test {
         "#;
 
         let result = parse(text).unwrap();
-        println!("{:?}", result);  // TODO: remove
+        println!("{:?}", result); // TODO: remove
         assert_eq!(result.types.len(), 2);
 
         match &result.types[0] {

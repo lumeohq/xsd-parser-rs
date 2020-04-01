@@ -1,11 +1,24 @@
 use std::cell::RefCell;
 
-use crate::parser::constants::{attribute, tag};
+use crate::parser::constants::tag;
 use crate::parser::node_parser::parse_node;
-use crate::parser::types::{Enum, EnumCase, EnumSource, Facet, RsEntity, Struct, StructField, StructFieldSource, TupleStruct};
-use crate::parser::utils::{attributes_to_fields, get_documentation, get_parent_name};
+use crate::parser::types::{
+    Enum, EnumCase, EnumSource, Facet, RsEntity, Struct, StructField, StructFieldSource,
+    TupleStruct,
+};
+use crate::parser::utils::{attributes_to_fields, get_base, get_documentation, get_parent_name};
 use crate::parser::xsd_elements::{ElementType, FacetType, RestrictionType, XsdNode};
 use roxmltree::Node;
+
+const AVAILABLE_CONTENT_TYPES: [ElementType; 7] = [
+    ElementType::All, // Not presented in ONVIF
+    ElementType::AnyAttribute,
+    ElementType::Attribute,
+    ElementType::AttributeGroup, // Not presented in ONVIF
+    ElementType::Choice,         // Not presented in ONVIF
+    ElementType::Group,          // Not presented in ONVIF
+    ElementType::Sequence,       // Not presented in ONVIF
+];
 
 pub fn parse_restriction(node: &Node, _: &Node) -> RsEntity {
     use ElementType::Restriction;
@@ -18,7 +31,7 @@ pub fn parse_restriction(node: &Node, _: &Node) -> RsEntity {
 }
 
 fn simple_type_restriction(node: &Node) -> RsEntity {
-    let base = base(node);
+    let base = get_base(node);
     let facets = facets(node);
 
     if is_simple_enumerations(node) {
@@ -48,8 +61,7 @@ fn simple_content_restriction(node: &Node) -> RsEntity {
 // NOTE: current implementation works for types from ONVIF, but might not work
 // in a general case.
 fn complex_content_restriction(node: &Node) -> RsEntity {
-    let base = base(node);
-
+    let base = get_base(node);
     let mut fields = attributes_to_fields(node);
 
     fields.push(StructField {
@@ -65,8 +77,7 @@ fn complex_content_restriction(node: &Node) -> RsEntity {
         .filter(|n| {
             n.is_element()
                 && n.xsd_type() != ElementType::Attribute
-                // TODO:
-                // && AVAILABLE_CONTENT_TYPES.contains(&n.xsd_type())
+                && AVAILABLE_CONTENT_TYPES.contains(&n.xsd_type())
         })
         .last();
 
@@ -84,11 +95,6 @@ fn complex_content_restriction(node: &Node) -> RsEntity {
         fields: RefCell::new(fields),
         ..Default::default()
     })
-}
-
-fn base<'a>(node: &Node<'a, '_>) -> &'a str {
-    node.attribute(attribute::BASE)
-        .expect("The base value is required")
 }
 
 fn facets(node: &Node) -> Vec<Facet> {
