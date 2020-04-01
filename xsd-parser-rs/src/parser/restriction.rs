@@ -1,6 +1,9 @@
-use crate::parser::constants::attribute;
-use crate::parser::types::{Enum, EnumCase, EnumSource, Facet, RsEntity, TupleStruct};
-use crate::parser::utils::{get_documentation, get_parent_name};
+use std::cell::RefCell;
+
+use crate::parser::constants::{attribute, tag};
+use crate::parser::node_parser::parse_node;
+use crate::parser::types::{Enum, EnumCase, EnumSource, Facet, RsEntity, Struct, StructField, StructFieldSource, TupleStruct};
+use crate::parser::utils::{attributes_to_fields, get_documentation, get_parent_name};
 use crate::parser::xsd_elements::{ElementType, FacetType, RestrictionType, XsdNode};
 use roxmltree::Node;
 
@@ -42,8 +45,45 @@ fn simple_content_restriction(node: &Node) -> RsEntity {
     unimplemented!("\n{:?}\n", node)
 }
 
+// NOTE: current implementation works for types from ONVIF, but might not work
+// in a general case.
 fn complex_content_restriction(node: &Node) -> RsEntity {
-    unimplemented!("\n{:?}\n", node)
+    let base = base(node);
+
+    let mut fields = attributes_to_fields(node);
+
+    fields.push(StructField {
+        name: tag::BASE.to_string(),
+        type_name: base.to_string(),
+        comment: get_documentation(node),
+        source: StructFieldSource::Base,
+        ..Default::default()
+    });
+
+    let content = node
+        .children()
+        .filter(|n| {
+            n.is_element()
+                && n.xsd_type() != ElementType::Attribute
+                // TODO:
+                // && AVAILABLE_CONTENT_TYPES.contains(&n.xsd_type())
+        })
+        .last();
+
+    if let Some(cont) = content {
+        let mut res = parse_node(&cont, node);
+        if let RsEntity::Struct(s) = &mut res {
+            s.comment = get_documentation(node);
+            s.fields.borrow_mut().append(&mut fields);
+            return res;
+        }
+    }
+
+    RsEntity::Struct(Struct {
+        comment: get_documentation(node),
+        fields: RefCell::new(fields),
+        ..Default::default()
+    })
 }
 
 fn base<'a>(node: &Node<'a, '_>) -> &'a str {
