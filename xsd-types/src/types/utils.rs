@@ -10,8 +10,8 @@ pub fn parse_timezone(s: &str) -> Result<FixedOffset, String> {
     if tokens.len() != 2 || tokens[0].len() != 2 || tokens[1].len() != 2 {
         return Err("bad timezone format".to_string());
     }
-    if !tokens.iter().all(|t| t.chars().all(char::is_numeric)) {
-        return Err("bad timezone format".to_string())
+    if !tokens.iter().all(|t| t.chars().all(|c| c.is_digit(10))) {
+        return Err("bad timezone format".to_string());
     }
 
     let hours = tokens[0].parse::<i32>().unwrap();
@@ -36,10 +36,7 @@ mod tests {
     #[test]
     fn timezone_parse_test() {
         // Timezone "Z".
-        assert_eq!(
-            parse_timezone("Z"),
-            Ok(FixedOffset::east(0))
-        );
+        assert_eq!(parse_timezone("Z"), Ok(FixedOffset::east(0)));
 
         // Positive offset.
         assert_eq!(
@@ -54,16 +51,10 @@ mod tests {
         );
 
         // Positive offset max.
-        assert_eq!(
-            parse_timezone("+14:00"),
-            Ok(FixedOffset::east(14 * 3600))
-        );
+        assert_eq!(parse_timezone("+14:00"), Ok(FixedOffset::east(14 * 3600)));
 
         // Negative offset max.
-        assert_eq!(
-            parse_timezone("-14:00"),
-            Ok(FixedOffset::west(14 * 3600))
-        );
+        assert_eq!(parse_timezone("-14:00"), Ok(FixedOffset::west(14 * 3600)));
 
         // Invalid values.
         assert!(parse_timezone("06:30").is_err());

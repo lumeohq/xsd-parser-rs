@@ -42,7 +42,11 @@ impl FromStr for GDay {
             if s.len() != 5 || &s[0..3] != "---" {
                 return Err("bad gDay format".to_string());
             }
-            s[3..5].parse::<i32>().map_err(|e| e.to_string())
+            let token = &s[3..5];
+            if !token.chars().all(|c| c.is_digit(10)) {
+                return Err("bad gDay format".to_string());
+            }
+            token.parse::<i32>().map_err(|e| e.to_string())
         }
 
         if s.ends_with('Z') {
@@ -130,6 +134,7 @@ mod tests {
         assert!(GDay::from_str("15").is_err());
         assert!(GDay::from_str("----15").is_err());
         assert!(GDay::from_str("----5").is_err());
+        assert!(GDay::from_str("---+5").is_err());
     }
 
     #[test]
