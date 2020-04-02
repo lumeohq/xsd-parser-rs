@@ -6,18 +6,25 @@ use std::borrow::Cow;
 pub trait StructGenerator {
     fn generate(&self, entity: &Struct, gen: &Generator) -> String {
         format!(
-            "{comment}{macros}pub struct {name} {{{fields}}}\n\n{validation}\n{subtypes}\n{fields_subtypes}",
+            "{comment}{macros}pub struct {name} {{{fields}}}\n\n{validation}\n{subtypes}\n",
             comment = self.format_comment(entity, gen),
             macros = self.macros(entity, gen),
             name = self.get_type_name(entity, gen),
             fields = self.fields(entity, gen),
             subtypes = self.subtypes(entity, gen),
-            fields_subtypes = self.fields_subtypes(entity, gen),
             validation = self.validation(entity, gen),
         )
     }
 
     fn fields(&self, entity: &Struct, gen: &Generator) -> String {
+        let mod_name = self.mod_name(entity, gen);
+
+        entity.fields.borrow_mut().iter_mut().for_each(|f| {
+            if !f.subtypes.is_empty() {
+                f.type_name = format!("{}::{}", mod_name, f.type_name)
+            }
+        });
+
         let fields = entity
             .fields
             .borrow()
@@ -35,17 +42,40 @@ pub trait StructGenerator {
     }
 
     fn subtypes(&self, entity: &Struct, gen: &Generator) -> String {
-        gen.base().join_subtypes(entity.subtypes.as_ref(), gen)
-    }
-
-    fn fields_subtypes(&self, entity: &Struct, gen: &Generator) -> String {
-        entity
+        let field_subtypes = entity
             .fields
             .borrow()
             .iter()
             .map(|f| gen.base().join_subtypes(f.subtypes.as_ref(), gen))
             .collect::<Vec<String>>()
-            .join("")
+            .join("");
+
+        let subtypes = gen.base().join_subtypes(entity.subtypes.as_ref(), gen);
+
+        if !field_subtypes.is_empty() || !subtypes.is_empty() {
+            format!(
+                "\npub mod {name} {{\n{indent}use super::*;{st}\n{fst}\n}}\n",
+                name = self.mod_name(entity, gen),
+                st = subtypes,
+                indent = gen.base().indent(),
+                fst = self.shift(&field_subtypes, gen.base().indent().as_str())
+            )
+        } else {
+            format!("{}\n{}", subtypes, field_subtypes)
+        }
+    }
+
+    fn shift(&self, text: &str, indent: &str) -> String {
+        text.replace("\n\n\n", "\n")
+            .split('\n')
+            .map(|s| {
+                if !s.is_empty() {
+                    format!("\n{}{}", indent, s)
+                } else {
+                    "\n".to_string()
+                }
+            })
+            .fold(indent.to_string(), |acc, x| acc + &x)
     }
 
     fn get_type_name(&self, entity: &Struct, gen: &Generator) -> String {
@@ -78,6 +108,10 @@ pub trait StructGenerator {
 
     fn format_comment(&self, entity: &Struct, gen: &Generator) -> String {
         gen.base().format_comment(entity.comment.as_deref(), 0)
+    }
+
+    fn mod_name(&self, entity: &Struct, gen: &Generator) -> String {
+        gen.base().mod_name(entity.name.as_str())
     }
 
     fn validation(&self, entity: &Struct, gen: &Generator) -> Cow<'static, str> {

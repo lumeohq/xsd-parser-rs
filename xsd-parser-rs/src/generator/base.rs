@@ -34,6 +34,10 @@ pub trait BaseGenerator {
         default_modify_type(type_name, modifiers)
     }
 
+    fn mod_name(&self, name: &str) -> String {
+        default_format_name(name)
+    }
+
     fn join_subtypes(&self, subtypes: &[RsEntity], gen: &Generator) -> String {
         subtypes
             .iter()
