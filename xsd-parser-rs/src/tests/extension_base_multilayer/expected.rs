@@ -14,22 +14,26 @@ impl Validate for BarType {}
 #[yaserde(prefix = "tns", namespace = "tns: http://example.com")]
 pub struct FooType {
     #[yaserde(prefix = "tns", rename = "Messages")]
-    pub messages: MessagesType,
+    pub messages: foo_type::MessagesType,
 }
 
 impl Validate for FooType {}
 
-#[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]
-#[yaserde(prefix = "tns", namespace = "tns: http://example.com")]
-pub struct MessagesType {
-    #[yaserde(prefix = "tns", rename = "a")]
-    pub a: String,
+pub mod foo_type {
+    use super::*;
 
-    #[yaserde(prefix = "tns", rename = "aa")]
-    pub aa: i32,
+    #[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]
+    #[yaserde(prefix = "tns", namespace = "tns: http://example.com")]
+    pub struct MessagesType {
+        #[yaserde(prefix = "tns", rename = "a")]
+        pub a: String,
 
-    #[yaserde(prefix = "tns", rename = "bb")]
-    pub bb: String,
+        #[yaserde(prefix = "tns", rename = "aa")]
+        pub aa: i32,
+
+        #[yaserde(prefix = "tns", rename = "bb")]
+        pub bb: String,
+    }
+
+    impl Validate for MessagesType {}
 }
-
-impl Validate for MessagesType {}
