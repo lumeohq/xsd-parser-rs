@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://schemas.xmlsoap.org/ws/2005/04/discovery"
+    xmlns:tns="http://schemas.xmlsoap.org/ws/2005/04/discovery"
+    xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified" blockDefault="#all">
+
+    <xs:element name="AppSequence" type="tns:AppSequenceType"/>
+    <xs:complexType name="AppSequenceType">
+        <xs:complexContent>
+            <xs:restriction base="xs:anyType">
+                <xs:attribute name="InstanceId" type="xs:unsignedInt" use="required"/>
+                <xs:attribute name="SequenceId" type="xs:anyURI"/>
+                <xs:attribute name="MessageNumber" type="xs:unsignedInt" use="required"/>
+                <xs:anyAttribute namespace="##other" processContents="lax"/>
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+</xs:schema>

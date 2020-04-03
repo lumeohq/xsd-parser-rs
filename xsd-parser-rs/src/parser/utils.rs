@@ -43,6 +43,11 @@ pub fn get_parent_name<'a>(node: &Node<'a, '_>) -> &'a str {
     }
 }
 
+pub fn get_base<'a>(node: &Node<'a, '_>) -> &'a str {
+    node.attribute(attribute::BASE)
+        .expect("The base value is required")
+}
+
 pub fn attributes_to_fields(node: &Node) -> Vec<StructField> {
     node.children()
         .filter(|n| {
