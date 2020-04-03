@@ -37,11 +37,11 @@ impl<'a, 'input: 'a> OperationType<'a, 'input> {
     pub fn new(node: &Node<'a, 'input>) -> Self {
         let mut children = node.children().filter(|n| n.is_element());
 
-        for ch in children.clone() {
+        while let Some(ch) = children.next() {
             match ch.wsdl_type() {
                 ElementType::Input => {  // wsdl:request-response-or-one-way-operation
                     return if let Some(output_node) = children.next() {  // RequestResponse
-                        assert_eq!(output_node.wsdl_type(), ElementType::Input);
+                        assert_eq!(output_node.wsdl_type(), ElementType::Output, "{}", format!("{:?}", output_node));
                         OperationType::RequestResponse(
                                 Input::new(&ch),
                                 Output::new(&output_node),

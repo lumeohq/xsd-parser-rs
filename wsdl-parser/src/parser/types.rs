@@ -3,6 +3,7 @@ use crate::parser::constants::attribute;
 use std::collections::HashMap;
 use roxmltree::NodeType::Element;
 use crate::parser::{ElementType, WsdlElement};
+use crate::parser::operation::Operation;
 
 
 #[derive(Clone, Debug)]
@@ -11,7 +12,7 @@ pub struct Definitions<'a, 'input: 'a> {
     imports: Vec<Import<'a, 'input>>,
     schemas: Vec<Node<'a, 'input>>,
     messages: HashMap<&'a str, Vec<Part<'a, 'input>>>,
-    //port_types:
+    port_types: Vec<PortType<'a, 'input>>
 }
 
 
@@ -43,12 +44,13 @@ impl<'a, 'input: 'a> Definitions<'a, 'input>{
         let mut imports = vec![];
         let mut schemas = vec![];
         let mut messages = HashMap::new();
+        let mut port_types = vec![];
         for ch in node.children().filter(|n| n.is_element()) {
             match ch.wsdl_type() {
-                ElementType::Import=> { imports.push(Import::new(&ch)); },
+                ElementType::Import=> { imports.push(Import::new(&ch))},
                 ElementType::Types => { schemas.push(ch.first_child().expect("Schema required in wsdl:types element") )},
                 ElementType::Message => { insert_message(&ch, &mut messages) },
-
+                ElementType::PortType => { port_types.push(PortType::new(&ch))}
                 _ => {}
             }
         }
@@ -57,6 +59,7 @@ impl<'a, 'input: 'a> Definitions<'a, 'input>{
             imports,
             schemas,
             messages,
+            port_types,
         }
 
     }
@@ -123,13 +126,15 @@ impl<'a, 'input: 'a> Part<'a, 'input>{
 
 #[derive(Clone, Debug)]
 pub struct PortType<'a, 'input: 'a> {
-    pub node: Node<'a, 'input>
+    node: Node<'a, 'input>,
+    operations: Vec<Operation<'a, 'input>>
 }
 
 impl<'a, 'input: 'a> PortType<'a, 'input>{
     pub fn new(node: &Node<'a, 'input>) -> Self {
         Self {
-            node: node.clone()
+            node: node.clone(),
+            operations: node.children().filter_map(|node| if node.is_element() && node.wsdl_type() == ElementType::Operation { Some(Operation::new(&node)) } else { None }).collect()
         }
     }
 
