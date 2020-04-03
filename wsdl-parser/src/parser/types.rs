@@ -1,10 +1,9 @@
-use roxmltree::{Node, Namespace};
 use crate::parser::constants::attribute;
-use std::collections::HashMap;
-use roxmltree::NodeType::Element;
-use crate::parser::{ElementType, WsdlElement};
 use crate::parser::operation::Operation;
-
+use crate::parser::{ElementType, WsdlElement};
+use roxmltree::NodeType::Element;
+use roxmltree::{Namespace, Node};
+use std::collections::HashMap;
 
 #[derive(Clone, Debug)]
 pub struct Definitions<'a, 'input: 'a> {
@@ -12,11 +11,10 @@ pub struct Definitions<'a, 'input: 'a> {
     imports: Vec<Import<'a, 'input>>,
     schemas: Vec<Node<'a, 'input>>,
     messages: HashMap<&'a str, Vec<Part<'a, 'input>>>,
-    port_types: Vec<PortType<'a, 'input>>
+    port_types: Vec<PortType<'a, 'input>>,
 }
 
-
-impl<'a, 'input: 'a> Definitions<'a, 'input>{
+impl<'a, 'input: 'a> Definitions<'a, 'input> {
     pub fn target_namespace(&self) -> Option<&'a Namespace<'input>> {
         match self.node.attribute(attribute::TARGET_NAMESPACE) {
             Some(tn) => self.node.namespaces().iter().find(|a| a.uri() == tn),
@@ -47,10 +45,13 @@ impl<'a, 'input: 'a> Definitions<'a, 'input>{
         let mut port_types = vec![];
         for ch in node.children().filter(|n| n.is_element()) {
             match ch.wsdl_type() {
-                ElementType::Import=> { imports.push(Import::new(&ch))},
-                ElementType::Types => { schemas.push(ch.first_child().expect("Schema required in wsdl:types element") )},
-                ElementType::Message => { insert_message(&ch, &mut messages) },
-                ElementType::PortType => { port_types.push(PortType::new(&ch))}
+                ElementType::Import => imports.push(Import::new(&ch)),
+                ElementType::Types => schemas.push(
+                    ch.first_child()
+                        .expect("Schema required in wsdl:types element"),
+                ),
+                ElementType::Message => insert_message(&ch, &mut messages),
+                ElementType::PortType => port_types.push(PortType::new(&ch)),
                 _ => {}
             }
         }
@@ -61,52 +62,57 @@ impl<'a, 'input: 'a> Definitions<'a, 'input>{
             messages,
             port_types,
         }
-
     }
 }
 
-fn insert_message<'a, 'input>(node: &Node<'a, 'input>, messages: &mut HashMap<&'a str, Vec<Part<'a, 'input>>>) {
+fn insert_message<'a, 'input>(
+    node: &Node<'a, 'input>,
+    messages: &mut HashMap<&'a str, Vec<Part<'a, 'input>>>,
+) {
     let res = messages.insert(
-        node.attribute(attribute::NAME).expect("Name required for wsdl:messge"),
-        node
-            .children()
+        node.attribute(attribute::NAME)
+            .expect("Name required for wsdl:messge"),
+        node.children()
             .filter(|n| n.wsdl_type() == ElementType::Part)
             .map(|n| Part::new(&n))
-            .collect()
+            .collect(),
     );
     assert!(res.is_none(), "Message name must be unique");
 }
 
 #[derive(Clone, Debug)]
 pub struct Import<'a, 'input: 'a> {
-    pub node: Node<'a, 'input>
+    pub node: Node<'a, 'input>,
 }
 
-impl<'a, 'input: 'a> Import<'a, 'input>{
+impl<'a, 'input: 'a> Import<'a, 'input> {
     pub fn namespace(&self) -> &'a str {
-        self.node.attribute(attribute::NAMESPACE).expect("Namespace required for wsdl:Import")
+        self.node
+            .attribute(attribute::NAMESPACE)
+            .expect("Namespace required for wsdl:Import")
     }
 
     pub fn location(&self) -> &'a str {
-        self.node.attribute(attribute::LOCATION).expect("Location required for wsdl:Import")
+        self.node
+            .attribute(attribute::LOCATION)
+            .expect("Location required for wsdl:Import")
     }
 
     pub fn new(node: &Node<'a, 'input>) -> Self {
-        Self {
-            node: node.clone()
-        }
+        Self { node: node.clone() }
     }
 }
 
-
 #[derive(Clone, Debug)]
 pub struct Part<'a, 'input: 'a> {
-    pub node: Node<'a, 'input>
+    pub node: Node<'a, 'input>,
 }
 
-impl<'a, 'input: 'a> Part<'a, 'input>{
+impl<'a, 'input: 'a> Part<'a, 'input> {
     pub fn name(&self) -> &'a str {
-        self.node.attribute(attribute::NAME).expect("Name required for wsdl:part")
+        self.node
+            .attribute(attribute::NAME)
+            .expect("Name required for wsdl:part")
     }
 
     pub fn element(&self) -> Option<&'a str> {
@@ -118,29 +124,36 @@ impl<'a, 'input: 'a> Part<'a, 'input>{
     }
 
     pub fn new(node: &Node<'a, 'input>) -> Self {
-        Self {
-            node: node.clone()
-        }
+        Self { node: node.clone() }
     }
 }
 
 #[derive(Clone, Debug)]
 pub struct PortType<'a, 'input: 'a> {
     node: Node<'a, 'input>,
-    operations: Vec<Operation<'a, 'input>>
+    operations: Vec<Operation<'a, 'input>>,
 }
 
-impl<'a, 'input: 'a> PortType<'a, 'input>{
+impl<'a, 'input: 'a> PortType<'a, 'input> {
     pub fn new(node: &Node<'a, 'input>) -> Self {
         Self {
             node: node.clone(),
-            operations: node.children().filter_map(|node| if node.is_element() && node.wsdl_type() == ElementType::Operation { Some(Operation::new(&node)) } else { None }).collect()
+            operations: node
+                .children()
+                .filter_map(|node| {
+                    if node.is_element() && node.wsdl_type() == ElementType::Operation {
+                        Some(Operation::new(&node))
+                    } else {
+                        None
+                    }
+                })
+                .collect(),
         }
     }
 
     pub fn name(&self) -> &'a str {
-        self.node.attribute(attribute::NAME).expect("Name required for wsdl:portType")
+        self.node
+            .attribute(attribute::NAME)
+            .expect("Name required for wsdl:portType")
     }
 }
-
-

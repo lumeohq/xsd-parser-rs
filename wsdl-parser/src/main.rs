@@ -3,11 +3,10 @@ use clap::{App, Arg};
 
 mod parser;
 
+use crate::parser::parse;
 use std::fs;
 use std::io::{prelude::*, Read};
 use std::path::{Path, PathBuf};
-use crate::parser::parse;
-
 
 fn main() {
     let matches = App::new("wsdl-parser")

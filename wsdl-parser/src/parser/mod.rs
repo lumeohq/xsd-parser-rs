@@ -1,31 +1,19 @@
 use crate::parser::types::Definitions;
 
-pub mod types;
 mod constants;
 pub mod operation;
+pub mod types;
 
-pub fn parse(text: &str)  {
+pub fn parse(text: &str) {
     let doc = roxmltree::Document::parse(&text).expect("Parse document error");
     let root = doc.root();
     println!("{}", root.children().count());
-
-
 
     let definitions = root
         .children()
         .filter(|e| e.is_element())
         .last()
         .expect("Definitions element is required");
-
-    // for ch in definitions.children() {
-    //     println!("{:?}", ch);
-    // }
-
-    let fc = definitions.first_child().unwrap();
-
-    println!("{:?}", fc);
-    println!("{:?}", fc.next_sibling_element().unwrap());
-    println!("{:?}", fc.next_sibling_element().unwrap());
 
     let def = Definitions::new(&definitions);
     println!("{:?}", def.imports().len());
@@ -36,7 +24,6 @@ pub fn parse(text: &str)  {
     //     println!("{:#?}", i);
     // }
 }
-
 
 pub trait WsdlElement {
     fn wsdl_type(&self) -> ElementType;
@@ -56,12 +43,13 @@ pub enum ElementType {
     Part,
     PortType,
     Types,
-    UnknownElement(String)
+    UnknownElement(String),
 }
 
 impl<'a> WsdlElement for roxmltree::Node<'a, '_> {
     fn wsdl_type(&self) -> ElementType {
         use ElementType::*;
+        // TODO: check for wsdl prefix
         match self.tag_name().name() {
             "binding" => Binding,
             "definitions" => Definitions,
@@ -79,7 +67,3 @@ impl<'a> WsdlElement for roxmltree::Node<'a, '_> {
         }
     }
 }
-
-
-
-
