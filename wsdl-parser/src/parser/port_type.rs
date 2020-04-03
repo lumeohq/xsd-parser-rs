@@ -2,6 +2,38 @@ use crate::parser::constants::attribute;
 use crate::parser::{ElementType, WsdlElement};
 use roxmltree::Node;
 
+
+#[derive(Clone, Debug)]
+pub struct PortType<'a, 'input: 'a> {
+    node: Node<'a, 'input>,
+    operations: Vec<Operation<'a, 'input>>,
+}
+
+impl<'a, 'input: 'a> PortType<'a, 'input> {
+    pub fn new(node: &Node<'a, 'input>) -> Self {
+        Self {
+            node: node.clone(),
+            operations: node
+                .children()
+                .filter_map(|node| {
+                    if node.is_element() && node.wsdl_type() == ElementType::Operation {
+                        Some(Operation::new(&node))
+                    } else {
+                        None
+                    }
+                })
+                .collect(),
+        }
+    }
+
+    pub fn name(&self) -> &'a str {
+        self.node
+            .attribute(attribute::NAME)
+            .expect("Name required for wsdl:portType")
+    }
+}
+
+
 #[derive(Clone, Debug)]
 pub struct Operation<'a, 'input: 'a> {
     node: Node<'a, 'input>,

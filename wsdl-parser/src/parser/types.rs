@@ -1,5 +1,5 @@
 use crate::parser::constants::attribute;
-use crate::parser::operation::Operation;
+use crate::parser::port_type::{PortType};
 use crate::parser::{ElementType, WsdlElement};
 use roxmltree::NodeType::Element;
 use roxmltree::{Namespace, Node};
@@ -82,7 +82,7 @@ fn insert_message<'a, 'input>(
 
 #[derive(Clone, Debug)]
 pub struct Import<'a, 'input: 'a> {
-    pub node: Node<'a, 'input>,
+    node: Node<'a, 'input>,
 }
 
 impl<'a, 'input: 'a> Import<'a, 'input> {
@@ -105,7 +105,7 @@ impl<'a, 'input: 'a> Import<'a, 'input> {
 
 #[derive(Clone, Debug)]
 pub struct Part<'a, 'input: 'a> {
-    pub node: Node<'a, 'input>,
+    node: Node<'a, 'input>,
 }
 
 impl<'a, 'input: 'a> Part<'a, 'input> {
@@ -128,32 +128,3 @@ impl<'a, 'input: 'a> Part<'a, 'input> {
     }
 }
 
-#[derive(Clone, Debug)]
-pub struct PortType<'a, 'input: 'a> {
-    node: Node<'a, 'input>,
-    operations: Vec<Operation<'a, 'input>>,
-}
-
-impl<'a, 'input: 'a> PortType<'a, 'input> {
-    pub fn new(node: &Node<'a, 'input>) -> Self {
-        Self {
-            node: node.clone(),
-            operations: node
-                .children()
-                .filter_map(|node| {
-                    if node.is_element() && node.wsdl_type() == ElementType::Operation {
-                        Some(Operation::new(&node))
-                    } else {
-                        None
-                    }
-                })
-                .collect(),
-        }
-    }
-
-    pub fn name(&self) -> &'a str {
-        self.node
-            .attribute(attribute::NAME)
-            .expect("Name required for wsdl:portType")
-    }
-}
