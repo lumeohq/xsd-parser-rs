@@ -1,7 +1,6 @@
 use crate::parser::constants::attribute;
-use crate::parser::port_type::{PortType};
+use crate::parser::port_type::PortType;
 use crate::parser::{ElementType, WsdlElement};
-use roxmltree::NodeType::Element;
 use roxmltree::{Namespace, Node};
 use std::collections::HashMap;
 
@@ -127,4 +126,3 @@ impl<'a, 'input: 'a> Part<'a, 'input> {
         Self { node: node.clone() }
     }
 }
-

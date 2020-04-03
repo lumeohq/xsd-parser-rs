@@ -1,5 +1,6 @@
 use crate::parser::types::Definitions;
 
+pub mod binding;
 mod constants;
 pub mod port_type;
 pub mod types;
