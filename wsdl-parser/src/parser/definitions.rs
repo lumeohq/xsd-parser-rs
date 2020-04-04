@@ -33,7 +33,7 @@ use std::collections::HashMap;
 #[derive(Debug)]
 pub struct Definitions<'a> {
     node: Node<'a, 'a>,
-    imports: Vec<Import<'a>>,
+    imports:  HashMap<&'a str, Import<'a>>,
     types: Vec<Types<'a>>,
     messages: HashMap<&'a str, Message<'a>>,
     port_types: HashMap<&'a str, PortType<'a>>,
@@ -57,8 +57,12 @@ impl<'a> Definitions<'a> {
         self.node().attribute(attribute::NAME)
     }
 
-    pub fn imports(&self) -> &[Import] {
-        self.imports.as_ref()
+    pub fn imports(&self) -> &HashMap<&'a str, Import<'a>>{
+        &self.imports
+    }
+
+    pub fn port_types(&self) -> &HashMap<&'a str, PortType<'a>>  {
+        &self.port_types
     }
 
     pub fn types(&self) -> &[Types] {
@@ -72,7 +76,7 @@ impl<'a> Definitions<'a> {
     pub fn new(definitions: &Node<'a, '_>) -> Self {
         let mut res = Self {
             node: definitions.clone(),
-            imports: vec![],
+            imports: HashMap::new(),
             messages: HashMap::new(),
             port_types: HashMap::new(),
             types: vec![],
@@ -80,7 +84,7 @@ impl<'a> Definitions<'a> {
         };
         for ch in definitions.children().filter(|n| n.is_element()) {
             match ch.wsdl_type() {
-                ElementType::Import => res.imports.push(Import::new(&ch)),
+                ElementType::Import => res.add_import(&ch),
                 ElementType::Types => res.types.push(Types::new(&ch)), // TODO: add Identity constraints: @namespace
                 ElementType::Message => res.add_message(&ch),
                 ElementType::PortType => res.add_port_type(&ch),
@@ -89,6 +93,14 @@ impl<'a> Definitions<'a> {
             }
         }
         res
+    }
+
+    fn add_import(&mut self, node: &Node<'a, '_>) {
+        let import = Import::new(node);
+        assert!(
+            self.imports.insert(import.namespace(), import).is_none(),
+            "Import namespace must be unique"
+        );
     }
 
     fn add_message(&mut self, node: &Node<'a, '_>) {
@@ -118,6 +130,25 @@ impl<'a> Definitions<'a> {
     }
 }
 
+
+
+// Element information
+// Namespace: http://schemas.xmlsoap.org/wsdl/
+// Schema document: wsdl11.xsd
+// Type: wsdl:tImport
+// Properties: Local, Qualified
+//
+// Content
+// wsdl:documentation [0..1]   from type wsdl:tDocumented
+//
+// Attributes
+// Any attribute	[0..*]		                Namespace: ##other, Process Contents: lax	from type wsdl:tExtensibleAttributesDocumented
+// namespace	    [1..1]	    xsd:anyURI
+// location	        [1..1]	    xsd:anyURI
+//
+// Used in
+// Group wsdl:anyTopLevelOptionalElement
+// Type wsdl:tDefinitions via reference to wsdl:anyTopLevelOptionalElement (Element wsdl:definitions)
 #[derive(Clone, Debug)]
 pub struct Import<'a> {
     node: Node<'a, 'a>,
