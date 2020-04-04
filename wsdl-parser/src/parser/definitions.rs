@@ -33,7 +33,7 @@ use std::collections::HashMap;
 #[derive(Debug)]
 pub struct Definitions<'a> {
     node: Node<'a, 'a>,
-    imports:  HashMap<&'a str, Import<'a>>,
+    imports: HashMap<&'a str, Import<'a>>,
     types: Vec<Types<'a>>,
     messages: HashMap<&'a str, Message<'a>>,
     port_types: HashMap<&'a str, PortType<'a>>,
@@ -57,11 +57,11 @@ impl<'a> Definitions<'a> {
         self.node().attribute(attribute::NAME)
     }
 
-    pub fn imports(&self) -> &HashMap<&'a str, Import<'a>>{
+    pub fn imports(&self) -> &HashMap<&'a str, Import<'a>> {
         &self.imports
     }
 
-    pub fn port_types(&self) -> &HashMap<&'a str, PortType<'a>>  {
+    pub fn port_types(&self) -> &HashMap<&'a str, PortType<'a>> {
         &self.port_types
     }
 
@@ -129,8 +129,6 @@ impl<'a> Definitions<'a> {
         );
     }
 }
-
-
 
 // Element information
 // Namespace: http://schemas.xmlsoap.org/wsdl/

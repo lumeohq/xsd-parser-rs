@@ -43,6 +43,34 @@ impl<'a> PortType<'a> {
     }
 }
 
+// Element information
+// Namespace: http://schemas.xmlsoap.org/wsdl/
+// Schema document: wsdl11.xsd
+// Other elements with the same name: wsdl:operation
+// Type: wsdl:tOperation
+// Properties: Local, Qualified
+//
+// Content: Sequence [1..1]
+// wsdl:documentation [0..1]   from type wsdl:tDocumented
+// Any element [0..*] Namespace: ##other, Process Contents: lax   from type wsdl:tExtensibleDocumented
+// Choice [1..1]
+//     Sequence [1..1]   from group wsdl:request-response-or-one-way-operation
+//         wsdl:input [1..1]
+//         Sequence [0..1]
+//             wsdl:output [1..1]
+//             wsdl:fault [0..*]
+//     Sequence [1..1]   from group wsdl:solicit-response-or-notification-operation
+//         wsdl:output [1..1]
+//         Sequence [0..1]
+//             wsdl:input [1..1]
+//             wsdl:fault [0..*]
+//
+// Attributes
+// name	            [1..1]	xsd:NCName
+// parameterOrder	[0..1]	xsd:NMTOKENS
+//
+// Used in
+// Type wsdl:tPortType (Element wsdl:portType)
 #[derive(Clone, Debug)]
 pub struct Operation<'a> {
     node: Node<'a, 'a>,
