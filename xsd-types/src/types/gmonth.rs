@@ -42,7 +42,11 @@ impl FromStr for GMonth {
             if s.len() != 4 || &s[0..2] != "--" {
                 return Err("bad gMonth format".to_string());
             }
-            s[2..4].parse::<i32>().map_err(|e| e.to_string())
+            let token = &s[2..4];
+            if !token.chars().all(|c| c.is_digit(10)) {
+                return Err("bad gMonth format".to_string());
+            }
+            token.parse::<i32>().map_err(|e| e.to_string())
         }
 
         if s.ends_with('Z') {
@@ -130,6 +134,7 @@ mod tests {
         assert!(GMonth::from_str("11").is_err());
         assert!(GMonth::from_str("----11").is_err());
         assert!(GMonth::from_str("----1").is_err());
+        assert!(GMonth::from_str("--+1").is_err());
     }
 
     #[test]

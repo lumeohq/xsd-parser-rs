@@ -71,8 +71,19 @@ impl FromStr for GMonthDay {
             if s.len() != 7 || &s[0..2] != "--" || &s[4..5] != "-" {
                 return Err("bad gMonthDay format".to_string());
             }
-            let month = s[2..4].parse::<i32>().map_err(|e| e.to_string())?;
-            let day = s[5..7].parse::<i32>().map_err(|e| e.to_string())?;
+
+            let month_token = &s[2..4];
+            if !month_token.chars().all(|c| c.is_digit(10)) {
+                return Err("bad month format within gMonthDay".to_string());
+            }
+            let month = month_token.parse::<i32>().map_err(|e| e.to_string())?;
+
+            let day_token = &s[5..7];
+            if !day_token.chars().all(|c| c.is_digit(10)) {
+                return Err("bad day format within gMonthDay".to_string());
+            }
+            let day = day_token.parse::<i32>().map_err(|e| e.to_string())?;
+
             Ok((month, day))
         }
 
@@ -167,6 +178,11 @@ mod tests {
         assert!(GMonthDay::from_str("--01-35").is_err());
         assert!(GMonthDay::from_str("--1-5").is_err());
         assert!(GMonthDay::from_str("01-15").is_err());
+        assert!(GMonthDay::from_str("01---").is_err());
+        assert!(GMonthDay::from_str("AA-AA").is_err());
+        assert!(GMonthDay::from_str("++-++").is_err());
+        assert!(GMonthDay::from_str("+1-01").is_err());
+        assert!(GMonthDay::from_str("01-+1").is_err());
         // Specific month length breach.
         assert!(GMonthDay::from_str("--02-30").is_err());
         assert!(GMonthDay::from_str("--04-31").is_err());

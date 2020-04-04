@@ -56,6 +56,9 @@ fn parse_str_positive(s: &str) -> Result<GYear, String> {
         if s.len() < 4 {
             return Err("bad gYear format: to short".to_string());
         }
+        if !s.chars().all(|c| c.is_digit(10)) {
+            return Err("bad gYear format".to_string());
+        }
         s.parse::<i32>().map_err(|e| e.to_string())
     }
 
@@ -169,6 +172,7 @@ mod tests {
         assert!(GYear::from_str("01").is_err());
         assert!(GYear::from_str("2001-12").is_err());
         assert!(GYear::from_str("0000").is_err());
+        assert!(GYear::from_str("+123").is_err());
     }
 
     #[test]

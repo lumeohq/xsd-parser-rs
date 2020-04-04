@@ -88,8 +88,16 @@ fn parse_str_positive(s: &str) -> Result<GYearMonth, String> {
             return Err("bad gYearMonth format".to_string());
         }
 
+        if !year_token.chars().all(|c| c.is_digit(10)) {
+            return Err("bad year format within gYearMonth".to_string());
+        }
         let year = year_token.parse::<i32>().map_err(|e| e.to_string())?;
+
+        if !month_token.chars().all(|c| c.is_digit(10)) {
+            return Err("bad month format within gYearMonth".to_string());
+        }
         let month = month_token.parse::<i32>().map_err(|e| e.to_string())?;
+
         Ok((year, month))
     }
 
@@ -207,9 +215,14 @@ mod tests {
 
         // Invalid values.
         assert!(GYearMonth::from_str("01-03").is_err());
+        assert!(GYearMonth::from_str("2000-1").is_err());
         assert!(GYearMonth::from_str("2000-13").is_err());
         assert!(GYearMonth::from_str("2000-00").is_err());
         assert!(GYearMonth::from_str("0000-03").is_err());
+        assert!(GYearMonth::from_str("2000-+3").is_err());
+        assert!(GYearMonth::from_str("-200-03").is_err());
+        assert!(GYearMonth::from_str("+200-03").is_err());
+        assert!(GYearMonth::from_str("++++-++").is_err());
     }
 
     #[test]
