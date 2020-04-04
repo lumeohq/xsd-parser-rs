@@ -8,6 +8,24 @@ pub mod message;
 pub mod port_type;
 pub mod types;
 
+struct Foo {
+    text: &'static str,
+    doc: &'static Document<'static>,
+    def: Definitions<'static>,
+}
+
+impl Foo {
+    pub fn new(x: String) -> Self {
+        let text: &'static String = Box::leak(Box::new(x));
+        let doc = Box::leak(Box::new(Document::parse(text).unwrap()));
+        Self {
+            text,
+            doc,
+            def: Definitions::new(&doc.root_element())
+        }
+    }
+}
+
 pub fn parse(text: &str) {
     let doc = Document::parse(text).unwrap();
     let definitions = Definitions::new(&doc.root_element());

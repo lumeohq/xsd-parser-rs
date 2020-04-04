@@ -1,7 +1,12 @@
 extern crate clap;
 use clap::{App, Arg};
 
+#[macro_use]
+extern crate lazy_static;
+
 mod parser;
+
+mod document_storage;
 
 use crate::parser::parse;
 use std::fs;
@@ -40,6 +45,10 @@ fn main() {
     }
     .map_err(|e| println!("Error: {}", e))
     .unwrap();
+}
+
+fn foo<T>(x: &T) -> T {
+    T::new()
 }
 
 fn process_dir(input_path: &Path, output_path: &Path) -> Result<(), String> {
