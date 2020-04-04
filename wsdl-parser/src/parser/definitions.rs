@@ -8,7 +8,6 @@ use crate::parser::binding::Binding;
 #[derive(Debug)]
 pub struct Definitions<'a, 'input: 'a> {
     doc: Document<'input>,
-    node: Node<'a, 'input>,
     imports: Vec<Import<'a, 'input>>,
     schemas: Vec<Node<'a, 'input>>,
     messages: HashMap<&'a str, Vec<Part<'a, 'input>>>,
@@ -18,15 +17,20 @@ pub struct Definitions<'a, 'input: 'a> {
 }
 
 impl<'a, 'input: 'a> Definitions<'a, 'input> {
-    pub fn target_namespace(&self) -> Option<&'a Namespace<'input>> {
-        match self.node.attribute(attribute::TARGET_NAMESPACE) {
-            Some(tn) => self.node.namespaces().iter().find(|a| a.uri() == tn),
+    pub fn target_namespace(&self) -> Option<&'a Namespace<'_>> {
+        match self.node().attribute(attribute::TARGET_NAMESPACE) {
+            Some(tn) => self.node().namespaces().iter().find(|a| a.uri() == tn),
             None => None,
         }
     }
 
-    pub fn name(&self) -> Option<&'a str> {
-        self.node.attribute(attribute::NAME)
+    pub fn node(&self) -> Node<'_, '_> {
+        self.doc.root_element()
+    }
+
+
+    pub fn name(&self) -> Option<&str> {
+        self.node().attribute(attribute::NAME)
     }
 
     pub fn imports(&self) -> &[Import] {
@@ -41,9 +45,9 @@ impl<'a, 'input: 'a> Definitions<'a, 'input> {
         &self.messages
     }
 
-    pub fn parse(text: &'input str) -> Result<Self, String> {
-        let doc = Document::parse(&text).map_err(|err| err.to_string())?;
-        let definitions = doc.root().first_element_child().ok_or("Definitions element is required")?;
+    pub fn new(text: &str) -> Self {
+        let doc = Document::parse(text).unwrap();
+        let definitions = doc.root_element();
         let mut imports = vec![];
         let mut schemas = vec![];
         let mut messages = HashMap::new();
@@ -62,15 +66,14 @@ impl<'a, 'input: 'a> Definitions<'a, 'input> {
                 _ => {}
             }
         }
-        Ok(Self {
-            doc,
-            node: definitions.clone(),
+        Self {
             imports,
             schemas,
             messages,
             port_types,
             bindings,
-        })
+            doc
+        }
     }
 }
 

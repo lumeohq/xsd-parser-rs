@@ -1,12 +1,17 @@
 use crate::parser::definitions::Definitions;
+use roxmltree::{Document, Node};
 
 pub mod binding;
 mod constants;
 pub mod port_type;
 pub mod definitions;
 
-pub fn parse(text: &str) {// -> Result<Definitions, String> {
-    println!("{:#?}", Definitions::parse(&text))
+
+pub fn parse(text: &str) {
+    //let doc = Document::parse(text).unwrap();
+    let definitions = Definitions::new(text);
+    println!("{:#?}", definitions);
+
 }
 
 pub trait WsdlElement {
