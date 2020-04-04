@@ -1,8 +1,8 @@
 #[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]
 #[yaserde(prefix = "tns", namespace = "tns: http://example.com")]
 pub struct BarType {
-    #[yaserde(attribute, rename = "Field")]
-    pub field: Option<String>,
+    #[yaserde(attribute, rename = "a")]
+    pub a: Option<String>,
 }
 
 impl Validate for BarType {}
@@ -26,8 +26,8 @@ pub mod foo_type {
         #[yaserde(attribute, rename = "b")]
         pub b: Option<String>,
 
-        #[yaserde(attribute, rename = "Field")]
-        pub field: Option<String>,
+        #[yaserde(attribute, rename = "a")]
+        pub a: Option<String>,
 
     }
 

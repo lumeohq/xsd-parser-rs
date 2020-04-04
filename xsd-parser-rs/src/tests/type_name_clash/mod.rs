@@ -18,8 +18,8 @@ fn deserialization_works() {
         de,
         expected::FooType {
             bar: expected::foo_type::BarType {
-                b: None,
-                field: None
+                b: Some("string".to_string()),
+                a: Some("string".to_string())
             }
         }
     );

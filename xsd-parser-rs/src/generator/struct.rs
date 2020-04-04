@@ -66,7 +66,7 @@ pub trait StructGenerator {
     }
 
     fn shift(&self, text: &str, indent: &str) -> String {
-        text.replace("\n\n\n", "\n")
+        text.replace("\n\n\n", "\n") // TODO: fix this workaround replace
             .split('\n')
             .map(|s| {
                 if !s.is_empty() {
