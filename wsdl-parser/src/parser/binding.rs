@@ -3,12 +3,12 @@ use crate::parser::{ElementType, WsdlElement};
 use roxmltree::Node;
 
 #[derive(Clone, Debug)]
-pub struct Binding<'a, 'input: 'a> {
-    node: Node<'a, 'input>,
-    operations: Vec<Operation<'a, 'input>>,
+pub struct Binding<'a> {
+    node: Node<'a, 'a>,
+    operations: Vec<Operation<'a>>,
 }
 
-impl<'a, 'input: 'a> Binding<'a, 'input> {
+impl<'a> Binding<'a> {
     pub fn name(&self) -> &'a str {
         self.node
             .attribute(attribute::NAME)
@@ -21,7 +21,7 @@ impl<'a, 'input: 'a> Binding<'a, 'input> {
             .expect("Location required for wsdl:binding")
     }
 
-    pub fn new(node: &Node<'a, 'input>) -> Self {
+    pub fn new(node: &Node<'a, '_>) -> Self {
         Self {
             node: node.clone(),
             operations: node
@@ -39,21 +39,21 @@ impl<'a, 'input: 'a> Binding<'a, 'input> {
 }
 
 #[derive(Clone, Debug)]
-pub struct Operation<'a, 'input: 'a> {
-    node: Node<'a, 'input>,
-    input: Option<Param<'a, 'input>>,
-    output: Option<Param<'a, 'input>>,
-    faults: Vec<Param<'a, 'input>>,
+pub struct Operation<'a> {
+    node: Node<'a, 'a>,
+    input: Option<Param<'a>>,
+    output: Option<Param<'a>>,
+    faults: Vec<Param<'a>>,
 }
 
-impl<'a, 'input: 'a> Operation<'a, 'input> {
+impl<'a> Operation<'a> {
     pub fn name(&self) -> &'a str {
         self.node
             .attribute(attribute::NAME)
             .expect("Namespace required for wsdl:binding")
     }
 
-    pub fn new(node: &Node<'a, 'input>) -> Self {
+    pub fn new(node: &Node<'a, '_>) -> Self {
         let mut input = None;
         let mut output = None;
         let mut faults = vec![];
@@ -75,12 +75,12 @@ impl<'a, 'input: 'a> Operation<'a, 'input> {
 }
 
 #[derive(Clone, Debug)]
-pub struct Param<'a, 'input: 'a> {
-    node: Node<'a, 'input>,
+pub struct Param<'a> {
+    node: Node<'a, 'a>,
 }
 
-impl<'a, 'input: 'a> Param<'a, 'input> {
-    pub fn new(node: &Node<'a, 'input>) -> Self {
+impl<'a> Param<'a> {
+    pub fn new(node: &Node<'a, '_>) -> Self {
         Self { node: node.clone() }
     }
 

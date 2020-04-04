@@ -251,7 +251,16 @@ version = "0.7.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0852407257c1b696a0c66b9db3ffe7769c2744a2fa725c8050e6f3e5a823c02b"
 dependencies = [
- "xmlparser",
+ "xmlparser 0.10.0",
+]
+
+[[package]]
+name = "roxmltree"
+version = "0.10.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4129743af505f674602b97d02c8ebe526752de8811e21ecb2fb166fcf4afe157"
+dependencies = [
+ "xmlparser 0.13.1",
 ]
 
 [[package]]
@@ -383,7 +392,7 @@ dependencies = [
  "log",
  "macro-utils",
  "num-bigint",
- "roxmltree",
+ "roxmltree 0.10.1",
  "syn",
  "text-diff",
  "xml-rs",
@@ -405,6 +414,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8110496c5bcc0d966b0b2da38d5a791aa139eeb0b80e7840a7463c2b806921eb"
 
 [[package]]
+name = "xmlparser"
+version = "0.13.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ccb4240203dadf40be2de9369e5c6dec1bf427528115b030baca3334c18362d7"
+
+[[package]]
 name = "xsd-parser"
 version = "0.1.0"
 dependencies = [
@@ -415,7 +430,7 @@ dependencies = [
  "log",
  "macro-utils",
  "num-bigint",
- "roxmltree",
+ "roxmltree 0.7.3",
  "syn",
  "text-diff",
  "xml-rs",

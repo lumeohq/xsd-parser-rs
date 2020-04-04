@@ -3,13 +3,13 @@ use crate::parser::{ElementType, WsdlElement};
 use roxmltree::Node;
 
 #[derive(Clone, Debug)]
-pub struct PortType<'a, 'input: 'a> {
-    node: Node<'a, 'input>,
-    operations: Vec<Operation<'a, 'input>>,
+pub struct PortType<'a> {
+    node: Node<'a, 'a>,
+    operations: Vec<Operation<'a>>,
 }
 
-impl<'a, 'input: 'a> PortType<'a, 'input> {
-    pub fn new(node: &Node<'a, 'input>) -> Self {
+impl<'a> PortType<'a> {
+    pub fn new(node: &Node<'a, '_>) -> Self {
         Self {
             node: node.clone(),
             operations: node
@@ -33,13 +33,13 @@ impl<'a, 'input: 'a> PortType<'a, 'input> {
 }
 
 #[derive(Clone, Debug)]
-pub struct Operation<'a, 'input: 'a> {
-    node: Node<'a, 'input>,
-    ty: OperationType<'a, 'input>,
+pub struct Operation<'a> {
+    node: Node<'a, 'a>,
+    ty: OperationType<'a>,
 }
 
-impl<'a, 'input: 'a> Operation<'a, 'input> {
-    pub fn new(node: &Node<'a, 'input>) -> Self {
+impl<'a> Operation<'a> {
+    pub fn new(node: &Node<'a, '_>) -> Self {
         Self {
             node: node.clone(),
             ty: OperationType::new(node),
@@ -58,23 +58,23 @@ impl<'a, 'input: 'a> Operation<'a, 'input> {
 }
 
 #[derive(Clone, Debug, PartialEq)]
-pub enum OperationType<'a, 'input> {
+pub enum OperationType<'a> {
     RequestResponse {
-        input: Param<'a, 'input >,
-        output: Param<'a, 'input >,
-        faults: Vec<Fault<'a, 'input > >,
+        input: Param<'a>,
+        output: Param<'a>,
+        faults: Vec<Fault<'a> >,
     },
-    OneWay{input: Param<'a, 'input>},
+    OneWay{input: Param<'a>},
     SolicitResponse {
-        output: Param<'a, 'input >,
-        input: Param<'a, 'input >,
-        faults: Vec<Fault<'a, 'input > >,
+        output: Param<'a >,
+        input: Param<'a >,
+        faults: Vec<Fault<'a > >,
     },
-    Notification{output: Param<'a, 'input>},
+    Notification{output: Param<'a>},
 }
 
-impl<'a, 'input: 'a> OperationType<'a, 'input> {
-    pub fn new(node: &Node<'a, 'input>) -> Self {
+impl<'a> OperationType<'a> {
+    pub fn new(node: &Node<'a, '_>) -> Self {
         let mut children = node.children().filter(|n| n.is_element());
 
         while let Some(ch) = children.next() {
@@ -131,12 +131,12 @@ impl<'a, 'input: 'a> OperationType<'a, 'input> {
 }
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct Param<'a, 'input: 'a> {
-    node: Node<'a, 'input>,
+pub struct Param<'a,> {
+    node: Node<'a, 'a>,
 }
 
-impl<'a, 'input: 'a> Param<'a, 'input> {
-    pub fn new(node: &Node<'a, 'input>) -> Self {
+impl<'a> Param<'a> {
+    pub fn new(node: &Node<'a, '_>) -> Self {
         Self { node: node.clone() }
     }
 
@@ -153,12 +153,12 @@ impl<'a, 'input: 'a> Param<'a, 'input> {
 
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct Fault<'a, 'input: 'a> {
-    node: Node<'a, 'input>,
+pub struct Fault<'a> {
+    node: Node<'a, 'a>,
 }
 
-impl<'a, 'input: 'a> Fault<'a, 'input> {
-    pub fn new(node: &Node<'a, 'input>) -> Self {
+impl<'a> Fault<'a> {
+    pub fn new(node: &Node<'a, '_>) -> Self {
         Self { node: node.clone() }
     }
 

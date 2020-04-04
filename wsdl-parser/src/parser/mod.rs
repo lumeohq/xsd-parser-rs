@@ -5,11 +5,12 @@ pub mod binding;
 mod constants;
 pub mod port_type;
 pub mod definitions;
+pub mod types;
 
 
 pub fn parse(text: &str) {
-    //let doc = Document::parse(text).unwrap();
-    let definitions = Definitions::new(text);
+    let doc = Document::parse(text).unwrap();
+    let definitions = Definitions::new(&doc.root_element());
     println!("{:#?}", definitions);
 
 }

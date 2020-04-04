@@ -6,17 +6,17 @@ use std::collections::HashMap;
 use crate::parser::binding::Binding;
 
 #[derive(Debug)]
-pub struct Definitions<'a, 'input: 'a> {
-    doc: Document<'input>,
-    imports: Vec<Import<'a, 'input>>,
-    schemas: Vec<Node<'a, 'input>>,
-    messages: HashMap<&'a str, Vec<Part<'a, 'input>>>,
-    port_types: Vec<PortType<'a, 'input>>,
-    bindings: Vec<Binding<'a, 'input>>,
+pub struct Definitions<'a> {
+    node: Node<'a, 'a>,
+    imports: Vec<Import<'a>>,
+    schemas: Vec<Node<'a, 'a>>,
+    messages: HashMap<&'a str, Vec<Part<'a>>>,
+    port_types: Vec<PortType<'a>>,
+    bindings: Vec<Binding<'a>>,
     //TODO: services
 }
 
-impl<'a, 'input: 'a> Definitions<'a, 'input> {
+impl<'a> Definitions<'a> {
     pub fn target_namespace(&self) -> Option<&'a Namespace<'_>> {
         match self.node().attribute(attribute::TARGET_NAMESPACE) {
             Some(tn) => self.node().namespaces().iter().find(|a| a.uri() == tn),
@@ -24,8 +24,8 @@ impl<'a, 'input: 'a> Definitions<'a, 'input> {
         }
     }
 
-    pub fn node(&self) -> Node<'_, '_> {
-        self.doc.root_element()
+    pub fn node(&self) -> &Node<'_, '_> {
+        &self.node
     }
 
 
@@ -41,13 +41,11 @@ impl<'a, 'input: 'a> Definitions<'a, 'input> {
         self.schemas.as_ref()
     }
 
-    pub fn messages(&self) -> &HashMap<&'a str, Vec<Part<'a, 'input>>> {
+    pub fn messages(&self) -> &HashMap<&'a str, Vec<Part<'a>>> {
         &self.messages
     }
 
-    pub fn new(text: &str) -> Self {
-        let doc = Document::parse(text).unwrap();
-        let definitions = doc.root_element();
+    pub fn new(definitions: &Node<'a, '_>) -> Self {
         let mut imports = vec![];
         let mut schemas = vec![];
         let mut messages = HashMap::new();
@@ -72,14 +70,15 @@ impl<'a, 'input: 'a> Definitions<'a, 'input> {
             messages,
             port_types,
             bindings,
-            doc
+            node: definitions.clone()
         }
     }
+
 }
 
 fn insert_message<'a, 'input>(
     node: &Node<'a, 'input>,
-    messages: &mut HashMap<&'a str, Vec<Part<'a, 'input>>>,
+    messages: &mut HashMap<&'a str, Vec<Part<'a>>>,
 ) {
     let res = messages.insert(
         node.attribute(attribute::NAME)
@@ -93,11 +92,11 @@ fn insert_message<'a, 'input>(
 }
 
 #[derive(Clone, Debug)]
-pub struct Import<'a, 'input: 'a> {
-    node: Node<'a, 'input>,
+pub struct Import<'a> {
+    node: Node<'a, 'a>,
 }
 
-impl<'a, 'input: 'a> Import<'a, 'input> {
+impl<'a> Import<'a> {
     pub fn namespace(&self) -> &'a str {
         self.node
             .attribute(attribute::NAMESPACE)
@@ -110,17 +109,17 @@ impl<'a, 'input: 'a> Import<'a, 'input> {
             .expect("Location required for wsdl:Import")
     }
 
-    pub fn new(node: &Node<'a, 'input>) -> Self {
+    pub fn new(node: &Node<'a, '_>) -> Self {
         Self { node: node.clone() }
     }
 }
 
 #[derive(Clone, Debug)]
-pub struct Part<'a, 'input: 'a> {
-    node: Node<'a, 'input>,
+pub struct Part<'a> {
+    node: Node<'a, 'a>,
 }
 
-impl<'a, 'input: 'a> Part<'a, 'input> {
+impl<'a> Part<'a> {
     pub fn name(&self) -> &'a str {
         self.node
             .attribute(attribute::NAME)
@@ -135,7 +134,7 @@ impl<'a, 'input: 'a> Part<'a, 'input> {
         self.node.attribute(attribute::TYPE)
     }
 
-    pub fn new(node: &Node<'a, 'input>) -> Self {
+    pub fn new(node: &Node<'a, '_>) -> Self {
         Self { node: node.clone() }
     }
 }
