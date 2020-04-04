@@ -2,6 +2,18 @@ use crate::parser::constants::attribute;
 use crate::parser::{ElementType, WsdlElement};
 use roxmltree::Node;
 
+// Content: Sequence [1..1]
+// wsdl:documentation   [0..1] from type wsdl:tDocumented
+// wsdl:operation       [0..*]
+
+// Attributes:
+// Any attribute   [0..*]		      Namespace: ##other, Process Contents: lax	from type wsdl:tExtensibleAttributesDocumented
+// name	           [1..1] xsd:NCName
+
+// Used in Group wsdl:anyTopLevelOptionalElement
+// Type wsdl:tDefinitions via reference to wsdl:anyTopLevelOptionalElement (Element wsdl:definitions)
+
+
 #[derive(Clone, Debug)]
 pub struct PortType<'a> {
     node: Node<'a, 'a>,

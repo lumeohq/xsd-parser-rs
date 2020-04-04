@@ -6,6 +6,7 @@ mod constants;
 pub mod port_type;
 pub mod definitions;
 pub mod types;
+pub mod message;
 
 
 pub fn parse(text: &str) {
