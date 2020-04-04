@@ -3,6 +3,7 @@ use crate::parser::port_type::PortType;
 use crate::parser::{ElementType, WsdlElement};
 use roxmltree::{Namespace, Node};
 use std::collections::HashMap;
+use crate::parser::binding::Binding;
 
 #[derive(Clone, Debug)]
 pub struct Definitions<'a, 'input: 'a> {
@@ -11,6 +12,7 @@ pub struct Definitions<'a, 'input: 'a> {
     schemas: Vec<Node<'a, 'input>>,
     messages: HashMap<&'a str, Vec<Part<'a, 'input>>>,
     port_types: Vec<PortType<'a, 'input>>,
+    bindings: Vec<Binding<'a, 'input>>,
 }
 
 impl<'a, 'input: 'a> Definitions<'a, 'input> {
@@ -42,6 +44,7 @@ impl<'a, 'input: 'a> Definitions<'a, 'input> {
         let mut schemas = vec![];
         let mut messages = HashMap::new();
         let mut port_types = vec![];
+        let mut bindings = vec![];
         for ch in node.children().filter(|n| n.is_element()) {
             match ch.wsdl_type() {
                 ElementType::Import => imports.push(Import::new(&ch)),
@@ -51,6 +54,7 @@ impl<'a, 'input: 'a> Definitions<'a, 'input> {
                 ),
                 ElementType::Message => insert_message(&ch, &mut messages),
                 ElementType::PortType => port_types.push(PortType::new(&ch)),
+                ElementType::Binding => bindings.push(Binding::new(&ch)),
                 _ => {}
             }
         }
@@ -60,6 +64,7 @@ impl<'a, 'input: 'a> Definitions<'a, 'input> {
             schemas,
             messages,
             port_types,
+            bindings
         }
     }
 }

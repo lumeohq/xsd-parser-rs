@@ -1,9 +1,9 @@
-use crate::parser::types::Definitions;
+use crate::parser::definitions::Definitions;
 
 pub mod binding;
 mod constants;
 pub mod port_type;
-pub mod types;
+pub mod definitions;
 
 pub fn parse(text: &str) {
     let doc = roxmltree::Document::parse(&text).expect("Parse document error");

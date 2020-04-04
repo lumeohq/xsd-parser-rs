@@ -41,9 +41,9 @@ impl<'a, 'input: 'a> Binding<'a, 'input> {
 #[derive(Clone, Debug)]
 pub struct Operation<'a, 'input: 'a> {
     node: Node<'a, 'input>,
-    input: Option<Input<'a, 'input>>,
-    output: Option<Output<'a, 'input>>,
-    faults: Vec<Fault<'a, 'input>>,
+    input: Option<Param<'a, 'input>>,
+    output: Option<Param<'a, 'input>>,
+    faults: Vec<Param<'a, 'input>>,
 }
 
 impl<'a, 'input: 'a> Operation<'a, 'input> {
@@ -59,9 +59,9 @@ impl<'a, 'input: 'a> Operation<'a, 'input> {
         let mut faults = vec![];
         for ch in node.children().filter(|n| n.is_element()) {
             match ch.wsdl_type() {
-                ElementType::Input => {input = Some(Input::new(&ch))}
-                ElementType::Output => {output = Some(Output::new(&ch))}
-                ElementType::Fault => {faults.push(Fault::new(&ch))}
+                ElementType::Input => {input = Some(Param::new(&ch))}
+                ElementType::Output => {output = Some(Param::new(&ch))}
+                ElementType::Fault => {faults.push(Param::new(&ch))}
                 _ => {}
             }
         }
@@ -74,48 +74,17 @@ impl<'a, 'input: 'a> Operation<'a, 'input> {
     }
 }
 
-
-#[derive(Clone, Debug, PartialEq)]
-pub struct Input<'a, 'input: 'a> {
+#[derive(Clone, Debug)]
+pub struct Param<'a, 'input: 'a> {
     node: Node<'a, 'input>,
 }
 
-impl<'a, 'input: 'a> Input<'a, 'input> {
+impl<'a, 'input: 'a> Param<'a, 'input> {
     pub fn new(node: &Node<'a, 'input>) -> Self {
         Self { node: node.clone() }
     }
 
     pub fn name(&self) -> Option<&'a str> {
         self.node.attribute(attribute::NAME)
-    }
-}
-
-#[derive(Clone, Debug, PartialEq)]
-pub struct Output<'a, 'input: 'a> {
-    node: Node<'a, 'input>,
-}
-
-impl<'a, 'input: 'a> Output<'a, 'input> {
-    pub fn new(node: &Node<'a, 'input>) -> Self {
-        Self { node: node.clone() }
-    }
-
-    pub fn name(&self) -> Option<&'a str> {
-        self.node.attribute(attribute::NAME)
-    }
-}
-
-#[derive(Clone, Debug, PartialEq)]
-pub struct Fault<'a, 'input: 'a> {
-    node: Node<'a, 'input>,
-}
-
-impl<'a, 'input: 'a> Fault<'a, 'input> {
-    pub fn new(node: &Node<'a, 'input>) -> Self {
-        Self { node: node.clone() }
-    }
-
-    pub fn name(&self) -> &'a str {
-        self.node.attribute(attribute::NAME).expect("Name required for wsdl:fault")
     }
 }

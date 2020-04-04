@@ -59,18 +59,18 @@ impl<'a, 'input: 'a> Operation<'a, 'input> {
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum OperationType<'a, 'input> {
-    RequestResponse(
-        Input<'a, 'input>,
-        Output<'a, 'input>,
-        Vec<Fault<'a, 'input>>,
-    ),
-    OneWay(Input<'a, 'input>),
-    SolicitResponse(
-        Output<'a, 'input>,
-        Input<'a, 'input>,
-        Vec<Fault<'a, 'input>>,
-    ),
-    Notification(Output<'a, 'input>),
+    RequestResponse {
+        input: Param<'a, 'input >,
+        output: Param<'a, 'input >,
+        faults: Vec<Fault<'a, 'input > >,
+    },
+    OneWay{input: Param<'a, 'input>},
+    SolicitResponse {
+        output: Param<'a, 'input >,
+        input: Param<'a, 'input >,
+        faults: Vec<Fault<'a, 'input > >,
+    },
+    Notification{output: Param<'a, 'input>},
 }
 
 impl<'a, 'input: 'a> OperationType<'a, 'input> {
@@ -89,19 +89,19 @@ impl<'a, 'input: 'a> OperationType<'a, 'input> {
                             "{}",
                             format!("{:?}", output_node)
                         );
-                        OperationType::RequestResponse(
-                            Input::new(&ch),
-                            Output::new(&output_node),
-                            children
+                        OperationType::RequestResponse {
+                            input: Param::new(&ch),
+                            output: Param::new(&output_node),
+                            faults: children
                                 .filter_map(|n| match n.wsdl_type() {
                                     ElementType::Fault => Some(Fault::new(&n)),
                                     _ => None,
                                 })
                                 .collect(),
-                        )
+                        }
                     } else {
                         // OneWay
-                        OperationType::OneWay(Input::new(&ch))
+                        OperationType::OneWay{input: Param::new(&ch)}
                     };
                 }
                 ElementType::Output => {
@@ -109,18 +109,18 @@ impl<'a, 'input: 'a> OperationType<'a, 'input> {
                     return if let Some(input_node) = children.next() {
                         // SolicitResponse
                         assert_eq!(input_node.wsdl_type(), ElementType::Input);
-                        OperationType::SolicitResponse(
-                            Output::new(&ch),
-                            Input::new(&input_node),
-                            children
+                        OperationType::SolicitResponse {
+                            output: Param::new( & ch),
+                            input: Param::new(&input_node),
+                            faults: children
                                 .filter_map(|n| match n.wsdl_type() {
                                     ElementType::Fault => Some(Fault::new(&n)),
                                     _ => None,
                                 })
                                 .collect(),
-                        )
+                        }
                     } else {
-                        OperationType::Notification(Output::new(&ch))
+                        OperationType::Notification{output: Param::new(&ch)}
                     };
                 }
                 _ => continue,
@@ -131,11 +131,11 @@ impl<'a, 'input: 'a> OperationType<'a, 'input> {
 }
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct Input<'a, 'input: 'a> {
+pub struct Param<'a, 'input: 'a> {
     node: Node<'a, 'input>,
 }
 
-impl<'a, 'input: 'a> Input<'a, 'input> {
+impl<'a, 'input: 'a> Param<'a, 'input> {
     pub fn new(node: &Node<'a, 'input>) -> Self {
         Self { node: node.clone() }
     }
@@ -151,26 +151,6 @@ impl<'a, 'input: 'a> Input<'a, 'input> {
     }
 }
 
-#[derive(Clone, Debug, PartialEq)]
-pub struct Output<'a, 'input: 'a> {
-    node: Node<'a, 'input>,
-}
-
-impl<'a, 'input: 'a> Output<'a, 'input> {
-    pub fn new(node: &Node<'a, 'input>) -> Self {
-        Self { node: node.clone() }
-    }
-
-    pub fn name(&self) -> Option<&'a str> {
-        self.node.attribute(attribute::NAME)
-    }
-
-    pub fn message(&self) -> &'a str {
-        self.node
-            .attribute(attribute::MESSAGE)
-            .expect("Message required for wsdl:input")
-    }
-}
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Fault<'a, 'input: 'a> {
@@ -182,8 +162,8 @@ impl<'a, 'input: 'a> Fault<'a, 'input> {
         Self { node: node.clone() }
     }
 
-    pub fn name(&self) -> Option<&'a str> {
-        self.node.attribute(attribute::NAME)
+    pub fn name(&self) -> &'a str {
+        self.node.attribute(attribute::NAME).expect("Name required for wsdl:fault")
     }
 
     pub fn message(&self) -> &'a str {
