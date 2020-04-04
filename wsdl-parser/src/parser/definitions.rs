@@ -1,18 +1,20 @@
 use crate::parser::constants::attribute;
 use crate::parser::port_type::PortType;
 use crate::parser::{ElementType, WsdlElement};
-use roxmltree::{Namespace, Node};
+use roxmltree::{Namespace, Node, Document};
 use std::collections::HashMap;
 use crate::parser::binding::Binding;
 
-#[derive(Clone, Debug)]
+#[derive(Debug)]
 pub struct Definitions<'a, 'input: 'a> {
+    doc: Document<'input>,
     node: Node<'a, 'input>,
     imports: Vec<Import<'a, 'input>>,
     schemas: Vec<Node<'a, 'input>>,
     messages: HashMap<&'a str, Vec<Part<'a, 'input>>>,
     port_types: Vec<PortType<'a, 'input>>,
     bindings: Vec<Binding<'a, 'input>>,
+    //TODO: services
 }
 
 impl<'a, 'input: 'a> Definitions<'a, 'input> {
@@ -39,13 +41,15 @@ impl<'a, 'input: 'a> Definitions<'a, 'input> {
         &self.messages
     }
 
-    pub fn new(node: &Node<'a, 'input>) -> Self {
+    pub fn parse(text: &'input str) -> Result<Self, String> {
+        let doc = Document::parse(&text).map_err(|err| err.to_string())?;
+        let definitions = doc.root().first_element_child().ok_or("Definitions element is required")?;
         let mut imports = vec![];
         let mut schemas = vec![];
         let mut messages = HashMap::new();
         let mut port_types = vec![];
         let mut bindings = vec![];
-        for ch in node.children().filter(|n| n.is_element()) {
+        for ch in definitions.children().filter(|n| n.is_element()) {
             match ch.wsdl_type() {
                 ElementType::Import => imports.push(Import::new(&ch)),
                 ElementType::Types => schemas.push(
@@ -58,14 +62,15 @@ impl<'a, 'input: 'a> Definitions<'a, 'input> {
                 _ => {}
             }
         }
-        Self {
-            node: node.clone(),
+        Ok(Self {
+            doc,
+            node: definitions.clone(),
             imports,
             schemas,
             messages,
             port_types,
-            bindings
-        }
+            bindings,
+        })
     }
 }
 
