@@ -16,16 +16,19 @@ pub struct Types<'a> {
 
 impl<'a> Types<'a> {
     pub fn new(node: &Node<'a, '_>) -> Self {
-        Self {
-            node: node.clone()
-        }
+        Self { node: node.clone() }
     }
 
     pub fn schemas(&self) -> Vec<Node<'_, '_>> {
-        self
-            .node
+        self.node
             .children()
-            .filter_map(|n| if n.is_element() && n.tag_name().name() == "schema" {Some(n)} else {None})
+            .filter_map(|n| {
+                if n.is_element() && n.tag_name().name() == "schema" {
+                    Some(n)
+                } else {
+                    None
+                }
+            })
             .collect()
     }
 }

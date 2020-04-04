@@ -59,9 +59,9 @@ impl<'a> Operation<'a> {
         let mut faults = vec![];
         for ch in node.children().filter(|n| n.is_element()) {
             match ch.wsdl_type() {
-                ElementType::Input => {input = Some(Param::new(&ch))}
-                ElementType::Output => {output = Some(Param::new(&ch))}
-                ElementType::Fault => {faults.push(Param::new(&ch))}
+                ElementType::Input => input = Some(Param::new(&ch)),
+                ElementType::Output => output = Some(Param::new(&ch)),
+                ElementType::Fault => faults.push(Param::new(&ch)),
                 _ => {}
             }
         }

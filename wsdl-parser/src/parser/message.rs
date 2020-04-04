@@ -1,6 +1,6 @@
-use roxmltree::Node;
 use crate::parser::constants::attribute;
-use crate::parser::{WsdlElement, ElementType};
+use crate::parser::{ElementType, WsdlElement};
+use roxmltree::Node;
 
 // Element information:
 // Namespace: http://schemas.xmlsoap.org/wsdl/
@@ -26,14 +26,23 @@ use crate::parser::{WsdlElement, ElementType};
 #[derive(Clone, Debug)]
 pub struct Message<'a> {
     node: Node<'a, 'a>,
-    parts: Vec<Part<'a>>
+    parts: Vec<Part<'a>>,
 }
 
 impl<'a> Message<'a> {
     pub fn new(node: &Node<'a, '_>) -> Self {
         Self {
             node: node.clone(),
-            parts: node.children().filter_map(|n| if n.is_element() && n.wsdl_type() == ElementType::Part {Some(Part::new(&n))}else {None}).collect()
+            parts: node
+                .children()
+                .filter_map(|n| {
+                    if n.is_element() && n.wsdl_type() == ElementType::Part {
+                        Some(Part::new(&n))
+                    } else {
+                        None
+                    }
+                })
+                .collect(),
         }
     }
 
@@ -47,8 +56,6 @@ impl<'a> Message<'a> {
         self.parts.as_ref()
     }
 }
-
-
 
 // Element information
 // Namespace: http://schemas.xmlsoap.org/wsdl/

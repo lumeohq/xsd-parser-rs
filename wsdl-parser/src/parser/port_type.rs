@@ -13,7 +13,6 @@ use roxmltree::Node;
 // Used in Group wsdl:anyTopLevelOptionalElement
 // Type wsdl:tDefinitions via reference to wsdl:anyTopLevelOptionalElement (Element wsdl:definitions)
 
-
 #[derive(Clone, Debug)]
 pub struct PortType<'a> {
     node: Node<'a, 'a>,
@@ -74,15 +73,19 @@ pub enum OperationType<'a> {
     RequestResponse {
         input: Param<'a>,
         output: Param<'a>,
-        faults: Vec<Fault<'a> >,
+        faults: Vec<Fault<'a>>,
     },
-    OneWay{input: Param<'a>},
+    OneWay {
+        input: Param<'a>,
+    },
     SolicitResponse {
-        output: Param<'a >,
-        input: Param<'a >,
-        faults: Vec<Fault<'a > >,
+        output: Param<'a>,
+        input: Param<'a>,
+        faults: Vec<Fault<'a>>,
     },
-    Notification{output: Param<'a>},
+    Notification {
+        output: Param<'a>,
+    },
 }
 
 impl<'a> OperationType<'a> {
@@ -113,7 +116,9 @@ impl<'a> OperationType<'a> {
                         }
                     } else {
                         // OneWay
-                        OperationType::OneWay{input: Param::new(&ch)}
+                        OperationType::OneWay {
+                            input: Param::new(&ch),
+                        }
                     };
                 }
                 ElementType::Output => {
@@ -122,7 +127,7 @@ impl<'a> OperationType<'a> {
                         // SolicitResponse
                         assert_eq!(input_node.wsdl_type(), ElementType::Input);
                         OperationType::SolicitResponse {
-                            output: Param::new( & ch),
+                            output: Param::new(&ch),
                             input: Param::new(&input_node),
                             faults: children
                                 .filter_map(|n| match n.wsdl_type() {
@@ -132,7 +137,9 @@ impl<'a> OperationType<'a> {
                                 .collect(),
                         }
                     } else {
-                        OperationType::Notification{output: Param::new(&ch)}
+                        OperationType::Notification {
+                            output: Param::new(&ch),
+                        }
                     };
                 }
                 _ => continue,
@@ -143,7 +150,7 @@ impl<'a> OperationType<'a> {
 }
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct Param<'a,> {
+pub struct Param<'a> {
     node: Node<'a, 'a>,
 }
 
@@ -163,7 +170,6 @@ impl<'a> Param<'a> {
     }
 }
 
-
 #[derive(Clone, Debug, PartialEq)]
 pub struct Fault<'a> {
     node: Node<'a, 'a>,
@@ -175,7 +181,9 @@ impl<'a> Fault<'a> {
     }
 
     pub fn name(&self) -> &'a str {
-        self.node.attribute(attribute::NAME).expect("Name required for wsdl:fault")
+        self.node
+            .attribute(attribute::NAME)
+            .expect("Name required for wsdl:fault")
     }
 
     pub fn message(&self) -> &'a str {

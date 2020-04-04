@@ -3,17 +3,15 @@ use roxmltree::{Document, Node};
 
 pub mod binding;
 mod constants;
-pub mod port_type;
 pub mod definitions;
-pub mod types;
 pub mod message;
-
+pub mod port_type;
+pub mod types;
 
 pub fn parse(text: &str) {
     let doc = Document::parse(text).unwrap();
     let definitions = Definitions::new(&doc.root_element());
     println!("{:#?}", definitions);
-
 }
 
 pub trait WsdlElement {
@@ -131,10 +129,6 @@ mod test {
 </wsdl:definitions>
     "#;
 
-
     #[test]
-    fn test_parse() {
-
-    }
-
+    fn test_parse() {}
 }

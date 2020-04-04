@@ -1,11 +1,11 @@
-use crate::parser::constants::attribute;
-use crate::parser::port_type::PortType;
-use crate::parser::{ElementType, WsdlElement};
-use roxmltree::{Namespace, Node, Document};
-use std::collections::HashMap;
 use crate::parser::binding::Binding;
-use crate::parser::types::Types;
+use crate::parser::constants::attribute;
 use crate::parser::message::Message;
+use crate::parser::port_type::PortType;
+use crate::parser::types::Types;
+use crate::parser::{ElementType, WsdlElement};
+use roxmltree::{Document, Namespace, Node};
+use std::collections::HashMap;
 
 // Content: Sequence [1..1]
 //      wsdl:documentation [0..1]  from type wsdl:tDocumented
@@ -74,14 +74,14 @@ impl<'a> Definitions<'a> {
             node: definitions.clone(),
             imports: vec![],
             messages: HashMap::new(),
-            port_types:  HashMap::new(),
+            port_types: HashMap::new(),
             types: vec![],
-            bindings:  HashMap::new(),
+            bindings: HashMap::new(),
         };
         for ch in definitions.children().filter(|n| n.is_element()) {
             match ch.wsdl_type() {
                 ElementType::Import => res.imports.push(Import::new(&ch)),
-                ElementType::Types => res.types.push( Types::new(&ch)), // TODO: add Identity constraints: @namespace
+                ElementType::Types => res.types.push(Types::new(&ch)), // TODO: add Identity constraints: @namespace
                 ElementType::Message => res.add_message(&ch),
                 ElementType::PortType => res.add_port_type(&ch),
                 ElementType::Binding => res.add_binding(&ch),
@@ -102,7 +102,9 @@ impl<'a> Definitions<'a> {
     fn add_port_type(&mut self, node: &Node<'a, '_>) {
         let port_type = PortType::new(node);
         assert!(
-            self.port_types.insert(port_type.name(), port_type).is_none(),
+            self.port_types
+                .insert(port_type.name(), port_type)
+                .is_none(),
             "portType name must be unique"
         );
     }
@@ -114,9 +116,7 @@ impl<'a> Definitions<'a> {
             "binding name must be unique"
         );
     }
-
 }
-
 
 #[derive(Clone, Debug)]
 pub struct Import<'a> {
@@ -140,5 +140,3 @@ impl<'a> Import<'a> {
         Self { node: node.clone() }
     }
 }
-
-
