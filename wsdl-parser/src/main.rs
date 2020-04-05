@@ -48,6 +48,8 @@ fn main() {
     .unwrap();
 }
 
+
+//TODO: Add a common mechanism for working with files
 fn process_dir(input_path: &Path, output_path: &Path) -> Result<(), String> {
     fs::create_dir(output_path).map_err(|e| e.to_string())?;
     for entry in fs::read_dir(input_path).map_err(|e| e.to_string())? {
@@ -63,7 +65,7 @@ fn process_dir(input_path: &Path, output_path: &Path) -> Result<(), String> {
     Ok(())
 }
 
-fn process_single_file(input_path: &Path, _output_path: Option<&str>) -> Result<(), String> {
+fn process_single_file(input_path: &Path, output_path: Option<&str>) -> Result<(), String> {
     let text = load_file(input_path)?;
     let doc = Document::parse(text.as_str()).unwrap();
     let definitions = Definitions::new(&doc.root_element());
@@ -74,7 +76,6 @@ fn process_single_file(input_path: &Path, _output_path: Option<&str>) -> Result<
         println!("{}", code);
     }
     Ok(())
-    Ok(())
 }
 
 fn load_file(path: &Path) -> Result<String, String> {
@@ -84,7 +85,7 @@ fn load_file(path: &Path) -> Result<String, String> {
     Ok(text)
 }
 
-fn _write_to_file(path: &str, text: &str) -> Result<(), String> {
+fn write_to_file(path: &str, text: &str) -> Result<(), String> {
     let mut file = fs::File::create(path).map_err(|e| e.to_string())?;
     file.write_all(text.as_bytes()).map_err(|e| e.to_string())
 }

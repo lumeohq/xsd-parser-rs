@@ -4,21 +4,19 @@ use crate::parser::port_type::OperationType;
 use roxmltree::Namespace;
 use std::borrow::Cow;
 use inflector::cases::pascalcase::to_pascal_case;
-
 pub mod function;
 
 
-pub fn generate<'a>(definitions: &'a Definitions<'_>) -> Vec<Function<'a>> {
+pub fn generate(definitions: &Definitions) -> String {
     use OperationType::*;
     let mut res = vec![];
     for (name, port_type) in definitions.port_types() {
         for op in port_type.operations(){
             let func = Function::new(&op, definitions);
-            println!("{}", generate_function(&func, &definitions.target_namespace()));
-            res.push(func);
+            res.push(generate_function(&func, &definitions.target_namespace()));
         }
     }
-    res
+    res.join("")
 }
 
 const REQUEST_FUNC_BODY: &'static str = "transport::request(transport, request).await";
