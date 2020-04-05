@@ -1,17 +1,18 @@
 extern crate clap;
 use clap::{App, Arg};
 
-#[macro_use]
-extern crate lazy_static;
-
 mod parser;
 
 mod document_storage;
+mod generator;
 
 use crate::parser::parse;
 use std::fs;
 use std::io::{prelude::*, Read};
 use std::path::{Path, PathBuf};
+use roxmltree::Document;
+use crate::parser::definitions::Definitions;
+use crate::generator::generate;
 
 fn main() {
     let matches = App::new("wsdl-parser")
@@ -47,10 +48,6 @@ fn main() {
     .unwrap();
 }
 
-fn foo<T>(x: &T) -> T {
-    T::new()
-}
-
 fn process_dir(input_path: &Path, output_path: &Path) -> Result<(), String> {
     fs::create_dir(output_path).map_err(|e| e.to_string())?;
     for entry in fs::read_dir(input_path).map_err(|e| e.to_string())? {
@@ -68,7 +65,9 @@ fn process_dir(input_path: &Path, output_path: &Path) -> Result<(), String> {
 
 fn process_single_file(input_path: &Path, _output_path: Option<&str>) -> Result<(), String> {
     let text = load_file(input_path)?;
-    parse(text.as_str());
+    let doc = Document::parse(text.as_str()).unwrap();
+    let definitions = Definitions::new(&doc.root_element());
+    generate(&definitions);
     //println!("{}", text);
     Ok(())
 }

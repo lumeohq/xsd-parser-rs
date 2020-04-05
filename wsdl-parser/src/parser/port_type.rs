@@ -41,6 +41,10 @@ impl<'a> PortType<'a> {
             .attribute(attribute::NAME)
             .expect("Name required for wsdl:portType")
     }
+
+    pub fn operations(&self) -> &[Operation] {
+        self.operations.as_ref()
+    }
 }
 
 // Element information
@@ -93,6 +97,10 @@ impl<'a> Operation<'a> {
 
     pub fn parameter_order(&self) -> Option<&'a str> {
         self.node.attribute(attribute::PARAMETER_ORDER)
+    }
+
+    pub fn operation_type(&self) -> &OperationType {
+        &self.ty
     }
 }
 
@@ -194,7 +202,7 @@ impl<'a> Param<'a> {
     pub fn message(&self) -> &'a str {
         self.node
             .attribute(attribute::MESSAGE)
-            .expect("Message required for wsdl:input")
+            .expect("Message required for wsdl:input and wsdl:output")
     }
 }
 

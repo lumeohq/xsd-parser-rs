@@ -1,7 +1,7 @@
 use crate::parser::binding::Binding;
 use crate::parser::constants::attribute;
 use crate::parser::message::Message;
-use crate::parser::port_type::PortType;
+use crate::parser::port_type::{PortType, Param};
 use crate::parser::types::Types;
 use crate::parser::{ElementType, WsdlElement};
 use roxmltree::{Document, Namespace, Node};
@@ -41,6 +41,13 @@ pub struct Definitions<'a> {
     //TODO: services
 }
 
+pub fn split_name(name: &str) -> (Option<&str>, &str) {
+    match name.find(':') {
+        Some(index) => (Some(&name[0..index]), &name[index + 1..]),
+        None => (None, name),
+    }
+}
+
 impl<'a> Definitions<'a> {
     pub fn target_namespace(&self) -> Option<&'a Namespace<'_>> {
         match self.node().attribute(attribute::TARGET_NAMESPACE) {
@@ -71,6 +78,11 @@ impl<'a> Definitions<'a> {
 
     pub fn messages(&self) -> &HashMap<&'a str, Message<'a>> {
         &self.messages
+    }
+
+    pub fn get_message_by_param(&self, param: &Param<'_>) -> Option<&Message> {
+        let (prefix, name) = split_name(param.message());
+        self.messages.get(name)
     }
 
     pub fn new(definitions: &Node<'a, '_>) -> Self {
