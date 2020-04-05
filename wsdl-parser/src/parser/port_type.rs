@@ -1,7 +1,6 @@
 use crate::parser::constants::attribute;
 use crate::parser::{ElementType, WsdlElement};
 use roxmltree::Node;
-use roxmltree::NodeType::Element;
 
 // Content: Sequence [1..1]
 // wsdl:documentation   [0..1] from type wsdl:tDocumented
@@ -23,7 +22,7 @@ pub struct PortType<'a> {
 impl<'a> PortType<'a> {
     pub fn new(node: &Node<'a, '_>) -> Self {
         Self {
-            node: node.clone(),
+            node: *node,
             operations: node
                 .children()
                 .filter_map(|node| {
@@ -85,7 +84,7 @@ pub struct Operation<'a> {
 impl<'a> Operation<'a> {
     pub fn new(node: &Node<'a, '_>) -> Self {
         Self {
-            node: node.clone(),
+            node: *node,
             ty: OperationType::new(node),
         }
     }
@@ -203,7 +202,7 @@ pub struct Param<'a> {
 
 impl<'a> Param<'a> {
     pub fn new(node: &Node<'a, '_>) -> Self {
-        Self { node: node.clone() }
+        Self { node: *node }
     }
 
     pub fn name(&self) -> Option<&'a str> {
@@ -224,7 +223,7 @@ pub struct Fault<'a> {
 
 impl<'a> Fault<'a> {
     pub fn new(node: &Node<'a, '_>) -> Self {
-        Self { node: node.clone() }
+        Self { node: *node }
     }
 
     pub fn name(&self) -> &'a str {

@@ -1,6 +1,5 @@
-use crate::generator::function::{Function, Param};
+use crate::generator::function::Function;
 use crate::parser::definitions::Definitions;
-use crate::parser::port_type::OperationType;
 use inflector::cases::pascalcase::to_pascal_case;
 use inflector::cases::snakecase::to_snake_case;
 use roxmltree::Namespace;
@@ -9,20 +8,20 @@ use std::borrow::Cow;
 pub mod function;
 
 pub fn generate(definitions: &Definitions) -> String {
-    use OperationType::*;
     let mut res = vec![];
-    for (name, port_type) in definitions.port_types() {
+
+    for port_type in definitions.port_types().values() {
         for op in port_type.operations() {
             let func = Function::new(&op, definitions);
-            res.push(generate_function(&func, &definitions.target_namespace()));
+            res.push(generate_function(&func, definitions.target_namespace()));
         }
     }
     res.join("")
 }
 
-const REQUEST_FUNC_BODY: &'static str = "transport::request(transport, request).await";
+const REQUEST_FUNC_BODY: &str = "transport::request(transport, request).await";
 
-fn generate_function(func: &Function<'_>, target_ns: &Option<&Namespace>) -> String {
+fn generate_function(func: &Function<'_>, target_ns: Option<&Namespace>) -> String {
     let ftype = |t| default_format_type(t, target_ns);
     format!(
         r#"
@@ -78,7 +77,7 @@ fn default_format_comment(doc: Option<&str>, max_len: usize, indent: usize) -> S
         .fold(String::new(), |x, y| (x + &y))
 }
 
-fn default_format_type(type_name: &str, target_ns: &Option<&Namespace>) -> Cow<'static, str> {
+fn default_format_type(type_name: &str, target_ns: Option<&Namespace>) -> Cow<'static, str> {
     let (prefix, name) = split_name(type_name);
     let option_tns = target_ns.as_ref().and_then(|ns| ns.name());
 

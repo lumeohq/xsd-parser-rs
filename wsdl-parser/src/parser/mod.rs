@@ -1,18 +1,14 @@
-use crate::parser::definitions::Definitions;
-use roxmltree::{Document, Node};
-
+#[allow(dead_code)]
 pub mod binding;
 mod constants;
+#[allow(dead_code)]
 pub mod definitions;
+#[allow(dead_code)]
 pub mod message;
+#[allow(dead_code)]
 pub mod port_type;
+#[allow(dead_code)]
 pub mod types;
-
-pub fn parse(text: &str) {
-    let doc = Document::parse(text).unwrap();
-    let definitions = Definitions::new(&doc.root_element());
-    println!("{:#?}", definitions);
-}
 
 pub trait WsdlElement {
     fn wsdl_type(&self) -> ElementType;

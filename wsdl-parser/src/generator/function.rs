@@ -33,7 +33,7 @@ impl<'a> Param<'a> {
             name: part.name(),
             typename: part
                 .element()
-                .or(part.type_())
+                .or_else(|| part.type_())
                 .expect("Element or type must be presented in wsdl:part"),
         }
     }
@@ -41,7 +41,7 @@ impl<'a> Param<'a> {
 
 impl<'a> Function<'a> {
     pub fn new(operation: &'a Operation<'_>, definitions: &'a Definitions<'_>) -> Self {
-        let mut input_message = None;
+        let input_message;
         let mut output_message = None;
         match operation.operation_type() {
             RequestResponse { input, output, .. } => {

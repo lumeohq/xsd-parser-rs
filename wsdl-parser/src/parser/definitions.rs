@@ -4,7 +4,7 @@ use crate::parser::message::Message;
 use crate::parser::port_type::{Param, PortType};
 use crate::parser::types::Types;
 use crate::parser::{ElementType, WsdlElement};
-use roxmltree::{Document, Namespace, Node};
+use roxmltree::{Namespace, Node};
 use std::collections::HashMap;
 
 // Content: Sequence [1..1]
@@ -80,7 +80,7 @@ impl<'a> Definitions<'a> {
 
     pub fn new(definitions: &Node<'a, '_>) -> Self {
         let mut res = Self {
-            node: definitions.clone(),
+            node: *definitions,
             imports: HashMap::new(),
             messages: HashMap::new(),
             port_types: HashMap::new(),
@@ -171,6 +171,6 @@ impl<'a> Import<'a> {
     }
 
     pub fn new(node: &Node<'a, '_>) -> Self {
-        Self { node: node.clone() }
+        Self { node: *node }
     }
 }

@@ -32,7 +32,7 @@ pub struct Message<'a> {
 impl<'a> Message<'a> {
     pub fn new(node: &Node<'a, '_>) -> Self {
         Self {
-            node: node.clone(),
+            node: *node,
             parts: node
                 .children()
                 .filter_map(|n| {
@@ -95,6 +95,6 @@ impl<'a> Part<'a> {
     }
 
     pub fn new(node: &Node<'a, '_>) -> Self {
-        Self { node: node.clone() }
+        Self { node: *node }
     }
 }

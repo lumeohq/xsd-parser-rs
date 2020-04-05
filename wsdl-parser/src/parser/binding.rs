@@ -23,7 +23,7 @@ impl<'a> Binding<'a> {
 
     pub fn new(node: &Node<'a, '_>) -> Self {
         Self {
-            node: node.clone(),
+            node: *node,
             operations: node
                 .children()
                 .filter_map(|node| {
@@ -66,7 +66,7 @@ impl<'a> Operation<'a> {
             }
         }
         Self {
-            node: node.clone(),
+            node: *node,
             input,
             output,
             faults,
@@ -81,7 +81,7 @@ pub struct Param<'a> {
 
 impl<'a> Param<'a> {
     pub fn new(node: &Node<'a, '_>) -> Self {
-        Self { node: node.clone() }
+        Self { node: *node }
     }
 
     pub fn name(&self) -> Option<&'a str> {

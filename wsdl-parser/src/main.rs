@@ -8,7 +8,6 @@ mod generator;
 
 use crate::generator::generate;
 use crate::parser::definitions::Definitions;
-use crate::parser::parse;
 use roxmltree::Document;
 use std::fs;
 use std::io::{prelude::*, Read};
