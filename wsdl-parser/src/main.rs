@@ -1,9 +1,10 @@
 extern crate clap;
+
 use clap::{App, Arg};
 
 mod parser;
 
-mod document_storage;
+
 mod generator;
 
 use crate::generator::generate;
