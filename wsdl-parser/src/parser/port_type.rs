@@ -1,6 +1,7 @@
 use crate::parser::constants::attribute;
 use crate::parser::{ElementType, WsdlElement};
 use roxmltree::Node;
+use roxmltree::NodeType::Element;
 
 // Content: Sequence [1..1]
 // wsdl:documentation   [0..1] from type wsdl:tDocumented
@@ -101,6 +102,10 @@ impl<'a> Operation<'a> {
 
     pub fn operation_type(&self) -> &OperationType {
         &self.ty
+    }
+
+    pub fn documentation(&self) -> Option<&'a str> {
+        self.node.children().find_map(|n| if n.wsdl_type() == ElementType::Documentation {n.text()}else{None})
     }
 }
 

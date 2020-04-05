@@ -67,8 +67,13 @@ fn process_single_file(input_path: &Path, _output_path: Option<&str>) -> Result<
     let text = load_file(input_path)?;
     let doc = Document::parse(text.as_str()).unwrap();
     let definitions = Definitions::new(&doc.root_element());
-    generate(&definitions);
-    //println!("{}", text);
+    let code = generate(&definitions);
+    if let Some(output_filename) = output_path {
+        write_to_file(output_filename, &code).map_err(|e| format!("Error writing file: {}", e))?;
+    } else {
+        println!("{}", code);
+    }
+    Ok(())
     Ok(())
 }
 

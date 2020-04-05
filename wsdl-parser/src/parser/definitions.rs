@@ -41,13 +41,6 @@ pub struct Definitions<'a> {
     //TODO: services
 }
 
-pub fn split_name(name: &str) -> (Option<&str>, &str) {
-    match name.find(':') {
-        Some(index) => (Some(&name[0..index]), &name[index + 1..]),
-        None => (None, name),
-    }
-}
-
 impl<'a> Definitions<'a> {
     pub fn target_namespace(&self) -> Option<&'a Namespace<'_>> {
         match self.node().attribute(attribute::TARGET_NAMESPACE) {
@@ -81,8 +74,7 @@ impl<'a> Definitions<'a> {
     }
 
     pub fn get_message_by_param(&self, param: &Param<'_>) -> Option<&Message> {
-        let (prefix, name) = split_name(param.message());
-        self.messages.get(name)
+        self.messages.get(param.message().split(':').last().unwrap())
     }
 
     pub fn new(definitions: &Node<'a, '_>) -> Self {
