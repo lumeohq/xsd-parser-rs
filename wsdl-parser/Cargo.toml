@@ -12,14 +12,5 @@ Inflector = "*"
 clap = "2.33.0"
 
 [dev-dependencies]
-syn = { version = "1.0", features = ["full"] }
-log = "0.4.8"
 xml-rs = "0.8.0"
-yaserde = { git = "https://github.com/media-io/yaserde", rev = "ad32dd" }
-yaserde_derive = { git = "https://github.com/media-io/yaserde", rev = "ad32dd" }
-text-diff = "0.4.0"
-itertools = "0.8.1"
-macro-utils = { path = "../macro-utils" }
-xsd-types = { path = "../xsd-types" }
-num-bigint = "0.2.6"
-bigdecimal = "0.1.0"
+

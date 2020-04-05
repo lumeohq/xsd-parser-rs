@@ -386,19 +386,9 @@ name = "wsdl-parser"
 version = "0.1.0"
 dependencies = [
  "Inflector",
- "bigdecimal",
  "clap",
- "itertools",
- "log",
- "macro-utils",
- "num-bigint",
  "roxmltree 0.10.1",
- "syn",
- "text-diff",
  "xml-rs",
- "xsd-types",
- "yaserde",
- "yaserde_derive",
 ]
 
 [[package]]
