@@ -4,7 +4,6 @@ use clap::{App, Arg};
 
 mod parser;
 
-
 mod generator;
 
 use crate::generator::generate;

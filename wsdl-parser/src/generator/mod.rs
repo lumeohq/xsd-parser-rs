@@ -2,8 +2,10 @@ use crate::generator::function::{Function, Param};
 use crate::parser::definitions::Definitions;
 use crate::parser::port_type::OperationType;
 use inflector::cases::pascalcase::to_pascal_case;
+use inflector::cases::snakecase::to_snake_case;
 use roxmltree::Namespace;
 use std::borrow::Cow;
+
 pub mod function;
 
 pub fn generate(definitions: &Definitions) -> String {
@@ -31,7 +33,7 @@ fn generate_function(func: &Function<'_>, target_ns: &Option<&Namespace>) -> Str
 }}
 "#,
         comment = default_format_comment(func.documentation, 80, 0),
-        name = func.name,
+        name = default_format_name(func.name),
         generics = func
             .generic_params
             .iter()
@@ -97,6 +99,10 @@ fn default_format_type(type_name: &str, target_ns: &Option<&Namespace>) -> Cow<'
     };
 
     sanitize(res).into()
+}
+
+pub fn default_format_name(name: &str) -> String {
+    sanitize(to_snake_case(name.split(':').last().unwrap()))
 }
 
 fn split_name(name: &str) -> (Option<&str>, &str) {
