@@ -1,7 +1,7 @@
 use crate::parser::binding::Binding;
 use crate::parser::constants::attribute;
 use crate::parser::message::Message;
-use crate::parser::port_type::{PortType, Param};
+use crate::parser::port_type::{Param, PortType};
 use crate::parser::types::Types;
 use crate::parser::{ElementType, WsdlElement};
 use roxmltree::{Document, Namespace, Node};
@@ -74,7 +74,8 @@ impl<'a> Definitions<'a> {
     }
 
     pub fn get_message_by_param(&self, param: &Param<'_>) -> Option<&Message> {
-        self.messages.get(param.message().split(':').last().unwrap())
+        self.messages
+            .get(param.message().split(':').last().unwrap())
     }
 
     pub fn new(definitions: &Node<'a, '_>) -> Self {

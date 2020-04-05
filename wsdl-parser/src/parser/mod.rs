@@ -8,7 +8,6 @@ pub mod message;
 pub mod port_type;
 pub mod types;
 
-
 pub fn parse(text: &str) {
     let doc = Document::parse(text).unwrap();
     let definitions = Definitions::new(&doc.root_element());

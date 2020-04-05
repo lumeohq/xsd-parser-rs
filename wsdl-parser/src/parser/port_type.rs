@@ -105,7 +105,13 @@ impl<'a> Operation<'a> {
     }
 
     pub fn documentation(&self) -> Option<&'a str> {
-        self.node.children().find_map(|n| if n.wsdl_type() == ElementType::Documentation {n.text()}else{None})
+        self.node.children().find_map(|n| {
+            if n.wsdl_type() == ElementType::Documentation {
+                n.text()
+            } else {
+                None
+            }
+        })
     }
 }
 

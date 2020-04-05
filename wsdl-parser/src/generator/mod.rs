@@ -1,17 +1,16 @@
-use crate::parser::definitions::{Definitions};
 use crate::generator::function::{Function, Param};
+use crate::parser::definitions::Definitions;
 use crate::parser::port_type::OperationType;
+use inflector::cases::pascalcase::to_pascal_case;
 use roxmltree::Namespace;
 use std::borrow::Cow;
-use inflector::cases::pascalcase::to_pascal_case;
 pub mod function;
-
 
 pub fn generate(definitions: &Definitions) -> String {
     use OperationType::*;
     let mut res = vec![];
     for (name, port_type) in definitions.port_types() {
-        for op in port_type.operations(){
+        for op in port_type.operations() {
             let func = Function::new(&op, definitions);
             res.push(generate_function(&func, &definitions.target_namespace()));
         }
@@ -21,10 +20,10 @@ pub fn generate(definitions: &Definitions) -> String {
 
 const REQUEST_FUNC_BODY: &'static str = "transport::request(transport, request).await";
 
-
 fn generate_function(func: &Function<'_>, target_ns: &Option<&Namespace>) -> String {
     let ftype = |t| default_format_type(t, target_ns);
-    format!(r#"
+    format!(
+        r#"
 {comment}pub async fn {name}<{generics}>(
     {arguments}
 ) -> Result<{return_type}, transport::Error> {{
@@ -33,13 +32,22 @@ fn generate_function(func: &Function<'_>, target_ns: &Option<&Namespace>) -> Str
 "#,
         comment = default_format_comment(func.documentation, 80, 0),
         name = func.name,
-        generics = func.generic_params.iter().map(|p| format!("{}: {}", p.name, ftype(p.typename))).collect::<Vec<String>>().join(", "),
-        arguments = func.arguments.iter().map(|p| format!("{}: &{}", p.name, ftype(p.typename))).collect::<Vec<String>>().join(",\n    "),
+        generics = func
+            .generic_params
+            .iter()
+            .map(|p| format!("{}: {}", p.name, ftype(p.typename)))
+            .collect::<Vec<String>>()
+            .join(", "),
+        arguments = func
+            .arguments
+            .iter()
+            .map(|p| format!("{}: &{}", p.name, ftype(p.typename)))
+            .collect::<Vec<String>>()
+            .join(",\n    "),
         return_type = ftype(func.return_type),
         body = REQUEST_FUNC_BODY
     )
 }
-
 
 fn split_comment_line(s: &str, max_len: usize, indent: usize) -> String {
     let indent_str = " ".repeat(indent);
@@ -172,5 +180,3 @@ const RS_KEYWORDS: &[&str] = &[
     "while",
     "yield",
 ];
-
-

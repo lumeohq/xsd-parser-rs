@@ -6,13 +6,13 @@ mod parser;
 mod document_storage;
 mod generator;
 
+use crate::generator::generate;
+use crate::parser::definitions::Definitions;
 use crate::parser::parse;
+use roxmltree::Document;
 use std::fs;
 use std::io::{prelude::*, Read};
 use std::path::{Path, PathBuf};
-use roxmltree::Document;
-use crate::parser::definitions::Definitions;
-use crate::generator::generate;
 
 fn main() {
     let matches = App::new("wsdl-parser")
@@ -47,7 +47,6 @@ fn main() {
     .map_err(|e| println!("Error: {}", e))
     .unwrap();
 }
-
 
 //TODO: Add a common mechanism for working with files
 fn process_dir(input_path: &Path, output_path: &Path) -> Result<(), String> {
