@@ -10,7 +10,9 @@ edition = "2018"
 roxmltree = "0.10.1"
 Inflector = "*"
 clap = "2.33.0"
+xsd-parser = { path = "../xsd-parser" }
 
 [dev-dependencies]
 xml-rs = "0.8.0"
+
 

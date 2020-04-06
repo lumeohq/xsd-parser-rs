@@ -247,20 +247,11 @@ checksum = "7fe5bd57d1d7414c6b5ed48563a2c855d995ff777729dcd91c369ec7fea395ae"
 
 [[package]]
 name = "roxmltree"
-version = "0.7.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0852407257c1b696a0c66b9db3ffe7769c2744a2fa725c8050e6f3e5a823c02b"
-dependencies = [
- "xmlparser 0.10.0",
-]
-
-[[package]]
-name = "roxmltree"
 version = "0.10.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4129743af505f674602b97d02c8ebe526752de8811e21ecb2fb166fcf4afe157"
 dependencies = [
- "xmlparser 0.13.1",
+ "xmlparser",
 ]
 
 [[package]]
@@ -387,8 +378,9 @@ version = "0.1.0"
 dependencies = [
  "Inflector",
  "clap",
- "roxmltree 0.10.1",
+ "roxmltree",
  "xml-rs",
+ "xsd-parser",
 ]
 
 [[package]]
@@ -396,12 +388,6 @@ name = "xml-rs"
 version = "0.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2bb76e5c421bbbeb8924c60c030331b345555024d56261dae8f3e786ed817c23"
-
-[[package]]
-name = "xmlparser"
-version = "0.10.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8110496c5bcc0d966b0b2da38d5a791aa139eeb0b80e7840a7463c2b806921eb"
 
 [[package]]
 name = "xmlparser"
@@ -420,7 +406,7 @@ dependencies = [
  "log",
  "macro-utils",
  "num-bigint",
- "roxmltree 0.7.3",
+ "roxmltree",
  "syn",
  "text-diff",
  "xml-rs",

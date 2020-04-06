@@ -2,16 +2,17 @@ extern crate clap;
 
 use clap::{App, Arg};
 
-mod parser;
-
 mod generator;
+mod parser;
 
 use crate::generator::generate;
 use crate::parser::definitions::Definitions;
-use roxmltree::Document;
+use roxmltree::{Document, Node};
 use std::fs;
 use std::io::{prelude::*, Read};
 use std::path::{Path, PathBuf};
+use xsd_parser::generator::builder::GeneratorBuilder;
+use xsd_parser::parser::schema::parse_schema;
 
 fn main() {
     let matches = App::new("wsdl-parser")
@@ -67,7 +68,15 @@ fn process_single_file(input_path: &Path, output_path: Option<&str>) -> Result<(
     let text = load_file(input_path)?;
     let doc = Document::parse(text.as_str()).unwrap();
     let definitions = Definitions::new(&doc.root_element());
-    let code = generate(&definitions);
+    let gen = GeneratorBuilder::default().build();
+    let schemas = definitions
+        .types()
+        .iter()
+        .flat_map(|t| t.schemas()).collect::<Vec<Node<'_, '_>>>();
+    let mut code = schemas.iter().map(|f|gen.generate_rs_file(&parse_schema(f))).collect::<Vec<String>>();
+
+    code.push(generate(&definitions));
+    let code = code.join("");
     if let Some(output_filename) = output_path {
         write_to_file(output_filename, &code).map_err(|e| format!("Error writing file: {}", e))?;
     } else {

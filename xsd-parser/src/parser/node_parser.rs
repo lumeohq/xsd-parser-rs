@@ -18,6 +18,7 @@ use crate::parser::types::RsEntity;
 use crate::parser::union::parse_union;
 use crate::parser::xsd_elements::{ElementType, XsdNode};
 
+
 pub fn parse_node(node: &Node, parent: &Node) -> RsEntity {
     use ElementType::*;
 
@@ -39,7 +40,7 @@ pub fn parse_node(node: &Node, parent: &Node) -> RsEntity {
         Union => parse_union(node),
 
         _ => {
-            unreachable!("{:?}", node);
+            unreachable!("Unsupported node:\n {:?}\nparent = {:?}\n", node, node.parent())
         }
     }
 }
