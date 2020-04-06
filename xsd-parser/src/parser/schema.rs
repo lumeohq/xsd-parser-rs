@@ -3,7 +3,7 @@ use roxmltree::Node;
 use crate::parser::node_parser::parse_node;
 use crate::parser::types::RsFile;
 use crate::parser::utils::target_namespace;
-use crate::parser::xsd_elements::{XsdNode, ElementType};
+use crate::parser::xsd_elements::{ElementType, XsdNode};
 
 pub fn parse_schema<'input>(schema: &Node<'_, 'input>) -> RsFile<'input> {
     RsFile {

@@ -2,15 +2,12 @@ extern crate clap;
 
 use clap::{App, Arg};
 
-mod generator;
-mod parser;
-
-use crate::generator::generate;
-use crate::parser::definitions::Definitions;
 use roxmltree::{Document, Node};
 use std::fs;
 use std::io::{prelude::*, Read};
 use std::path::{Path, PathBuf};
+use wsdl_parser::generator::generate;
+use wsdl_parser::parser::definitions::Definitions;
 use xsd_parser::generator::builder::GeneratorBuilder;
 use xsd_parser::parser::schema::parse_schema;
 
@@ -72,8 +69,12 @@ fn process_single_file(input_path: &Path, output_path: Option<&str>) -> Result<(
     let schemas = definitions
         .types()
         .iter()
-        .flat_map(|t| t.schemas()).collect::<Vec<Node<'_, '_>>>();
-    let mut code = schemas.iter().map(|f|gen.generate_rs_file(&parse_schema(f))).collect::<Vec<String>>();
+        .flat_map(|t| t.schemas())
+        .collect::<Vec<Node<'_, '_>>>();
+    let mut code = schemas
+        .iter()
+        .map(|f| gen.generate_rs_file(&parse_schema(f)))
+        .collect::<Vec<String>>();
 
     code.push(generate(&definitions));
     let code = code.join("");
