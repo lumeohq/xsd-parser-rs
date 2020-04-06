@@ -17,7 +17,7 @@ fn deserialization_works() {
     assert_eq!(
         de,
         expected::FooType {
-            messages: expected::MessagesType {
+            messages: expected::foo_type::MessagesType {
                 aa: 3,
                 bb: "qwe".to_string(),
                 a: "rty".to_string()

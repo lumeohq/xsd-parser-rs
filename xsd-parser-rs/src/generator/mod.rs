@@ -52,14 +52,15 @@ impl<'input> Generator<'input> {
     }
 
     pub fn generate(&self, entity: &RsEntity) -> String {
+        use RsEntity::*;
         match entity {
-            RsEntity::TupleStruct(ts) => self.tuple_struct_gen.as_ref().unwrap().generate(ts, self),
-            RsEntity::Struct(st) => self.struct_gen.as_ref().unwrap().generate(st, self),
-            RsEntity::StructField(sf) => self.struct_field_gen().generate(sf, self),
-            RsEntity::Enum(en) => self.enum_gen.as_ref().unwrap().generate(en, self),
-            RsEntity::EnumCase(ec) => self.enum_case_gen().generate(ec, self),
-            RsEntity::Alias(al) => self.alias_gen.as_ref().unwrap().generate(al, self),
-            RsEntity::Import(im) => self.import_gen.as_ref().unwrap().generate(im, self),
+            TupleStruct(ts) => self.tuple_struct_gen.as_ref().unwrap().generate(ts, self),
+            Struct(st) => self.struct_gen.as_ref().unwrap().generate(st, self),
+            StructField(sf) => self.struct_field_gen().generate(sf, self),
+            Enum(en) => self.enum_gen.as_ref().unwrap().generate(en, self),
+            EnumCase(ec) => self.enum_case_gen().generate(ec, self),
+            Alias(al) => self.alias_gen.as_ref().unwrap().generate(al, self),
+            Import(im) => self.import_gen.as_ref().unwrap().generate(im, self),
         }
     }
 

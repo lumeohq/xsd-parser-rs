@@ -3,6 +3,7 @@ use super::utils;
 #[test]
 fn deserialization_works() {
     mod expected {
+        use crate::generator::validator::Validate;
         use std::io::{Read, Write};
         use yaserde::{YaDeserialize, YaSerialize};
 
@@ -16,8 +17,10 @@ fn deserialization_works() {
     assert_eq!(
         de,
         expected::FooType {
-            a: Some("aaa".to_string()),
-            b: Some("bbb".to_string())
+            bar: expected::foo_type::BarType {
+                b: Some("string".to_string()),
+                a: Some("string".to_string())
+            }
         }
     );
 }
@@ -28,7 +31,6 @@ fn generator_does_not_panic() {
 }
 
 #[test]
-#[ignore]
 fn generator_output_has_correct_ast() {
     utils::ast_test(include_str!("input.xsd"), include_str!("expected.rs"));
 }
