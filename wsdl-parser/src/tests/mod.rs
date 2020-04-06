@@ -1,8 +1,8 @@
-use roxmltree::{Document, Node};
+use crate::generator::generate;
 use crate::parser::definitions::Definitions;
+use roxmltree::{Document, Node};
 use xsd_parser::generator::builder::GeneratorBuilder;
 use xsd_parser::parser::schema::parse_schema;
-use crate::generator::generate;
 
 mod port_type_to_function;
 
