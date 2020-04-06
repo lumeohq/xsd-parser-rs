@@ -50,7 +50,7 @@ impl Struct {
                 types
                     .get(&key)
                     .map(|s| s.fields.borrow().clone())
-                    .unwrap_or_else(|| vec![])
+                    .unwrap_or_else(Vec::new)
             })
             .collect::<Vec<StructField>>();
 

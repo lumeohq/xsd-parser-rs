@@ -1,5 +1,4 @@
 use proc_macro2::TokenStream;
-use quote;
 use syn::spanned::Spanned;
 
 enum Type<'a> {
