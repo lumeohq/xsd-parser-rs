@@ -3,6 +3,7 @@ use super::utils;
 #[test]
 fn deserialization_works() {
     mod expected {
+        use crate::generator::validator::Validate;
         use std::io::{Read, Write};
         use yaserde::{YaDeserialize, YaSerialize};
 
@@ -16,7 +17,7 @@ fn deserialization_works() {
     assert_eq!(
         de,
         expected::FooType {
-            extension: expected::foo_type::Extension {}
+            extension: expected::foo_type::ExtensionType {}
         }
     );
 }
