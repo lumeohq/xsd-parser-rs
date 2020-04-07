@@ -1,0 +1,3 @@
+<exam:Foo xmlns:exam="http://example.com">
+  <exam:Extension/>
+</exam:Foo>

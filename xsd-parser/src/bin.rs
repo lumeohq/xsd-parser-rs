@@ -10,6 +10,7 @@ use std::fs;
 use std::io::{prelude::*, Read};
 use std::path::{Path, PathBuf};
 
+use std::fs::OpenOptions;
 use xsd_parser::generator::builder::GeneratorBuilder;
 use xsd_parser::parser::parse;
 
@@ -35,7 +36,6 @@ fn main() {
     let input_path = matches.value_of("input").unwrap_or("xsd");
     let input_path = Path::new(input_path);
     let output_path = matches.value_of("output");
-
     let md = fs::metadata(input_path).unwrap();
     if md.is_dir() {
         let output_path = Path::new(output_path.unwrap_or("rs"));
@@ -48,7 +48,9 @@ fn main() {
 }
 
 fn process_dir(input_path: &Path, output_path: &Path) -> Result<(), String> {
-    fs::create_dir(output_path).map_err(|e| e.to_string())?;
+    if !output_path.exists() {
+        fs::create_dir(output_path).map_err(|e| e.to_string())?;
+    }
     for entry in fs::read_dir(input_path).map_err(|e| e.to_string())? {
         let path = entry.map_err(|e| e.to_string())?.path();
         if path.is_dir() {
@@ -83,6 +85,11 @@ fn load_file(path: &Path) -> Result<String, String> {
 }
 
 fn write_to_file(path: &str, text: &str) -> Result<(), String> {
-    let mut file = fs::File::create(path).map_err(|e| e.to_string())?;
+    let mut file = OpenOptions::new()
+        .write(true)
+        .truncate(true)
+        .create(true)
+        .open(path)
+        .map_err(|e| e.to_string())?;
     file.write_all(text.as_bytes()).map_err(|e| e.to_string())
 }
