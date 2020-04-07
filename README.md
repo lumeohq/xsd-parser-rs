@@ -99,9 +99,8 @@ pub struct MyType {
 ```
 
 In this unlucky situation to support extensions user can either:
-- modify the generated code and add fields wrapped into `Option` manually
-- patch source XSD to add needed elements there (with `minOccurs="0"`)
-- [unimplemented] pass a dictionary to xsd-parser-rs to insert extension fields into certain types
+- modify the generated code and add extension fields manually
+- modify source XSD and add extension elements there
 
 ## License
 
