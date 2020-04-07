@@ -78,6 +78,35 @@ in rust that supports proper month/years holding and literal representation. You
 following ISO 8601 strictly. You can find `gDay`, `gMonth`, `gMonthDay`, `gYear` and `gYearMonth`
 in the corresponding files within `xsd-types/src/types/`.
 
+## `any` elements handling
+
+There are cases when schema allows extensions for the certain type.
+
+```xml
+<xs:complexType name="MyType">
+    <xs:sequence>
+        <xs:element name="Parameters" type="xs:string" />
+        <xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:anyAttribute namespace="##any" processContents="lax"/>
+</xs:complexType>
+```
+
+In such cases we don't know in advance what fields must be present in Rust struct so we don't add them to output:
+
+```rust
+#[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]
+#[yaserde(prefix = "tns", namespace = "tns: http://example.com")]
+pub struct MyType {
+    #[yaserde(prefix = "tns", rename = "Parameters")]
+    pub parameters: String,
+}
+```
+
+In this unlucky situation to support extensions user can either:
+- modify the generated code and add extension fields manually
+- modify source XSD and add extension elements there
+
 ## License
 
 <sup>
