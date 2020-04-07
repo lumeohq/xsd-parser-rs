@@ -1,5 +1,4 @@
 use proc_macro2::TokenStream;
-use quote;
 use syn::spanned::Spanned;
 
 enum Type<'a> {
@@ -86,25 +85,6 @@ impl Type<'_> {
                     .expect("Vec subtype not found"),
             ),
             _ => Type::Struct(path),
-        }
-    }
-}
-
-pub fn serde(ast: &syn::DeriveInput) -> TokenStream {
-    let struct_name = &ast.ident;
-    let struct_name_literal = &ast.ident.to_string();
-
-    quote! {
-        impl YaSerialize for #struct_name {
-            fn serialize<W: Write>(&self, writer: &mut yaserde::ser::Serializer<W>) -> Result<(), String> {
-                utils::yaserde::serialize(self, #struct_name_literal, writer, |s| s.to_string())
-            }
-        }
-
-        impl YaDeserialize for #struct_name {
-            fn deserialize<R: Read>(reader: &mut yaserde::de::Deserializer<R>) -> Result<Self, String> {
-                utils::yaserde::deserialize(reader, |s| #struct_name::from_str(s))
-            }
         }
     }
 }

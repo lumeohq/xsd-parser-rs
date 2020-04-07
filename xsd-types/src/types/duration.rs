@@ -1,10 +1,11 @@
 use crate::utils;
+use macro_utils::UtilsDefaultSerde;
 use std::fmt;
 use std::io::{Read, Write};
 use std::str::FromStr;
 use yaserde::{YaDeserialize, YaSerialize};
 
-#[derive(Default, PartialEq, PartialOrd, Debug)]
+#[derive(Default, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
 pub struct Duration {
     pub is_negative: bool,
 
@@ -284,18 +285,6 @@ impl ParsingContext {
     }
 }
 
-impl YaDeserialize for Duration {
-    fn deserialize<R: Read>(reader: &mut yaserde::de::Deserializer<R>) -> Result<Self, String> {
-        utils::yaserde::deserialize(reader, |s| Duration::from_str(s))
-    }
-}
-
-impl YaSerialize for Duration {
-    fn serialize<W: Write>(&self, writer: &mut yaserde::ser::Serializer<W>) -> Result<(), String> {
-        utils::yaserde::serialize(self, "Duration", writer, |s| s.to_string())
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -307,7 +296,7 @@ mod tests {
     }
 
     fn check_invalid(s: &str) {
-        if let Ok(_) = Duration::from_str(s) {
+        if Duration::from_str(s).is_ok() {
             panic!("{} should be invalid", s)
         }
     }
