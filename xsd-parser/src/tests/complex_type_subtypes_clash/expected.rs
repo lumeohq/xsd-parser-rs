@@ -15,7 +15,6 @@ pub mod foo_type {
     pub struct ExtensionType {}
 
     impl Validate for ExtensionType {}
-
 }
 
 #[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]
@@ -35,5 +34,5 @@ pub mod bar_type {
     pub struct ExtensionType {}
 
     impl Validate for ExtensionType {}
-
 }
+
