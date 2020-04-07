@@ -1,34 +1,25 @@
 extern crate clap;
+
 use clap::{App, Arg};
 
-#[cfg(test)]
-#[macro_use]
-extern crate log;
-#[cfg(test)]
-#[macro_use]
-extern crate yaserde_derive;
-
-mod generator;
-mod parser;
-#[cfg(test)]
-mod tests;
-
+use roxmltree::{Document, Node};
 use std::fs;
 use std::io::{prelude::*, Read};
 use std::path::{Path, PathBuf};
-
-use crate::generator::builder::GeneratorBuilder;
-use crate::parser::parse;
+use wsdl_parser::generator::generate;
+use wsdl_parser::parser::definitions::Definitions;
+use xsd_parser::generator::builder::GeneratorBuilder;
+use xsd_parser::parser::schema::parse_schema;
 
 fn main() {
-    let matches = App::new("xsd-parser-rs")
-        .about("An xsd/wsdl => rust code generator written in rust")
+    let matches = App::new("wsdl-parser")
+        .about("An wsdl => rust code generator written in rust")
         .arg(
             Arg::with_name("input")
                 .short("i")
                 .long("input")
                 .takes_value(true)
-                .help("Input .xsd file"),
+                .help("Input .wsdl file"),
         )
         .arg(
             Arg::with_name("output")
@@ -39,13 +30,13 @@ fn main() {
         )
         .get_matches();
 
-    let input_path = matches.value_of("input").unwrap_or("xsd");
+    let input_path = matches.value_of("input").unwrap_or("wsdl");
     let input_path = Path::new(input_path);
     let output_path = matches.value_of("output");
 
     let md = fs::metadata(input_path).unwrap();
     if md.is_dir() {
-        let output_path = Path::new(output_path.unwrap_or("rs"));
+        let output_path = Path::new(output_path.unwrap_or("wsdl-rs"));
         process_dir(input_path, output_path)
     } else {
         process_single_file(input_path, output_path)
@@ -54,6 +45,7 @@ fn main() {
     .unwrap();
 }
 
+//TODO: Add a common mechanism for working with files
 fn process_dir(input_path: &Path, output_path: &Path) -> Result<(), String> {
     fs::create_dir(output_path).map_err(|e| e.to_string())?;
     for entry in fs::read_dir(input_path).map_err(|e| e.to_string())? {
@@ -71,9 +63,21 @@ fn process_dir(input_path: &Path, output_path: &Path) -> Result<(), String> {
 
 fn process_single_file(input_path: &Path, output_path: Option<&str>) -> Result<(), String> {
     let text = load_file(input_path)?;
-    let rs_file = parse(text.as_str()).map_err(|_| "Error parsing file".to_string())?;
+    let doc = Document::parse(text.as_str()).unwrap();
+    let definitions = Definitions::new(&doc.root_element());
     let gen = GeneratorBuilder::default().build();
-    let code = gen.generate_rs_file(&rs_file);
+    let schemas = definitions
+        .types()
+        .iter()
+        .flat_map(|t| t.schemas())
+        .collect::<Vec<Node<'_, '_>>>();
+    let mut code = schemas
+        .iter()
+        .map(|f| gen.generate_rs_file(&parse_schema(f)))
+        .collect::<Vec<String>>();
+
+    code.push(generate(&definitions));
+    let code = code.join("");
     if let Some(output_filename) = output_path {
         write_to_file(output_filename, &code).map_err(|e| format!("Error writing file: {}", e))?;
     } else {

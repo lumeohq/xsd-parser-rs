@@ -1,5 +1,4 @@
 use proc_macro2::TokenStream;
-use quote;
 
 pub fn serde(ast: &syn::DeriveInput) -> TokenStream {
     let struct_name = &ast.ident;

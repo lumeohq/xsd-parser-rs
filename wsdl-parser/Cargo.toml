@@ -6,11 +6,28 @@ edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[lib]
+name = "wsdl_parser"
+path = "src/lib.rs"
+
+[[bin]]
+name = "wsdl-parser"
+path = "src/bin.rs"
+
 [dependencies]
 roxmltree = "0.10.1"
 Inflector = "*"
 clap = "2.33.0"
+xsd-parser = { path = "../xsd-parser" }
 
 [dev-dependencies]
+syn = { version = "1.0", features = ["full"] }
+log = "0.4.8"
 xml-rs = "0.8.0"
+text-diff = "0.4.0"
+macro-utils = { path = "../macro-utils" }
+xsd-types = { path = "../xsd-types" }
+num-bigint = "0.2.6"
+bigdecimal = "0.1.0"
+
 

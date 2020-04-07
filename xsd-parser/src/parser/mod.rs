@@ -11,7 +11,7 @@ mod import;
 mod list;
 mod node_parser;
 mod restriction;
-mod schema;
+pub mod schema;
 mod sequence;
 mod simple_content;
 mod simple_type;

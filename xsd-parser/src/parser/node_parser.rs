@@ -38,8 +38,10 @@ pub fn parse_node(node: &Node, parent: &Node) -> RsEntity {
         SimpleType => parse_simple_type(node, parent),
         Union => parse_union(node),
 
-        _ => {
-            unreachable!("{:?}", node);
-        }
+        _ => unreachable!(
+            "Unsupported node:\n {:?}\nparent = {:?}\n",
+            node,
+            node.parent()
+        ),
     }
 }

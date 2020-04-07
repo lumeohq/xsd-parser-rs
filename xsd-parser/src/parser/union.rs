@@ -13,7 +13,7 @@ pub fn parse_union(union: &Node) -> RsEntity {
     let mut cases = union
         .attribute(attribute::MEMBER_TYPES)
         .map(|s| create_enum_cases(s))
-        .unwrap_or_else(|| vec![]);
+        .unwrap_or_else(Vec::new);
 
     let subtypes = union
         .children()
