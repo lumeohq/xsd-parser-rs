@@ -52,6 +52,13 @@ impl Struct {
                     .map(|s| s.fields.borrow().clone())
                     .unwrap_or_else(Vec::new)
             })
+            .filter(|f| {  //workaround for fields names clash
+                self.fields
+                    .borrow()
+                    .iter()
+                    .find(|field| field.name == f.name)
+                    .is_none()
+            })
             .collect::<Vec<StructField>>();
 
         self.fields.borrow_mut().append(&mut fields);
