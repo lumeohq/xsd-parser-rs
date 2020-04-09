@@ -5,6 +5,7 @@ pub mod import;
 pub mod redefine;
 pub mod notation;
 pub mod group;
+pub mod attribute_group;
 
 
 pub type AnyAttribute<'a> = roxmltree::Attribute<'a>;
