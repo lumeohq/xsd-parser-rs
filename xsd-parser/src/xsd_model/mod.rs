@@ -9,6 +9,7 @@ pub mod attribute_group;
 pub mod simple_type;
 pub mod restriction;
 pub mod facets;
+pub mod list;
 
 
 pub type RawAttribute<'a> = roxmltree::Attribute<'a>;

@@ -2,6 +2,7 @@ use crate::xsd_model::annotation::Annotation;
 use crate::xsd_model::xsd::{Id, NCName};
 use crate::xsd_model::RawAttribute;
 use crate::xsd_model::restriction::SimpleTypeRestriction;
+use crate::xsd_model::list::List;
 
 pub trait SimpleType{}
 
@@ -65,7 +66,7 @@ impl<'a> SimpleType for LocalSimpleType<'a>{}
 // Schema document: datatypes.xsd
 pub enum SimpleDerivation<'a> {
     Restriction(SimpleTypeRestriction<'a>),
-    //List(List<'a>),
+    List(List<'a>),
     //Union(Union<'a>),
 }
 
@@ -74,6 +75,6 @@ pub enum SimpleDerivation<'a> {
 pub enum SimpleDerivationSet<'a> {
     All,
     Restriction(SimpleTypeRestriction<'a>),
-    //List(List<'a>),
+    List(List<'a>),
     //Union(Union<'a>),
 }
