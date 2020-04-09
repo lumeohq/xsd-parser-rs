@@ -6,6 +6,8 @@ use crate::xsd_model::RawAttribute;
 use crate::xsd_model::xsd::{AnyUri, Token, Id, Language};
 use crate::xsd_model::notation::Notation;
 use crate::xsd_model::attribute_group::AttributeGroup;
+use crate::xsd_model::simple_type::TopLevelSimpleType;
+use crate::xsd_model::group::Group;
 
 
 // See http://www.w3.org/TR/xmlschema-1/#element-schema.
@@ -71,11 +73,11 @@ pub struct Schema<'a> {
     pub lang: Option<Language<'a>>
 }
 
-
+//TODO: add
 pub enum SchemaTopGroup<'a> {
-    //SimpleType(SimpleType),
+    SimpleType(TopLevelSimpleType<'a>),
     //ComplexType(ComplexType),
-    //Group(Group),
+    Group(Group<'a>),
     AttributeGroup(AttributeGroup<'a>),
     //Element(TopLevelElement),
     //Attribute(Attribute),

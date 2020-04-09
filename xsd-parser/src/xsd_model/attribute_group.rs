@@ -32,7 +32,7 @@ pub struct AttributeGroup<'a> {
 }
 
 pub enum AttributeGroupChoice<'a> {
-    Attribute,
+    Attribute,  // TODO: Add attribute
     AttributeGroup(Box<AttributeGroup<'a>>),
-    AnyAttribute
+    AnyAttribute  // TODO: add
 }

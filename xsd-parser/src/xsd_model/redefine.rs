@@ -3,6 +3,7 @@ use crate::xsd_model::RawAttribute;
 use crate::xsd_model::xsd::{AnyUri, Id};
 use crate::xsd_model::group::Group;
 use crate::xsd_model::attribute_group::AttributeGroup;
+use crate::xsd_model::simple_type::LocalSimpleType;
 
 
 // See http://www.w3.org/TR/xmlschema-1/#element-redefine.
@@ -35,8 +36,8 @@ pub struct Redefine<'a> {
 
 //This group is for the elements which can self-redefine.
 pub enum RedefinableGroup<'a> {
-    //SimpleType(SimpleType),
-    //ComplexType(ComplexType),
+    SimpleType(LocalSimpleType<'a>),
+    //ComplexType(ComplexType), //TODO: add
     Group(Group<'a>),
     AttributeGroup(AttributeGroup<'a>),
 }
