@@ -30,13 +30,13 @@ fn main() {
         )
         .get_matches();
 
-    let input_path = matches.value_of("input").unwrap_or("wsdl");
+    let input_path = matches.value_of("input").unwrap_or("input/wsdl");
     let input_path = Path::new(input_path);
     let output_path = matches.value_of("output");
 
     let md = fs::metadata(input_path).unwrap();
     if md.is_dir() {
-        let output_path = Path::new(output_path.unwrap_or("wsdl-rs"));
+        let output_path = Path::new(output_path.unwrap_or("output/wsdl"));
         process_dir(input_path, output_path)
     } else {
         process_single_file(input_path, output_path)
