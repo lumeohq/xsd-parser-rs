@@ -17,6 +17,17 @@ pub mod attribute;
 pub type RawAttribute<'a> = roxmltree::Attribute<'a>;
 pub type RawElement<'a> = roxmltree::Node<'a, 'a>;
 
+pub enum FormChoice{
+    Qualified,
+    Unqualified
+}
+
+impl Default for FormChoice {
+    fn default() -> Self {
+        FormChoice::Unqualified
+    }
+}
+
 pub mod xsd {
     // Pattern: [\i-[:]][\c-[:]]* (Defined in type xsd:NCName)
     // White Space: collapse (Defined in type xsd:token)

@@ -23,5 +23,5 @@ pub struct Union<'a> {
     simple_type: Vec<Box<LocalSimpleType<'a>>>,
     attributes: Vec<RawAttribute<'a>>,
     id: Id<'a>,
-    memberTypes: Vec<QName<'a>>
+    member_types: Vec<QName<'a>>
 }

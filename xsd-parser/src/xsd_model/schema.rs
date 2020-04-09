@@ -2,7 +2,7 @@ use crate::xsd_model::include::Include;
 use crate::xsd_model::import::Import;
 use crate::xsd_model::redefine::Redefine;
 use crate::xsd_model::annotation::Annotation;
-use crate::xsd_model::RawAttribute;
+use crate::xsd_model::{RawAttribute, FormChoice};
 use crate::xsd_model::xsd::{AnyUri, Token, Id, Language};
 use crate::xsd_model::notation::Notation;
 use crate::xsd_model::attribute_group::AttributeGroup;
@@ -108,13 +108,3 @@ pub enum BlockSubset {
     Substitution,
 }
 
-pub enum FormChoice{
-    Qualified,
-    Unqualified
-}
-
-impl Default for FormChoice {
-    fn default() -> Self {
-        FormChoice::Unqualified
-    }
-}
