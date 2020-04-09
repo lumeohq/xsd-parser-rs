@@ -1,3 +1,11 @@
+use crate::xsd_model::include::Include;
+use crate::xsd_model::import::Import;
+use crate::xsd_model::redefine::Redefine;
+use crate::xsd_model::annotation::Annotation;
+use crate::xsd_model::AnyAttribute;
+use crate::xsd_model::xsd::{AnyUri, Token};
+
+
 // See http://www.w3.org/TR/xmlschema-1/#element-schema.
 // Namespace: http://www.w3.org/2001/XMLSchema
 // Schema document: xmlschema.xsd
@@ -44,7 +52,38 @@
 // key	attributeGroup 	    xs:attributeGroup	                @name
 // key	notation	        xs:notation	                        @name
 // key	identityConstraint	.//xs:key|.//xs:unique|.//xs:keyref	@name
+pub struct Schema<'a> {
+    includes: Vec<Include<'a>>,
+    imports: Vec<Import<'a>>,
+    redefines: Vec<Redefine<'a>>,
+    annotations: Vec<Annotation<'a>>,
+    content: Vec<(SchemaTopGroup<'a>, Option<Annotation<'a>>)>,
+    attributes: Vec<AnyAttribute<'a>>,
+    target_namespace: Option<AnyUri<'a>>,
+    version: Option<Token<'a>>,
+    final_default: Option<FullDerivationSet>,
 
-pub struct Schema {
+}
 
+
+pub enum SchemaTopGroup<'a> {
+    //SimpleType(SimpleType),
+    //ComplexType(ComplexType),
+    //Group(Group),
+    //AttributeGroup(AttributeGroup),
+    //Element(TopLevelElement),
+    //Attribute(Attribute),
+    //Notation(Notation),
+}
+
+pub enum FullDerivationSet {
+    All,
+    Subset(Vec<DerivationSubset>)
+}
+
+pub enum DerivationSubset {
+    Extension,
+    Restriction,
+    List,
+    Union
 }

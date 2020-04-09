@@ -27,4 +27,13 @@ pub mod xsd {
     // Pattern: [a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*
     // White Space: collapse (Defined in type xsd:token)
     pub type Language<'a> = &'a str;
+
+    // Based on xsd:normalizedString
+    // White Space: collapse
+    pub type Token<'a> = &'a str;
+
+    // Based on xsd:token
+    // Pattern: \c+
+    // White Space: collapse (Defined in type xsd:token)
+    pub type NmToken<'a> = &'a str;
 }
