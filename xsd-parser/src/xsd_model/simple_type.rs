@@ -3,6 +3,7 @@ use crate::xsd_model::xsd::{Id, NCName};
 use crate::xsd_model::RawAttribute;
 use crate::xsd_model::restriction::SimpleTypeRestriction;
 use crate::xsd_model::list::List;
+use crate::xsd_model::union::Union;
 
 pub trait SimpleType{}
 
@@ -30,7 +31,7 @@ pub struct TopLevelSimpleType<'a> {
     annotation: Option<Annotation<'a>>,
     content_choice: SimpleDerivation<'a>,
     id: Option<Id<'a>>,
-    final_: Option<SimpleDerivationSet<'a>>,
+    final_: Option<SimpleDerivationSet>,
     name: NCName<'a>,
     attributes: Vec<RawAttribute<'a>>
 }
@@ -67,14 +68,18 @@ impl<'a> SimpleType for LocalSimpleType<'a>{}
 pub enum SimpleDerivation<'a> {
     Restriction(SimpleTypeRestriction<'a>),
     List(List<'a>),
-    //Union(Union<'a>),
+    Union(Union<'a>),
 }
 
 // #all or (possibly empty) subset of {restriction, union, list}
 // A utility type, not for public use
-pub enum SimpleDerivationSet<'a> {
+pub enum SimpleDerivationSet {
     All,
-    Restriction(SimpleTypeRestriction<'a>),
-    List(List<'a>),
-    //Union(Union<'a>),
+    Subset(Vec<SimpleDerivationSubset>)
+}
+
+pub enum SimpleDerivationSubset {
+    Restriction,
+    List,
+    Union,
 }
