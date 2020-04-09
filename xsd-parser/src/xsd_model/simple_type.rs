@@ -6,7 +6,6 @@ use crate::xsd_model::AnyAttribute;
 // Element information
 // Namespace: http://www.w3.org/2001/XMLSchema
 // Schema document: datatypes.xsd
-// Other elements with the same name: xsd:simpleType
 // Type: xsd:topLevelSimpleType
 // Properties: Global, Qualified
 //
@@ -32,6 +31,33 @@ pub struct TopLevelSimpleType<'a> {
     attributes: Vec<AnyAttribute<'a>>
 }
 
+
+// Namespace: http://www.w3.org/2001/XMLSchema
+// Schema document: datatypes.xsd
+// Type: xsd:localSimpleType
+// Properties: Local, Qualified
+//
+// Content
+//  Sequence [1..1]
+//      xsd:annotation [0..1]
+//      Choice [1..1]    from group xsd:simpleDerivation
+//          xsd:restriction
+//          xsd:list
+//          xsd:union
+//
+// Attributes
+// id	            [0..1]	xsd:ID		                                        from type xsd:annotated
+// Any attribute	[0..*]		    Namespace: ##other, Process Contents: lax
+pub struct LocalSimpleType<'a> {
+    annotation: Option<Annotation<'a>>,
+    content_choice: SimpleDerivation<'a>,
+    id: Option<Id<'a>>,
+    attributes: Vec<AnyAttribute<'a>>
+}
+
+
+// Namespace: http://www.w3.org/2001/XMLSchema
+// Schema document: datatypes.xsd
 pub enum SimpleDerivation<'a> {
     //Restriction(Restriction<'a>),
     //List(List<'a>),
