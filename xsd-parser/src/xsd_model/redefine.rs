@@ -25,8 +25,15 @@ use crate::xsd_model::xsd::{AnyUri, Id};
 // id	            [0..1]	xsd:ID
 pub struct Redefine<'a> {
     annotations: Vec<Annotation<'a>>,
-
+    content: Vec<Redefinable<'a>>,
     attributes: Vec<AnyAttribute<'a>>,
     schema_location: AnyUri<'a>,
     id: Option<Id<'a>>
+}
+
+pub enum Redefinable<'a> {
+    //SimpleType(SimpleType),
+    //ComplexType(ComplexType),
+    //Group(Group),
+    //AttributeGroup(AttributeGroup),
 }
