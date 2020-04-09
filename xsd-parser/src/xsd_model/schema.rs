@@ -8,6 +8,7 @@ use crate::xsd_model::notation::Notation;
 use crate::xsd_model::attribute_group::AttributeGroup;
 use crate::xsd_model::simple_type::TopLevelSimpleType;
 use crate::xsd_model::group::Group;
+use crate::xsd_model::attribute::TopLevelAttribute;
 
 
 // See http://www.w3.org/TR/xmlschema-1/#element-schema.
@@ -80,7 +81,7 @@ pub enum SchemaTopGroup<'a> {
     Group(Group<'a>),
     AttributeGroup(AttributeGroup<'a>),
     //Element(TopLevelElement),
-    //Attribute(Attribute),
+    Attribute(TopLevelAttribute<'a>),
     Notation(Notation<'a>),
 }
 
