@@ -1,6 +1,9 @@
 use crate::xsd_model::annotation::Annotation;
 use crate::xsd_model::xsd::{Id, NCName};
 use crate::xsd_model::AnyAttribute;
+use crate::xsd_model::restriction::SimpleTypeRestriction;
+
+pub trait SimpleType{}
 
 // See http://www.w3.org/TR/xmlschema-2/#element-simpleType.
 // Element information
@@ -31,6 +34,8 @@ pub struct TopLevelSimpleType<'a> {
     attributes: Vec<AnyAttribute<'a>>
 }
 
+impl<'a> SimpleType for TopLevelSimpleType<'a>{}
+
 
 // Namespace: http://www.w3.org/2001/XMLSchema
 // Schema document: datatypes.xsd
@@ -54,12 +59,12 @@ pub struct LocalSimpleType<'a> {
     id: Option<Id<'a>>,
     attributes: Vec<AnyAttribute<'a>>
 }
-
+impl<'a> SimpleType for LocalSimpleType<'a>{}
 
 // Namespace: http://www.w3.org/2001/XMLSchema
 // Schema document: datatypes.xsd
 pub enum SimpleDerivation<'a> {
-    //Restriction(Restriction<'a>),
+    Restriction(SimpleTypeRestriction<'a>),
     //List(List<'a>),
     //Union(Union<'a>),
 }
@@ -68,7 +73,7 @@ pub enum SimpleDerivation<'a> {
 // A utility type, not for public use
 pub enum SimpleDerivationSet<'a> {
     All,
-    //Restriction(Restriction<'a>),
+    Restriction(SimpleTypeRestriction<'a>),
     //List(List<'a>),
     //Union(Union<'a>),
 }
