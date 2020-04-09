@@ -45,4 +45,30 @@ pub mod xsd {
 
     //A public identifier, per ISO 8879
     pub type Public<'a> = Token<'a>;
+
+    // The type xsd:anySimpleType is the base type from which all other
+    // built-in types are derived. Any value (including an empty value)
+    // is allowed for xsd:anySimpleType.
+    pub type AnySimpleValue<'a> = &'a str;
+
+    // The type xsd:QName represents an XML namespace-qualified name.
+    // A xsd:QName value consists of a prefix and a local part,
+    // separated by a colon, both of which are NCName values.
+    // The prefix and colon are optional, but if they are not present,
+    // it is assumed that either the name is namespace-qualified
+    // by other means (e.g., by a default namespace declaration),
+    // or the name is not in a namespace.
+    pub struct QName<'a> {
+        pub prefix: Option<&'a str>,
+        pub name: &'a str
+    }
+
+    impl<'a> QName<'a> {
+        pub fn new(name: &'a str) -> Self {
+            match name.find(':') {
+                Some(index) => Self{prefix: Some(&name[0..index]), name: &name[index + 1..]},
+                None => Self{prefix: None, name},
+            }
+        }
+    }
 }
