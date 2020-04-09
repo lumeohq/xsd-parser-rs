@@ -16,8 +16,8 @@ pub type AnyElement<'a> = roxmltree::Node<'a, 'a>;
 
 pub mod xsd {
     // Pattern: [\i-[:]][\c-[:]]* (Defined in type xsd:NCName)
-    //White Space: collapse (Defined in type xsd:token)
-    pub type Id<'a> = &'a str;
+    // White Space: collapse (Defined in type xsd:token)
+    pub type Id<'a> = Option<&'a str>;
 
     // Pattern: [\i-[:]][\c-[:]]*
     // White Space: collapse
