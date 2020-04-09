@@ -3,7 +3,7 @@ pub mod include;
 pub mod annotation;
 pub mod import;
 pub mod redefine;
-pub mod notation
+pub mod notation;
 pub mod group;
 
 

@@ -1,6 +1,7 @@
 use crate::xsd_model::annotation::Annotation;
 use crate::xsd_model::AnyAttribute;
 use crate::xsd_model::xsd::{AnyUri, Id};
+use crate::xsd_model::group::Group;
 
 
 // See http://www.w3.org/TR/xmlschema-1/#element-redefine.
@@ -35,6 +36,6 @@ pub struct Redefine<'a> {
 pub enum RedefinableGroup<'a> {
     //SimpleType(SimpleType),
     //ComplexType(ComplexType),
-    //Group(Group),
+    Group(Group<'a>),
     //AttributeGroup(AttributeGroup),
 }
