@@ -1,5 +1,5 @@
 use crate::xsd_model::xsd::{AnyUri, Language, Id};
-use crate::xsd_model::{AnyAttribute, AnyElement};
+use crate::xsd_model::{RawAttribute, RawElement};
 
 
 // See http://www.w3.org/TR/xmlschema-1/#element-annotation.
@@ -19,7 +19,7 @@ use crate::xsd_model::{AnyAttribute, AnyElement};
 pub struct Annotation<'a> {
     pub app_infos: Vec<AppInfo<'a>>,
     pub documentations: Vec<Documentation<'a>>,
-    pub attributes: Vec<AnyAttribute<'a>>,
+    pub attributes: Vec<RawAttribute<'a>>,
     pub id: Option<Id<'a>>
 }
 
@@ -40,9 +40,9 @@ pub struct Annotation<'a> {
 // Any attribute	[0..*]		        Namespace: ##other, Process Contents: lax
 pub struct AppInfo<'a> {
     pub text: &'a str,
-    pub elements: Vec<AnyElement<'a>>,
+    pub elements: Vec<RawElement<'a>>,
     pub source: Option<AnyUri<'a>>,
-    pub attributes: Vec<AnyAttribute<'a>>
+    pub attributes: Vec<RawAttribute<'a>>
 }
 
 
@@ -63,8 +63,8 @@ pub struct AppInfo<'a> {
 // Any attribute	[0..*]		            Namespace: ##other, Process Contents: lax
 pub struct Documentation<'a>{
     pub text: &'a str,
-    pub elements: Vec<AnyElement<'a>>,
+    pub elements: Vec<RawElement<'a>>,
     pub source: Option<AnyUri<'a>>,
     pub lang: Option<Language<'a>>,
-    pub attributes: Vec<AnyAttribute<'a>>
+    pub attributes: Vec<RawAttribute<'a>>
 }

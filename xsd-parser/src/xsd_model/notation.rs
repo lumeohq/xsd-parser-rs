@@ -1,5 +1,5 @@
 use crate::xsd_model::annotation::Annotation;
-use crate::xsd_model::AnyAttribute;
+use crate::xsd_model::RawAttribute;
 use crate::xsd_model::xsd::{Id, NCName, Public, AnyUri};
 
 // See http://www.w3.org/TR/xmlschema-1/#element-notation.
@@ -20,7 +20,7 @@ use crate::xsd_model::xsd::{Id, NCName, Public, AnyUri};
 // system	        [0..1]	xsd:anyURI
 pub struct Notation<'a> {
     annotation: Option<Annotation<'a>>,
-    attributes: Vec<AnyAttribute<'a>>,
+    attributes: Vec<RawAttribute<'a>>,
     id: Option<Id<'a>>,
     name: NCName<'a>,
     public: Option<Public<'a>>,

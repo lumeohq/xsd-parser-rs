@@ -1,5 +1,5 @@
 use crate::xsd_model::xsd::{Id, AnyUri};
-use crate::xsd_model::AnyAttribute;
+use crate::xsd_model::RawAttribute;
 
 // See http://www.w3.org/TR/xmlschema-1/#element-import.
 // Element information
@@ -18,7 +18,7 @@ use crate::xsd_model::AnyAttribute;
 // schemaLocation	[0..1]	xsd:anyURI
 pub struct Import<'a> {
     annotation: Option<Id<'a>>,
-    attributes: Vec<AnyAttribute<'a>>,
+    attributes: Vec<RawAttribute<'a>>,
     id: Option<Id<'a>>,
     namespace: Option<AnyUri<'a>>,
     schema_location: Option<AnyUri<'a>>

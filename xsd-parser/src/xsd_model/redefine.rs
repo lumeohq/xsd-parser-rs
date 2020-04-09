@@ -1,5 +1,5 @@
 use crate::xsd_model::annotation::Annotation;
-use crate::xsd_model::AnyAttribute;
+use crate::xsd_model::RawAttribute;
 use crate::xsd_model::xsd::{AnyUri, Id};
 use crate::xsd_model::group::Group;
 use crate::xsd_model::attribute_group::AttributeGroup;
@@ -28,7 +28,7 @@ use crate::xsd_model::attribute_group::AttributeGroup;
 pub struct Redefine<'a> {
     annotations: Vec<Annotation<'a>>,
     content: Vec<RedefinableGroup<'a>>,
-    attributes: Vec<AnyAttribute<'a>>,
+    attributes: Vec<RawAttribute<'a>>,
     schema_location: AnyUri<'a>,
     id: Option<Id<'a>>
 }

@@ -1,6 +1,6 @@
 use crate::xsd_model::annotation::Annotation;
 use crate::xsd_model::xsd::{Id, NCName};
-use crate::xsd_model::AnyAttribute;
+use crate::xsd_model::RawAttribute;
 use crate::xsd_model::restriction::SimpleTypeRestriction;
 
 pub trait SimpleType{}
@@ -31,7 +31,7 @@ pub struct TopLevelSimpleType<'a> {
     id: Option<Id<'a>>,
     final_: Option<SimpleDerivationSet<'a>>,
     name: NCName<'a>,
-    attributes: Vec<AnyAttribute<'a>>
+    attributes: Vec<RawAttribute<'a>>
 }
 
 impl<'a> SimpleType for TopLevelSimpleType<'a>{}
@@ -57,7 +57,7 @@ pub struct LocalSimpleType<'a> {
     annotation: Option<Annotation<'a>>,
     content_choice: SimpleDerivation<'a>,
     id: Option<Id<'a>>,
-    attributes: Vec<AnyAttribute<'a>>
+    attributes: Vec<RawAttribute<'a>>
 }
 impl<'a> SimpleType for LocalSimpleType<'a>{}
 

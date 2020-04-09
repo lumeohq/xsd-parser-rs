@@ -1,5 +1,5 @@
 use crate::xsd_model::annotation::Annotation;
-use crate::xsd_model::AnyAttribute;
+use crate::xsd_model::RawAttribute;
 use crate::xsd_model::xsd::{Id, NCName};
 
 // See http://www.w3.org/TR/xmlschema-1/#element-attributeGroup.
@@ -26,7 +26,7 @@ use crate::xsd_model::xsd::{Id, NCName};
 pub struct AttributeGroup<'a> {
     pub annotation: Option<Annotation<'a>>,
     pub content: Vec<AttributeGroupChoice<'a>>,
-    pub attributes: Vec<AnyAttribute<'a>>,
+    pub attributes: Vec<RawAttribute<'a>>,
     pub id: Option<Id<'a>>,
     pub name: NCName<'a>
 }

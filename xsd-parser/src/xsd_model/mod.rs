@@ -11,8 +11,8 @@ pub mod restriction;
 pub mod facets;
 
 
-pub type AnyAttribute<'a> = roxmltree::Attribute<'a>;
-pub type AnyElement<'a> = roxmltree::Node<'a, 'a>;
+pub type RawAttribute<'a> = roxmltree::Attribute<'a>;
+pub type RawElement<'a> = roxmltree::Node<'a, 'a>;
 
 pub mod xsd {
     // Pattern: [\i-[:]][\c-[:]]* (Defined in type xsd:NCName)

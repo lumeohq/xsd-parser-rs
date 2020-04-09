@@ -1,5 +1,5 @@
 use crate::xsd_model::annotation::Annotation;
-use crate::xsd_model::AnyAttribute;
+use crate::xsd_model::RawAttribute;
 use crate::xsd_model::xsd::{Id, AnySimpleValue};
 
 // We should use a substitution group for facets, but
@@ -47,7 +47,7 @@ pub enum Facet<'a> {
 // fixed	        [0..1]	xsd:boolean		   Default value is "false".
 pub struct MinExclusive<'a> {
     annotation: Option<Annotation<'a>>,
-    attributes: Vec<AnyAttribute<'a>>,
+    attributes: Vec<RawAttribute<'a>>,
     id: Id<'a>,
     value: AnySimpleValue<'a>,
     fixed: bool,

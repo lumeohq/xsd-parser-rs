@@ -1,5 +1,5 @@
 use crate::xsd_model::xsd::*;
-use crate::xsd_model::AnyAttribute;
+use crate::xsd_model::RawAttribute;
 use crate::xsd_model::annotation::Annotation;
 
 // See http://www.w3.org/TR/xmlschema-1/#element-include.
@@ -17,7 +17,7 @@ use crate::xsd_model::annotation::Annotation;
 // schemaLocation	[1..1]	xsd:anyURI
 pub struct Include<'a> {
     pub annotation: Option<Annotation<'a>>,
-    pub attributes: Vec<AnyAttribute<'a>>,
+    pub attributes: Vec<RawAttribute<'a>>,
     pub id: Option<Id<'a>>,
     pub schema_location: AnyUri<'a>,
 }

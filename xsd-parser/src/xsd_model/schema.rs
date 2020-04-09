@@ -2,7 +2,7 @@ use crate::xsd_model::include::Include;
 use crate::xsd_model::import::Import;
 use crate::xsd_model::redefine::Redefine;
 use crate::xsd_model::annotation::Annotation;
-use crate::xsd_model::AnyAttribute;
+use crate::xsd_model::RawAttribute;
 use crate::xsd_model::xsd::{AnyUri, Token, Id, Language};
 use crate::xsd_model::notation::Notation;
 use crate::xsd_model::attribute_group::AttributeGroup;
@@ -60,7 +60,7 @@ pub struct Schema<'a> {
     pub redefines: Vec<Redefine<'a>>,
     pub annotations: Vec<Annotation<'a>>,
     pub content: Vec<(SchemaTopGroup<'a>, Option<Annotation<'a>>)>,
-    pub attributes: Vec<AnyAttribute<'a>>,
+    pub attributes: Vec<RawAttribute<'a>>,
     pub target_namespace: Option<AnyUri<'a>>,
     pub version: Option<Token<'a>>,
     pub final_default: Option<FullDerivationSet>,

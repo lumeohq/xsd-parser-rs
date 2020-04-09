@@ -1,5 +1,5 @@
 use crate::xsd_model::annotation::Annotation;
-use crate::xsd_model::AnyAttribute;
+use crate::xsd_model::RawAttribute;
 use crate::xsd_model::xsd::{Id, NCName};
 
 // See http://www.w3.org/TR/xmlschema-1/#element-group.
@@ -25,7 +25,7 @@ use crate::xsd_model::xsd::{Id, NCName};
 pub struct Group<'a> {
     annotation: Option<Annotation<'a>>,
     content_choice: ContentChoice,
-    attributes: Vec<AnyAttribute<'a>>,
+    attributes: Vec<RawAttribute<'a>>,
     id: Option<Id<'a>>,
     name: NCName<'a>
 }
