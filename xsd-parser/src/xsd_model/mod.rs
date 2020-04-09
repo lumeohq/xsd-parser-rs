@@ -3,6 +3,7 @@ pub mod include;
 pub mod annotation;
 pub mod import;
 pub mod redefine;
+pub mod notation;
 
 
 pub type AnyAttribute<'a> = roxmltree::Attribute<'a>;
@@ -36,4 +37,7 @@ pub mod xsd {
     // Pattern: \c+
     // White Space: collapse (Defined in type xsd:token)
     pub type NmToken<'a> = &'a str;
+
+    //A public identifier, per ISO 8879
+    pub type Public<'a> = Token<'a>;
 }
