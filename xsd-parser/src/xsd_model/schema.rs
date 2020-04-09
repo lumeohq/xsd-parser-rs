@@ -3,7 +3,7 @@ use crate::xsd_model::import::Import;
 use crate::xsd_model::redefine::Redefine;
 use crate::xsd_model::annotation::Annotation;
 use crate::xsd_model::AnyAttribute;
-use crate::xsd_model::xsd::{AnyUri, Token};
+use crate::xsd_model::xsd::{AnyUri, Token, Id, Language};
 
 
 // See http://www.w3.org/TR/xmlschema-1/#element-schema.
@@ -53,16 +53,20 @@ use crate::xsd_model::xsd::{AnyUri, Token};
 // key	notation	        xs:notation	                        @name
 // key	identityConstraint	.//xs:key|.//xs:unique|.//xs:keyref	@name
 pub struct Schema<'a> {
-    includes: Vec<Include<'a>>,
-    imports: Vec<Import<'a>>,
-    redefines: Vec<Redefine<'a>>,
-    annotations: Vec<Annotation<'a>>,
-    content: Vec<(SchemaTopGroup<'a>, Option<Annotation<'a>>)>,
-    attributes: Vec<AnyAttribute<'a>>,
-    target_namespace: Option<AnyUri<'a>>,
-    version: Option<Token<'a>>,
-    final_default: Option<FullDerivationSet>,
-
+    pub includes: Vec<Include<'a>>,
+    pub imports: Vec<Import<'a>>,
+    pub redefines: Vec<Redefine<'a>>,
+    pub annotations: Vec<Annotation<'a>>,
+    pub content: Vec<(SchemaTopGroup<'a>, Option<Annotation<'a>>)>,
+    pub attributes: Vec<AnyAttribute<'a>>,
+    pub target_namespace: Option<AnyUri<'a>>,
+    pub version: Option<Token<'a>>,
+    pub final_default: Option<FullDerivationSet>,
+    pub block_default: Option<BlockSet>,
+    pub attribute_form_default: FormChoice,
+    pub element_form_default: FormChoice,
+    pub id: Option<Id<'a>>,
+    pub lang: Option<Language<'a>>
 }
 
 
@@ -86,4 +90,26 @@ pub enum DerivationSubset {
     Restriction,
     List,
     Union
+}
+
+pub enum BlockSet {
+    All,
+    Subset(Vec<BlockSubset>)
+}
+
+pub enum BlockSubset {
+    Extension,
+    Restriction,
+    Substitution,
+}
+
+pub enum FormChoice{
+    Qualified,
+    Unqualified
+}
+
+impl Default for FormChoice {
+    fn default() -> Self {
+        FormChoice::Unqualified
+    }
 }
