@@ -12,6 +12,7 @@ pub mod facets;
 pub mod list;
 pub mod union;
 pub mod attribute;
+pub mod complex_type;
 
 
 pub type RawAttribute<'a> = roxmltree::Attribute<'a>;

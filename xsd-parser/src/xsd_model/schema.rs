@@ -9,6 +9,7 @@ use crate::xsd_model::attribute_group::AttributeGroup;
 use crate::xsd_model::simple_type::TopLevelSimpleType;
 use crate::xsd_model::group::Group;
 use crate::xsd_model::attribute::TopLevelAttribute;
+use crate::xsd_model::complex_type::TopLevelComplexType;
 
 
 // See http://www.w3.org/TR/xmlschema-1/#element-schema.
@@ -77,7 +78,7 @@ pub struct Schema<'a> {
 //TODO: add
 pub enum SchemaTopGroup<'a> {
     SimpleType(TopLevelSimpleType<'a>),
-    //ComplexType(ComplexType),
+    ComplexType(TopLevelComplexType<'a>),
     Group(Group<'a>),
     AttributeGroup(AttributeGroup<'a>),
     //Element(TopLevelElement),
