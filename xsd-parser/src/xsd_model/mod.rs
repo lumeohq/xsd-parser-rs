@@ -49,7 +49,7 @@ pub mod xsd {
     // The type xsd:anySimpleType is the base type from which all other
     // built-in types are derived. Any value (including an empty value)
     // is allowed for xsd:anySimpleType.
-    pub type AnySimpleValue<'a> = &'a str;
+    pub type AnySimpleType<'a> = &'a str;
 
     // The type xsd:QName represents an XML namespace-qualified name.
     // A xsd:QName value consists of a prefix and a local part,
@@ -71,4 +71,18 @@ pub mod xsd {
             }
         }
     }
+
+    // Based on xsd:nonNegativeInteger
+    // Minimum Inclusive: 1
+    // Fraction Digits: 0 (Defined in type xsd:integer)
+    // Pattern: [\-+]?[0-9]+ (Defined in type xsd:integer)
+    // White Space: collapse (Defined in type xsd:decimal)
+    pub type PositiveInteger = usize;
+
+    // Based on xsd:integer
+    // Minimum Inclusive: 0
+    // Fraction Digits: 0 (Defined in type xsd:integer)
+    // Pattern: [\-+]?[0-9]+ (Defined in type xsd:integer)
+    // White Space: collapse (Defined in type xsd:decimal)
+    pub type NonNegativeInteger = usize;
 }

@@ -1,6 +1,6 @@
 use crate::xsd_model::annotation::Annotation;
 use crate::xsd_model::simple_type::LocalSimpleType;
-use crate::xsd_model::facets::Facet;
+use crate::xsd_model::facets::FacetGroup;
 use crate::xsd_model::RawAttribute;
 use crate::xsd_model::xsd::{Id, QName};
 
@@ -34,7 +34,7 @@ use crate::xsd_model::xsd::{Id, QName};
 pub struct SimpleTypeRestriction<'a>{
     annotation: Option<Annotation<'a>>,
     simple_type: Option<Box<LocalSimpleType<'a>>>,
-    facets: Vec<Facet<'a>>,
+    facets: Vec<FacetGroup<'a>>,
     attributes: Vec<RawAttribute<'a>>,
     id: Id<'a>,
     base: Option<QName<'a>>
