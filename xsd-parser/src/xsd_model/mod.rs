@@ -2,6 +2,7 @@ pub mod schema;
 pub mod include;
 pub mod annotation;
 pub mod import;
+pub mod redefine;
 
 
 pub type AnyAttribute<'a> = roxmltree::Attribute<'a>;
