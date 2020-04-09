@@ -5,7 +5,6 @@ use crate::xsd_model::restriction::SimpleTypeRestriction;
 use crate::xsd_model::list::List;
 use crate::xsd_model::union::Union;
 
-pub trait SimpleType{}
 
 // See http://www.w3.org/TR/xmlschema-2/#element-simpleType.
 // Element information
@@ -36,8 +35,6 @@ pub struct TopLevelSimpleType<'a> {
     attributes: Vec<RawAttribute<'a>>
 }
 
-impl<'a> SimpleType for TopLevelSimpleType<'a>{}
-
 
 // Namespace: http://www.w3.org/2001/XMLSchema
 // Schema document: datatypes.xsd
@@ -61,7 +58,7 @@ pub struct LocalSimpleType<'a> {
     id: Option<Id<'a>>,
     attributes: Vec<RawAttribute<'a>>
 }
-impl<'a> SimpleType for LocalSimpleType<'a>{}
+
 
 // Namespace: http://www.w3.org/2001/XMLSchema
 // Schema document: datatypes.xsd
