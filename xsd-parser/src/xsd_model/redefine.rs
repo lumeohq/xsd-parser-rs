@@ -25,13 +25,14 @@ use crate::xsd_model::xsd::{AnyUri, Id};
 // id	            [0..1]	xsd:ID
 pub struct Redefine<'a> {
     annotations: Vec<Annotation<'a>>,
-    content: Vec<Redefinable<'a>>,
+    content: Vec<RedefinableGroup<'a>>,
     attributes: Vec<AnyAttribute<'a>>,
     schema_location: AnyUri<'a>,
     id: Option<Id<'a>>
 }
 
-pub enum Redefinable<'a> {
+//This group is for the elements which can self-redefine.
+pub enum RedefinableGroup<'a> {
     //SimpleType(SimpleType),
     //ComplexType(ComplexType),
     //Group(Group),

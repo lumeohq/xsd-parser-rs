@@ -4,6 +4,7 @@ use crate::xsd_model::redefine::Redefine;
 use crate::xsd_model::annotation::Annotation;
 use crate::xsd_model::AnyAttribute;
 use crate::xsd_model::xsd::{AnyUri, Token, Id, Language};
+use crate::xsd_model::notation::Notation;
 
 
 // See http://www.w3.org/TR/xmlschema-1/#element-schema.
@@ -77,7 +78,7 @@ pub enum SchemaTopGroup<'a> {
     //AttributeGroup(AttributeGroup),
     //Element(TopLevelElement),
     //Attribute(Attribute),
-    //Notation(Notation),
+    Notation(Notation<'a>),
 }
 
 pub enum FullDerivationSet {
