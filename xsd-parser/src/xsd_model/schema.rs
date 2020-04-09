@@ -5,6 +5,7 @@ use crate::xsd_model::annotation::Annotation;
 use crate::xsd_model::AnyAttribute;
 use crate::xsd_model::xsd::{AnyUri, Token, Id, Language};
 use crate::xsd_model::notation::Notation;
+use crate::xsd_model::attribute_group::AttributeGroup;
 
 
 // See http://www.w3.org/TR/xmlschema-1/#element-schema.
@@ -75,7 +76,7 @@ pub enum SchemaTopGroup<'a> {
     //SimpleType(SimpleType),
     //ComplexType(ComplexType),
     //Group(Group),
-    //AttributeGroup(AttributeGroup),
+    AttributeGroup(AttributeGroup<'a>),
     //Element(TopLevelElement),
     //Attribute(Attribute),
     Notation(Notation<'a>),
