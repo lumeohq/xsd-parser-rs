@@ -13,6 +13,8 @@ pub mod list;
 pub mod union;
 pub mod attribute;
 pub mod complex_type;
+pub mod any_attribute;
+pub mod any;
 
 
 pub type RawAttribute<'a> = roxmltree::Attribute<'a>;
@@ -21,6 +23,11 @@ pub type RawElement<'a> = roxmltree::Node<'a, 'a>;
 pub enum FormChoice{
     Qualified,
     Unqualified
+}
+
+pub enum MaxOccurs {
+    Bounded(usize),
+    Unbounded,
 }
 
 impl Default for FormChoice {
