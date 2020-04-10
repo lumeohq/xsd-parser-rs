@@ -19,10 +19,10 @@ use crate::xsd_model::annotation::Annotation;
 //                  xsd:all    An "all" group that allows elements to appear in any order. Unlike other group types, does not allow other groups as children, only elements.
 //                  xsd:choice
 //                  xsd:sequence
-//                  Choice [0..*]    from group xsd:attrDecls
-//                      xsd:attribute
-//                      xsd:attributeGroup
-//                      xsd:anyAttribute [0..1]
+//              Choice [0..*]    from group xsd:attrDecls
+//                  xsd:attribute
+//                  xsd:attributeGroup
+//              xsd:anyAttribute [0..1]
 //
 // Attributes
 // Any attribute	[0..*]		                Namespace: ##other, Process Contents: lax	from type xsd:openAttrs
@@ -34,4 +34,5 @@ use crate::xsd_model::annotation::Annotation;
 // mixed	        [0..1]	xsd:boolean	        Indicates that mixed content is allowed.	Default value is "false".
 pub struct TopLevelComplexType<'a>{
     annotation: Option<Annotation<'a>>,
+
 }
