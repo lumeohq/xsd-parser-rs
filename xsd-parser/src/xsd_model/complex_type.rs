@@ -2,7 +2,6 @@ use crate::xsd_model::annotation::Annotation;
 use crate::xsd_model::common_groups::ComplexTypeModel;
 use crate::xsd_model::RawAttribute;
 use crate::xsd_model::xsd::{Id, QName};
-use crate::xsd_model::schema::DerivationSubset;
 use crate::xsd_model::simple_type::SimpleDerivationSet;
 
 // See http://www.w3.org/TR/xmlschema-1/#element-complexType.
@@ -90,7 +89,7 @@ pub struct TopLevelComplexType<'a>{
 // Type xsd:topLevelElement via reference to xsd:elementModel (Element xsd:element)
 pub struct LocalComplexType<'a> {
     annotation: Option<Annotation<'a>>,
-    model: ComplexTypeModel<'a>,
+    model: Box<ComplexTypeModel<'a>>,
     id: Id<'a>,
     mixed: bool,
     attributes: Vec<RawAttribute<'a>>,

@@ -28,7 +28,7 @@ use crate::xsd_model::extension::Extension;
 // Type xsd:complexType via reference to xsd:complexTypeModel
 // Type xsd:localComplexType via reference to xsd:complexTypeModel (Element xsd:complexType)
 // Type xsd:topLevelComplexType via reference to xsd:complexTypeModel (Element xsd:complexType)
-pub struct ComplexType<'a> {
+pub struct ComplexContent<'a> {
     annotation: Option<Annotation<'a>>,
     content: ComplexContentChoice<'a>,
     attributes: Vec<RawAttribute<'a>>,
