@@ -19,6 +19,7 @@ pub mod simple_content;
 pub mod common_groups;
 pub mod extension;
 pub mod all;
+pub mod choice;
 
 
 pub type RawAttribute<'a> = roxmltree::Attribute<'a>;
