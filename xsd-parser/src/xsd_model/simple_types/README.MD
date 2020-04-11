@@ -42,7 +42,7 @@ All Simple types
 |nonPositiveInteger
 |normalizedString
 |NOTATION
-|positiveInteger
+|positiveInteger| * |
 |public
 |QName| * |
 |short
