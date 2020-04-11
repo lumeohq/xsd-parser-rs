@@ -26,6 +26,7 @@ pub mod union;
 pub mod unique;
 pub mod key;
 pub mod key_ref;
+pub mod selector;
 
 
 pub type RawAttribute<'a> = roxmltree::Attribute<'a>;
@@ -70,6 +71,10 @@ pub mod xsd {
     // Based on xsd:normalizedString
     // White Space: collapse
     pub type Token<'a> = &'a str;
+
+    // based on xsd:token
+    // Pattern: (\.//)?(((child::)?((\i\c*:)?(\i\c*|\*)))|\.)(/(((child::)?((\i\c*:)?(\i\c*|\*)))|\.))*(\|(\.//)?(((child::)?((\i\c*:)?(\i\c*|\*)))|\.)(/(((child::)?((\i\c*:)?(\i\c*|\*)))|\.))*)*
+    pub type XPath<'a> = &'a str;
 
     // Based on xsd:token
     // Pattern: \c+
