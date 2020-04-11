@@ -13,4 +13,4 @@ All Groups
 |schemaTop
 |simpleDerivation
 |simpleRestrictionModel
-|typeDefParticle
+|typeDefParticle| * |
