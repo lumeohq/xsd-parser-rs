@@ -2,8 +2,36 @@ All Elements
 
 | xsd element | Struct | Validation | Tests |
 | ----------- | ------ | ---------- | ----- |
-|enumeration| * |  |  |
-|fractionDigits| * |  |  
+|all
+|all
+|annotation
+|any
+|anyAttribute
+|appinfo
+|attribute
+|attribute
+|attributeGroup
+|attributeGroup
+|choice
+|choice
+|complexContent
+|complexType
+|complexType
+|documentation
+|element
+|element
+|element
+|enumeration| * |
+|extension
+|extension
+|field
+|fractionDigits| * |
+|group
+|group
+|import
+|include
+|key
+|keyref
 |length| * |
 |list| * |
 |maxExclusive
@@ -12,10 +40,20 @@ All Elements
 |minExclusive
 |minInclusive
 |minLength
+|notation
 |pattern
+|redefine
 |restriction
+|restriction
+|restriction
+|schema
+|selector
+|sequence
+|sequence
+|simpleContent
 |simpleType
 |simpleType
 |totalDigits
 |union
-|whiteSpace 
+|unique
+|whiteSpace
