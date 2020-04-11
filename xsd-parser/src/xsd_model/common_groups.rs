@@ -4,6 +4,9 @@ use crate::xsd_model::simple_type::LocalSimpleType;
 use crate::xsd_model::facets::{Facet, TotalDigits, NumFacet, Enumeration, WhiteSpace, Pattern};
 use crate::xsd_model::attribute::LocalAttribute;
 use crate::xsd_model::group::Group;
+use crate::xsd_model::all::All;
+use crate::xsd_model::choice::Choice;
+use crate::xsd_model::any::Any;
 
 
 // Group information
@@ -123,4 +126,29 @@ pub enum TypeDefParticle<'a> {
     All(All<'a>),
     Choice(Choice<'a>),
     Sequence(Sequence<'a>)
+}
+
+
+
+// Group information
+// Namespace: http://www.w3.org/2001/XMLSchema
+// Schema document: xmlschema.xsd
+//
+// Content
+//  Choice [1..1]
+//      xsd:element
+//      xsd:group
+//      xsd:choice
+//      xsd:sequence
+//      xsd:any
+//
+// Used in
+// Type xsd:explicitGroup (Elements xsd:choice, xsd:sequence)
+// Type xsd:simpleExplicitGroup (Elements xsd:choice, xsd:sequence)
+pub enum NestedParticle<'a> {
+    Element(LocalElement<'a>),
+    Group(Group<'a>),
+    Choice(Choice<'a>),
+    Sequence(Sequence<'a>),
+    Any(Any<'a>),
 }
