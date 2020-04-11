@@ -4,6 +4,7 @@ use crate::xsd_model::RawAttribute;
 use crate::xsd_model::simple_types::Id;
 use crate::xsd_model::simple_types::ncname::NCName;
 use crate::xsd_model::simple_types::qname::QName;
+use crate::xsd_model::simple_types::form_choice::FormChoice;
 
 // xsd:localAttributeType
 // Complex type information

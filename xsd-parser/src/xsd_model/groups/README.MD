@@ -3,7 +3,7 @@ All Groups
 | xsd group name | Struct  | Tests |
 | -------------- | ------- | ----- |
 |allModel
-|attrDecls
+|attrDecls| * |
 |complexTypeModel
 |elementModel
 |facets
