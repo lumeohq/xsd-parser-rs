@@ -11,3 +11,6 @@ pub mod any_attribute;
 pub mod attribute;
 pub mod attribute_group;
 pub mod choice;
+pub mod complex_content;
+pub mod extension;
+pub mod restriction;
