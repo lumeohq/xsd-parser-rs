@@ -18,7 +18,7 @@ All Simple types
 |ENTITY
 |float
 |formChoice| * |
-|fullDerivationSet
+|fullDerivationSet| * |
 |gDay
 |gMonth
 |gMonthDay
