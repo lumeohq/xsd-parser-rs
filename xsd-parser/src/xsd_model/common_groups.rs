@@ -130,7 +130,6 @@ pub enum TypeDefParticle<'a> {
 }
 
 
-
 // Group information
 // Namespace: http://www.w3.org/2001/XMLSchema
 // Schema document: xmlschema.xsd
