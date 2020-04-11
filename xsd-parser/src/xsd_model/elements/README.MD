@@ -28,7 +28,7 @@ All Elements
 |fractionDigits| * |
 |group (Ref)| * |
 |group| * |
-|import
+|import| * |
 |include
 |key
 |keyref
