@@ -23,3 +23,4 @@ pub mod include;
 pub mod key_ref;
 pub mod key;
 pub mod notation;
+pub mod union;

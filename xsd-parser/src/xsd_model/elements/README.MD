@@ -54,6 +54,6 @@ All Elements
 |simpleType
 |simpleType
 |totalDigits
-|union
+|union| * |
 |unique
 |whiteSpace
