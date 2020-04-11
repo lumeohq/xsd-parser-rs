@@ -11,7 +11,7 @@ All Simple types
 |dateTime
 |decimal
 |derivationControl
-|derivationSet
+|derivationSet| * |
 |double
 |duration
 |ENTITIES
