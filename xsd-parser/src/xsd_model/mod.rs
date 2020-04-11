@@ -27,6 +27,7 @@ pub mod unique;
 pub mod key;
 pub mod key_ref;
 pub mod selector;
+pub mod field;
 
 
 pub type RawAttribute<'a> = roxmltree::Attribute<'a>;
