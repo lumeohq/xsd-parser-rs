@@ -1,4 +1,7 @@
 use crate::xsd_model::datatypes::simple_types::Id;
+use crate::xsd_model::datatypes::simple_types::qname::QName;
+use crate::xsd_model::datatypes::complex_types::local_simple_type::LocalSimpleType;
+
 
 // Element information
 // Namespace: http://www.w3.org/2001/XMLSchema
