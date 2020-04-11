@@ -1,6 +1,7 @@
 use crate::xsd_model::annotation::Annotation;
 use crate::xsd_model::RawAttribute;
 use crate::xsd_model::xsd::Id;
+use crate::xsd_model::restriction::SimpleRestrictionType;
 
 // See http://www.w3.org/TR/xmlschema-1/#element-simpleContent.
 // Element information
