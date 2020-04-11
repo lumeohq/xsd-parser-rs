@@ -9,6 +9,7 @@ pub mod form_choice;
 pub mod derivation_set;
 pub mod block_set;
 pub mod simple_derivation_set;
+pub mod token;
 
 pub type AnySimpleType<'a> = &'a str;
 pub type Id<'a> = Option<id::Id<'a>>;

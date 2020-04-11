@@ -49,7 +49,7 @@ All Simple types
 |simpleDerivationSet| * |
 |string
 |time
-|token
+|token| * |
 |unsignedByte
 |unsignedInt
 |unsignedLong
