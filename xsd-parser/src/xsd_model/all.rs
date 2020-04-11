@@ -23,7 +23,7 @@ use crate::xsd_model::xsd::{NonNegativeInteger, Id};
 // maxOccurs	    [0..1]	Anonymous		Default value is "1".
 pub struct All<'a> {
     annotation: Option<Annotation<'a>>,
-    elements: Vec<Element<'a>>,
+    //elements: Vec<Element<'a>>,  //FIXME: uncomment
     attributes: Vec<RawAttribute<'a>>,
     id: Id<'a>,
     min_occurs: NonNegativeInteger,
