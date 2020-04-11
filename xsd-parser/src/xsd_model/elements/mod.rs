@@ -38,3 +38,4 @@ pub mod min_inclusive;
 pub mod max_length;
 pub mod min_length;
 pub mod total_digits;
+pub mod pattern;

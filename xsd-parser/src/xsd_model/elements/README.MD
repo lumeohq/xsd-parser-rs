@@ -41,7 +41,7 @@ All Elements
 |minInclusive| * |
 |minLength| * |
 |notation| * |
-|pattern
+|pattern| * |
 |redefine| * |
 |restriction (Complex)| * |
 |restriction (Simple)| * |
