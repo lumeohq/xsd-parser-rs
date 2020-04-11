@@ -21,6 +21,7 @@ pub mod extension;
 pub mod all;
 pub mod choice;
 pub mod sequence;
+pub mod complex_content;
 
 
 pub type RawAttribute<'a> = roxmltree::Attribute<'a>;
