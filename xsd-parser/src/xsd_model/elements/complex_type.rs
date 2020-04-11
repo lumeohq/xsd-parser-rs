@@ -32,4 +32,4 @@ pub type TopLevelComplexType<'a> = top_level_complex_type::TopLevelComplexType<'
 // Type xsd:localElement via reference to xsd:elementModel (Element xsd:element)
 // Type xsd:narrowMaxMin via reference to xsd:elementModel (Element xsd:element)
 // Type xsd:topLevelElement via reference to xsd:elementModel (Element xsd:element)
-pub type LocalComplexType_<'a> = local_complex_type::LocalComplexType<'a>;
+pub type LocalComplexType<'a> = local_complex_type::LocalComplexType<'a>;
