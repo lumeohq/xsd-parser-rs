@@ -4,7 +4,7 @@ use crate::xsd_model::simple_type::LocalSimpleType;
 use crate::xsd_model::facets::{Facet, TotalDigits, NumFacet, Enumeration, WhiteSpace, Pattern};
 use crate::xsd_model::attribute::LocalAttribute;
 use crate::xsd_model::group::Group;
-use crate::xsd_model::all::All;
+use crate::xsd_model::all::AllType;
 use crate::xsd_model::choice::Choice;
 use crate::xsd_model::any::Any;
 use crate::xsd_model::sequence::Sequence;
@@ -124,7 +124,7 @@ pub enum FacetGroup<'a> {
 // Type xsd:extensionType (Element xsd:extension)
 pub enum TypeDefParticle<'a> {
     Group(Group<'a>),
-    All(All<'a>),
+    All(AllType<'a>),
     Choice(Choice<'a>),
     Sequence(Sequence<'a>)
 }
