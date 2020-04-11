@@ -28,3 +28,4 @@ pub mod unique;
 pub mod simple_content;
 pub mod selector;
 pub mod sequence;
+pub mod simple_type;

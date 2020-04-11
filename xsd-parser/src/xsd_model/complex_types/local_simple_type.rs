@@ -1,4 +1,7 @@
+use crate::xsd_model::elements::annotation::Annotation;
+use crate::xsd_model::groups::simple_derivation::SimpleDerivation;
 use crate::xsd_model::simple_types::Id;
+use crate::xsd_model::RawAttribute;
 
 // Namespace: http://www.w3.org/2001/XMLSchema
 // Schema document: datatypes.xsd
@@ -29,6 +32,6 @@ use crate::xsd_model::simple_types::Id;
 pub struct LocalSimpleType<'a> {
     annotation: Option<Annotation<'a>>,
     content_choice: Box<SimpleDerivation<'a>>,
-    id: Option<Id<'a>>,
+    id: Id<'a>,
     attributes: Vec<RawAttribute<'a>>
 }

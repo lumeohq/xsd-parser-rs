@@ -51,8 +51,8 @@ All Elements
 |sequence (Simple)| * |
 |sequence| * |
 |simpleContent| * |
-|simpleType
-|simpleType
+|simpleType (Local) | * |
+|simpleType (Global) | * |
 |totalDigits
 |union| * |
 |unique| * |
