@@ -50,7 +50,7 @@ All Elements
 |selector
 |sequence
 |sequence
-|simpleContent
+|simpleContent| * |
 |simpleType
 |simpleType
 |totalDigits
