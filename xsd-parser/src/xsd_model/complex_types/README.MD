@@ -9,7 +9,7 @@ All Complex types
 |complexRestrictionType
 |complexType
 |explicitGroup| * |
-|extensionType
+|extensionType| * |
 |facet| * |
 |keybase
 |localAttributeType| * |
