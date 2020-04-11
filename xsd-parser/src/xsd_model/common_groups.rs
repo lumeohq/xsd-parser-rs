@@ -8,6 +8,7 @@ use crate::xsd_model::all::AllType;
 use crate::xsd_model::choice::Choice;
 use crate::xsd_model::any::Any;
 use crate::xsd_model::sequence::Sequence;
+use crate::xsd_model::simple_content::SimpleContent;
 
 
 // Group information
@@ -151,4 +152,34 @@ pub enum NestedParticle<'a> {
     Choice(Choice<'a>),
     Sequence(Sequence<'a>),
     Any(Any<'a>),
+}
+
+
+// Group information
+// Namespace: http://www.w3.org/2001/XMLSchema
+// Schema document: xmlschema.xsd
+//
+// Content
+//  Choice [1..1]
+//      xsd:simpleContent
+//      xsd:complexContent
+//      Sequence [1..1]
+//          Choice [0..1]       from group xsd:typeDefParticle
+//              xsd:group
+//              xsd:all         An "all" group that allows elements to appear in any order. Unlike other group types, does not allow other groups as children, only elements.
+//              xsd:choice
+//              xsd:sequence
+//          Choice [0..*]       from group xsd:attrDecls
+//              xsd:attribute
+//              xsd:attributeGroup
+//          xsd:anyAttribute [0..1]
+//
+// Used in
+// Type xsd:complexType
+// Type xsd:localComplexType (Element xsd:complexType)
+// Type xsd:topLevelComplexType (Element xsd:complexType)
+pub enum ComplexTypeModel<'a> {
+    SimpleContent(SimpleContent<'a>),
+    ComplexContent(LocalComplexType<'a>),
+    TypeDefParticle(Option<TypeDefParticle<'a>>, Vec<AttrDecls<'a>>)
 }
