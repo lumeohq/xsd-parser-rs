@@ -15,8 +15,8 @@ All Elements
 |choice (Simple)| * |
 |choice| * |
 |complexContent| * |
-|complexType
-|complexType
+|complexType (Local)| * |
+|complexType (Global)| * |
 |documentation| * |
 |element
 |element

@@ -4,7 +4,7 @@ All Groups
 | -------------- | ------- | ----- |
 |allModel
 |attrDecls| * |
-|complexTypeModel
+|complexTypeModel| * |
 |elementModel
 |facets| * |
 |identityConstraint
