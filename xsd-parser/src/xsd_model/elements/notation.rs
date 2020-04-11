@@ -1,7 +1,10 @@
-use crate::xsd_model::annotation::Annotation;
 use crate::xsd_model::RawAttribute;
-use crate::xsd_model::xsd::{Id, NCName, Public, AnyUri};
+use crate::xsd_model::elements::annotation::Annotation;
+use crate::xsd_model::simple_types::Id;
+use crate::xsd_model::simple_types::ncname::NCName;
+use crate::xsd_model::simple_types::any_uri::AnyUri;
 
+// xsd:notation
 // See http://www.w3.org/TR/xmlschema-1/#element-notation.
 // Element information
 // Namespace: http://www.w3.org/2001/XMLSchema
@@ -18,10 +21,14 @@ use crate::xsd_model::xsd::{Id, NCName, Public, AnyUri};
 // name	            [1..1]	xsd:NCName
 // public	        [0..1]	xsd:public
 // system	        [0..1]	xsd:anyURI
+//
+// Used in
+// Group xsd:schemaTop
+// Anonymous type of element xsd:schema via reference to xsd:schemaTop
 pub struct Notation<'a> {
     annotation: Option<Annotation<'a>>,
     attributes: Vec<RawAttribute<'a>>,
-    id: Option<Id<'a>>,
+    id: Id<'a>,
     name: NCName<'a>,
     public: Option<Public<'a>>,
     system: Option<AnyUri<'a>>,

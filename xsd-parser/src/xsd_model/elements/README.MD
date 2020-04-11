@@ -40,7 +40,7 @@ All Elements
 |minExclusive
 |minInclusive
 |minLength
-|notation
+|notation| * |
 |pattern
 |redefine
 |restriction (Complex)| * |
