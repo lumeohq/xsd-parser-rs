@@ -41,18 +41,8 @@ pub mod simple_types;
 pub type RawAttribute<'a> = roxmltree::Attribute<'a>;
 pub type RawElement<'a> = roxmltree::Node<'a, 'a>;
 
-pub enum FormChoice{
-    Qualified,
-    Unqualified
-}
 
 pub enum MaxOccurs {
     Bounded(usize),
     Unbounded,
-}
-
-impl Default for FormChoice {
-    fn default() -> Self {
-        FormChoice::Unqualified
-    }
 }
