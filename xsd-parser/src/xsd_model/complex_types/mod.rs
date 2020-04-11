@@ -22,3 +22,4 @@ pub mod named_group_ref;
 pub mod named_group;
 pub mod local_element;
 pub mod top_level_element;
+pub mod narrow_max_min;

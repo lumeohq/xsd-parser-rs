@@ -19,7 +19,7 @@ All Complex types
 |namedAttributeGroup| * |
 |namedGroup| * |
 |namedGroupRef| * |
-|narrowMaxMin
+|narrowMaxMin| * |
 |noFixedFacet| * |
 |numFacet| * |
 |openAttrs
