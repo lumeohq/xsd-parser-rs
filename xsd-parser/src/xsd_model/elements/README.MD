@@ -6,7 +6,7 @@ All Elements
 |all (Anonymous)| * |
 |annotation| * |
 |any| * |
-|anyAttribute
+|anyAttribute| * |
 |appinfo| * |
 |attribute
 |attribute

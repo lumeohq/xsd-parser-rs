@@ -7,3 +7,4 @@ pub mod app_info;
 pub mod documentation;
 pub mod any;
 pub mod all;
+pub mod any_attribute;
