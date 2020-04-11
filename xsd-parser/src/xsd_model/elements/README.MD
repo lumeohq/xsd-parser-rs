@@ -8,8 +8,8 @@ All Elements
 |any| * |
 |anyAttribute| * |
 |appinfo| * |
-|attribute
-|attribute
+|attribute| * |
+|attribute| * |
 |attributeGroup
 |attributeGroup
 |choice
