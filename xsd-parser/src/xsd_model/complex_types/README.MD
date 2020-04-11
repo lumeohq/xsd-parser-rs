@@ -6,7 +6,7 @@ All Complex types
 |annotated
 |anyType| * |
 |attributeGroupRef| * |
-|complexRestrictionType
+|complexRestrictionType| * |
 |complexType
 |explicitGroup| * |
 |extensionType| * |
@@ -25,7 +25,7 @@ All Complex types
 |openAttrs
 |simpleExplicitGroup| * |
 |simpleExtensionType| * |
-|simpleRestrictionType
+|simpleRestrictionType| * |
 |simpleType| * |
 |topLevelAttributeType| * |
 |topLevelComplexType

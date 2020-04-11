@@ -1,5 +1,6 @@
 use crate::xsd_model::elements::annotation::Annotation;
 use crate::xsd_model::groups::attr_decls::AttrDecls;
+use crate::xsd_model::groups::simple_restriction_model::SimpleRestrictionModel;
 
 // xsd:simpleRestrictionType
 // Complex type information
