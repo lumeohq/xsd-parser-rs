@@ -26,7 +26,7 @@ All Simple types
 |IDREFS|  |  |  |  
 |int|  |  |  |  
 |integer|  |  |  |  
-|language|  |  |  |  
+|language| * |  |  |  
 |long|  |  |  |  
 |Name|  |  |  |  
 |NCName| * |  |  |  
