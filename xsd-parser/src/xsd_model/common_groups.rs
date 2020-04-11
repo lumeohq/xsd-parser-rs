@@ -1,5 +1,7 @@
 use crate::xsd_model::attribute_group::AttributeGroup;
 use crate::xsd_model::any_attribute::AnyAttribute;
+use crate::xsd_model::simple_type::LocalSimpleType;
+use crate::xsd_model::facets::FacetGroup;
 
 
 // Group information
@@ -27,4 +29,34 @@ pub struct AttrDecls<'a> {
 pub enum AttrChoice<'a> {
     Attribute(Attribute<'a>),
     AttributeGroup(AttributeGroup<'a>)
+}
+
+
+// Group information
+// Namespace: http://www.w3.org/2001/XMLSchema
+// Schema document: datatypes.xsd
+//
+// Content
+//  Sequence [1..1]
+//      xsd:simpleType [0..1]
+//      Choice [0..*]       from group xsd:facets
+//          xsd:minExclusive
+//          xsd:minInclusive
+//          xsd:maxExclusive
+//          xsd:maxInclusive
+//          xsd:totalDigits
+//          xsd:fractionDigits
+//          xsd:length
+//          xsd:minLength
+//          xsd:maxLength
+//          xsd:enumeration
+//          xsd:whiteSpace
+//          xsd:pattern
+//
+// Used in
+// Anonymous type of element xsd:restriction
+// Type xsd:simpleRestrictionType (Element xsd:restriction)
+pub struct SimpleRestrictionModel<'a> {
+    simple_type: Option<LocalSimpleType<'a>>,
+    facets: Option<FacetGroup<'a>>
 }
