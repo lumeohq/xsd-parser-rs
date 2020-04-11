@@ -1,3 +1,5 @@
+use crate::xsd_model::datatypes::simple_types::Id;
+use crate::xsd_model::datatypes::simple_types::AnySimpleType;
 
 // xsd:noFixedFacet
 // Complex type information
@@ -23,6 +25,9 @@
 //              xsd:facet
 //                  xsd:noFixedFacet
 //                      restricted by Anonymous type of element xsd:pattern
-pub struct NoFixedFacet {
-    
+pub struct NoFixedFacet<'a> {
+    annotation: Option<Annotation<'a>>,
+    id: Id<'a>,
+    value: AnySimpleType<'a>,
+    attributes: Vec<RawAttribute<'a>>,
 }

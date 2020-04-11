@@ -2,7 +2,7 @@ All Elements
 
 | xsd element | Struct | Validation | Tests |
 | ----------- | ------ | ---------- | ----- |
-|enumeration
+|enumeration| * |  |  |
 |fractionDigits
 |length
 |list
