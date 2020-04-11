@@ -12,5 +12,5 @@ All Groups
 |redefinable
 |schemaTop
 |simpleDerivation
-|simpleRestrictionModel
+|simpleRestrictionModel| * |
 |typeDefParticle| * |
