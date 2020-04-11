@@ -1,4 +1,9 @@
-
+use crate::xsd_model::annotation::Annotation;
+use crate::xsd_model::common_groups::ElementModel;
+use crate::xsd_model::RawAttribute;
+use crate::xsd_model::xsd::{Id, QName};
+use crate::xsd_model::simple_type::SimpleDerivationSet;
+use crate::xsd_model::schema::BlockSet;
 
 // See http://www.w3.org/TR/xmlschema-1/#element-element.
 // Element information
@@ -35,5 +40,17 @@
 // Group xsd:schemaTop
 // Anonymous type of element xsd:schema via reference to xsd:schemaTop
 pub struct TopLevelElement<'a> {
-
+    annotation: Option<Annotation<'a>>,
+    model: ElementModel<'a>,
+    attributes: Vec<RawAttribute<'a>>,
+    id: Id<'a>,
+    name: QName<'a>,
+    type_: Option<QName<'a>>,
+    substitution_group: Option<QName<'a>>,
+    default: Option<&'a str>,
+    fixed: Option<&'a str>,
+    nillable: bool,
+    abstract_: bool,
+    final_: Option<SimpleDerivationSet>,
+    block: Option<BlockSet>,
 }
