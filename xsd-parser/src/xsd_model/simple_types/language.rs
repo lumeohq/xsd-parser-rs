@@ -42,4 +42,4 @@
 //          restricted by xsd:normalizedString
 //              restricted by xsd:token
 //                  restricted by xsd:language
-pub struct Id<'a>(&'a str);
+pub struct Language<'a>(&'a str);
