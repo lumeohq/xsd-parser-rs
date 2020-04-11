@@ -14,3 +14,4 @@ pub mod simple_explicit_group;
 pub mod explicit_group;
 pub mod simple_extension_type;
 pub mod extension_type;
+pub mod simple_restriction_type;

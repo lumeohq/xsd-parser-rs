@@ -3,6 +3,7 @@ use crate::xsd_model::groups::attr_decls::AttrDecls;
 use crate::xsd_model::RawAttribute;
 use crate::xsd_model::simple_types::Id;
 use crate::xsd_model::simple_types::qname::QName;
+use crate::xsd_model::groups::type_def_particle::TypeDefParticle;
 
 
 // xsd:extensionType
