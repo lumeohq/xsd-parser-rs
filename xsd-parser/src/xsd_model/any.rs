@@ -25,6 +25,6 @@ pub struct Any<'a> {
     id: Id<'a>,
     namespace: &'a str, //TODO: namespaceList
     process_contents: &'a str,
-    min_occurs: Option<NonNegativeInteger>,
-    max_occurs: Option<MaxOccurs>
+    min_occurs: NonNegativeInteger,
+    max_occurs: MaxOccurs,
 }
