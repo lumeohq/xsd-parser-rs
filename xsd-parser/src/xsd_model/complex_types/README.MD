@@ -24,7 +24,7 @@ All Complex types
 |numFacet| * |
 |openAttrs
 |simpleExplicitGroup| * |
-|simpleExtensionType
+|simpleExtensionType| * |
 |simpleRestrictionType
 |simpleType| * |
 |topLevelAttributeType| * |
