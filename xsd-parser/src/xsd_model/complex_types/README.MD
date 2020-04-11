@@ -8,7 +8,7 @@ All Complex types
 |attributeGroupRef| * |
 |complexRestrictionType
 |complexType
-|explicitGroup
+|explicitGroup| * |
 |extensionType
 |facet| * |
 |keybase
