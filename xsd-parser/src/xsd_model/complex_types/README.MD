@@ -16,7 +16,7 @@ All Complex types
 |localComplexType
 |localElement
 |localSimpleType| * |
-|namedAttributeGroup
+|namedAttributeGroup| * |
 |namedGroup
 |namedGroupRef
 |narrowMaxMin
