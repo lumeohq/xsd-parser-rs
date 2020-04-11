@@ -4,7 +4,7 @@ All Simple types
 | -------- | ------ | ---------- | ----- |
 |anyURI| * |
 |base64Binary| * |
-|blockSet
+|blockSet| * |
 |boolean
 |byte
 |date
