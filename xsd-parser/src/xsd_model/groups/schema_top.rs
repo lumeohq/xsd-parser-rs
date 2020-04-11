@@ -27,11 +27,11 @@ use crate::xsd_model::elements::notation::Notation;
 // Used in
 // Anonymous type of element xsd:schema
 pub enum SchemaTop<'a> {
-    SimpleType(TopLevelSimpleType<'a>),
-    ComplexType(TopLevelComplexType<'a>),
-    Group(Group<'a>),
-    AttributeGroup(AttributeGroup<'a>),
-    Element(TopLevelElement<'a>),
-    Attribute(TopLevelAttribute<'a>),
+    SimpleType(Box<TopLevelSimpleType<'a>>),
+    ComplexType(Box<TopLevelComplexType<'a>>),
+    Group(Box<Group<'a>>),
+    AttributeGroup(Box<AttributeGroup<'a>>),
+    Element(Box<TopLevelElement<'a>>),
+    Attribute(Box<TopLevelAttribute<'a>>),
     Notation(Notation<'a>),
 }

@@ -30,6 +30,6 @@ use crate::xsd_model::elements::simple_content::SimpleContent;
 // Type xsd:topLevelComplexType (Element xsd:complexType)
 pub enum ComplexTypeModel<'a> {
     SimpleContent(SimpleContent<'a>),
-    ComplexContent(ComplexContent<'a>),
+    ComplexContent(Box<ComplexContent<'a>>),
     TypeDefParticle(Option<TypeDefParticle<'a>>, Vec<AttrDecls<'a>>)
 }

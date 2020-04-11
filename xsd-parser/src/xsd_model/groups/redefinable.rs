@@ -21,8 +21,8 @@ use crate::xsd_model::elements::attribute_group::AttributeGroup;
 // Anonymous type of element xsd:redefine
 // Group xsd:schemaTop
 pub enum Redefinable<'a> {
-    SimpleType(TopLevelSimpleType<'a>),
-    ComplexType(TopLevelComplexType<'a>),
-    Group(Group<'a>),
-    AttributeGroup(AttributeGroup<'a>),
+    SimpleType(Box<TopLevelSimpleType<'a>>),
+    ComplexType(Box<TopLevelComplexType<'a>>),
+    Group(Box<Group<'a>>),
+    AttributeGroup(Box<AttributeGroup<'a>>),
 }

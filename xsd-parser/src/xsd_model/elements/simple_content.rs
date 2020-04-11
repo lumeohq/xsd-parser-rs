@@ -37,6 +37,6 @@ pub struct SimpleContent<'a> {
 
 
 pub enum SimpleContentChoice<'a> {
-    Restriction(SimpleRestriction<'a>),
-    Extension(SimpleExtension<'a>)
+    Restriction(Box<SimpleRestriction<'a>>),
+    Extension(Box<SimpleExtension<'a>>)
 }

@@ -28,6 +28,6 @@ pub struct AttrDecls<'a> {
 }
 
 pub enum AttrChoice<'a> {
-    Attribute(LocalAttribute<'a>),
+    Attribute(Box<LocalAttribute<'a>>),
     AttributeGroup(AttributeGroupRef<'a>)
 }

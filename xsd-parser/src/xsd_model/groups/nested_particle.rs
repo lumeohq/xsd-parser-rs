@@ -22,7 +22,7 @@ use crate::xsd_model::elements::element::LocalElement;
 // Type xsd:explicitGroup (Elements xsd:choice, xsd:sequence)
 // Type xsd:simpleExplicitGroup (Elements xsd:choice, xsd:sequence)
 pub enum NestedParticle<'a> {
-    Element(LocalElement<'a>),
+    Element(Box<LocalElement<'a>>),
     Group(NamedGroupRef<'a>),
     Choice(Choice<'a>),
     Sequence(Sequence<'a>),

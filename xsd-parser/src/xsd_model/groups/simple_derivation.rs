@@ -19,7 +19,7 @@ use crate::xsd_model::elements::union::Union;
 // Type xsd:localSimpleType (Element xsd:simpleType)
 // Type xsd:topLevelSimpleType (Element xsd:simpleType)
 pub enum SimpleDerivation<'a> {
-    Restriction(Restriction<'a>),
+    Restriction(Box<Restriction<'a>>),
     List(List<'a>),
     Union(Union<'a>),
 }
