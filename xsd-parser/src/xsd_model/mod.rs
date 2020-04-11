@@ -1,9 +1,3 @@
-pub mod all;
-pub mod annotation;
-pub mod any;
-pub mod any_attribute;
-pub mod attribute;
-pub mod attribute_group;
 pub mod choice;
 pub mod common_groups;
 pub mod complex_content;
