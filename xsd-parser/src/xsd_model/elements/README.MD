@@ -5,7 +5,7 @@ All Elements
 |enumeration| * |  |  |
 |fractionDigits| * |  |  
 |length| * |
-|list
+|list| * |
 |maxExclusive
 |maxInclusive
 |maxLength

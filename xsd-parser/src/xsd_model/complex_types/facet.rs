@@ -1,5 +1,5 @@
-use crate::xsd_model::datatypes::simple_types::AnySimpleType;
-use crate::xsd_model::datatypes::simple_types::Id;
+use crate::xsd_model::simple_types::AnySimpleType;
+use crate::xsd_model::simple_types::Id;
 
 // xsd:facet
 // Complex type information

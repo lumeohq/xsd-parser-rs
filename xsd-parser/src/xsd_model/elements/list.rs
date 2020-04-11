@@ -1,6 +1,6 @@
-use crate::xsd_model::datatypes::simple_types::Id;
-use crate::xsd_model::datatypes::simple_types::qname::QName;
-use crate::xsd_model::datatypes::complex_types::local_simple_type::LocalSimpleType;
+use crate::xsd_model::simple_types::Id;
+use crate::xsd_model::simple_types::qname::QName;
+use crate::xsd_model::complex_types::local_simple_type::LocalSimpleType;
 
 
 // Element information

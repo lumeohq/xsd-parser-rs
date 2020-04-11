@@ -1,7 +1,7 @@
-use crate::xsd_model::datatypes::complex_types::num_facet::NumFacet;
+use crate::xsd_model::complex_types::num_facet::NumFacet;
 
-// xsd:length
-// See http://www.w3.org/TR/xmlschema-2/#element-length.
+// xsd:fractionDigits
+// See http://www.w3.org/TR/xmlschema-2/#element-fractionDigits.
 // Element information
 // Namespace: http://www.w3.org/2001/XMLSchema
 // Schema document: datatypes.xsd
@@ -12,8 +12,8 @@ use crate::xsd_model::datatypes::complex_types::num_facet::NumFacet;
 // xsd:annotation [0..1]
 //
 // Attributes
-// id	            [0..1]	xsd:ID		                                        from type xsd:annotated
-// fixed	        [0..1]	xsd:boolean		        Default value is "false".   from type xsd:facet
+// id	            [0..1]	xsd:ID		            from type xsd:annotated
+// fixed	        [0..1]	xsd:boolean		        Default value is "false". from type xsd:facet
 // value	        [1..1]	xsd:nonNegativeInteger
 // Any attribute	[0..*]		                    Namespace: ##other, Process Contents: lax
 //
@@ -22,4 +22,4 @@ use crate::xsd_model::datatypes::complex_types::num_facet::NumFacet;
 // Anonymous type of element xsd:restriction via reference to xsd:simpleRestrictionModel
 // Group xsd:simpleRestrictionModel via reference to xsd:facets
 // Type xsd:simpleRestrictionType via reference to xsd:simpleRestrictionModel (Element xsd:restriction)
-pub type Length<'a> = NumFacet<'a>;
+pub type FractionDigits<'a> = NumFacet<'a>;

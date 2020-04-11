@@ -1,4 +1,4 @@
-use crate::xsd_model::datatypes::complex_types::no_fixed_facet::NoFixedFacet;
+use crate::xsd_model::complex_types::no_fixed_facet::NoFixedFacet;
 
 // xsd:enumeration
 // See http://www.w3.org/TR/xmlschema-2/#element-enumeration.
