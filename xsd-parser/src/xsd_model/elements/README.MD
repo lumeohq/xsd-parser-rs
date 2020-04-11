@@ -1,7 +1,7 @@
 All Elements
 
-| xsd element       | Struct | Validation | Tests |
-| ----------------- | ------ | ---------- | ----- |
+| xsd element                | Struct | Validation | Tests |
+| -------------------------- | ------ | ---------- | ----- |
 |all (allType)| * |
 |all (Anonymous)| * |
 |annotation| * |
@@ -10,8 +10,8 @@ All Elements
 |appinfo| * |
 |attribute (Global)| * |
 |attribute (Local)| * |
-|attributeGroup| * |
-|attributeGroup| * |
+|attributeGroup (Named)| * |
+|attributeGroup (Ref)| * |
 |choice
 |choice
 |complexContent

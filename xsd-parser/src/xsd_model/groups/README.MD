@@ -2,6 +2,15 @@ All Groups
 
 | xsd group name | Struct  | Tests |
 | -------------- | ------- | ----- |
-|facets|
-|simpleDerivation|
-|simpleRestrictionModel|  
+|allModel
+|attrDecls
+|complexTypeModel
+|elementModel
+|facets
+|identityConstraint
+|nestedParticle
+|redefinable
+|schemaTop
+|simpleDerivation
+|simpleRestrictionModel
+|typeDefParticle
