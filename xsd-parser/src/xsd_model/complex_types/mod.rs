@@ -21,3 +21,4 @@ pub mod top_level_complex_type;
 pub mod named_group_ref;
 pub mod named_group;
 pub mod local_element;
+pub mod top_level_element;

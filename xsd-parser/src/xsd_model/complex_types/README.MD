@@ -29,6 +29,6 @@ All Complex types
 |simpleType| * |
 |topLevelAttributeType| * |
 |topLevelComplexType| * |
-|topLevelElement
+|topLevelElement| * |
 |topLevelSimpleType| * |
 |wildcard| * |
