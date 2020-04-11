@@ -1,3 +1,16 @@
+use crate::xsd_model::elements::min_exclusive::MinExclusive;
+use crate::xsd_model::elements::min_inclusive::MinInclusive;
+use crate::xsd_model::elements::max_exclusive::MaxExclusive;
+use crate::xsd_model::elements::max_inclusive::MaxInclusive;
+use crate::xsd_model::elements::total_digits::TotalDigits;
+use crate::xsd_model::elements::fraction_digits::FractionDigits;
+use crate::xsd_model::elements::length::Length;
+use crate::xsd_model::elements::min_length::MinLength;
+use crate::xsd_model::elements::max_length::MaxLength;
+use crate::xsd_model::elements::enumeration::Enumeration;
+use crate::xsd_model::elements::white_space::WhiteSpace;
+use crate::xsd_model::elements::pattern::Pattern;
+
 // xsd:facets
 //        We should use a substitution group for facets, but
 //        that's ruled out because it would allow users to
@@ -26,16 +39,16 @@
 // Used in
 // Group xsd:simpleRestrictionModel
 pub enum Facets<'a> {
-    // MinExclusive(Facet<'a>),
-    // MinInclusive(Facet<'a>),
-    // MaxExclusive(Facet<'a>),
-    // MaxInclusive(Facet<'a>),
-    // TotalDigits(TotalDigits<'a>),
-    // FractionDigits(NumFacet<'a>),
-    // Length(NumFacet<'a>),
-    // MinLength(NumFacet<'a>),
-    // MaxLength(NumFacet<'a>),
-    // Enumeration(Enumeration<'a>),
-    // WhiteSpace(WhiteSpace<'a>),
-    // Pattern(Pattern<'a>)
+    MinExclusive(MinExclusive<'a>),
+    MinInclusive(MinInclusive<'a>),
+    MaxExclusive(MaxExclusive<'a>),
+    MaxInclusive(MaxInclusive<'a>),
+    TotalDigits(TotalDigits<'a>),
+    FractionDigits(FractionDigits<'a>),
+    Length(Length<'a>),
+    MinLength(MinLength<'a>),
+    MaxLength(MaxLength<'a>),
+    Enumeration(Enumeration<'a>),
+    WhiteSpace(WhiteSpace<'a>),
+    Pattern(Pattern<'a>)
 }

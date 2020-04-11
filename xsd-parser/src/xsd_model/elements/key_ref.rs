@@ -1,11 +1,10 @@
-use crate::xsd_model::annotation::Annotation;
 use crate::xsd_model::RawAttribute;
-use crate::xsd_model::field::Field;
 use crate::xsd_model::elements::annotation::Annotation;
 use crate::xsd_model::elements::field::Field;
 use crate::xsd_model::simple_types::Id;
 use crate::xsd_model::simple_types::ncname::NCName;
 use crate::xsd_model::simple_types::qname::QName;
+use crate::xsd_model::elements::selector::Selector;
 
 // xsd:keyref
 // See http://www.w3.org/TR/xmlschema-1/#element-keyref.

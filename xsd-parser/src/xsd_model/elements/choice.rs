@@ -1,7 +1,3 @@
-use crate::xsd_model::annotation::Annotation;
-use crate::xsd_model::{RawAttribute, MaxOccurs};
-use crate::xsd_model::xsd::{Id, NonNegativeInteger};
-use crate::xsd_model::common_groups::NestedParticle;
 use crate::xsd_model::complex_types::explicit_group::ExplicitGroup;
 use crate::xsd_model::complex_types::simple_explicit_group::SimpleExplicitGroup;
 

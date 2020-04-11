@@ -1,6 +1,4 @@
-use crate::xsd_model::xsd::*;
 use crate::xsd_model::RawAttribute;
-use crate::xsd_model::annotation::Annotation;
 use crate::xsd_model::elements::annotation::Annotation;
 use crate::xsd_model::simple_types::Id;
 use crate::xsd_model::simple_types::any_uri::AnyUri;

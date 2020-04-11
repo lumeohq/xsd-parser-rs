@@ -1,5 +1,6 @@
 use crate::xsd_model::elements::complex_type::LocalComplexType;
 use crate::xsd_model::groups::identity_constraint::IdentityConstraint;
+use crate::xsd_model::elements::simple_type::LocalSimpleType;
 
 // xsd:elementModel
 // Group information

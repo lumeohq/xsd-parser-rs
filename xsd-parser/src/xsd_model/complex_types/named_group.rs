@@ -4,6 +4,7 @@ use crate::xsd_model::elements::choice::SimpleChoice;
 use crate::xsd_model::RawAttribute;
 use crate::xsd_model::simple_types::Id;
 use crate::xsd_model::simple_types::ncname::NCName;
+use crate::xsd_model::elements::sequence::SimpleSequence;
 
 // xsd:namedGroup
 // Complex type information
@@ -40,9 +41,8 @@ pub struct NamedGroup<'a> {
     name: NCName<'a>
 }
 
-//TODO: add
 pub enum ContentChoice<'a> {
     All(All<'a>),
     Choice(SimpleChoice<'a>),
-    Sequence(Sequence<'a>),
+    Sequence(SimpleSequence<'a>),
 }

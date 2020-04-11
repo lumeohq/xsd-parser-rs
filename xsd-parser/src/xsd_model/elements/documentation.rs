@@ -1,5 +1,6 @@
 use crate::xsd_model::{RawElement, RawAttribute};
 use crate::xsd_model::simple_types::any_uri::AnyUri;
+use crate::xsd_model::simple_types::language::Language;
 
 // xsd:documentation
 // See http://www.w3.org/TR/xmlschema-1/#element-documentation.

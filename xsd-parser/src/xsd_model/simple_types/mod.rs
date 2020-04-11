@@ -9,6 +9,7 @@ pub mod language;
 pub mod ncname;
 pub mod non_negative_integer;
 pub mod positive_integer;
+pub mod public;
 pub mod qname;
 pub mod simple_derivation_set;
 pub mod token;

@@ -1,4 +1,4 @@
-use crate::xsd_model::facets::NumFacet;
+use crate::xsd_model::complex_types::num_facet::NumFacet;
 
 // xsd:minLength
 // See http://www.w3.org/TR/xmlschema-2/#element-minLength.

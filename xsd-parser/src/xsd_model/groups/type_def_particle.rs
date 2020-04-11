@@ -1,5 +1,7 @@
 use crate::xsd_model::elements::all::AllType;
 use crate::xsd_model::elements::choice::Choice;
+use crate::xsd_model::elements::group::Group;
+use crate::xsd_model::elements::sequence::Sequence;
 
 // xsd:typeDefParticle
 // 'complexType' uses this
@@ -23,4 +25,5 @@ pub enum TypeDefParticle<'a> {
     Group(Group<'a>),
     All(AllType<'a>),
     Choice(Choice<'a>),
-    Sequence(Sequence<'a>)
+    Sequence(Sequence<'a>),
+}

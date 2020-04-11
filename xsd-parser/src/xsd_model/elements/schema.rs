@@ -10,6 +10,7 @@ use crate::xsd_model::simple_types::block_set::BlockSet;
 use crate::xsd_model::simple_types::form_choice::FormChoice;
 use crate::xsd_model::simple_types::Id;
 use crate::xsd_model::simple_types::language::Language;
+use crate::xsd_model::groups::schema_top::SchemaTop;
 
 // xsd:schema
 // See http://www.w3.org/TR/xmlschema-1/#element-schema.
@@ -63,7 +64,7 @@ pub struct Schema<'a> {
     pub imports: Vec<Import<'a>>,
     pub redefines: Vec<Redefine<'a>>,
     pub annotations: Vec<Annotation<'a>>,
-    pub content: Vec<(SchemaTopGroup<'a>, Option<Annotation<'a>>)>,
+    pub content: Vec<(SchemaTop<'a>, Option<Annotation<'a>>)>,
     pub attributes: Vec<RawAttribute<'a>>,
     pub target_namespace: Option<AnyUri<'a>>,
     pub version: Option<Token<'a>>,

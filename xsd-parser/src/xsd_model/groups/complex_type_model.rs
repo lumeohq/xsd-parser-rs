@@ -1,6 +1,7 @@
 use crate::xsd_model::elements::complex_content::ComplexContent;
 use crate::xsd_model::groups::attr_decls::AttrDecls;
 use crate::xsd_model::groups::type_def_particle::TypeDefParticle;
+use crate::xsd_model::elements::simple_content::SimpleContent;
 
 // xsd:complexTypeModel
 // Group information

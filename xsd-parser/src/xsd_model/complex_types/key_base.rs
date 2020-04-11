@@ -3,6 +3,7 @@ use crate::xsd_model::elements::field::Field;
 use crate::xsd_model::RawAttribute;
 use crate::xsd_model::simple_types::Id;
 use crate::xsd_model::simple_types::ncname::NCName;
+use crate::xsd_model::elements::selector::Selector;
 
 // xsd:keybase
 // Complex type information

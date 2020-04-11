@@ -1,4 +1,8 @@
 use crate::xsd_model::elements::any::Any;
+use crate::xsd_model::complex_types::named_group_ref::NamedGroupRef;
+use crate::xsd_model::elements::choice::Choice;
+use crate::xsd_model::elements::sequence::Sequence;
+use crate::xsd_model::elements::element::LocalElement;
 
 // xsd:nestedParticle
 // Group information
@@ -18,7 +22,7 @@ use crate::xsd_model::elements::any::Any;
 // Type xsd:explicitGroup (Elements xsd:choice, xsd:sequence)
 // Type xsd:simpleExplicitGroup (Elements xsd:choice, xsd:sequence)
 pub enum NestedParticle<'a> {
-    //Element(LocalElement<'a>), // TODO: fix
+    Element(LocalElement<'a>),
     Group(NamedGroupRef<'a>),
     Choice(Choice<'a>),
     Sequence(Sequence<'a>),

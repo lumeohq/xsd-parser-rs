@@ -1,5 +1,6 @@
 use crate::xsd_model::complex_types::local_attribute_type::LocalAttributeType;
-use crate::xsd_model::complex_type::TopLevelComplexType;
+use crate::xsd_model::complex_types::top_level_attribute_type::TopLevelAttributeType;
+
 
 // xsd:attribute
 // Element information
@@ -33,4 +34,4 @@ pub type LocalAttribute<'a> = LocalAttributeType<'a>;
 // Used in
 // Group xsd:schemaTop
 // Anonymous type of element xsd:schema via reference to xsd:schemaTop
-pub type TopLevelAttribute<'a> = TopLevelComplexType<'a>;
+pub type TopLevelAttribute<'a> = TopLevelAttributeType<'a>;

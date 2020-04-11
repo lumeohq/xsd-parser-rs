@@ -3,6 +3,7 @@ use crate::xsd_model::elements::annotation::Annotation;
 use crate::xsd_model::simple_types::Id;
 use crate::xsd_model::simple_types::ncname::NCName;
 use crate::xsd_model::simple_types::any_uri::AnyUri;
+use crate::xsd_model::simple_types::public::Public;
 
 // xsd:notation
 // See http://www.w3.org/TR/xmlschema-1/#element-notation.

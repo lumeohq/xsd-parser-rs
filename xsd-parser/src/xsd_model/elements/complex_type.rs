@@ -1,8 +1,3 @@
-use crate::xsd_model::annotation::Annotation;
-use crate::xsd_model::common_groups::ComplexTypeModel;
-use crate::xsd_model::RawAttribute;
-use crate::xsd_model::xsd::{Id, QName};
-use crate::xsd_model::simple_type::SimpleDerivationSet;
 use crate::xsd_model::complex_types::top_level_complex_type;
 use crate::xsd_model::complex_types::local_complex_type;
 

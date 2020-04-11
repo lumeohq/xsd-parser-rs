@@ -1,12 +1,6 @@
-use crate::xsd_model::annotation::Annotation;
-use crate::xsd_model::common_groups::ElementModel;
-use crate::xsd_model::{RawAttribute, MaxOccurs, FormChoice};
-use crate::xsd_model::xsd::{Id, QName, NonNegativeInteger};
-use crate::xsd_model::simple_type::SimpleDerivationSet;
-use crate::xsd_model::schema::BlockSet;
 use crate::xsd_model::complex_types::local_element;
 use crate::xsd_model::complex_types::top_level_element;
-use crate::xsd_model::complex_types::narrow_max_min::NarrowMaxMin;;
+use crate::xsd_model::complex_types::narrow_max_min::NarrowMaxMin;
 
 // xsd:element
 // See http://www.w3.org/TR/xmlschema-1/#element-element.

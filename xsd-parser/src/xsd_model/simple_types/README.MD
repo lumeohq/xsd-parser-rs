@@ -43,7 +43,7 @@ All Simple types
 |normalizedString
 |NOTATION
 |positiveInteger| * |
-|public
+|public| * |
 |QName| * |
 |short
 |simpleDerivationSet| * |
