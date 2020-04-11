@@ -6,7 +6,7 @@ All Groups
 |attrDecls| * |
 |complexTypeModel
 |elementModel
-|facets
+|facets| * |
 |identityConstraint
 |nestedParticle| * |
 |redefinable
