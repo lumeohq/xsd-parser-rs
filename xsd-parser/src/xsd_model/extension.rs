@@ -21,6 +21,9 @@ use crate::xsd_model::xsd::{Id, QName};
 // Any attribute	[0..*]		        Namespace: ##other, Process Contents: lax	from type xsd:openAttrs
 // id	            [0..1]	xsd:ID		                                            from type xsd:annotated
 // base	            [1..1]	xsd:QName
+//
+// Used in
+// Anonymous type of element xsd:simpleContent
 pub struct SimpleExtension<'a> {
     annotation: Option<Annotation<'a>>,
     attr_decls: AttrDecls<'a>,
@@ -53,6 +56,9 @@ pub struct SimpleExtension<'a> {
 // Any attribute	[0..*]		Namespace: ##other, Process Contents: lax	from type xsd:openAttrs
 // id	[0..1]	xsd:ID		from type xsd:annotated
 // base	[1..1]	xsd:QName
+//
+// Used in
+// Anonymous type of element xsd:complexContent
 pub struct Extension<'a> {
     annotation: Option<Annotation<'a>>,
     type_def_particle: TypeDefParticle<'a>,
