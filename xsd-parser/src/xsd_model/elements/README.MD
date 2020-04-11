@@ -53,7 +53,7 @@ All Elements
 |simpleContent| * |
 |simpleType (Local) | * |
 |simpleType (Global) | * |
-|totalDigits
+|totalDigits| * |
 |union| * |
 |unique| * |
 |whiteSpace
