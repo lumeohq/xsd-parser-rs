@@ -1,5 +1,3 @@
-use std::str::FromStr;
-
 // xsd:nonNegativeInteger
 // The type xsd:nonNegativeInteger represents an arbitrarily large non-negative integer. An xsd:nonNegativeInteger is a sequence of digits, optionally preceded by a + sign. Leading zeros are permitted, but decimal points are not.
 //
@@ -38,27 +36,19 @@ use std::str::FromStr;
 //          restricted by xsd:positiveInteger
 pub struct NonNegativeInteger(usize);
 
-impl FromStr for NonNegativeInteger {
-    type Err = String;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(Self{ 0: s.parse::<usize>().map_err(|err| "Invalid ")?})
+impl NonNegativeInteger {
+    pub fn new(s: &str) -> Self {
+        Self {
+            0: s.parse::<usize>().expect("Value mus be a digit")  //TODO: maybe fromStr
+        }
     }
 }
 
 
 #[test]
 fn test_valid_values() {
-    assert_eq!("+3".parse::<NonNegativeInteger>().0, 3usize);
-    assert_eq!("122".parse::<NonNegativeInteger>().0, 122usize);
-    assert_eq!("0".parse::<NonNegativeInteger>().0, 0usize);
-    assert_eq!("0".parse::<NonNegativeInteger>().0, 0usize);
-    assert_eq!("00122".parse::<NonNegativeInteger>().0, 122usize);
 }
 
 #[test]
 fn test_invalid_values() {
-    assert_eq!("-3".parse::<NonNegativeInteger>(), Err("Value cannot be negative"));
-    assert_eq!("3.0".parse::<NonNegativeInteger>(), Err("Value must not contain a decimal point"));
-    assert_eq!("".parse::<NonNegativeInteger>(), Err("An empty value is not valid"));
 }
