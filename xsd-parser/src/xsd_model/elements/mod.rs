@@ -15,3 +15,4 @@ pub mod complex_content;
 pub mod extension;
 pub mod restriction;
 pub mod complex_type;
+pub mod group;
