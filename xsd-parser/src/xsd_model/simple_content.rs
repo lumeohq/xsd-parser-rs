@@ -2,6 +2,7 @@ use crate::xsd_model::annotation::Annotation;
 use crate::xsd_model::RawAttribute;
 use crate::xsd_model::xsd::Id;
 use crate::xsd_model::restriction::SimpleRestrictionType;
+use crate::xsd_model::extension::SimpleExtension;
 
 // See http://www.w3.org/TR/xmlschema-1/#element-simpleContent.
 // Element information
@@ -30,5 +31,5 @@ pub struct SimpleContent<'a> {
 
 pub enum SimpleContentChoice<'a> {
     Restriction(SimpleRestrictionType<'a>),
-    Extension(SimpleExtensionType<'a>)
+    Extension(SimpleExtension<'a>)
 }

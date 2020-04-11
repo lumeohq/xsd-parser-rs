@@ -7,6 +7,7 @@ use crate::xsd_model::group::Group;
 use crate::xsd_model::all::All;
 use crate::xsd_model::choice::Choice;
 use crate::xsd_model::any::Any;
+use crate::xsd_model::sequence::Sequence;
 
 
 // Group information
@@ -146,7 +147,7 @@ pub enum TypeDefParticle<'a> {
 // Type xsd:explicitGroup (Elements xsd:choice, xsd:sequence)
 // Type xsd:simpleExplicitGroup (Elements xsd:choice, xsd:sequence)
 pub enum NestedParticle<'a> {
-    Element(LocalElement<'a>),
+    //Element(LocalElement<'a>),
     Group(Group<'a>),
     Choice(Choice<'a>),
     Sequence(Sequence<'a>),

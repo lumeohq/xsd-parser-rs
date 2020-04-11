@@ -1,10 +1,7 @@
 use crate::xsd_model::annotation::Annotation;
-use crate::xsd_model::simple_type::LocalSimpleType;
 use crate::xsd_model::RawAttribute;
 use crate::xsd_model::xsd::{Id, QName};
-use crate::xsd_model::attribute_group::AttributeGroup;
-use crate::xsd_model::any_attribute::AnyAttribute;
-use crate::xsd_model::common_groups::{AttrDecls, SimpleRestrictionModel, FacetGroup};
+use crate::xsd_model::common_groups::{AttrDecls, SimpleRestrictionModel};
 
 // Namespace: http://www.w3.org/2001/XMLSchema
 // Schema document: datatypes.xsd
@@ -80,5 +77,3 @@ pub struct SimpleRestrictionType<'a> { // for SimpleContent
     model: SimpleRestrictionModel<'a>,
     attr_decls: AttrDecls<'a>,
 }
-
-

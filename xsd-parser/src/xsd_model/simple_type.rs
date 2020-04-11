@@ -54,7 +54,7 @@ pub struct TopLevelSimpleType<'a> {
 // Any attribute	[0..*]		    Namespace: ##other, Process Contents: lax
 pub struct LocalSimpleType<'a> {
     annotation: Option<Annotation<'a>>,
-    content_choice: SimpleDerivation<'a>,
+    content_choice: Box<SimpleDerivation<'a>>,
     id: Option<Id<'a>>,
     attributes: Vec<RawAttribute<'a>>
 }
