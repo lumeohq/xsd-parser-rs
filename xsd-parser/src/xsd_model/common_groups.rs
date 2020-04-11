@@ -2,6 +2,8 @@ use crate::xsd_model::attribute_group::AttributeGroup;
 use crate::xsd_model::any_attribute::AnyAttribute;
 use crate::xsd_model::simple_type::LocalSimpleType;
 use crate::xsd_model::facets::{Facet, TotalDigits, NumFacet, Enumeration, WhiteSpace, Pattern};
+use crate::xsd_model::attribute::LocalAttribute;
+use crate::xsd_model::group::Group;
 
 
 // Group information
@@ -27,7 +29,7 @@ pub struct AttrDecls<'a> {
 }
 
 pub enum AttrChoice<'a> {
-    Attribute(Attribute<'a>),
+    Attribute(LocalAttribute<'a>),
     AttributeGroup(AttributeGroup<'a>)
 }
 
@@ -97,4 +99,28 @@ pub enum FacetGroup<'a> {
     Enumeration(Enumeration<'a>),
     WhiteSpace(WhiteSpace<'a>),
     Pattern(Pattern<'a>)
+}
+
+
+// 'complexType' uses this
+// Group information
+// Namespace: http://www.w3.org/2001/XMLSchema
+// Schema document: xmlschema.xsd
+//
+// Content
+//  Choice [1..1]
+//      xsd:group
+//      xsd:all    An "all" group that allows elements to appear in any order. Unlike other group types, does not allow other groups as children, only elements.
+//      xsd:choice
+//      xsd:sequence
+//
+// Used in
+// Group xsd:complexTypeModel
+// Type xsd:complexRestrictionType (Element xsd:restriction)
+// Type xsd:extensionType (Element xsd:extension)
+pub enum TypeDefParticle<'a> {
+    Group(Group<'a>),
+    All(All<'a>),
+    Choice(Choice<'a>),
+    Sequence(Sequence<'a>)
 }
