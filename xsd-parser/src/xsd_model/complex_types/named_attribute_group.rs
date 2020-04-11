@@ -2,6 +2,7 @@ use crate::xsd_model::elements::annotation::Annotation;
 use crate::xsd_model::RawAttribute;
 use crate::xsd_model::simple_types::Id;
 use crate::xsd_model::simple_types::ncname::NCName;
+use crate::xsd_model::groups::attr_decls::AttrDecls;
 
 
 // xsd:namedAttributeGroup
