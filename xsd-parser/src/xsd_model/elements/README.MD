@@ -18,9 +18,9 @@ All Elements
 |complexType (Local)| * |
 |complexType (Global)| * |
 |documentation| * |
-|element
-|element
-|element
+|element (Narrow)| * |
+|element (Local)| * |
+|element (Global)| * |
 |enumeration| * |
 |extension (Simple)| * |
 |extension| * |

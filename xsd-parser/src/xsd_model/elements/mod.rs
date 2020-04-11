@@ -17,3 +17,4 @@ pub mod restriction;
 pub mod complex_type;
 pub mod group;
 pub mod field;
+pub mod element;
