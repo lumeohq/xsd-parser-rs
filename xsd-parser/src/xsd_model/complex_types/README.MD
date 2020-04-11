@@ -28,7 +28,7 @@ All Complex types
 |simpleRestrictionType| * |
 |simpleType| * |
 |topLevelAttributeType| * |
-|topLevelComplexType
+|topLevelComplexType| * |
 |topLevelElement
 |topLevelSimpleType| * |
 |wildcard| * |

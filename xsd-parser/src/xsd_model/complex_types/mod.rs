@@ -17,3 +17,4 @@ pub mod extension_type;
 pub mod simple_restriction_type;
 pub mod complex_restriction_type;
 pub mod local_complex_type;
+pub mod top_level_complex_type;
