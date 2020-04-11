@@ -46,7 +46,7 @@ All Simple types
 |public
 |QName| * |
 |short
-|simpleDerivationSet
+|simpleDerivationSet| * |
 |string
 |time
 |token

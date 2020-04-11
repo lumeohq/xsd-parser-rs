@@ -70,13 +70,3 @@ pub enum SimpleDerivation<'a> {
 
 // #all or (possibly empty) subset of {restriction, union, list}
 // A utility type, not for public use
-pub enum SimpleDerivationSet {
-    All,
-    Subset(Vec<SimpleDerivationSubset>)
-}
-
-pub enum SimpleDerivationSubset {
-    Restriction,
-    List,
-    Union,
-}
