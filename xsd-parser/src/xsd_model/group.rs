@@ -6,7 +6,6 @@ use crate::xsd_model::xsd::{Id, NCName};
 // Element information
 // Namespace: http://www.w3.org/2001/XMLSchema
 // Schema document: xmlschema.xsd
-// Other elements with the same name: xsd:group
 // Type: xsd:namedGroup
 // Properties: Global, Qualified
 //

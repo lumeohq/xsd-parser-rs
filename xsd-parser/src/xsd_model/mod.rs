@@ -20,6 +20,7 @@ pub mod common_groups;
 pub mod extension;
 pub mod all;
 pub mod choice;
+pub mod sequence;
 
 
 pub type RawAttribute<'a> = roxmltree::Attribute<'a>;

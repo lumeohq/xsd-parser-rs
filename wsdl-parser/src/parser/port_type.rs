@@ -50,7 +50,6 @@ impl<'a> PortType<'a> {
 // Element information
 // Namespace: http://schemas.xmlsoap.org/wsdl/
 // Schema document: wsdl11.xsd
-// Other elements with the same name: wsdl:operation
 // Type: wsdl:tOperation
 // Properties: Local, Qualified
 //
