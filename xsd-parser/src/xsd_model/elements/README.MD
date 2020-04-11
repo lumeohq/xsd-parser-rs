@@ -22,8 +22,8 @@ All Elements
 |element
 |element
 |enumeration| * |
-|extension
-|extension
+|extension (Simple)| * |
+|extension| * |
 |field
 |fractionDigits| * |
 |group
@@ -43,9 +43,9 @@ All Elements
 |notation
 |pattern
 |redefine
-|restriction
-|restriction
-|restriction
+|restriction (Complex)| * |
+|restriction (Simple)| * |
+|restriction| * |
 |schema
 |selector
 |sequence
