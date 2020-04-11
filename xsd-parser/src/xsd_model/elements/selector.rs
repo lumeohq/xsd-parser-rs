@@ -1,7 +1,8 @@
-use crate::xsd_model::annotation::Annotation;
-use crate::xsd_model::RawAttribute;
-use crate::xsd_model::xsd::{Id, XPath};
+use crate::xsd_model::elements::annotation::Annotation;
+use crate::xsd_model::{RawAttribute, XPath};
+use crate::xsd_model::simple_types::Id;
 
+// xsd:selector
 // See http://www.w3.org/TR/xmlschema-1/#element-selector.
 // Element information
 // Namespace: http://www.w3.org/2001/XMLSchema
@@ -10,7 +11,7 @@ use crate::xsd_model::xsd::{Id, XPath};
 // Properties: Global, Qualified
 //
 // Content
-// xsd:annotation [0..1]       from type xsd:annotated
+//  xsd:annotation [0..1]       from type xsd:annotated
 //
 // Attributes
 // Any attribute	[0..*]		        Namespace: ##other, Process Contents: lax	from type xsd:openAttrs

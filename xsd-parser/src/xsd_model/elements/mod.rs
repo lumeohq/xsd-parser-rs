@@ -26,3 +26,4 @@ pub mod notation;
 pub mod union;
 pub mod unique;
 pub mod simple_content;
+pub mod selector;
