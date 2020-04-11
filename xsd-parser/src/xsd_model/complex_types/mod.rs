@@ -10,3 +10,4 @@ pub mod local_attribute_type;
 pub mod top_level_attribute_type;
 pub mod attribute_group_ref;
 pub mod named_attribute_group;
+pub mod simple_explicit_group;

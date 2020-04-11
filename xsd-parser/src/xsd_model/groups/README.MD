@@ -8,7 +8,7 @@ All Groups
 |elementModel
 |facets
 |identityConstraint
-|nestedParticle
+|nestedParticle| * |
 |redefinable
 |schemaTop
 |simpleDerivation
