@@ -14,7 +14,7 @@ All Elements
 |attributeGroup (Ref)| * |
 |choice (Simple)| * |
 |choice| * |
-|complexContent
+|complexContent| * |
 |complexType
 |complexType
 |documentation| * |
