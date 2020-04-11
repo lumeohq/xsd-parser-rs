@@ -6,3 +6,4 @@ pub mod simple_restriction_model;
 pub mod facets;
 pub mod element_model;
 pub mod identity_constraint;
+pub mod simple_derivation;

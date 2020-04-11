@@ -11,6 +11,6 @@ All Groups
 |nestedParticle| * |
 |redefinable
 |schemaTop
-|simpleDerivation
+|simpleDerivation| * |
 |simpleRestrictionModel| * |
 |typeDefParticle| * |
