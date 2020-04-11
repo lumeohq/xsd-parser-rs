@@ -3,8 +3,8 @@ All Elements
 | xsd element | Struct | Validation | Tests |
 | ----------- | ------ | ---------- | ----- |
 |enumeration| * |  |  |
-|fractionDigits
-|length
+|fractionDigits| * |  |  
+|length| * |
 |list
 |maxExclusive
 |maxInclusive
