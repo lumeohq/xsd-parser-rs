@@ -33,7 +33,7 @@ All Simple types
 |negativeInteger|  |  |  |  
 |NMTOKEN|  |  |  |  
 |NMTOKENS|  |  |  |  
-|nonNegativeInteger|  |  |  |  
+|nonNegativeInteger| * | * | * |  
 |nonPositiveInteger|  |  |  |  
 |normalizedString|  |  |  |  
 |NOTATION|  |  |  |  

@@ -1,3 +1,4 @@
+use crate::xsd_model::datatypes::simple_types::id::Id;
 
 // Namespace: http://www.w3.org/2001/XMLSchema
 // Schema document: datatypes.xsd
