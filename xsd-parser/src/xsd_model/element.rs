@@ -13,7 +13,7 @@
 //      Choice [0..1]                       from group xsd:elementModel
 //          xsd:simpleType
 //          xsd:complexType
-//      Choice [0..*]           from group xsd:identityConstraint
+//      Choice [0..*]                       from group xsd:identityConstraint
 //          xsd:unique
 //          xsd:key
 //          xsd:keyref
