@@ -1,7 +1,7 @@
 All Groups
 
-| xsd group name | Struct  | Tests |
-| -------------- | ------- | ----- |
+| xsd group name | Struct  | Validation |
+| -------------- | ------- | ---------- |
 |allModel
 |attrDecls| * |
 |complexTypeModel| * |
@@ -9,7 +9,7 @@ All Groups
 |facets| * |
 |identityConstraint| * |
 |nestedParticle| * |
-|redefinable
+|redefinable| * |
 |schemaTop
 |simpleDerivation| * |
 |simpleRestrictionModel| * |
