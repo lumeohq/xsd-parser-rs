@@ -1,3 +1,5 @@
+use crate::xsd_model::datatypes::simple_types::id::Id;
+use crate::xsd_model::datatypes::simple_types::ncname::NCName;
 
 // xsd:topLevelSimpleType
 // Complex type information

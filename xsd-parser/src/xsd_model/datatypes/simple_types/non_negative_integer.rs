@@ -37,7 +37,6 @@ use std::str::FromStr;
 //                          restricted by xsd:unsignedByte
 //          restricted by xsd:positiveInteger
 pub struct NonNegativeInteger(usize);
-//TODO: fromStr with validation
 
 impl FromStr for NonNegativeInteger {
     type Err = String;

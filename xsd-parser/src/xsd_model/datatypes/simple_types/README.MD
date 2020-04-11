@@ -29,7 +29,7 @@ All Simple types
 |language|  |  |  |  
 |long|  |  |  |  
 |Name|  |  |  |  
-|NCName|  |  |  |  
+|NCName| * |  |  |  
 |negativeInteger|  |  |  |  
 |NMTOKEN|  |  |  |  
 |NMTOKENS|  |  |  |  
