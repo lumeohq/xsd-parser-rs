@@ -30,7 +30,7 @@ All Elements
 |group| * |
 |import| * |
 |include| * |
-|key
+|key| * |
 |keyref| * |
 |length| * |
 |list| * |
