@@ -23,7 +23,7 @@ All Complex types
 |noFixedFacet| * |
 |numFacet| * |
 |openAttrs
-|simpleExplicitGroup
+|simpleExplicitGroup| * |
 |simpleExtensionType
 |simpleRestrictionType
 |simpleType| * |
