@@ -56,4 +56,4 @@ All Elements
 |totalDigits| * |
 |union| * |
 |unique| * |
-|whiteSpace
+|whiteSpace| * |
