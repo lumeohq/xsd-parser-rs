@@ -4,7 +4,7 @@ All Elements
 | ----------- | ------ | ---------- | ----- |
 |all
 |all
-|annotation
+|annotation| * |
 |any
 |anyAttribute
 |appinfo
