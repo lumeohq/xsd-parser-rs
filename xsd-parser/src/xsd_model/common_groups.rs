@@ -70,11 +70,7 @@ pub enum NestedParticle<'a> {
 // Type xsd:complexType
 // Type xsd:localComplexType (Element xsd:complexType)
 // Type xsd:topLevelComplexType (Element xsd:complexType)
-pub enum ComplexTypeModel<'a> {
-    SimpleContent(SimpleContent<'a>),
-    ComplexContent(LocalComplexType<'a>),
-    TypeDefParticle(Option<TypeDefParticle<'a>>, Vec<AttrDecls<'a>>)
-}
+
 
 
 // Group information
