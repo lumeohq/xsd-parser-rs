@@ -23,6 +23,7 @@ pub mod sequence;
 pub mod simple_content;
 pub mod simple_type;
 pub mod union;
+pub mod unique;
 
 
 pub type RawAttribute<'a> = roxmltree::Attribute<'a>;

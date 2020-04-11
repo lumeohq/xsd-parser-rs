@@ -10,6 +10,7 @@ use crate::xsd_model::any::Any;
 use crate::xsd_model::sequence::Sequence;
 use crate::xsd_model::simple_content::SimpleContent;
 use crate::xsd_model::complex_type::LocalComplexType;
+use crate::xsd_model::unique::Unique;
 
 
 // Group information
