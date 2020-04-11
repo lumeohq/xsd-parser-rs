@@ -48,8 +48,8 @@ All Elements
 |restriction| * |
 |schema
 |selector| * |
-|sequence
-|sequence
+|sequence (Simple)| * |
+|sequence| * |
 |simpleContent| * |
 |simpleType
 |simpleType
