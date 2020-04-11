@@ -31,4 +31,4 @@ All Complex types
 |topLevelComplexType
 |topLevelElement
 |topLevelSimpleType| * |
-|wildcard
+|wildcard| * |
