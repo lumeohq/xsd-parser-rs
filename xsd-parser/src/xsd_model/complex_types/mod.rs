@@ -19,3 +19,4 @@ pub mod complex_restriction_type;
 pub mod local_complex_type;
 pub mod top_level_complex_type;
 pub mod named_group_ref;
+pub mod named_group;
