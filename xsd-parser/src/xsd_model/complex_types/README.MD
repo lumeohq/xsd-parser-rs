@@ -12,7 +12,7 @@ All Complex types
 |extensionType
 |facet| * |
 |keybase
-|localAttributeType
+|localAttributeType| * |
 |localComplexType
 |localElement
 |localSimpleType| * |
