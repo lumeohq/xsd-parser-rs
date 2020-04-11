@@ -36,7 +36,7 @@ use crate::xsd_model::simple_types::non_negative_integer::NonNegativeInteger;
 // xsd:openAttrs
 // xsd:annotated
 // xsd:explicitGroup
-pub struct Choice<'a> {
+pub struct ExplicitGroup<'a> {
     annotation: Option<Annotation<'a>>,
     nested_particle: Vec<NestedParticle<'a>>,
     attributes: Vec<RawAttribute<'a>>,

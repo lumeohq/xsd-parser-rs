@@ -10,3 +10,4 @@ pub mod all;
 pub mod any_attribute;
 pub mod attribute;
 pub mod attribute_group;
+pub mod choice;

@@ -12,8 +12,8 @@ All Elements
 |attribute (Local)| * |
 |attributeGroup (Named)| * |
 |attributeGroup (Ref)| * |
-|choice|
-|choice|
+|choice (Simple)| * |
+|choice| * |
 |complexContent
 |complexType
 |complexType
