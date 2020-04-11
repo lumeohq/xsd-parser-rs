@@ -35,4 +35,4 @@ pub type AttributeGroupRef<'a> = attribute_group_ref::AttributeGroupRef<'a>;
 // Anonymous type of element xsd:redefine via reference to xsd:redefinable
 // Anonymous type of element xsd:schema via reference to xsd:schemaTop
 // Group xsd:schemaTop via reference to xsd:redefinable
-pub type NamedAttributeGroup<'a> = named_attribute_group::NamedAttributeGroup<'a>;
+pub type AttributeGroup<'a> = named_attribute_group::NamedAttributeGroup<'a>;

@@ -42,7 +42,7 @@ All Elements
 |minLength
 |notation| * |
 |pattern
-|redefine
+|redefine| * |
 |restriction (Complex)| * |
 |restriction (Simple)| * |
 |restriction| * |
