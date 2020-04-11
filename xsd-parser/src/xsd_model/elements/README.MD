@@ -31,7 +31,7 @@ All Elements
 |import| * |
 |include| * |
 |key
-|keyref
+|keyref| * |
 |length| * |
 |list| * |
 |maxExclusive
