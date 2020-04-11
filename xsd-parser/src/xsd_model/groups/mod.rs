@@ -8,3 +8,4 @@ pub mod element_model;
 pub mod identity_constraint;
 pub mod simple_derivation;
 pub mod redefinable;
+pub mod schema_top;

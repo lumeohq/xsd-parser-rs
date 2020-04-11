@@ -10,7 +10,7 @@ All Groups
 |identityConstraint| * |
 |nestedParticle| * |
 |redefinable| * |
-|schemaTop
+|schemaTop| * |
 |simpleDerivation| * |
 |simpleRestrictionModel| * |
 |typeDefParticle| * |
