@@ -11,6 +11,8 @@ use crate::xsd_model::sequence::Sequence;
 use crate::xsd_model::simple_content::SimpleContent;
 use crate::xsd_model::complex_type::LocalComplexType;
 use crate::xsd_model::unique::Unique;
+use crate::xsd_model::key::Key;
+use crate::xsd_model::key_ref::KeyRef;
 
 
 // Group information

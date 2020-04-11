@@ -1,6 +1,6 @@
 use crate::xsd_model::annotation::Annotation;
 use crate::xsd_model::RawAttribute;
-use crate::xsd_model::xsd::{Id, QName};
+use crate::xsd_model::xsd::{Id, NCName};
 
 // See http://www.w3.org/TR/xmlschema-1/#element-key.
 // Element information
@@ -33,5 +33,5 @@ pub struct Key<'a> {
     //fields: Vec<Field<'a>>,
     attributes: Vec<RawAttribute<'a>>,
     id: Id<'a>,
-    name: QName<'a>,
+    name: NCName<'a>,
 }
