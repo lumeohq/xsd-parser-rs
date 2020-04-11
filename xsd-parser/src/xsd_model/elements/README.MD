@@ -2,10 +2,10 @@ All Elements
 
 | xsd element | Struct | Validation | Tests |
 | ----------- | ------ | ---------- | ----- |
-|all
-|all
+|all (allType)| * |
+|all (Anonymous)| * |
 |annotation| * |
-|any
+|any| * |
 |anyAttribute
 |appinfo| * |
 |attribute
