@@ -4,8 +4,8 @@ All Complex types
 | -------- | ------ | ---------- | ----- |
 |allType| * |
 |annotated
-|anyType
-|attributeGroupRef
+|anyType| * |
+|attributeGroupRef| * |
 |complexRestrictionType
 |complexType
 |explicitGroup
