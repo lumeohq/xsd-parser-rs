@@ -14,7 +14,7 @@ All Complex types
 |keybase| * |
 |localAttributeType| * |
 |localComplexType| * |
-|localElement
+|localElement| * |
 |localSimpleType| * |
 |namedAttributeGroup| * |
 |namedGroup| * |

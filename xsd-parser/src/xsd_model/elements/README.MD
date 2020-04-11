@@ -34,12 +34,12 @@ All Elements
 |keyref| * |
 |length| * |
 |list| * |
-|maxExclusive
-|maxInclusive
-|maxLength
-|minExclusive
-|minInclusive
-|minLength
+|maxExclusive| * |
+|maxInclusive| * |
+|maxLength| * |
+|minExclusive| * |
+|minInclusive| * |
+|minLength| * |
 |notation| * |
 |pattern
 |redefine| * |
