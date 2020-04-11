@@ -11,7 +11,7 @@ All Complex types
 |explicitGroup| * |
 |extensionType| * |
 |facet| * |
-|keybase
+|keybase| * |
 |localAttributeType| * |
 |localComplexType| * |
 |localElement
