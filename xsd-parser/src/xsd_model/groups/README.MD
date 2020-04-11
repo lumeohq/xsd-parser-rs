@@ -5,9 +5,9 @@ All Groups
 |allModel
 |attrDecls| * |
 |complexTypeModel| * |
-|elementModel
+|elementModel| * |
 |facets| * |
-|identityConstraint
+|identityConstraint| * |
 |nestedParticle| * |
 |redefinable
 |schemaTop
