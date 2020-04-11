@@ -21,7 +21,7 @@ All Simple types
 |gYear|  |  |  |  
 |gYearMonth|  |  |  |  
 |hexBinary|  |  |  |  
-|ID|  |  |  |  
+|ID| * |  |  |  
 |IDREF|  |  |  |  
 |IDREFS|  |  |  |  
 |int|  |  |  |  

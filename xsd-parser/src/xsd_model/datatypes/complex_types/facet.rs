@@ -1,3 +1,5 @@
+use crate::xsd_model::datatypes::simple_types::AnySimpleType;
+
 // xsd:facet
 // Complex type information
 // Namespace: http://www.w3.org/2001/XMLSchema
