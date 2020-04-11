@@ -7,7 +7,7 @@ All Elements
 |annotation| * |
 |any
 |anyAttribute
-|appinfo
+|appinfo| * |
 |attribute
 |attribute
 |attributeGroup
@@ -17,7 +17,7 @@ All Elements
 |complexContent
 |complexType
 |complexType
-|documentation
+|documentation| * |
 |element
 |element
 |element

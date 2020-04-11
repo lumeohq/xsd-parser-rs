@@ -1,4 +1,8 @@
 use crate::xsd_model::simple_types::Id;
+use crate::xsd_model::elements::app_info::AppInfo;
+use crate::xsd_model::RawAttribute;
+use crate::xsd_model::elements::documentation::Documentation;
+
 
 // xsd:annotation
 // See http://www.w3.org/TR/xmlschema-1/#element-annotation.
