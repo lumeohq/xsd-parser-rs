@@ -2,7 +2,7 @@ All Complex types
 
 | xsd Type | Struct | Validation | Tests |
 | -------- | ------ | ---------- | ----- |
-|allType
+|allType| * |
 |annotated
 |anyType
 |attributeGroupRef
