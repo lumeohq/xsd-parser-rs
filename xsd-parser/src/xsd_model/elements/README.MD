@@ -24,7 +24,7 @@ All Elements
 |enumeration| * |
 |extension (Simple)| * |
 |extension| * |
-|field
+|field| * |
 |fractionDigits| * |
 |group (Ref)| * |
 |group| * |

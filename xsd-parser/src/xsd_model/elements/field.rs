@@ -1,7 +1,8 @@
-use crate::xsd_model::annotation::Annotation;
-use crate::xsd_model::RawAttribute;
-use crate::xsd_model::xsd::{Id, XPath};
+use crate::xsd_model::elements::annotation::Annotation;
+use crate::xsd_model::{RawAttribute, XPath};
+use crate::xsd_model::simple_types::Id;
 
+// xsd:field
 // See http://www.w3.org/TR/xmlschema-1/#element-field.
 // Element information
 // Namespace: http://www.w3.org/2001/XMLSchema
