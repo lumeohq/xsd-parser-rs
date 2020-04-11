@@ -1,17 +1,17 @@
-use crate::xsd_model::include::Include;
-use crate::xsd_model::import::Import;
-use crate::xsd_model::redefine::Redefine;
-use crate::xsd_model::annotation::Annotation;
-use crate::xsd_model::{RawAttribute, FormChoice};
-use crate::xsd_model::xsd::{AnyUri, Token, Id, Language};
-use crate::xsd_model::notation::Notation;
-use crate::xsd_model::attribute_group::AttributeGroup;
-use crate::xsd_model::simple_type::TopLevelSimpleType;
-use crate::xsd_model::group::Group;
-use crate::xsd_model::attribute::TopLevelAttribute;
-use crate::xsd_model::complex_type::TopLevelComplexType;
+use crate::xsd_model::elements::include::Include;
+use crate::xsd_model::elements::import::Import;
+use crate::xsd_model::elements::redefine::Redefine;
+use crate::xsd_model::elements::annotation::Annotation;
+use crate::xsd_model::RawAttribute;
+use crate::xsd_model::simple_types::any_uri::AnyUri;
+use crate::xsd_model::simple_types::token::Token;
+use crate::xsd_model::simple_types::full_derivation_set::FullDerivationSet;
+use crate::xsd_model::simple_types::block_set::BlockSet;
+use crate::xsd_model::simple_types::form_choice::FormChoice;
+use crate::xsd_model::simple_types::Id;
+use crate::xsd_model::simple_types::language::Language;
 
-
+// xsd:schema
 // See http://www.w3.org/TR/xmlschema-1/#element-schema.
 // Namespace: http://www.w3.org/2001/XMLSchema
 // Schema document: xmlschema.xsd
@@ -32,12 +32,12 @@ use crate::xsd_model::complex_type::TopLevelComplexType;
 //              xsd:complexType
 //              xsd:group
 //              xsd:attributeGroup
-
+//
 //              xsd:element
 //              xsd:attribute
 //              xsd:notation
 //          xsd:annotation [0..*]
-
+//
 // Attributes
 // Any attribute	    [0..*]		                    Namespace: ##other, Process Contents: lax	from type xsd:openAttrs
 // targetNamespace	    [0..1]	xsd:anyURI
@@ -48,7 +48,7 @@ use crate::xsd_model::complex_type::TopLevelComplexType;
 // elementFormDefault	[0..1]	xsd:formChoice		    Default value is "unqualified".
 // id	                [0..1]	xsd:ID
 // xml:lang	            [0..1]	Anonymous
-
+//
 // Identity constraints
 // Type	Name	            Selector	                        Field(s)
 // key	element	            xs:element	                        @name
@@ -71,41 +71,6 @@ pub struct Schema<'a> {
     pub block_default: Option<BlockSet>,
     pub attribute_form_default: FormChoice,
     pub element_form_default: FormChoice,
-    pub id: Option<Id<'a>>,
+    pub id: Id<'a>,
     pub lang: Option<Language<'a>>
 }
-
-//TODO: add
-pub enum SchemaTopGroup<'a> {
-    SimpleType(TopLevelSimpleType<'a>),
-    ComplexType(TopLevelComplexType<'a>),
-    Group(Group<'a>),
-    AttributeGroup(AttributeGroup<'a>),
-    //Element(TopLevelElement),
-    Attribute(TopLevelAttribute<'a>),
-    Notation(Notation<'a>),
-}
-
-pub enum FullDerivationSet {
-    All,
-    Subset(Vec<DerivationSubset>)
-}
-
-pub enum DerivationSubset {
-    Extension,
-    Restriction,
-    List,
-    Union
-}
-
-pub enum BlockSet {
-    All,
-    Subset(Vec<BlockSubset>)
-}
-
-pub enum BlockSubset {
-    Extension,
-    Restriction,
-    Substitution,
-}
-

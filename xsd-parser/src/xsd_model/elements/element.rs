@@ -19,7 +19,7 @@ use crate::xsd_model::complex_types::narrow_max_min::NarrowMaxMin;;
 // Used in
 // Group xsd:schemaTop
 // Anonymous type of element xsd:schema via reference to xsd:schemaTop
-pub type TopLevelElement_<'a> = top_level_element::TopLevelElement<'a>;
+pub type TopLevelElement<'a> = top_level_element::TopLevelElement<'a>;
 
 
 // xsd:element

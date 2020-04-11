@@ -30,3 +30,4 @@ pub mod selector;
 pub mod sequence;
 pub mod simple_type;
 pub mod redefine;
+pub mod schema;

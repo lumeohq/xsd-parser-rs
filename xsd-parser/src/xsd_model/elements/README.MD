@@ -46,7 +46,7 @@ All Elements
 |restriction (Complex)| * |
 |restriction (Simple)| * |
 |restriction| * |
-|schema
+|schema| * |
 |selector| * |
 |sequence (Simple)| * |
 |sequence| * |
