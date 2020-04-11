@@ -1,6 +1,8 @@
 use crate::xsd_model::annotation::Annotation;
 use crate::xsd_model::RawAttribute;
 use crate::xsd_model::xsd::{Id, NCName, QName};
+use crate::xsd_model::selector::Selector;
+use crate::xsd_model::field::Field;
 
 // See http://www.w3.org/TR/xmlschema-1/#element-keyref.
 // Element information
@@ -29,9 +31,8 @@ use crate::xsd_model::xsd::{Id, NCName, QName};
 // Type xsd:topLevelElement via reference to xsd:elementModel (Element xsd:element)
 pub struct KeyRef<'a> {
     annotation: Option<Annotation<'a>>,
-    //TODO: add
-    //selector: Selector<'a>,
-    //fields: Vec<Field<'a>>,
+    selector: Selector<'a>,
+    fields: Vec<Field<'a>>,
     attributes: Vec<RawAttribute<'a>>,
     id: Id<'a>,
     name: NCName<'a>,

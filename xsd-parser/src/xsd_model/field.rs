@@ -20,7 +20,7 @@ use crate::xsd_model::xsd::{Id, XPath};
 // Used in
 // Anonymous type of element xsd:keyref via extension of xsd:keybase
 // Type xsd:keybase (Elements xsd:unique, xsd:key)
-pub struct Selector<'a> {
+pub struct Field<'a> {
     annotation: Option<Annotation<'a>>,
     attributes: Vec<RawAttribute<'a>>,
     id: Id<'a>,
