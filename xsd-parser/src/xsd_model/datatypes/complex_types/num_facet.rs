@@ -1,4 +1,5 @@
 use crate::xsd_model::datatypes::simple_types::id::Id;
+use crate::xsd_model::datatypes::simple_types::non_negative_integer::NonNegativeInteger;
 
 
 // xsd:numFacet
