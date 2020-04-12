@@ -30,4 +30,4 @@
 // Type Inheritance Chain
 // xsd:anySimpleType
 //  restricted by xsd:anyURI
-pub struct AnyUri<'a>(&'a str);
+pub struct AnyUri<'a>(pub &'a str);
