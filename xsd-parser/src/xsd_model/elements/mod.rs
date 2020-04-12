@@ -44,23 +44,23 @@ pub mod white_space;
 
 #[derive(Debug, PartialEq)]
 pub enum ElementType {
-    All(All),
+    All,
     Annotation,
     Any,
     AnyAttribute,
     AppInfo,
-    Attribute(Attribute),
-    AttributeGroup(AttributeGroup),
-    Choice(Choice),
+    Attribute,
+    AttributeGroup,
+    Choice,
     ComplexContent,
-    ComplexType(ComplexType),
+    ComplexType,
     Documentation,
-    Element(Element),
+    Element,
     Enumeration,
-    Extension(Extension),
+    Extension,
     Field,
     FractionDigits,
-    Group(Group),
+    Group,
     Import,
     Include,
     Key,
@@ -76,73 +76,68 @@ pub enum ElementType {
     Notation,
     Pattern,
     Redefine,
-    Restriction(Restriction),
+    Restriction,
     Schema,
     Selector,
-    Sequence(Sequence),
+    Sequence,
     SimpleContent,
-    SimpleType(SimpleType),
+    SimpleType,
     TotalDigits,
     Union,
     Unique,
     WhiteSpace,
+
+    Unknown(String)
 }
 
-pub enum All {
-    AllType,
-    Anonymous
-}
-
-pub enum Attribute{
-    TopLevelAttributeType,
-    LocalAttributeType
-}
-
-pub enum AttributeGroup {
-    AttributeGroupRef,
-    NamedAttributeGroup
-}
-
-pub enum Choice {
-    ExplicitGroup,
-    SimpleExplicitGroup
-}
-
-pub enum ComplexType {
-    TopLevelComplexType,
-    LocalComplexType
-}
-
-pub enum Element {
-    TopLevelElement,
-    LocalElement,
-    NarrowMaxMin
-}
-
-pub enum Extension {
-    SimpleExtensionType,
-    ExtensionType,
-}
-
-pub enum Group {
-    NamedGroup,
-    NamedGroupRef,
-}
-
-pub enum Restriction {
-    SimpleRestrictionType,
-    ComplexRestrictionType,
-    Anonymous
-}
-
-pub enum Sequence {
-    SimpleExplicitGroup,
-    ExplicitGroup,
-}
-
-pub enum SimpleType {
-    LocalSimpleType,
-    TopLevelSimpleType,
+pub fn xsd_element_type(name: &str) -> Result<ElementType, String> {
+    use ElementType::*;
+        let element = match name {
+            "all" => All,
+            "annotation" => Annotation,
+            "any" => Any,
+            "anyAttribute" => AnyAttribute,
+            "appInfo" => AppInfo,
+            "attribute" => Attribute,
+            "attributeGroup" => AttributeGroup,
+            "choice" => Choice,
+            "complexContent" => ComplexContent,
+            "complexType" => ComplexType,
+            "documentation" => Documentation,
+            "element" => Element,
+            "enumeration" => Enumeration,
+            "extension" => Extension,
+            "field" => Field,
+            "fractionDigits" => FractionDigits,
+            "group" => Group,
+            "import" => Import,
+            "include" => Include,
+            "key" => Key,
+            "keyRef" => KeyRef,
+            "length" => Length,
+            "list" => List,
+            "maxExclusive" => MaxExclusive,
+            "maxInclusive" => MaxInclusive,
+            "maxLength" => MaxLength,
+            "minExclusive" => MinExclusive,
+            "minInclusive" => MinInclusive,
+            "minLength" => MinLength,
+            "notation" => Notation,
+            "pattern" => Pattern,
+            "redefine" => Redefine,
+            "restriction" => Restriction,
+            "schema" => Schema,
+            "selector" => Selector,
+            "sequence" => Sequence,
+            "simpleContent" => SimpleContent,
+            "simpleType" => SimpleType,
+            "totalDigits" => TotalDigits,
+            "union" => Union,
+            "unique" => Unique,
+            "whiteSpace" => WhiteSpace,
+            _ => Err(format!("Invalid xsd element name: {}", name))?
+        };
+    Ok(element)
 }
 
 
