@@ -2,7 +2,7 @@ use crate::xsd_model::elements::include::Include;
 use crate::xsd_model::elements::import::Import;
 use crate::xsd_model::elements::redefine::Redefine;
 use crate::xsd_model::elements::annotation::Annotation;
-use crate::xsd_model::RawAttribute;
+use crate::xsd_model::{RawAttribute, Namespace};
 use crate::xsd_model::simple_types::any_uri::AnyUri;
 use crate::xsd_model::simple_types::token::Token;
 use crate::xsd_model::simple_types::full_derivation_set::FullDerivationSet;
@@ -59,6 +59,7 @@ use crate::xsd_model::groups::schema_top::SchemaTop;
 // key	attributeGroup 	    xs:attributeGroup	                @name
 // key	notation	        xs:notation	                        @name
 // key	identityConstraint	.//xs:key|.//xs:unique|.//xs:keyref	@name
+#[derive(Default)]
 pub struct Schema<'a> {
     pub includes: Vec<Include<'a>>,
     pub imports: Vec<Import<'a>>,
@@ -73,5 +74,7 @@ pub struct Schema<'a> {
     pub attribute_form_default: FormChoice,
     pub element_form_default: FormChoice,
     pub id: Id<'a>,
-    pub lang: Option<Language<'a>>
+    pub lang: Option<Language<'a>>,
+
+    pub namespaces: Vec<Namespace<'a>>,
 }

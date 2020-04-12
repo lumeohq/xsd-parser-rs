@@ -40,3 +40,109 @@ pub mod total_digits;
 pub mod union;
 pub mod unique;
 pub mod white_space;
+
+
+#[derive(Debug, PartialEq)]
+pub enum ElementType {
+    All(All),
+    Annotation,
+    Any,
+    AnyAttribute,
+    AppInfo,
+    Attribute(Attribute),
+    AttributeGroup(AttributeGroup),
+    Choice(Choice),
+    ComplexContent,
+    ComplexType(ComplexType),
+    Documentation,
+    Element(Element),
+    Enumeration,
+    Extension(Extension),
+    Field,
+    FractionDigits,
+    Group(Group),
+    Import,
+    Include,
+    Key,
+    KeyRef,
+    Length,
+    List,
+    MaxExclusive,
+    MaxInclusive,
+    MaxLength,
+    MinExclusive,
+    MinInclusive,
+    MinLength,
+    Notation,
+    Pattern,
+    Redefine,
+    Restriction(Restriction),
+    Schema,
+    Selector,
+    Sequence(Sequence),
+    SimpleContent,
+    SimpleType(SimpleType),
+    TotalDigits,
+    Union,
+    Unique,
+    WhiteSpace,
+}
+
+pub enum All {
+    AllType,
+    Anonymous
+}
+
+pub enum Attribute{
+    TopLevelAttributeType,
+    LocalAttributeType
+}
+
+pub enum AttributeGroup {
+    AttributeGroupRef,
+    NamedAttributeGroup
+}
+
+pub enum Choice {
+    ExplicitGroup,
+    SimpleExplicitGroup
+}
+
+pub enum ComplexType {
+    TopLevelComplexType,
+    LocalComplexType
+}
+
+pub enum Element {
+    TopLevelElement,
+    LocalElement,
+    NarrowMaxMin
+}
+
+pub enum Extension {
+    SimpleExtensionType,
+    ExtensionType,
+}
+
+pub enum Group {
+    NamedGroup,
+    NamedGroupRef,
+}
+
+pub enum Restriction {
+    SimpleRestrictionType,
+    ComplexRestrictionType,
+    Anonymous
+}
+
+pub enum Sequence {
+    SimpleExplicitGroup,
+    ExplicitGroup,
+}
+
+pub enum SimpleType {
+    LocalSimpleType,
+    TopLevelSimpleType,
+}
+
+
