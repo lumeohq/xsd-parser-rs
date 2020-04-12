@@ -23,6 +23,7 @@
 //              xsd:token
 //                  xsd:NMTOKEN
 //                      xsd:formChoice
+#[derive(Debug, PartialEq)]
 pub enum FormChoice{
     Qualified,
     Unqualified
@@ -31,5 +32,16 @@ pub enum FormChoice{
 impl Default for FormChoice {
     fn default() -> Self {
         FormChoice::Unqualified
+    }
+}
+
+impl FormChoice {
+    pub fn parse(s: &str) -> Result<Self, String> {
+        let res = match s {
+            "qualified" => Self::Qualified,
+            "unqualified" => Self::Unqualified,
+            _ => Err(format!("Invalid value for FormChoice: {}", s))?
+        };
+        Ok(res)
     }
 }

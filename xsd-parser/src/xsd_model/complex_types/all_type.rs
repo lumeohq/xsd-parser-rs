@@ -2,6 +2,7 @@ use crate::xsd_model::elements::annotation::Annotation;
 use crate::xsd_model::simple_types::Id;
 use crate::xsd_model::simple_types::non_negative_integer::NonNegativeInteger;
 use crate::xsd_model::{MaxOccurs, RawAttribute};
+use crate::xsd_model::elements::element::Element;
 
 // xsd:allType
 // An "all" group that allows elements to appear in any order. Unlike other group types, does not allow other groups as children, only elements.
@@ -34,9 +35,9 @@ use crate::xsd_model::{MaxOccurs, RawAttribute};
 //              xsd:allType
 pub struct AllType<'a> {
     annotation: Option<Annotation<'a>>,
-    //elements: Vec<Element<'a>>,  //FIXME: uncomment
+    elements: Vec<Element<'a>>,
     attributes: Vec<RawAttribute<'a>>,
     id: Id<'a>,
-    min_occurs: NonNegativeInteger,
-    max_occurs: MaxOccurs,
+    min_occurs: Option<NonNegativeInteger>,
+    max_occurs: Option<MaxOccurs>,
 }
