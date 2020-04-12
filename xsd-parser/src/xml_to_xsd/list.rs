@@ -27,3 +27,26 @@ impl<'a> List<'a> {
         Ok(res)
     }
 }
+
+
+#[cfg(test)]
+mod test {
+use crate::xsd_model::List;
+    #[test]
+    fn test_parse() {
+        let doc = roxmltree::Document::parse(
+  r#"<list id="ID" a='b' b='a'>
+                <simpleType id="STN">
+                    <list itemType="ListOfType" />
+                </simpleType>
+            </list>"#
+        ).unwrap();
+        let root = doc.root_element();
+        let res = List::parse(root).unwrap();
+        assert!(res.annotation.is_none());
+        assert_eq!(res.attributes.len(), 2);
+        assert_eq!(res.id.unwrap().0, "ID");
+        assert!(res.item_type.is_none());
+        assert_eq!(res.simple_type.unwrap().id.unwrap().0, "STN");
+    }
+}
