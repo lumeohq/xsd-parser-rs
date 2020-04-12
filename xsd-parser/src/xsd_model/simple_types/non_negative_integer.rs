@@ -39,16 +39,13 @@ pub struct NonNegativeInteger(usize);
 impl NonNegativeInteger {
     pub fn new(s: &str) -> Self {
         Self {
-            0: s.parse::<usize>().expect("Value mus be a digit")  //TODO: maybe fromStr
+            0: s.parse::<usize>().expect("Value mus be a digit"), //TODO: maybe fromStr
         }
     }
 }
 
+#[test]
+fn test_valid_values() {}
 
 #[test]
-fn test_valid_values() {
-}
-
-#[test]
-fn test_invalid_values() {
-}
+fn test_invalid_values() {}

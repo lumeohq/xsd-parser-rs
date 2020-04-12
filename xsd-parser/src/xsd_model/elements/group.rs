@@ -1,5 +1,5 @@
-use crate::xsd_model::complex_types::named_group_ref::NamedGroupRef;
 use crate::xsd_model::complex_types::named_group::NamedGroup;
+use crate::xsd_model::complex_types::named_group_ref::NamedGroupRef;
 
 // See http://www.w3.org/TR/xmlschema-1/#element-group.
 // Element information
@@ -14,7 +14,6 @@ use crate::xsd_model::complex_types::named_group::NamedGroup;
 // Anonymous type of element xsd:schema via reference to xsd:schemaTop
 // Group xsd:schemaTop via reference to xsd:redefinable
 pub type Group<'a> = NamedGroup<'a>;
-
 
 // xsd:group
 // Element information

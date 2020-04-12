@@ -1,7 +1,7 @@
 use crate::xsd_model::elements::complex_content::ComplexContent;
+use crate::xsd_model::elements::simple_content::SimpleContent;
 use crate::xsd_model::groups::attr_decls::AttrDecls;
 use crate::xsd_model::groups::type_def_particle::TypeDefParticle;
-use crate::xsd_model::elements::simple_content::SimpleContent;
 
 // xsd:complexTypeModel
 // Group information
@@ -31,5 +31,5 @@ use crate::xsd_model::elements::simple_content::SimpleContent;
 pub enum ComplexTypeModel<'a> {
     SimpleContent(SimpleContent<'a>),
     ComplexContent(Box<ComplexContent<'a>>),
-    TypeDefParticle(Option<TypeDefParticle<'a>>, Vec<AttrDecls<'a>>)
+    TypeDefParticle(Option<TypeDefParticle<'a>>, Vec<AttrDecls<'a>>),
 }

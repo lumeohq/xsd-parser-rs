@@ -23,7 +23,7 @@
 #[derive(Debug, PartialEq)]
 pub enum BlockSet {
     All,
-    List(Vec<BlockSetChoice>)
+    List(Vec<BlockSetChoice>),
 }
 
 #[derive(Debug, PartialEq)]
@@ -39,7 +39,7 @@ impl BlockSetChoice {
             "extension" => Self::Extension,
             "restriction" => Self::Restriction,
             "substitution" => Self::Substitution,
-            _ => Err(format!("Invalid value for BlockSet: {}", s))?
+            _ => Err(format!("Invalid value for BlockSet: {}", s))?,
         };
         Ok(res)
     }
@@ -50,7 +50,8 @@ impl BlockSet {
         let res = if s == "#all" {
             Self::All
         } else {
-            let res: Result<Vec<_>, String> = s.split(' ').map(|v| BlockSetChoice::parse(v)).collect();
+            let res: Result<Vec<_>, String> =
+                s.split(' ').map(|v| BlockSetChoice::parse(v)).collect();
             Self::List(res?)
         };
         Ok(res)

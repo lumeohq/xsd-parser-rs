@@ -1,8 +1,7 @@
-use crate::xsd_model::simple_types::Id;
 use crate::xsd_model::elements::app_info::AppInfo;
-use crate::xsd_model::RawAttribute;
 use crate::xsd_model::elements::documentation::Documentation;
-
+use crate::xsd_model::simple_types::Id;
+use crate::xsd_model::RawAttribute;
 
 // xsd:annotation
 // See http://www.w3.org/TR/xmlschema-1/#element-annotation.
@@ -72,5 +71,5 @@ pub struct Annotation<'a> {
     pub app_infos: Vec<AppInfo<'a>>,
     pub documentations: Vec<Documentation<'a>>,
     pub attributes: Vec<RawAttribute<'a>>,
-    pub id: Option<Id<'a>>
+    pub id: Option<Id<'a>>,
 }

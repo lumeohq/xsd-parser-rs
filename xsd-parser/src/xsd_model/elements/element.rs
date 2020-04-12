@@ -1,6 +1,6 @@
 use crate::xsd_model::complex_types::local_element;
-use crate::xsd_model::complex_types::top_level_element;
 use crate::xsd_model::complex_types::narrow_max_min::NarrowMaxMin;
+use crate::xsd_model::complex_types::top_level_element;
 
 // xsd:element
 // See http://www.w3.org/TR/xmlschema-1/#element-element.
@@ -15,7 +15,6 @@ use crate::xsd_model::complex_types::narrow_max_min::NarrowMaxMin;
 // Anonymous type of element xsd:schema via reference to xsd:schemaTop
 pub type TopLevelElement<'a> = top_level_element::TopLevelElement<'a>;
 
-
 // xsd:element
 // Element information
 // Namespace: http://www.w3.org/2001/XMLSchema
@@ -28,7 +27,6 @@ pub type TopLevelElement<'a> = top_level_element::TopLevelElement<'a>;
 // Type xsd:explicitGroup via reference to xsd:nestedParticle (Elements xsd:choice, xsd:sequence)
 // Type xsd:simpleExplicitGroup via reference to xsd:nestedParticle (Elements xsd:choice, xsd:sequence)
 pub type LocalElement<'a> = local_element::LocalElement<'a>;
-
 
 // xsd:element
 // Element information

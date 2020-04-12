@@ -1,9 +1,9 @@
 use crate::xsd_model::elements::annotation::Annotation;
 use crate::xsd_model::groups::complex_type_model::ComplexTypeModel;
-use crate::xsd_model::RawAttribute;
-use crate::xsd_model::simple_types::Id;
-use crate::xsd_model::simple_types::qname::QName;
 use crate::xsd_model::simple_types::derivation_set::DerivationSet;
+use crate::xsd_model::simple_types::qname::QName;
+use crate::xsd_model::simple_types::Id;
+use crate::xsd_model::RawAttribute;
 
 // xsd:topLevelComplexType
 // Complex type information
@@ -45,7 +45,7 @@ use crate::xsd_model::simple_types::derivation_set::DerivationSet;
 //      xsd:openAttrs
 //          xsd:annotated
 //              xsd:topLevelComplexType
-pub struct TopLevelComplexType<'a>{
+pub struct TopLevelComplexType<'a> {
     annotation: Option<Annotation<'a>>,
     model: ComplexTypeModel<'a>,
     attributes: Vec<RawAttribute<'a>>,

@@ -1,8 +1,8 @@
 use crate::xsd_model::elements::annotation::Annotation;
-use crate::xsd_model::simple_types::Id;
-use crate::xsd_model::RawAttribute;
 use crate::xsd_model::elements::extension::Extension;
 use crate::xsd_model::elements::restriction::ComplexRestriction;
+use crate::xsd_model::simple_types::Id;
+use crate::xsd_model::RawAttribute;
 
 // xsd:complexContent
 // See http://www.w3.org/TR/xmlschema-1/#element-complexContent.
@@ -39,5 +39,5 @@ pub struct ComplexContent<'a> {
 
 pub enum ComplexContentChoice<'a> {
     Restriction(ComplexRestriction<'a>),
-    Extension(Extension<'a>)
+    Extension(Extension<'a>),
 }

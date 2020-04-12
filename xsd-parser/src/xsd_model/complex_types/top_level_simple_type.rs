@@ -1,8 +1,8 @@
 use crate::xsd_model::elements::annotation::Annotation;
 use crate::xsd_model::groups::simple_derivation::SimpleDerivation;
-use crate::xsd_model::simple_types::Id;
-use crate::xsd_model::simple_types::simple_derivation_set::SimpleDerivationSet;
 use crate::xsd_model::simple_types::ncname::NCName;
+use crate::xsd_model::simple_types::simple_derivation_set::SimpleDerivationSet;
+use crate::xsd_model::simple_types::Id;
 use crate::xsd_model::RawAttribute;
 
 // xsd:topLevelSimpleType
@@ -39,5 +39,5 @@ pub struct TopLevelSimpleType<'a> {
     id: Id<'a>,
     final_: Option<SimpleDerivationSet>,
     name: NCName<'a>,
-    attributes: Vec<RawAttribute<'a>>
+    attributes: Vec<RawAttribute<'a>>,
 }

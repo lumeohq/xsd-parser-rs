@@ -1,12 +1,12 @@
 use crate::xsd_model::elements::annotation::Annotation;
 use crate::xsd_model::groups::element_model::ElementModel;
 use crate::xsd_model::groups::identity_constraint::IdentityConstraint;
-use crate::xsd_model::simple_types::Id;
-use crate::xsd_model::simple_types::ncname::NCName;
-use crate::xsd_model::simple_types::qname::QName;
 use crate::xsd_model::simple_types::block_set::BlockSet;
 use crate::xsd_model::simple_types::form_choice::FormChoice;
+use crate::xsd_model::simple_types::ncname::NCName;
 use crate::xsd_model::simple_types::non_negative_integer::NonNegativeInteger;
+use crate::xsd_model::simple_types::qname::QName;
+use crate::xsd_model::simple_types::Id;
 use crate::xsd_model::{MaxOccurs, RawAttribute};
 
 // xsd:narrowMaxMin
@@ -64,7 +64,7 @@ pub struct NarrowMaxMin<'a> {
     nillable: bool,
     block: Option<BlockSet>,
     form: Option<FormChoice>,
-    min_occurs: NonNegativeInteger,  //Anonymous in doc, probably mistake
+    min_occurs: NonNegativeInteger, //Anonymous in doc, probably mistake
     max_occurs: MaxOccurs,
     attributes: Vec<RawAttribute<'a>>,
 }

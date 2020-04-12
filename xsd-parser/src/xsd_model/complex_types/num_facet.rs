@@ -1,8 +1,7 @@
-use crate::xsd_model::simple_types::Id;
-use crate::xsd_model::simple_types::non_negative_integer::NonNegativeInteger;
 use crate::xsd_model::elements::annotation::Annotation;
+use crate::xsd_model::simple_types::non_negative_integer::NonNegativeInteger;
+use crate::xsd_model::simple_types::Id;
 use crate::xsd_model::RawAttribute;
-
 
 // xsd:numFacet
 // Complex type information
@@ -32,7 +31,7 @@ use crate::xsd_model::RawAttribute;
 //              xsd:facet
 //                  xsd:numFacet
 //                      restricted by Anonymous type of element xsd:totalDigits
-pub struct NumFacet<'a>{
+pub struct NumFacet<'a> {
     annotation: Option<Annotation<'a>>,
     id: Id<'a>,
     fixed: bool,

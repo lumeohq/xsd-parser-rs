@@ -24,10 +24,10 @@ use crate::xsd_model::elements::attribute_group::AttributeGroupRef;
 // Type xsd:simpleRestrictionType (Element xsd:restriction)
 pub struct AttrDecls<'a> {
     choices: Vec<AttrChoice<'a>>,
-    any_attribute: Option<AnyAttribute<'a>>
+    any_attribute: Option<AnyAttribute<'a>>,
 }
 
 pub enum AttrChoice<'a> {
     Attribute(Box<LocalAttribute<'a>>),
-    AttributeGroup(AttributeGroupRef<'a>)
+    AttributeGroup(AttributeGroupRef<'a>),
 }

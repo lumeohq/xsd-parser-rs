@@ -1,5 +1,5 @@
-use crate::xsd_model::complex_types::simple_explicit_group::SimpleExplicitGroup;
 use crate::xsd_model::complex_types::explicit_group::ExplicitGroup;
+use crate::xsd_model::complex_types::simple_explicit_group::SimpleExplicitGroup;
 
 // xsd:sequence
 // Element information
@@ -11,7 +11,6 @@ use crate::xsd_model::complex_types::explicit_group::ExplicitGroup;
 // Used in
 // Type xsd:namedGroup (Element xsd:group)
 pub type SimpleSequence<'a> = SimpleExplicitGroup<'a>;
-
 
 // xsd:sequence
 // See http://www.w3.org/TR/xmlschema-1/#element-sequence.

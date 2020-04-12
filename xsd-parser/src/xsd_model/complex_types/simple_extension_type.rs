@@ -1,8 +1,8 @@
 use crate::xsd_model::elements::annotation::Annotation;
 use crate::xsd_model::groups::attr_decls::AttrDecls;
-use crate::xsd_model::RawAttribute;
-use crate::xsd_model::simple_types::Id;
 use crate::xsd_model::simple_types::qname::QName;
+use crate::xsd_model::simple_types::Id;
+use crate::xsd_model::RawAttribute;
 
 // xsd:simpleExtensionType
 // attrs only
@@ -36,5 +36,5 @@ pub struct SimpleExtensionType<'a> {
     attr_decls: AttrDecls<'a>,
     attributes: Vec<RawAttribute<'a>>,
     id: Id<'a>,
-    base: QName<'a>
+    base: QName<'a>,
 }

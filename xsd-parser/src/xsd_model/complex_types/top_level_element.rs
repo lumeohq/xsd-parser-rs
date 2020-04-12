@@ -1,10 +1,10 @@
 use crate::xsd_model::elements::annotation::Annotation;
 use crate::xsd_model::groups::element_model::ElementModel;
-use crate::xsd_model::RawAttribute;
-use crate::xsd_model::simple_types::Id;
-use crate::xsd_model::simple_types::qname::QName;
-use crate::xsd_model::simple_types::derivation_set::DerivationSet;
 use crate::xsd_model::simple_types::block_set::BlockSet;
+use crate::xsd_model::simple_types::derivation_set::DerivationSet;
+use crate::xsd_model::simple_types::qname::QName;
+use crate::xsd_model::simple_types::Id;
+use crate::xsd_model::RawAttribute;
 
 // xsd:topLevelElement
 // Complex type information

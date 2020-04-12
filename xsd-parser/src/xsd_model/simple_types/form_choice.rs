@@ -24,9 +24,9 @@
 //                  xsd:NMTOKEN
 //                      xsd:formChoice
 #[derive(Debug, PartialEq)]
-pub enum FormChoice{
+pub enum FormChoice {
     Qualified,
-    Unqualified
+    Unqualified,
 }
 
 impl Default for FormChoice {
@@ -40,7 +40,7 @@ impl FormChoice {
         let res = match s {
             "qualified" => Self::Qualified,
             "unqualified" => Self::Unqualified,
-            _ => Err(format!("Invalid value for FormChoice: {}", s))?
+            _ => Err(format!("Invalid value for FormChoice: {}", s))?,
         };
         Ok(res)
     }

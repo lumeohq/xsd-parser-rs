@@ -23,7 +23,7 @@
 #[derive(Debug, PartialEq)]
 pub enum FullDerivationSet {
     All,
-    List(Vec<FullDerivationSubSet>)
+    List(Vec<FullDerivationSubSet>),
 }
 
 #[derive(Debug, PartialEq)]
@@ -41,7 +41,7 @@ impl FullDerivationSubSet {
             "restriction" => Self::Restriction,
             "list" => Self::List,
             "union" => Self::Union,
-            _ => Err(format!("Invalid value for FullDerivationSet: {}", s))?
+            _ => Err(format!("Invalid value for FullDerivationSet: {}", s))?,
         };
         Ok(res)
     }
@@ -52,7 +52,10 @@ impl FullDerivationSet {
         let res = if s == "#all" {
             Self::All
         } else {
-            let res: Result<Vec<_>, String> = s.split(' ').map(|v| FullDerivationSubSet::parse(v)).collect();
+            let res: Result<Vec<_>, String> = s
+                .split(' ')
+                .map(|v| FullDerivationSubSet::parse(v))
+                .collect();
             Self::List(res?)
         };
         Ok(res)

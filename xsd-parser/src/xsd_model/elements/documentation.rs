@@ -1,6 +1,6 @@
-use crate::xsd_model::{RawElement, RawAttribute};
 use crate::xsd_model::simple_types::any_uri::AnyUri;
 use crate::xsd_model::simple_types::language::Language;
+use crate::xsd_model::{RawAttribute, RawElement};
 
 // xsd:documentation
 // See http://www.w3.org/TR/xmlschema-1/#element-documentation.
@@ -21,10 +21,10 @@ use crate::xsd_model::simple_types::language::Language;
 //
 // Used in
 // Anonymous type of element xsd:annotation
-pub struct Documentation<'a>{
+pub struct Documentation<'a> {
     pub text: &'a str,
     pub elements: Vec<RawElement<'a>>,
     pub source: Option<AnyUri<'a>>,
     pub lang: Option<Language<'a>>,
-    pub attributes: Vec<RawAttribute<'a>>
+    pub attributes: Vec<RawAttribute<'a>>,
 }

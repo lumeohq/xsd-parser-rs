@@ -21,7 +21,6 @@ use crate::xsd_model::complex_types::named_attribute_group;
 // Type xsd:topLevelComplexType via reference to xsd:complexTypeModel (Element xsd:complexType)
 pub type AttributeGroupRef<'a> = attribute_group_ref::AttributeGroupRef<'a>;
 
-
 // xsd:attributeGroup
 // See http://www.w3.org/TR/xmlschema-1/#element-attributeGroup.
 // Element information

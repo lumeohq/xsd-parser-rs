@@ -1,16 +1,16 @@
-use crate::xsd_model::elements::include::Include;
-use crate::xsd_model::elements::import::Import;
-use crate::xsd_model::elements::redefine::Redefine;
 use crate::xsd_model::elements::annotation::Annotation;
-use crate::xsd_model::{RawAttribute, Namespace};
+use crate::xsd_model::elements::import::Import;
+use crate::xsd_model::elements::include::Include;
+use crate::xsd_model::elements::redefine::Redefine;
+use crate::xsd_model::groups::schema_top::SchemaTop;
 use crate::xsd_model::simple_types::any_uri::AnyUri;
-use crate::xsd_model::simple_types::token::Token;
-use crate::xsd_model::simple_types::full_derivation_set::FullDerivationSet;
 use crate::xsd_model::simple_types::block_set::BlockSet;
 use crate::xsd_model::simple_types::form_choice::FormChoice;
-use crate::xsd_model::simple_types::Id;
+use crate::xsd_model::simple_types::full_derivation_set::FullDerivationSet;
 use crate::xsd_model::simple_types::language::Language;
-use crate::xsd_model::groups::schema_top::SchemaTop;
+use crate::xsd_model::simple_types::token::Token;
+use crate::xsd_model::simple_types::Id;
+use crate::xsd_model::{Namespace, RawAttribute};
 
 // xsd:schema
 // See http://www.w3.org/TR/xmlschema-1/#element-schema.

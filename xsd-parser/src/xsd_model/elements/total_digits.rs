@@ -1,7 +1,7 @@
 use crate::xsd_model::elements::annotation::Annotation;
+use crate::xsd_model::simple_types::positive_integer::PositiveInteger;
 use crate::xsd_model::simple_types::Id;
 use crate::xsd_model::RawAttribute;
-use crate::xsd_model::simple_types::positive_integer::PositiveInteger;
 
 // xsd:totalDigits
 // See http://www.w3.org/TR/xmlschema-2/#element-totalDigits.
@@ -25,7 +25,7 @@ use crate::xsd_model::simple_types::positive_integer::PositiveInteger;
 // Anonymous type of element xsd:restriction via reference to xsd:simpleRestrictionModel
 // Group xsd:simpleRestrictionModel via reference to xsd:facets
 // Type xsd:simpleRestrictionType via reference to xsd:simpleRestrictionModel (Element xsd:restriction)
-pub struct TotalDigits<'a>{
+pub struct TotalDigits<'a> {
     annotation: Option<Annotation<'a>>,
     id: Id<'a>,
     fixed: bool,

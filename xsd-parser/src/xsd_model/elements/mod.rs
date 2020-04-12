@@ -41,7 +41,6 @@ pub mod union;
 pub mod unique;
 pub mod white_space;
 
-
 #[derive(Debug, PartialEq)]
 pub enum ElementType {
     All,
@@ -87,57 +86,55 @@ pub enum ElementType {
     Unique,
     WhiteSpace,
 
-    Unknown(String)
+    Unknown(String),
 }
 
 pub fn xsd_element_type(name: &str) -> Result<ElementType, String> {
     use ElementType::*;
-        let element = match name {
-            "all" => All,
-            "annotation" => Annotation,
-            "any" => Any,
-            "anyAttribute" => AnyAttribute,
-            "appInfo" => AppInfo,
-            "attribute" => Attribute,
-            "attributeGroup" => AttributeGroup,
-            "choice" => Choice,
-            "complexContent" => ComplexContent,
-            "complexType" => ComplexType,
-            "documentation" => Documentation,
-            "element" => Element,
-            "enumeration" => Enumeration,
-            "extension" => Extension,
-            "field" => Field,
-            "fractionDigits" => FractionDigits,
-            "group" => Group,
-            "import" => Import,
-            "include" => Include,
-            "key" => Key,
-            "keyRef" => KeyRef,
-            "length" => Length,
-            "list" => List,
-            "maxExclusive" => MaxExclusive,
-            "maxInclusive" => MaxInclusive,
-            "maxLength" => MaxLength,
-            "minExclusive" => MinExclusive,
-            "minInclusive" => MinInclusive,
-            "minLength" => MinLength,
-            "notation" => Notation,
-            "pattern" => Pattern,
-            "redefine" => Redefine,
-            "restriction" => Restriction,
-            "schema" => Schema,
-            "selector" => Selector,
-            "sequence" => Sequence,
-            "simpleContent" => SimpleContent,
-            "simpleType" => SimpleType,
-            "totalDigits" => TotalDigits,
-            "union" => Union,
-            "unique" => Unique,
-            "whiteSpace" => WhiteSpace,
-            _ => Err(format!("Invalid xsd element name: {}", name))?
-        };
+    let element = match name {
+        "all" => All,
+        "annotation" => Annotation,
+        "any" => Any,
+        "anyAttribute" => AnyAttribute,
+        "appInfo" => AppInfo,
+        "attribute" => Attribute,
+        "attributeGroup" => AttributeGroup,
+        "choice" => Choice,
+        "complexContent" => ComplexContent,
+        "complexType" => ComplexType,
+        "documentation" => Documentation,
+        "element" => Element,
+        "enumeration" => Enumeration,
+        "extension" => Extension,
+        "field" => Field,
+        "fractionDigits" => FractionDigits,
+        "group" => Group,
+        "import" => Import,
+        "include" => Include,
+        "key" => Key,
+        "keyRef" => KeyRef,
+        "length" => Length,
+        "list" => List,
+        "maxExclusive" => MaxExclusive,
+        "maxInclusive" => MaxInclusive,
+        "maxLength" => MaxLength,
+        "minExclusive" => MinExclusive,
+        "minInclusive" => MinInclusive,
+        "minLength" => MinLength,
+        "notation" => Notation,
+        "pattern" => Pattern,
+        "redefine" => Redefine,
+        "restriction" => Restriction,
+        "schema" => Schema,
+        "selector" => Selector,
+        "sequence" => Sequence,
+        "simpleContent" => SimpleContent,
+        "simpleType" => SimpleType,
+        "totalDigits" => TotalDigits,
+        "union" => Union,
+        "unique" => Unique,
+        "whiteSpace" => WhiteSpace,
+        _ => Err(format!("Invalid xsd element name: {}", name))?,
+    };
     Ok(element)
 }
-
-

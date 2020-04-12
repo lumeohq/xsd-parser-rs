@@ -1,9 +1,9 @@
-use crate::xsd_model::elements::annotation::Annotation;
-use crate::xsd_model::simple_types::Id;
-use crate::xsd_model::simple_types::qname::QName;
-use crate::xsd_model::complex_types::simple_restriction_type::SimpleRestrictionType;
 use crate::xsd_model::complex_types::complex_restriction_type::ComplexRestrictionType;
+use crate::xsd_model::complex_types::simple_restriction_type::SimpleRestrictionType;
+use crate::xsd_model::elements::annotation::Annotation;
 use crate::xsd_model::groups::simple_restriction_model::SimpleRestrictionModel;
+use crate::xsd_model::simple_types::qname::QName;
+use crate::xsd_model::simple_types::Id;
 use crate::xsd_model::RawAttribute;
 
 // Namespace: http://www.w3.org/2001/XMLSchema
@@ -44,9 +44,8 @@ pub struct Restriction<'a> {
     model: SimpleRestrictionModel<'a>,
     attributes: Vec<RawAttribute<'a>>,
     id: Id<'a>,
-    base: Option<QName<'a>>
+    base: Option<QName<'a>>,
 }
-
 
 // Namespace: http://www.w3.org/2001/XMLSchema
 // Schema document: xmlschema.xsd
@@ -55,8 +54,7 @@ pub struct Restriction<'a> {
 //
 // Used in
 // Anonymous type of element xsd:simpleContent
-pub type SimpleRestriction<'a>  = SimpleRestrictionType<'a>;
-
+pub type SimpleRestriction<'a> = SimpleRestrictionType<'a>;
 
 // Element information
 // Namespace: http://www.w3.org/2001/XMLSchema
@@ -67,4 +65,4 @@ pub type SimpleRestriction<'a>  = SimpleRestrictionType<'a>;
 // Used in
 // Anonymous type of element xsd:complexContent
 
-pub type ComplexRestriction<'a>  = ComplexRestrictionType<'a>;
+pub type ComplexRestriction<'a> = ComplexRestrictionType<'a>;

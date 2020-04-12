@@ -1,8 +1,8 @@
-use crate::xsd_model::elements::any::Any;
 use crate::xsd_model::complex_types::named_group_ref::NamedGroupRef;
+use crate::xsd_model::elements::any::Any;
 use crate::xsd_model::elements::choice::Choice;
-use crate::xsd_model::elements::sequence::Sequence;
 use crate::xsd_model::elements::element::LocalElement;
+use crate::xsd_model::elements::sequence::Sequence;
 
 // xsd:nestedParticle
 // Group information

@@ -21,14 +21,17 @@
 //      restricted by xsd:QName
 pub struct QName<'a> {
     pub prefix: Option<&'a str>,
-    pub name: &'a str
+    pub name: &'a str,
 }
 
 impl<'a> QName<'a> {
     pub fn new(name: &'a str) -> Self {
         match name.find(':') {
-            Some(index) => Self{prefix: Some(&name[0..index]), name: &name[index + 1..]},
-            None => Self{prefix: None, name},
+            Some(index) => Self {
+                prefix: Some(&name[0..index]),
+                name: &name[index + 1..],
+            },
+            None => Self { prefix: None, name },
         }
     }
 }

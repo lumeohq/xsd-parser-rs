@@ -1,10 +1,10 @@
-use crate::xsd_model::elements::simple_type::TopLevelSimpleType;
-use crate::xsd_model::elements::complex_type::TopLevelComplexType;
-use crate::xsd_model::elements::group::Group;
-use crate::xsd_model::elements::attribute_group::AttributeGroup;
-use crate::xsd_model::elements::element::TopLevelElement;
 use crate::xsd_model::elements::attribute::TopLevelAttribute;
+use crate::xsd_model::elements::attribute_group::AttributeGroup;
+use crate::xsd_model::elements::complex_type::TopLevelComplexType;
+use crate::xsd_model::elements::element::TopLevelElement;
+use crate::xsd_model::elements::group::Group;
 use crate::xsd_model::elements::notation::Notation;
+use crate::xsd_model::elements::simple_type::TopLevelSimpleType;
 
 // xsd:schemaTop
 // This group is for the elements which occur freely at the top level of schemas. All of their types are based on the "annotated" type by extension.

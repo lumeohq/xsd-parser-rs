@@ -1,7 +1,6 @@
 use crate::xsd_model::complex_types::local_attribute_type::LocalAttributeType;
 use crate::xsd_model::complex_types::top_level_attribute_type::TopLevelAttributeType;
 
-
 // xsd:attribute
 // Element information
 // Namespace: http://www.w3.org/2001/XMLSchema
@@ -21,7 +20,6 @@ use crate::xsd_model::complex_types::top_level_attribute_type::TopLevelAttribute
 // Type xsd:simpleRestrictionType via reference to xsd:attrDecls (Element xsd:restriction)
 // Type xsd:topLevelComplexType via reference to xsd:complexTypeModel (Element xsd:complexType)
 pub type LocalAttribute<'a> = LocalAttributeType<'a>;
-
 
 // xsd:attribute
 // See http://www.w3.org/TR/xmlschema-1/#element-attribute.

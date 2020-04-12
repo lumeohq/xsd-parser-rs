@@ -1,6 +1,6 @@
 use crate::xsd_model::elements::annotation::Annotation;
-use crate::xsd_model::groups::type_def_particle::TypeDefParticle;
 use crate::xsd_model::groups::attr_decls::AttrDecls;
+use crate::xsd_model::groups::type_def_particle::TypeDefParticle;
 
 // xsd:complexRestrictionType
 // Complex type information

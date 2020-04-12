@@ -1,8 +1,8 @@
 use crate::xsd_model::elements::annotation::Annotation;
-use crate::xsd_model::RawAttribute;
-use crate::xsd_model::simple_types::Id;
-use crate::xsd_model::simple_types::qname::QName;
 use crate::xsd_model::elements::simple_type::LocalSimpleType;
+use crate::xsd_model::simple_types::qname::QName;
+use crate::xsd_model::simple_types::Id;
+use crate::xsd_model::RawAttribute;
 
 // Element information
 // Namespace: http://www.w3.org/2001/XMLSchema
@@ -30,5 +30,5 @@ pub struct List<'a> {
     simple_type: Option<Box<LocalSimpleType<'a>>>,
     attributes: Vec<RawAttribute<'a>>,
     id: Id<'a>,
-    item_type: Option<QName<'a>>
+    item_type: Option<QName<'a>>,
 }

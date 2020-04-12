@@ -1,9 +1,9 @@
-use crate::xsd_model::elements::annotation::Annotation;
 use crate::xsd_model::complex_types::local_simple_type::LocalSimpleType;
-use crate::xsd_model::RawAttribute;
-use crate::xsd_model::simple_types::Id;
+use crate::xsd_model::elements::annotation::Annotation;
 use crate::xsd_model::simple_types::ncname::NCName;
 use crate::xsd_model::simple_types::qname::QName;
+use crate::xsd_model::simple_types::Id;
+use crate::xsd_model::RawAttribute;
 
 // xsd:topLevelAttributeType
 // Complex type information
@@ -40,5 +40,5 @@ pub struct TopLevelAttributeType<'a> {
     name: NCName<'a>,
     type_: Option<QName<'a>>,
     default: Option<&'a str>,
-    fixed: Option<&'a str>
+    fixed: Option<&'a str>,
 }

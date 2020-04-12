@@ -1,8 +1,8 @@
-use crate::xsd_model::elements::annotation::Annotation;
-use crate::xsd_model::RawAttribute;
-use crate::xsd_model::simple_types::Id;
 use crate::xsd_model::complex_types::all_type;
+use crate::xsd_model::elements::annotation::Annotation;
 use crate::xsd_model::elements::element::Element;
+use crate::xsd_model::simple_types::Id;
+use crate::xsd_model::RawAttribute;
 
 // xsd:all
 // An "all" group that allows elements to appear in any order. Unlike other group types, does not allow other groups as children, only elements. This declaration is for an "all" group that is a child of xsd:group; its type disallows minOccurs and maxOccurs
@@ -34,7 +34,6 @@ pub struct All<'a> {
     id: Id<'a>,
 }
 
-
 // xsd:all
 // An "all" group that allows elements to appear in any order. Unlike other group types, does not allow other groups as children, only elements.
 // See http://www.w3.org/TR/xmlschema-1/#element-all.
@@ -55,4 +54,3 @@ pub struct All<'a> {
 // Type xsd:localComplexType via reference to xsd:complexTypeModel (Element xsd:complexType)
 // Type xsd:topLevelComplexType via reference to xsd:complexTypeModel (Element xsd:complexType)
 pub type AllType<'a> = all_type::AllType<'a>;
-

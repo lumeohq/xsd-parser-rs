@@ -1,10 +1,10 @@
-use crate::xsd_model::elements::annotation::Annotation;
 use crate::xsd_model::elements::all::All;
+use crate::xsd_model::elements::annotation::Annotation;
 use crate::xsd_model::elements::choice::SimpleChoice;
-use crate::xsd_model::RawAttribute;
-use crate::xsd_model::simple_types::Id;
-use crate::xsd_model::simple_types::ncname::NCName;
 use crate::xsd_model::elements::sequence::SimpleSequence;
+use crate::xsd_model::simple_types::ncname::NCName;
+use crate::xsd_model::simple_types::Id;
+use crate::xsd_model::RawAttribute;
 
 // xsd:namedGroup
 // Complex type information
@@ -38,7 +38,7 @@ pub struct NamedGroup<'a> {
     content_choice: ContentChoice<'a>,
     attributes: Vec<RawAttribute<'a>>,
     id: Id<'a>,
-    name: NCName<'a>
+    name: NCName<'a>,
 }
 
 pub enum ContentChoice<'a> {

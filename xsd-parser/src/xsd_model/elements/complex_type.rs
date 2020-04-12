@@ -1,5 +1,5 @@
-use crate::xsd_model::complex_types::top_level_complex_type;
 use crate::xsd_model::complex_types::local_complex_type;
+use crate::xsd_model::complex_types::top_level_complex_type;
 
 // See http://www.w3.org/TR/xmlschema-1/#element-complexType.
 // Element information
@@ -14,7 +14,6 @@ use crate::xsd_model::complex_types::local_complex_type;
 // Anonymous type of element xsd:schema via reference to xsd:schemaTop
 // Group xsd:schemaTop via reference to xsd:redefinable
 pub type TopLevelComplexType<'a> = top_level_complex_type::TopLevelComplexType<'a>;
-
 
 // Element information
 // Namespace: http://www.w3.org/2001/XMLSchema

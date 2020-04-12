@@ -1,5 +1,5 @@
-use crate::xsd_model::complex_types::simple_extension_type::SimpleExtensionType;
 use crate::xsd_model::complex_types::extension_type::ExtensionType;
+use crate::xsd_model::complex_types::simple_extension_type::SimpleExtensionType;
 
 // Element information
 // Namespace: http://www.w3.org/2001/XMLSchema
@@ -9,8 +9,7 @@ use crate::xsd_model::complex_types::extension_type::ExtensionType;
 //
 // Used in
 // Anonymous type of element xsd:simpleContent
-pub type SimpleExtension<'a>  = SimpleExtensionType<'a>;
-
+pub type SimpleExtension<'a> = SimpleExtensionType<'a>;
 
 // Element information
 // Namespace: http://www.w3.org/2001/XMLSchema

@@ -1,7 +1,7 @@
-use crate::xsd_model::elements::simple_type::TopLevelSimpleType;
+use crate::xsd_model::elements::attribute_group::AttributeGroup;
 use crate::xsd_model::elements::complex_type::TopLevelComplexType;
 use crate::xsd_model::elements::group::Group;
-use crate::xsd_model::elements::attribute_group::AttributeGroup;
+use crate::xsd_model::elements::simple_type::TopLevelSimpleType;
 
 // xsd:redefinable
 // This group is for the elements which can self-redefine.

@@ -3,7 +3,6 @@ pub mod elements;
 pub mod groups;
 pub mod simple_types;
 
-
 pub const XSD_NS_URI: &str = "http://www.w3.org/2001/XMLSchema";
 
 pub type RawAttribute<'a> = roxmltree::Attribute<'a>;
@@ -16,7 +15,6 @@ pub enum MaxOccurs {
 }
 
 pub type XPath<'a> = &'a str;
-
 
 #[derive(Debug, PartialEq)]
 pub enum XsdType {
@@ -66,73 +64,71 @@ pub enum XsdType {
 
 pub mod subtype {
 
-#[derive(Debug, PartialEq)]
-pub enum All {
-    AllType,
-    Anonymous
-}
+    #[derive(Debug, PartialEq)]
+    pub enum All {
+        AllType,
+        Anonymous,
+    }
 
-#[derive(Debug, PartialEq)]
-pub enum Attribute{
-    TopLevelAttributeType,
-    LocalAttributeType
-}
+    #[derive(Debug, PartialEq)]
+    pub enum Attribute {
+        TopLevelAttributeType,
+        LocalAttributeType,
+    }
 
-#[derive(Debug, PartialEq)]
-pub enum AttributeGroup {
-    AttributeGroupRef,
-    NamedAttributeGroup
-}
+    #[derive(Debug, PartialEq)]
+    pub enum AttributeGroup {
+        AttributeGroupRef,
+        NamedAttributeGroup,
+    }
 
-#[derive(Debug, PartialEq)]
-pub enum Choice {
-    ExplicitGroup,
-    SimpleExplicitGroup
-}
+    #[derive(Debug, PartialEq)]
+    pub enum Choice {
+        ExplicitGroup,
+        SimpleExplicitGroup,
+    }
 
-#[derive(Debug, PartialEq)]
-pub enum ComplexType {
-    TopLevelComplexType,
-    LocalComplexType
-}
+    #[derive(Debug, PartialEq)]
+    pub enum ComplexType {
+        TopLevelComplexType,
+        LocalComplexType,
+    }
 
-#[derive(Debug, PartialEq)]
-pub enum Element {
-    TopLevelElement,
-    LocalElement,
-    NarrowMaxMin
-}
+    #[derive(Debug, PartialEq)]
+    pub enum Element {
+        TopLevelElement,
+        LocalElement,
+        NarrowMaxMin,
+    }
 
-#[derive(Debug, PartialEq)]
-pub enum Extension {
-    SimpleExtensionType,
-    ExtensionType,
-}
+    #[derive(Debug, PartialEq)]
+    pub enum Extension {
+        SimpleExtensionType,
+        ExtensionType,
+    }
 
-#[derive(Debug, PartialEq)]
-pub enum Group {
-    NamedGroup,
-    NamedGroupRef,
-}
+    #[derive(Debug, PartialEq)]
+    pub enum Group {
+        NamedGroup,
+        NamedGroupRef,
+    }
 
-#[derive(Debug, PartialEq)]
-pub enum Restriction {
-    SimpleRestrictionType,
-    ComplexRestrictionType,
-    Anonymous
-}
+    #[derive(Debug, PartialEq)]
+    pub enum Restriction {
+        SimpleRestrictionType,
+        ComplexRestrictionType,
+        Anonymous,
+    }
 
-#[derive(Debug, PartialEq)]
-pub enum Sequence {
-    SimpleExplicitGroup,
-    ExplicitGroup,
-}
+    #[derive(Debug, PartialEq)]
+    pub enum Sequence {
+        SimpleExplicitGroup,
+        ExplicitGroup,
+    }
 
-#[derive(Debug, PartialEq)]
-pub enum SimpleType {
-    LocalSimpleType,
-    TopLevelSimpleType,
+    #[derive(Debug, PartialEq)]
+    pub enum SimpleType {
+        LocalSimpleType,
+        TopLevelSimpleType,
+    }
 }
-
-}
-

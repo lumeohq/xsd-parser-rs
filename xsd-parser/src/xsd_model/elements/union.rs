@@ -1,8 +1,8 @@
 use crate::xsd_model::elements::annotation::Annotation;
-use crate::xsd_model::RawAttribute;
-use crate::xsd_model::simple_types::Id;
-use crate::xsd_model::simple_types::qname::QName;
 use crate::xsd_model::elements::simple_type::LocalSimpleType;
+use crate::xsd_model::simple_types::qname::QName;
+use crate::xsd_model::simple_types::Id;
+use crate::xsd_model::RawAttribute;
 
 // xsd:notation
 // Element information
@@ -29,5 +29,5 @@ pub struct Union<'a> {
     simple_type: Vec<LocalSimpleType<'a>>,
     attributes: Vec<RawAttribute<'a>>,
     id: Id<'a>,
-    member_types: Vec<QName<'a>>
+    member_types: Vec<QName<'a>>,
 }

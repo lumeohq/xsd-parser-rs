@@ -21,7 +21,6 @@ use crate::xsd_model::complex_types::simple_explicit_group::SimpleExplicitGroup;
 // Type xsd:simpleExplicitGroup via reference to xsd:nestedParticle (Elements xsd:choice, xsd:sequence)
 pub type Choice<'a> = ExplicitGroup<'a>;
 
-
 // Namespace: http://www.w3.org/2001/XMLSchema
 // Schema document: xmlschema.xsd
 // Type: xsd:simpleExplicitGroup

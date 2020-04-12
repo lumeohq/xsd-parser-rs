@@ -21,7 +21,6 @@ use crate::xsd_model::complex_types::{local_simple_type, top_level_simple_type};
 // Type xsd:topLevelElement via reference to xsd:elementModel (Element xsd:element)
 pub type LocalSimpleType<'a> = local_simple_type::LocalSimpleType<'a>;
 
-
 // xsd:simpleType
 // See http://www.w3.org/TR/xmlschema-2/#element-simpleType.
 // Element information

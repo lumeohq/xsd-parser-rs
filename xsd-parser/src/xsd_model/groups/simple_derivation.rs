@@ -1,5 +1,5 @@
-use crate::xsd_model::elements::restriction::Restriction;
 use crate::xsd_model::elements::list::List;
+use crate::xsd_model::elements::restriction::Restriction;
 use crate::xsd_model::elements::union::Union;
 
 // xsd:simpleDerivation

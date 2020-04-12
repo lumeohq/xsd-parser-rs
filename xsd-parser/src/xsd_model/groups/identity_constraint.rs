@@ -1,6 +1,6 @@
-use crate::xsd_model::elements::unique::Unique;
 use crate::xsd_model::elements::key::Key;
 use crate::xsd_model::elements::key_ref::KeyRef;
+use crate::xsd_model::elements::unique::Unique;
 
 // xsd:identityConstraint
 // The three kinds of identity constraints, all with type of or derived from 'keybase'.

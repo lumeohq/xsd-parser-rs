@@ -1,10 +1,9 @@
 use crate::xsd_model::elements::annotation::Annotation;
 use crate::xsd_model::groups::attr_decls::AttrDecls;
-use crate::xsd_model::RawAttribute;
-use crate::xsd_model::simple_types::Id;
-use crate::xsd_model::simple_types::qname::QName;
 use crate::xsd_model::groups::type_def_particle::TypeDefParticle;
-
+use crate::xsd_model::simple_types::qname::QName;
+use crate::xsd_model::simple_types::Id;
+use crate::xsd_model::RawAttribute;
 
 // xsd:extensionType
 // Complex type information
@@ -38,5 +37,5 @@ pub struct ExtensionType<'a> {
     attr_decls: AttrDecls<'a>,
     attributes: Vec<RawAttribute<'a>>,
     id: Id<'a>,
-    base: QName<'a>
+    base: QName<'a>,
 }

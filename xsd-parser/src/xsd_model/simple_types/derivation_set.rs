@@ -21,7 +21,7 @@
 // Attribute final
 pub enum DerivationSet {
     All,
-    List(Vec<DerivationSubset>)
+    List(Vec<DerivationSubset>),
 }
 
 pub enum DerivationSubset {

@@ -33,5 +33,5 @@ pub struct LocalSimpleType<'a> {
     annotation: Option<Annotation<'a>>,
     content_choice: Box<SimpleDerivation<'a>>,
     id: Id<'a>,
-    attributes: Vec<RawAttribute<'a>>
+    attributes: Vec<RawAttribute<'a>>,
 }
