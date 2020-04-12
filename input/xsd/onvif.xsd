@@ -37,12 +37,12 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 	</xs:complexType>
 	<!--===============================-->
 	<xs:simpleType name="Name">
-		<xs:annotation>
-			<xs:documentation>User readable name. Length up to 64 characters.</xs:documentation>
-		</xs:annotation>
 		<xs:restriction base="xs:string">
 			<xs:maxLength value="64"/>
 		</xs:restriction>
+		<xs:annotation>
+			<xs:documentation>User readable name. Length up to 64 characters.</xs:documentation>
+		</xs:annotation>
 	</xs:simpleType>
 	<!--===============================-->
 	<xs:complexType name="IntRectangle">

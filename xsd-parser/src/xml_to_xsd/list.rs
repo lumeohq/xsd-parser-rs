@@ -24,7 +24,6 @@ impl<'a> List<'a> {
                 _ => res.attributes.push(attr.clone())
             };
         }
-
         Ok(res)
     }
 }

@@ -26,9 +26,9 @@ use crate::xsd_model::RawAttribute;
 // Anonymous type of element xsd:schema via reference to xsd:schemaTop
 #[derive(Default, Debug)]
 pub struct Union<'a> {
-    annotation: Option<Annotation<'a>>,
-    simple_type: Vec<LocalSimpleType<'a>>,
-    attributes: Vec<RawAttribute<'a>>,
-    id: Id<'a>,
-    member_types: Vec<QName<'a>>,
+    pub annotation: Option<Annotation<'a>>,
+    pub simple_type: Vec<LocalSimpleType<'a>>,
+    pub attributes: Vec<RawAttribute<'a>>,
+    pub id: Id<'a>,
+    pub member_types: Vec<QName<'a>>,
 }

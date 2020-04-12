@@ -31,8 +31,8 @@ use crate::xsd_model::RawAttribute;
 //                  xsd:localSimpleType
 #[derive(Debug)]
 pub struct LocalSimpleType<'a> {
-    annotation: Option<Annotation<'a>>,
-    content_choice: Box<SimpleDerivation<'a>>,
-    id: Id<'a>,
-    attributes: Vec<RawAttribute<'a>>,
+    pub annotation: Option<Annotation<'a>>,
+    pub content_choice: Box<SimpleDerivation<'a>>,
+    pub id: Id<'a>,
+    pub attributes: Vec<RawAttribute<'a>>,
 }
