@@ -26,10 +26,11 @@ use crate::xsd_model::RawAttribute;
 //
 // Used in
 // Anonymous type of element xsd:schema
+#[derive(Debug, Default)]
 pub struct Import<'a> {
-    annotation: Option<Annotation<'a>>,
-    attributes: Vec<RawAttribute<'a>>,
-    id: Id<'a>,
-    namespace: Option<AnyUri<'a>>,
-    schema_location: Option<AnyUri<'a>>,
+    pub annotation: Option<Annotation<'a>>,
+    pub attributes: Vec<RawAttribute<'a>>,
+    pub id: Id<'a>,
+    pub namespace: Option<AnyUri<'a>>,
+    pub schema_location: Option<AnyUri<'a>>,
 }

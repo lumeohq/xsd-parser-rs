@@ -9,6 +9,9 @@ use crate::xsd_model::simple_types::id::Id;
 use crate::xsd_model::simple_types::language::Language;
 use crate::xsd_model::simple_types::token::Token;
 use roxmltree::Document;
+use crate::xsd_model::elements::include::Include;
+use crate::xsd_model::elements::annotation::Annotation;
+use crate::xsd_model::elements::import::Import;
 
 pub fn parse_document<'a>(doc: &'a Document) -> Result<Schema<'a>, String> {
     let schema_node = doc.root_element();
@@ -34,10 +37,10 @@ pub fn parse_document<'a>(doc: &'a Document) -> Result<Schema<'a>, String> {
 
     for ch in schema_node.children().filter(|n| n.is_element()) {
         match ch.xsd_type()? {
-            ElementType::Include => {}
-            ElementType::Import => {}
+            ElementType::Include => {schema.includes.push(Include::parse(ch)?)}
+            ElementType::Import => {schema.imports.push(Import::parse(ch)?)}
             ElementType::Redefine => {}
-            ElementType::Annotation => {}
+            ElementType::Annotation => {schema.annotations.push(Annotation::parse(ch)?)}
             //schemaTop
             ElementType::SimpleType => {}
             ElementType::ComplexType => {}
@@ -69,8 +72,11 @@ mod test {
         id="ID"
         xml:lang="us"
         >
-
-        <xs:complexType name="DeviceEntity" />
+        <xs:include schemaLocation="common.xsd"/>
+        <xs:include schemaLocation="common2.xsd"/>
+        <xs:import namespace="http://www.w3.org/2005/05/xmlmime" schemaLocation="http://www.w3.org/2005/05/xmlmime"/>
+        <xs:import namespace="http://www.w3.org/2003/05/soap-envelope" schemaLocation="http://www.w3.org/2003/05/soap-envelope"/>
+        <xs:complexType name="DeviceEntity" />1
         <xs:complexType name="VideoSource" />
 
     </xs:schema>
@@ -90,5 +96,7 @@ mod test {
         assert_eq!(schema.id.unwrap().0, "ID");
         assert_eq!(schema.element_form_default, FormChoice::Qualified);
         assert_eq!(schema.lang.unwrap().0, "us");
+        assert_eq!(schema.imports.len(), 2);
+        assert_eq!(schema.includes.len(), 2);
     }
 }

@@ -1,14 +1,16 @@
+pub mod schema;
+pub mod include;
+pub mod annotation;
+pub mod documentation;
+pub mod app_info;
+pub mod import;
+
 use crate::xsd_model::elements::{xsd_element_type, ElementType};
 use roxmltree::Attribute;
 use crate::xsd_model::simple_types::any_uri::AnyUri;
 use crate::xsd_model::simple_types::language::Language;
 use crate::xsd_model::simple_types::id::Id;
 
-pub mod schema;
-pub mod include;
-pub mod annotation;
-pub mod documentation;
-pub mod app_info;
 
 pub const XSD_NS_URI: &str = "http://www.w3.org/2001/XMLSchema";
 
