@@ -20,6 +20,7 @@ use crate::xsd_model::RawAttribute;
 //
 // Used in
 // Anonymous type of element xsd:schema
+#[derive(Debug, Default)]
 pub struct Include<'a> {
     pub annotation: Option<Annotation<'a>>,
     pub attributes: Vec<RawAttribute<'a>>,

@@ -42,4 +42,5 @@
 //          restricted by xsd:normalizedString
 //              restricted by xsd:token
 //                  restricted by xsd:language
+#[derive(Debug)]
 pub struct Language<'a>(pub &'a str);

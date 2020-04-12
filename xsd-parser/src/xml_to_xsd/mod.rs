@@ -1,6 +1,14 @@
 use crate::xsd_model::elements::{xsd_element_type, ElementType};
+use roxmltree::Attribute;
+use crate::xsd_model::simple_types::any_uri::AnyUri;
+use crate::xsd_model::simple_types::language::Language;
+use crate::xsd_model::simple_types::id::Id;
 
 pub mod schema;
+pub mod include;
+pub mod annotation;
+pub mod documentation;
+pub mod app_info;
 
 pub const XSD_NS_URI: &str = "http://www.w3.org/2001/XMLSchema";
 
@@ -18,6 +26,28 @@ impl XsdNode for roxmltree::Node<'_, '_> {
                 ))?
             }
         }
+
         xsd_element_type(self.tag_name().name())
     }
 }
+//
+// impl PartialEq<&str> for AnyUri<'_> {
+//     fn eq(&self, other: &&str) -> bool {
+//         &self.0 == other
+//     }
+// }
+
+
+macro_rules! impl_from_attr {
+    ($type_name:ident) => {
+        impl<'a> From<&'a Attribute<'a>> for $type_name<'a> {
+            fn from(a: &'a Attribute<'a>) -> Self {
+                $type_name(a.value())
+            }
+        }
+    }
+}
+
+impl_from_attr!(AnyUri);
+impl_from_attr!(Language);
+impl_from_attr!(Id);

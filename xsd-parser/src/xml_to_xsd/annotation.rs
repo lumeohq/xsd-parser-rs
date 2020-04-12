@@ -6,7 +6,7 @@ use crate::xml_to_xsd::XsdNode;
 use crate::xsd_model::elements::documentation::Documentation;
 
 impl<'a> Annotation<'a> {
-    pub fn parse(node: &'a Node) -> Result<Annotation<'a>, String> {
+    pub fn parse(node: Node<'a, '_>) -> Result<Annotation<'a>, String> {
         let mut res = Annotation::default();
 
         for ch in node.children().filter(|n| n.is_element()){
@@ -41,7 +41,7 @@ use crate::xsd_model::elements::annotation::Annotation;
             </annotation>"#
         ).unwrap();
         let root = doc.root_element();
-        let res = Annotation::parse(&root).unwrap();
+        let res = Annotation::parse(root).unwrap();
         assert_eq!(res.app_infos.len(), 2);
         assert_eq!(res.documentations.len(), 2);
         assert_eq!(res.attributes.len(), 3);

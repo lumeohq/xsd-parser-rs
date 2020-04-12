@@ -67,9 +67,10 @@ use crate::xsd_model::RawAttribute;
 // Type xsd:simpleExplicitGroup via extension of xsd:annotated (Elements xsd:choice, xsd:sequence)
 // Type xsd:numFacet (Elements xsd:fractionDigits, xsd:length, xsd:minLength, xsd:maxLength)
 // Type xsd:facet via extension of xsd:annotated (Elements xsd:minExclusive, xsd:minInclusive, xsd:maxExclusive, xsd:maxInclusive)
+#[derive(Debug, Default)]
 pub struct Annotation<'a> {
     pub app_infos: Vec<AppInfo<'a>>,
     pub documentations: Vec<Documentation<'a>>,
     pub attributes: Vec<RawAttribute<'a>>,
-    pub id: Option<Id<'a>>,
+    pub id: Id<'a>,
 }

@@ -23,4 +23,5 @@
 //                  restricted by xsd:Name
 //                      restricted by xsd:NCName
 //                          restricted by xsd:ID
+#[derive(Debug)]
 pub struct Id<'a>(pub &'a str);
