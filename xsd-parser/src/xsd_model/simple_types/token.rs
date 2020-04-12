@@ -47,4 +47,4 @@
 //                              used in list xsd:IDREFS
 //                          restricted by xsd:ENTITY
 //                              used in list xsd:ENTITIES
-pub struct Token<'a>(&'a str);
+pub struct Token<'a>(pub &'a str);
