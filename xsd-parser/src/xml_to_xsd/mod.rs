@@ -4,6 +4,8 @@ pub mod annotation;
 pub mod documentation;
 pub mod app_info;
 pub mod import;
+pub mod list;
+pub mod simple_type;
 
 use crate::xsd_model::elements::{xsd_element_type, ElementType};
 use roxmltree::Attribute;

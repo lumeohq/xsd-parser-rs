@@ -25,10 +25,11 @@ use crate::xsd_model::RawAttribute;
 // Type xsd:simpleType via reference to xsd:simpleDerivation
 // Type xsd:localSimpleType via reference to xsd:simpleDerivation (Element xsd:simpleType)
 // Type xsd:topLevelSimpleType via reference to xsd:simpleDerivation (Element xsd:simpleType)
+#[derive(Default, Debug)]
 pub struct List<'a> {
-    annotation: Option<Annotation<'a>>,
-    simple_type: Option<Box<LocalSimpleType<'a>>>,
-    attributes: Vec<RawAttribute<'a>>,
-    id: Id<'a>,
-    item_type: Option<QName<'a>>,
+    pub annotation: Option<Annotation<'a>>,
+    pub simple_type: Option<LocalSimpleType<'a>>,
+    pub attributes: Vec<RawAttribute<'a>>,
+    pub id: Id<'a>,
+    pub item_type: Option<QName<'a>>,
 }

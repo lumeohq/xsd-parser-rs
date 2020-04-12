@@ -38,6 +38,7 @@ use crate::xsd_model::elements::white_space::WhiteSpace;
 //
 // Used in
 // Group xsd:simpleRestrictionModel
+#[derive(Debug)]
 pub enum Facets<'a> {
     MinExclusive(MinExclusive<'a>),
     MinInclusive(MinInclusive<'a>),

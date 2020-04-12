@@ -27,6 +27,7 @@ use crate::xsd_model::RawAttribute;
 //              xsd:facet
 //                  xsd:noFixedFacet
 //                      restricted by Anonymous type of element xsd:pattern
+#[derive(Default, Debug)]
 pub struct NoFixedFacet<'a> {
     annotation: Option<Annotation<'a>>,
     id: Id<'a>,

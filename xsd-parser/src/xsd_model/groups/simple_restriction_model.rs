@@ -27,6 +27,7 @@ use crate::xsd_model::groups::facets::Facets;
 // Used in
 // Anonymous type of element xsd:restriction
 // Type xsd:simpleRestrictionType (Element xsd:restriction)
+#[derive(Default, Debug)]
 pub struct SimpleRestrictionModel<'a> {
     simple_type: Option<LocalSimpleType<'a>>,
     facets: Option<Facets<'a>>,

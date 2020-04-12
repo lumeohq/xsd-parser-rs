@@ -30,4 +30,5 @@
 // restricted by xsd:integer
 // restricted by xsd:nonNegativeInteger
 // restricted by xsd:positiveInteger
+#[derive(Default, Debug)]
 pub struct PositiveInteger(usize);

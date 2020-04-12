@@ -1,8 +1,5 @@
 use roxmltree::Node;
-use crate::xsd_model::elements::documentation::Documentation;
-use crate::xml_to_xsd::XsdNode;
-use crate::xsd_model::simple_types::any_uri::AnyUri;
-use crate::xsd_model::simple_types::language::Language;
+use crate::xsd_model::Documentation;
 
 
 impl<'a> Documentation<'a> {
@@ -24,7 +21,7 @@ impl<'a> Documentation<'a> {
 
 #[cfg(test)]
 mod test {
-    use crate::xsd_model::elements::documentation::Documentation;
+    use crate::xsd_model::Documentation;
 
     #[test]
     fn test_documentation_parse() {

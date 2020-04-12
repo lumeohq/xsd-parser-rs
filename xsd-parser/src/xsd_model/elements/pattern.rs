@@ -22,6 +22,7 @@ use crate::xsd_model::RawAttribute;
 // Anonymous type of element xsd:restriction via reference to xsd:simpleRestrictionModel
 // Group xsd:simpleRestrictionModel via reference to xsd:facets
 // Type xsd:simpleRestrictionType via reference to xsd:simpleRestrictionModel (Element xsd:restriction)
+#[derive(Default, Debug)]
 pub struct Pattern<'a> {
     annotation: Option<Annotation<'a>>,
     id: Id<'a>,

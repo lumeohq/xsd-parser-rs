@@ -31,6 +31,7 @@ use crate::xsd_model::RawAttribute;
 //              xsd:facet
 //                  xsd:numFacet
 //                      restricted by Anonymous type of element xsd:totalDigits
+#[derive(Default, Debug)]
 pub struct NumFacet<'a> {
     annotation: Option<Annotation<'a>>,
     id: Id<'a>,

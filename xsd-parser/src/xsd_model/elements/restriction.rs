@@ -39,6 +39,7 @@ use crate::xsd_model::RawAttribute;
 // Type xsd:simpleType via reference to xsd:simpleDerivation
 // Type xsd:localSimpleType via reference to xsd:simpleDerivation (Element xsd:simpleType)
 // Type xsd:topLevelSimpleType via reference to xsd:simpleDerivation (Element xsd:simpleType)
+#[derive(Default, Debug)]
 pub struct Restriction<'a> {
     annotation: Option<Annotation<'a>>,
     model: SimpleRestrictionModel<'a>,

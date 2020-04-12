@@ -1,5 +1,5 @@
 use crate::xml_to_xsd::XsdNode;
-use crate::xsd_model::elements::schema::Schema;
+use crate::xsd_model::Schema;
 use crate::xsd_model::elements::ElementType;
 use crate::xsd_model::simple_types::any_uri::AnyUri;
 use crate::xsd_model::simple_types::block_set::BlockSet;
@@ -9,9 +9,9 @@ use crate::xsd_model::simple_types::id::Id;
 use crate::xsd_model::simple_types::language::Language;
 use crate::xsd_model::simple_types::token::Token;
 use roxmltree::Document;
-use crate::xsd_model::elements::include::Include;
-use crate::xsd_model::elements::annotation::Annotation;
-use crate::xsd_model::elements::import::Import;
+use crate::xsd_model::Include;
+use crate::xsd_model::Annotation;
+use crate::xsd_model::Import;
 
 pub fn parse_document<'a>(doc: &'a Document) -> Result<Schema<'a>, String> {
     let schema_node = doc.root_element();

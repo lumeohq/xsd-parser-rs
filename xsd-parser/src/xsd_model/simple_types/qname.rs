@@ -19,6 +19,7 @@
 // Type Inheritance Chain
 //  xsd:anySimpleType
 //      restricted by xsd:QName
+#[derive(Default, Debug)]
 pub struct QName<'a> {
     pub prefix: Option<&'a str>,
     pub name: &'a str,

@@ -1,8 +1,8 @@
 use roxmltree::Node;
-use crate::xsd_model::elements::import::Import;
+use crate::xsd_model::Import;
 use crate::xml_to_xsd::XsdNode;
 use crate::xsd_model::elements::ElementType;
-use crate::xsd_model::elements::annotation::Annotation;
+use crate::xsd_model::Annotation;
 
 impl<'a> Import<'a> {
     pub fn parse(node: Node<'a, '_>) -> Result<Import<'a>, String> {
@@ -31,7 +31,7 @@ impl<'a> Import<'a> {
 
 #[cfg(test)]
 mod test {
-use crate::xsd_model::elements::import::Import;
+use crate::xsd_model::Import;
     #[test]
     fn test_parse() {
         let doc = roxmltree::Document::parse(

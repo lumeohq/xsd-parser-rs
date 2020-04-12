@@ -41,7 +41,7 @@ use crate::xsd_model::RawAttribute;
 //                  restricted by xsd:numFacet
 //                      restricted by Anonymous type of element xsd:totalDigits
 //                  restricted by Anonymous type of element xsd:whiteSpace
-#[derive(Default)]
+#[derive(Default, Debug)]
 pub struct Facet<'a> {
     annotation: Option<Annotation<'a>>,
     attributes: Vec<RawAttribute<'a>>,

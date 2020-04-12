@@ -24,6 +24,7 @@ use crate::xsd_model::RawAttribute;
 // Used in
 // Group xsd:schemaTop
 // Anonymous type of element xsd:schema via reference to xsd:schemaTop
+#[derive(Default, Debug)]
 pub struct Union<'a> {
     annotation: Option<Annotation<'a>>,
     simple_type: Vec<LocalSimpleType<'a>>,

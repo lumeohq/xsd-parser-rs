@@ -24,6 +24,7 @@ use crate::xsd_model::RawAttribute;
 // Anonymous type of element xsd:restriction via reference to xsd:simpleRestrictionModel
 // Group xsd:simpleRestrictionModel via reference to xsd:facets
 // Type xsd:simpleRestrictionType via reference to xsd:simpleRestrictionModel (Element xsd:restriction)
+#[derive(Debug)]
 pub struct WhiteSpace<'a> {
     annotation: Option<Annotation<'a>>,
     id: Id<'a>,
@@ -31,7 +32,7 @@ pub struct WhiteSpace<'a> {
     value: WhiteSpaceChoice,
     attributes: Vec<RawAttribute<'a>>,
 }
-
+#[derive(Debug, PartialEq)]
 pub enum WhiteSpaceChoice {
     Collapse,
     Preserve,

@@ -1,8 +1,8 @@
 use roxmltree::Node;
-use crate::xsd_model::elements::include::Include;
+use crate::xsd_model::Include;
 use crate::xml_to_xsd::XsdNode;
 use crate::xsd_model::elements::ElementType;
-use crate::xsd_model::elements::annotation::Annotation;
+use crate::xsd_model::Annotation;
 
 impl<'a> Include<'a> {
     pub fn parse(node: Node<'a, '_>) -> Result<Include<'a>, String> {

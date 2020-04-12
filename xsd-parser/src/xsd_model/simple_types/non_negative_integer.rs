@@ -34,6 +34,7 @@
 //                      restricted by xsd:unsignedShort
 //                          restricted by xsd:unsignedByte
 //          restricted by xsd:positiveInteger
+#[derive(Default, Debug)]
 pub struct NonNegativeInteger(usize);
 
 impl NonNegativeInteger {
