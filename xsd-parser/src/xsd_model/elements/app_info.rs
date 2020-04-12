@@ -19,8 +19,9 @@ use crate::xsd_model::{RawAttribute, RawElement};
 //
 // Used in
 // Anonymous type of element xsd:annotation
+#[derive(Debug, Default)]
 pub struct AppInfo<'a> {
-    pub text: &'a str,
+    pub text: Option<&'a str>,
     pub elements: Vec<RawElement<'a>>,
     pub source: Option<AnyUri<'a>>,
     pub attributes: Vec<RawAttribute<'a>>,
