@@ -4,7 +4,7 @@ use crate::xsd_model::elements::documentation::Documentation;
 
 
 impl<'a> AppInfo<'a> {
-    pub fn parse(node: &'a Node) -> Result<AppInfo<'a>, String> {
+    pub fn parse(node: Node<'a, '_>) -> Result<AppInfo<'a>, String> {
         let mut res = AppInfo::default();
         res.text = node.text();
         res.elements = node.children().filter(|n| n.is_element()).collect();
@@ -33,7 +33,7 @@ mod test {
             </appInfo>"#
         ).unwrap();
         let root = doc.root_element();
-        let res = AppInfo::parse(&root).unwrap();
+        let res = AppInfo::parse(root).unwrap();
         assert_eq!(res.text.unwrap().trim(), "A string");
         assert_eq!(res.source.unwrap().0, "http://ya.com");
         assert_eq!(res.attributes.len(), 3);

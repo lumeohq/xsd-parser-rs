@@ -6,7 +6,7 @@ use crate::xsd_model::simple_types::language::Language;
 
 
 impl<'a> Documentation<'a> {
-    pub fn parse(node: &'a Node) ->  Result<Documentation<'a>, String> {
+    pub fn parse(node: Node<'a, '_>) ->  Result<Documentation<'a>, String> {
         let mut res = Documentation::default();
         res.text = node.text();
         res.elements = node.children().filter(|n| n.is_element()).collect();
@@ -35,7 +35,7 @@ mod test {
             </documentation>"#
         ).unwrap();
         let root = doc.root_element();
-        let res = Documentation::parse(&root).unwrap();
+        let res = Documentation::parse(root).unwrap();
         assert_eq!(res.text.unwrap().trim(), "A string");
         assert_eq!(res.source.unwrap().0, "http://ya.com");
         assert_eq!(res.lang.unwrap().0, "us");
