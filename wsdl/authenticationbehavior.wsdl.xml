@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../ver20/util/onvif-wsdl-viewer.xsl"?>
 <!--
-Copyright (c) 2010-2018 by ONVIF: Open Network Video Interface Forum. All rights reserved.
+Copyright (c) 2010-2019 by ONVIF: Open Network Video Interface Forum. All rights reserved.
 
 Recipients of this document may copy, distribute, publish, or display this
 document so long as this copyright notice, license and disclaimer are
@@ -37,12 +37,10 @@ CERTAIN WRITTEN POLICIES OF THE CORPORATION.
 		<xs:schema targetNamespace="http://www.onvif.org/ver10/authenticationbehavior/wsdl"
 				   xmlns:xs="http://www.w3.org/2001/XMLSchema"
 				   xmlns:pt="http://www.onvif.org/ver10/pacs"
-				   xmlns:tt="http://www.onvif.org/ver10/schema"
 				   xmlns:tab="http://www.onvif.org/ver10/authenticationbehavior/wsdl"
 				   elementFormDefault="qualified"
-				   version="18.12">
+				   version="19.12">
 			<xs:import namespace="http://www.onvif.org/ver10/pacs" schemaLocation="../../pacs/types.xsd"/>
-			<xs:import namespace="http://www.onvif.org/ver10/schema" schemaLocation="../../schema/onvif.xsd"/>
 			<!--ServiceCapabilities definitions-->
 			<xs:complexType name="ServiceCapabilities">
 				<xs:annotation>
@@ -116,7 +114,7 @@ CERTAIN WRITTEN POLICIES OF THE CORPORATION.
 						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="SupportedAuthenticationModes" type="tt:StringAttrList">
+				<xs:attribute name="SupportedAuthenticationModes" type="pt:StringList">
 					<xs:annotation>
 						<xs:documentation>
 							A list of supported authentication modes (including custom modes).
@@ -314,7 +312,12 @@ CERTAIN WRITTEN POLICIES OF THE CORPORATION.
 				<xs:sequence>
 					<xs:element name="RecognitionType" type="xs:string">
 						<xs:annotation>
-							<xs:documentation>The requested type of recognition.</xs:documentation>
+							<xs:documentation>
+								The requested type of recognition. Is of type text.
+								Recognition types starting with the prefix pt: are reserved to define 
+								ONVIF-specific types as defined in pt:RecognitionType. For custom defined 
+								identifier types, free text can be used.
+							</xs:documentation>
 						</xs:annotation>
 					</xs:element>
 					<xs:element name="Order" type="xs:int">
