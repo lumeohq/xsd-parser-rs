@@ -139,5 +139,5 @@ fn is_simple_enumeration(node: &Node) -> bool {
     node.attr_value()
         .unwrap()
         .chars()
-        .all(|c| c.is_alphanumeric() || c == '-')
+        .all(|c| c.is_alphanumeric() || c == '-') && !node.attr_value().unwrap().is_empty()
 }
