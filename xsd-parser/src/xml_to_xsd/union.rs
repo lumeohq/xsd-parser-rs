@@ -14,7 +14,7 @@ impl<'a> Union<'a> {
             match ch.xsd_type()? {
                 ElementType::Annotation => {res.annotation = Some(Annotation::parse(ch)?)}
                 ElementType::SimpleType => {res.simple_type.push(LocalSimpleType::parse(ch)?)}
-                _ => Err(format!("Invalid child node for xsd:union element: {:?}", node))?
+                _ => return Err(format!("Invalid child node for xsd:union element: {:?}", node))
             };
         }
         for attr in node.attributes() {

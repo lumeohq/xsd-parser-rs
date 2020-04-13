@@ -14,7 +14,7 @@ impl<'a> List<'a> {
             match ch.xsd_type()? {
                 ElementType::Annotation => {res.annotation = Some(Annotation::parse(ch)?)}
                 ElementType::SimpleType => {res.simple_type = Some(LocalSimpleType::parse(ch)?)}
-                _ => Err(format!("Invalid child node for xsd:list element: {:?}", node))?
+                _ => return Err(format!("Invalid child node for xsd:list element: {:?}", node))
             };
         }
         for attr in node.attributes() {

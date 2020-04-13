@@ -135,7 +135,7 @@ pub fn xsd_element_type(name: &str) -> Result<ElementType, String> {
         "union" => Union,
         "unique" => Unique,
         "whiteSpace" => WhiteSpace,
-        _ => Err(format!("Invalid xsd element name: {}", name))?,
+        _ => return Err(format!("Invalid xsd element name: {}", name)),
     };
     Ok(element)
 }

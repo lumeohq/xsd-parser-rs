@@ -25,10 +25,10 @@ impl XsdNode for roxmltree::Node<'_, '_> {
     fn xsd_type(&self) -> Result<ElementType, String> {
         if let Some(uri) = self.tag_name().namespace() {
             if uri != XSD_NS_URI {
-                Err(format!(
+                return Err(format!(
                     "Invalid prefix for xsd element: {:?}",
                     self.tag_name()
-                ))?
+                ))
             }
         }
 

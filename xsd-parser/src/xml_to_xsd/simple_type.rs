@@ -40,7 +40,7 @@ impl<'a> SimpleDerivation<'a> {
             ElementType::Union => Self::Union(Union::parse(node)?),
             // ElementType::Restriction => Self::Restriction(Restriction::parse(node)?),
             ElementType::List => Self::List(List::parse(node)?),
-            _ => Err(format!("Invalid simple derivation content: {:?}", node))?
+            _ => return Err(format!("Invalid simple derivation content: {:?}", node))
         };
 
         Ok(res)

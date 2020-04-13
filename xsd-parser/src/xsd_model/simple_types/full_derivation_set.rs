@@ -41,7 +41,7 @@ impl FullDerivationSubSet {
             "restriction" => Self::Restriction,
             "list" => Self::List,
             "union" => Self::Union,
-            _ => Err(format!("Invalid value for FullDerivationSet: {}", s))?,
+            _ => return Err(format!("Invalid value for FullDerivationSet: {}", s)),
         };
         Ok(res)
     }

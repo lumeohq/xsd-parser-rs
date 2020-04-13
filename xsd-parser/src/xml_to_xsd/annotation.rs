@@ -13,7 +13,7 @@ impl<'a> Annotation<'a> {
             match ch.xsd_type()? {
                 ElementType::AppInfo => {res.app_infos.push(AppInfo::parse(ch)?)}
                 ElementType::Documentation => {res.documentations.push(Documentation::parse(ch)?)}
-                _ => Err(format!("Invalid child node for xsd:annotation element: {:?}", node))?
+                _ => return Err(format!("Invalid child node for xsd:annotation element: {:?}", node))
             };
         }
         for attr in node.attributes() {

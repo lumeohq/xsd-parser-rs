@@ -9,7 +9,7 @@ impl<'a> Include<'a> {
         let mut res = Include::default();
         if let Some(child) = node.first_element_child() {
             if child.xsd_type()? != ElementType::Annotation {
-                Err(format!("Invalid content type of xsd:include: {:?}", node))?
+                return Err(format!("Invalid content type of xsd:include: {:?}", node))
             } else {
                 res.annotation = Some(Annotation::parse(child)?);
             }

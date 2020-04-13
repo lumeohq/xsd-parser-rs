@@ -9,7 +9,7 @@ impl<'a> Import<'a> {
         let mut res = Import::default();
         if let Some(child) = node.first_element_child() {
             if child.xsd_type()? != ElementType::Annotation {
-                Err(format!("Invalid content type of xsd:import: {:?}", node))?
+                return Err(format!("Invalid content type of xsd:import: {:?}", node))
             } else {
                 res.annotation = Some(Annotation::parse(child)?);
             }

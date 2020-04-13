@@ -39,7 +39,7 @@ impl BlockSetChoice {
             "extension" => Self::Extension,
             "restriction" => Self::Restriction,
             "substitution" => Self::Substitution,
-            _ => Err(format!("Invalid value for BlockSet: {}", s))?,
+            _ => return Err(format!("Invalid value for BlockSet: {}", s)),
         };
         Ok(res)
     }
