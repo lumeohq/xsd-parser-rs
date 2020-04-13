@@ -6,7 +6,7 @@ use crate::parser::types::{
     Enum, EnumCase, EnumSource, Facet, RsEntity, Struct, StructField, StructFieldSource,
     TupleStruct,
 };
-use crate::parser::utils::{attributes_to_fields, get_base, get_documentation, get_parent_name, find_child};
+use crate::parser::utils::{attributes_to_fields, get_base, get_documentation, get_parent_name};
 use crate::parser::xsd_elements::{ElementType, FacetType, RestrictionType, XsdNode};
 use roxmltree::Node;
 
@@ -139,14 +139,19 @@ fn is_simple_enumeration(node: &Node) -> bool {
     node.attr_value()
         .unwrap()
         .chars()
-        .all(|c| c.is_alphanumeric() || c == '-') && !node.attr_value().unwrap().is_empty()
+        .all(|c| c.is_alphanumeric() || c == '-')
+        && !node.attr_value().unwrap().is_empty()
 }
 
+#[cfg(test)]
+mod test {
+    use super::*;
+    use crate::parser::utils::find_child;
 
-#[test]
-fn test_simple_type_restriction() {
-    let doc = roxmltree::Document::parse(
-                    r#"
+    #[test]
+    fn test_simple_type_restriction() {
+        let doc = roxmltree::Document::parse(
+            r#"
     <xs:schema xmlns:tt="http://www.onvif.org/ver10/schema" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.onvif.org/ver10/schema">
         <xs:simpleType name="SomeType">
             <xs:restriction base="xs:string">
@@ -155,14 +160,15 @@ fn test_simple_type_restriction() {
         </xs:simpleType>
     </xs:schema>
                 "#
-    ).unwrap();
-    let root = doc.root_element().first_element_child().unwrap();
-    let restriction = find_child(&root, "restriction").unwrap();
+        ).unwrap();
+        let root = doc.root_element().first_element_child().unwrap();
+        let restriction = find_child(&root, "restriction").unwrap();
 
-    match simple_type_restriction(&restriction) {
-        RsEntity::TupleStruct(ts) => {
-            assert_eq!(ts.type_name, "xs:string");
+        match simple_type_restriction(&restriction) {
+            RsEntity::TupleStruct(ts) => {
+                assert_eq!(ts.type_name, "xs:string");
+            }
+            _ => unreachable!("Test failed"),
         }
-        _ => unreachable!("Test failed")
     }
 }
