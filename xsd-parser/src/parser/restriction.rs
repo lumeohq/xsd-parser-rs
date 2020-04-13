@@ -136,11 +136,10 @@ fn is_simple_enumerations(node: &Node) -> bool {
 }
 
 fn is_simple_enumeration(node: &Node) -> bool {
-    node.attr_value()
-        .unwrap()
-        .chars()
-        .all(|c| c.is_alphanumeric() || c == '-')
-        && !node.attr_value().unwrap().is_empty()
+    let val = node
+        .attr_value()
+        .expect("Value required for xsd:enumeration");
+    !val.is_empty() && val.chars().all(|c| c.is_alphanumeric() || c == '-')
 }
 
 #[cfg(test)]
