@@ -29,6 +29,6 @@ use crate::xsd_model::groups::facets::Facets;
 // Type xsd:simpleRestrictionType (Element xsd:restriction)
 #[derive(Default, Debug)]
 pub struct SimpleRestrictionModel<'a> {
-    simple_type: Option<LocalSimpleType<'a>>,
-    facets: Option<Facets<'a>>,
+    pub simple_type: Option<LocalSimpleType<'a>>,
+    pub facets: Vec<Facets<'a>>,
 }

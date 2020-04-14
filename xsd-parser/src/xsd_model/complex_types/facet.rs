@@ -43,9 +43,9 @@ use crate::xsd_model::RawAttribute;
 //                  restricted by Anonymous type of element xsd:whiteSpace
 #[derive(Default, Debug)]
 pub struct Facet<'a> {
-    annotation: Option<Annotation<'a>>,
-    attributes: Vec<RawAttribute<'a>>,
-    id: Id<'a>,
-    value: AnySimpleType<'a>,
-    fixed: bool,
+    pub annotation: Option<Annotation<'a>>,
+    pub attributes: Vec<RawAttribute<'a>>,
+    pub id: Id<'a>,
+    pub value: AnySimpleType<'a>,
+    pub fixed: bool,
 }

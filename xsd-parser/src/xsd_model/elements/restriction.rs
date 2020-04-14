@@ -41,11 +41,11 @@ use crate::xsd_model::RawAttribute;
 // Type xsd:topLevelSimpleType via reference to xsd:simpleDerivation (Element xsd:simpleType)
 #[derive(Default, Debug)]
 pub struct Restriction<'a> {
-    annotation: Option<Annotation<'a>>,
-    model: SimpleRestrictionModel<'a>,
-    attributes: Vec<RawAttribute<'a>>,
-    id: Id<'a>,
-    base: Option<QName<'a>>,
+   pub annotation: Option<Annotation<'a>>,
+   pub model: SimpleRestrictionModel<'a>,
+   pub attributes: Vec<RawAttribute<'a>>,
+   pub id: Id<'a>,
+   pub base: Option<QName<'a>>,
 }
 
 // Namespace: http://www.w3.org/2001/XMLSchema

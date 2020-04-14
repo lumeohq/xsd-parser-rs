@@ -7,6 +7,8 @@ pub mod import;
 pub mod list;
 pub mod simple_type;
 pub mod union;
+pub mod restriction;
+pub mod facets;
 
 use crate::xsd_model::elements::{xsd_element_type, ElementType};
 use roxmltree::Attribute;
