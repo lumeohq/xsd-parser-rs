@@ -52,7 +52,8 @@ impl Struct {
                     .map(|s| s.fields.borrow().clone())
                     .unwrap_or_else(Vec::new)
             })
-            .filter(|f| {  //TODO: remove this workaround for fields names clash
+            .filter(|f| {
+                //TODO: remove this workaround for fields names clash
                 self.fields
                     .borrow()
                     .iter()
