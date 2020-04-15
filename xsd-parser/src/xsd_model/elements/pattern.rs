@@ -24,8 +24,8 @@ use crate::xsd_model::RawAttribute;
 // Type xsd:simpleRestrictionType via reference to xsd:simpleRestrictionModel (Element xsd:restriction)
 #[derive(Default, Debug)]
 pub struct Pattern<'a> {
-    annotation: Option<Annotation<'a>>,
-    id: Id<'a>,
-    value: &'a str,
-    attributes: Vec<RawAttribute<'a>>,
+    pub annotation: Option<Annotation<'a>>,
+    pub id: Id<'a>,
+    pub value: &'a str,
+    pub attributes: Vec<RawAttribute<'a>>,
 }
