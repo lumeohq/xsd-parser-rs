@@ -1,5 +1,4 @@
 use crate::xml_to_xsd::XsdNode;
-use crate::xsd_model::Schema;
 use crate::xsd_model::elements::ElementType;
 use crate::xsd_model::simple_types::any_uri::AnyUri;
 use crate::xsd_model::simple_types::block_set::BlockSet;
@@ -8,10 +7,11 @@ use crate::xsd_model::simple_types::full_derivation_set::FullDerivationSet;
 use crate::xsd_model::simple_types::id::Id;
 use crate::xsd_model::simple_types::language::Language;
 use crate::xsd_model::simple_types::token::Token;
-use roxmltree::Document;
-use crate::xsd_model::Include;
 use crate::xsd_model::Annotation;
 use crate::xsd_model::Import;
+use crate::xsd_model::Include;
+use crate::xsd_model::Schema;
+use roxmltree::Document;
 
 pub fn parse_document<'a>(doc: &'a Document) -> Result<Schema<'a>, String> {
     let schema_node = doc.root_element();
@@ -37,10 +37,10 @@ pub fn parse_document<'a>(doc: &'a Document) -> Result<Schema<'a>, String> {
 
     for ch in schema_node.children().filter(|n| n.is_element()) {
         match ch.xsd_type()? {
-            ElementType::Include => {schema.includes.push(Include::parse(ch)?)}
-            ElementType::Import => {schema.imports.push(Import::parse(ch)?)}
+            ElementType::Include => schema.includes.push(Include::parse(ch)?),
+            ElementType::Import => schema.imports.push(Import::parse(ch)?),
             ElementType::Redefine => {}
-            ElementType::Annotation => {schema.annotations.push(Annotation::parse(ch)?)}
+            ElementType::Annotation => schema.annotations.push(Annotation::parse(ch)?),
             //schemaTop
             ElementType::SimpleType => {}
             ElementType::ComplexType => {}

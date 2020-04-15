@@ -41,7 +41,6 @@ pub mod union;
 pub mod unique;
 pub mod white_space;
 
-
 #[derive(Debug, PartialEq)]
 pub enum ElementType {
     All,

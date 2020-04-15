@@ -3,7 +3,6 @@ pub mod elements;
 pub mod groups;
 pub mod simple_types;
 
-
 pub use elements::all::*;
 pub use elements::annotation::*;
 pub use elements::any::*;
@@ -46,8 +45,6 @@ pub use elements::total_digits::*;
 pub use elements::union::*;
 pub use elements::unique::*;
 pub use elements::white_space::*;
-
-
 
 pub const XSD_NS_URI: &str = "http://www.w3.org/2001/XMLSchema";
 

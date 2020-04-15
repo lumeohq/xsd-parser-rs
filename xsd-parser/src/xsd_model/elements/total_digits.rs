@@ -27,9 +27,9 @@ use crate::xsd_model::RawAttribute;
 // Type xsd:simpleRestrictionType via reference to xsd:simpleRestrictionModel (Element xsd:restriction)
 #[derive(Default, Debug)]
 pub struct TotalDigits<'a> {
-    annotation: Option<Annotation<'a>>,
-    id: Id<'a>,
-    fixed: bool,
-    value: PositiveInteger,
-    attributes: Vec<RawAttribute<'a>>,
+    pub annotation: Option<Annotation<'a>>,
+    pub id: Id<'a>,
+    pub fixed: bool,
+    pub value: PositiveInteger,
+    pub attributes: Vec<RawAttribute<'a>>,
 }

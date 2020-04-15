@@ -1,6 +1,5 @@
-use roxmltree::Node;
 use crate::xsd_model::elements::app_info::AppInfo;
-
+use roxmltree::Node;
 
 impl<'a> AppInfo<'a> {
     pub fn parse(node: Node<'a, '_>) -> Result<AppInfo<'a>, String> {
@@ -9,15 +8,14 @@ impl<'a> AppInfo<'a> {
         res.elements = node.children().filter(|n| n.is_element()).collect();
         for attr in node.attributes() {
             match attr.name() {
-                "source" => {res.source = Some(attr.into())}
-                _ => res.attributes.push(attr.clone())
+                "source" => res.source = Some(attr.into()),
+                _ => res.attributes.push(attr.clone()),
             };
         }
 
         Ok(res)
     }
 }
-
 
 #[cfg(test)]
 mod test {
@@ -29,8 +27,9 @@ mod test {
             r#"<appInfo source="http://ya.com" xml:lang="us" a='a' b='a'>
             A string
             <el>Some element</el>
-            </appInfo>"#
-        ).unwrap();
+            </appInfo>"#,
+        )
+        .unwrap();
         let root = doc.root_element();
         let res = AppInfo::parse(root).unwrap();
         assert_eq!(res.text.unwrap().trim(), "A string");

@@ -1,21 +1,21 @@
-pub mod schema;
-pub mod include;
 pub mod annotation;
-pub mod documentation;
 pub mod app_info;
+pub mod documentation;
+pub mod facets;
 pub mod import;
+pub mod include;
 pub mod list;
+pub mod restriction;
+pub mod schema;
 pub mod simple_type;
 pub mod union;
-pub mod restriction;
-pub mod facets;
 
 use crate::xsd_model::elements::{xsd_element_type, ElementType};
-use roxmltree::Attribute;
 use crate::xsd_model::simple_types::any_uri::AnyUri;
-use crate::xsd_model::simple_types::language::Language;
 use crate::xsd_model::simple_types::id::Id;
-
+use crate::xsd_model::simple_types::language::Language;
+use crate::xsd_model::simple_types::positive_integer::PositiveInteger;
+use roxmltree::Attribute;
 
 pub const XSD_NS_URI: &str = "http://www.w3.org/2001/XMLSchema";
 
@@ -30,7 +30,7 @@ impl XsdNode for roxmltree::Node<'_, '_> {
                 return Err(format!(
                     "Invalid prefix for xsd element: {:?}",
                     self.tag_name()
-                ))
+                ));
             }
         }
 
@@ -44,7 +44,6 @@ impl XsdNode for roxmltree::Node<'_, '_> {
 //     }
 // }
 
-
 macro_rules! impl_from_attr {
     ($type_name:ident) => {
         impl<'a> From<&'a Attribute<'a>> for $type_name<'a> {
@@ -52,7 +51,7 @@ macro_rules! impl_from_attr {
                 $type_name(a.value())
             }
         }
-    }
+    };
 }
 
 impl_from_attr!(AnyUri);
