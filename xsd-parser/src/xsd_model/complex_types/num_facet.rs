@@ -33,9 +33,9 @@ use crate::xsd_model::RawAttribute;
 //                      restricted by Anonymous type of element xsd:totalDigits
 #[derive(Default, Debug)]
 pub struct NumFacet<'a> {
-    annotation: Option<Annotation<'a>>,
-    id: Id<'a>,
-    fixed: bool,
-    value: NonNegativeInteger,
-    attributes: Vec<RawAttribute<'a>>,
+    pub annotation: Option<Annotation<'a>>,
+    pub id: Id<'a>,
+    pub fixed: bool,
+    pub value: NonNegativeInteger,
+    pub attributes: Vec<RawAttribute<'a>>,
 }

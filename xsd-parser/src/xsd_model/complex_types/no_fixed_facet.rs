@@ -29,8 +29,8 @@ use crate::xsd_model::RawAttribute;
 //                      restricted by Anonymous type of element xsd:pattern
 #[derive(Default, Debug)]
 pub struct NoFixedFacet<'a> {
-    annotation: Option<Annotation<'a>>,
-    id: Id<'a>,
-    value: AnySimpleType<'a>,
-    attributes: Vec<RawAttribute<'a>>,
+    pub annotation: Option<Annotation<'a>>,
+    pub id: Id<'a>,
+    pub value: AnySimpleType<'a>,
+    pub attributes: Vec<RawAttribute<'a>>,
 }
