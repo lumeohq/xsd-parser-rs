@@ -1,5 +1,6 @@
 use crate::xml_to_xsd::XsdNode;
 use crate::xsd_model::elements::ElementType;
+use crate::xsd_model::groups::facets::Facets;
 use crate::xsd_model::groups::simple_restriction_model::SimpleRestrictionModel;
 use crate::xsd_model::simple_types::qname::QName;
 use crate::xsd_model::Annotation;
@@ -10,13 +11,15 @@ use roxmltree::Node;
 impl<'a> Restriction<'a> {
     pub fn parse(node: Node<'a, '_>) -> Result<Self, String> {
         let mut res = Self::default();
-
         for ch in node.children().filter(|n| n.is_element()) {
             match ch.xsd_type()? {
                 ElementType::Annotation => res.annotation = Some(Annotation::parse(ch)?),
-                _ => res.model = SimpleRestrictionModel::parse(ch)?,
+                _ => {},
             };
         }
+
+        res.model = SimpleRestrictionModel::parse(node)?;
+
         for attr in node.attributes() {
             match attr.name() {
                 "id" => res.id = Some(attr.into()),
@@ -32,29 +35,13 @@ impl<'a> SimpleRestrictionModel<'a> {
     pub fn parse(node: Node<'a, '_>) -> Result<Self, String> {
         use ElementType::*;
         let mut res = Self::default();
-
         for ch in node.children().filter(|n| n.is_element()) {
             match ch.xsd_type()? {
+                Annotation => {}
                 SimpleType => res.simple_type = Some(LocalSimpleType::parse(ch)?),
-                //Facets
-                MinExclusive => {}
-                MinInclusive => {}
-                MaxExclusive => {}
-                MaxInclusive => {}
-                TotalDigits => {}
-                FractionDigits => {}
-                Length => {}
-                MinLength => {}
-                MaxLength => {}
-                Enumeration => {}
-                WhiteSpace => {}
-                Pattern => {}
-                _ => {
-                    return Err(format!(
-                        "Invalid child node for xsd:restriction content: {:?}",
-                        node
-                    ))
-                }
+                _ => res.facets.push(Facets::parse(ch).map_err(|err| {
+                    format!("Invalid child node for xsd:restriction content: {:?}", node)
+                })?),
             };
         }
 
@@ -62,15 +49,27 @@ impl<'a> SimpleRestrictionModel<'a> {
     }
 }
 
+
 #[cfg(test)]
 mod test {
     use crate::xsd_model::Restriction;
     #[test]
     fn test_parse() {
         let doc = roxmltree::Document::parse(
-            r#"<restriction id="ID" base="xsd:Type1" a='b' b='a'>
-                    <minInclusive value="2"/>
-                    <maxInclusive value="6"/>
+            r#"<restriction xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="ID" base="xsd:Type1" a='b' b='a'>
+                    <xsd:minExclusive value="2"/>
+                    <xsd:minInclusive value="1"/>
+                    <xsd:maxExclusive value="6"/>
+                    <xsd:maxInclusive value="5"/>
+
+                    <xsd:totalDigits value="1"/>
+                    <xsd:fractionDigits value="1"/>
+                    <xsd:length value="1"/>
+                    <xsd:minLength value="1"/>
+                    <xsd:maxLength value="1"/>
+                    <xsd:enumeration value="4"/>
+                    <xsd:whiteSpace value="collapse"/>
+                    <xsd:pattern value="[2-5]"/>
             </restriction>"#,
         )
         .unwrap();
@@ -82,6 +81,6 @@ mod test {
         assert_eq!(res.base.as_ref().unwrap().name, "Type1");
         assert_eq!(res.base.as_ref().unwrap().prefix.unwrap(), "xsd");
         let model = &res.model;
-        assert_eq!(model.facets.len(), 2);
+        assert_eq!(model.facets.len(), 12);
     }
 }
