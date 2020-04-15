@@ -49,7 +49,7 @@ pub trait TupleStructGenerator {
         let body = entity
             .facets
             .iter()
-            .map(|f| gen_facet_validation(&f.facet_type, "0"))
+            .map(|f| gen_facet_validation(&f.facet_type, "0", &self.get_type_name(entity, gen)))
             .fold(String::new(), |x, y| (x + &y));
         Cow::Owned(gen_validate_impl(
             self.get_name(entity, gen).as_str(),
