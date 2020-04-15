@@ -12,10 +12,9 @@ impl<'a> Restriction<'a> {
     pub fn parse(node: Node<'a, '_>) -> Result<Self, String> {
         let mut res = Self::default();
         for ch in node.children().filter(|n| n.is_element()) {
-            match ch.xsd_type()? {
-                ElementType::Annotation => res.annotation = Some(Annotation::parse(ch)?),
-                _ => {},
-            };
+            if let ElementType::Annotation = ch.xsd_type()? {
+                res.annotation = Some(Annotation::parse(ch)?)
+            }
         }
 
         res.model = SimpleRestrictionModel::parse(node)?;
@@ -39,7 +38,7 @@ impl<'a> SimpleRestrictionModel<'a> {
             match ch.xsd_type()? {
                 Annotation => {}
                 SimpleType => res.simple_type = Some(LocalSimpleType::parse(ch)?),
-                _ => res.facets.push(Facets::parse(ch).map_err(|err| {
+                _ => res.facets.push(Facets::parse(ch).map_err(|_| {
                     format!("Invalid child node for xsd:restriction content: {:?}", node)
                 })?),
             };
@@ -48,7 +47,6 @@ impl<'a> SimpleRestrictionModel<'a> {
         Ok(res)
     }
 }
-
 
 #[cfg(test)]
 mod test {

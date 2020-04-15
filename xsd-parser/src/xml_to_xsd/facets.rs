@@ -5,21 +5,16 @@ use crate::xsd_model::complex_types::facet::Facet;
 use crate::xsd_model::complex_types::no_fixed_facet::NoFixedFacet;
 use crate::xsd_model::complex_types::num_facet::NumFacet;
 use crate::xsd_model::elements::ElementType;
-use crate::xsd_model::elements::ElementType::MinExclusive;
 use crate::xsd_model::groups::facets::Facets;
-use crate::xsd_model::{Annotation, Pattern, TotalDigits, WhiteSpace};
+use crate::xsd_model::{Pattern, TotalDigits, WhiteSpace};
 use std::str::ParseBoolError;
+use crate::xml_to_xsd::utils::annotation_only;
 
 impl<'a> Facet<'a> {
     pub fn parse(node: Node<'a, '_>) -> Result<Self, String> {
         let mut res = Self::default();
+        res.annotation = annotation_only(node, "facet")?;
 
-        for ch in node.children().filter(|n| n.is_element()) {
-            match ch.xsd_type()? {
-                ElementType::Annotation => res.annotation = Some(Annotation::parse(ch)?),
-                _ => return Err(format!("Invalid child node for xsd:facet type: {:?}", node)),
-            };
-        }
         for attr in node.attributes() {
             match attr.name() {
                 "id" => res.id = Some(attr.into()),
@@ -41,13 +36,8 @@ impl<'a> Facet<'a> {
 impl<'a> TotalDigits<'a> {
     pub fn parse(node: Node<'a, '_>) -> Result<Self, String> {
         let mut res = Self::default();
+        res.annotation = annotation_only(node, "totalDigits")?;
 
-        for ch in node.children().filter(|n| n.is_element()) {
-            match ch.xsd_type()? {
-                ElementType::Annotation => res.annotation = Some(Annotation::parse(ch)?),
-                _ => return Err(format!("Invalid child node for xsd:facet type: {:?}", node)),
-            };
-        }
         for attr in node.attributes() {
             match attr.name() {
                 "id" => res.id = Some(attr.into()),
@@ -69,18 +59,8 @@ impl<'a> TotalDigits<'a> {
 impl<'a> NumFacet<'a> {
     pub fn parse(node: Node<'a, '_>) -> Result<Self, String> {
         let mut res = Self::default();
+        res.annotation = annotation_only(node, "numFacet")?;
 
-        for ch in node.children().filter(|n| n.is_element()) {
-            match ch.xsd_type()? {
-                ElementType::Annotation => res.annotation = Some(Annotation::parse(ch)?),
-                _ => {
-                    return Err(format!(
-                        "Invalid child node for xsd:NumFacet type: {:?}",
-                        node
-                    ))
-                }
-            };
-        }
         for attr in node.attributes() {
             match attr.name() {
                 "id" => res.id = Some(attr.into()),
@@ -102,18 +82,8 @@ impl<'a> NumFacet<'a> {
 impl<'a> NoFixedFacet<'a> {
     pub fn parse(node: Node<'a, '_>) -> Result<Self, String> {
         let mut res = Self::default();
+        res.annotation = annotation_only(node, "noFixedFacet")?;
 
-        for ch in node.children().filter(|n| n.is_element()) {
-            match ch.xsd_type()? {
-                ElementType::Annotation => res.annotation = Some(Annotation::parse(ch)?),
-                _ => {
-                    return Err(format!(
-                        "Invalid child node for xsd:NoFixedFacet type: {:?}",
-                        node
-                    ))
-                }
-            };
-        }
         for attr in node.attributes() {
             match attr.name() {
                 "id" => res.id = Some(attr.into()),
@@ -128,19 +98,7 @@ impl<'a> NoFixedFacet<'a> {
 
 impl<'a> WhiteSpace<'a> {
     pub fn parse(node: Node<'a, '_>) -> Result<Self, String> {
-        let mut annotation = None;
-
-        for ch in node.children().filter(|n| n.is_element()) {
-            match ch.xsd_type()? {
-                ElementType::Annotation => annotation = Some(Annotation::parse(ch)?),
-                _ => {
-                    return Err(format!(
-                        "Invalid child node for xsd:whiteSpace type: {:?}",
-                        node
-                    ))
-                }
-            };
-        }
+        let annotation = annotation_only(node, "whiteSpace")?;
 
         let mut id = None;
         let mut value = None;
@@ -160,7 +118,8 @@ impl<'a> WhiteSpace<'a> {
             };
         }
 
-        let value = value.ok_or("value attribute required for xsd:whiteSpace".to_string())?;
+        let value =
+            value.ok_or_else(|| "value attribute required for xsd:whiteSpace".to_string())?;
 
         Ok(Self {
             annotation,
@@ -175,18 +134,8 @@ impl<'a> WhiteSpace<'a> {
 impl<'a> Pattern<'a> {
     pub fn parse(node: Node<'a, '_>) -> Result<Self, String> {
         let mut res = Self::default();
+        res.annotation = annotation_only(node, "whiteSpace")?;
 
-        for ch in node.children().filter(|n| n.is_element()) {
-            match ch.xsd_type()? {
-                ElementType::Annotation => res.annotation = Some(Annotation::parse(ch)?),
-                _ => {
-                    return Err(format!(
-                        "Invalid child node for xsd:NoFixedFacet type: {:?}",
-                        node
-                    ))
-                }
-            };
-        }
         for attr in node.attributes() {
             match attr.name() {
                 "id" => res.id = Some(attr.into()),

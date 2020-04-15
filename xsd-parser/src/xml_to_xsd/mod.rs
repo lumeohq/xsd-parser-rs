@@ -9,6 +9,7 @@ pub mod restriction;
 pub mod schema;
 pub mod simple_type;
 pub mod union;
+pub mod utils;
 
 use crate::xsd_model::elements::{xsd_element_type, ElementType};
 use crate::xsd_model::simple_types::any_uri::AnyUri;

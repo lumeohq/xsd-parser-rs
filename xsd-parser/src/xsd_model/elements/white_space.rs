@@ -48,10 +48,12 @@ impl FromStr for WhiteSpaceChoice {
             "collapse" => Self::Collapse,
             "preserve" => Self::Preserve,
             "replace" => Self::Replace,
-            _ => return Err(format!(
+            _ => {
+                return Err(format!(
                 "Invalid xsd:whiteSpace:value type: {}. Anonymous (collapse | preserve | replace)",
                 s
-            )),
+            ))
+            }
         })
     }
 }
