@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../../../ver20/util/onvif-wsdl-viewer.xsl"?>
+<?xml-stylesheet type="text/xsl" href="../../util/onvif-wsdl-viewer.xsl"?>
 <!--
 	Copyright (c) 2008-2019 by ONVIF: Open Network Video Interface Forum. All rights reserved.
 	
@@ -10,8 +10,9 @@
 -->
 <wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tan="http://www.onvif.org/ver20/analytics/wsdl" targetNamespace="http://www.onvif.org/ver20/analytics/wsdl">
 	<wsdl:types>
-		<xs:schema targetNamespace="http://www.onvif.org/ver20/analytics/wsdl" xmlns:tt="http://www.onvif.org/ver10/schema" elementFormDefault="qualified" version="19.06">
+		<xs:schema targetNamespace="http://www.onvif.org/ver20/analytics/wsdl" xmlns:tt="http://www.onvif.org/ver10/schema" elementFormDefault="qualified" version="19.12">
 			<xs:import namespace="http://www.onvif.org/ver10/schema" schemaLocation="../../../ver10/schema/onvif.xsd"/>
+			<xs:import namespace="http://www.onvif.org/ver10/schema" schemaLocation="../../../ver10/schema/metadatastream.xsd"/>
 			<!--  Message Request/Responses elements  -->
 			<!--===============================-->
 			<xs:element name="GetServiceCapabilities">
@@ -58,6 +59,16 @@
 				<xs:attribute name="AnalyticsModuleOptionsSupported" type="xs:boolean">
 					<xs:annotation>
 						<xs:documentation>Indication that the device supports the GetAnalyticsModuleOptions operation on the analytics interface</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="SupportedMetadata" type="xs:boolean">
+					<xs:annotation>
+						<xs:documentation>Indication that the device supports the GetSupportedMetadata operation.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="ImageSendingType" type="xs:string">
+					<xs:annotation>
+						<xs:documentation>Indication what kinds of method that the device support for sending image, acceptable values are defined in tt:ImageSendingType.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 				<xs:anyAttribute processContents="lax"/>
@@ -348,6 +359,40 @@
 				</xs:complexType>
 			</xs:element>
 			<!--===============================-->
+			<xs:element name="GetSupportedMetadata">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Type" type="xs:QName" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Optional reference to an AnalyticsModule Type returned from GetAnalyticsModules.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="GetSupportedMetadataResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="AnalyticsModule" type="tan:MetadataInfo" minOccurs="0" maxOccurs="unbounded">
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:complexType name="MetadataInfo">
+				<xs:sequence>
+					<xs:element name="SampleFrame" type="tt:Frame">
+						<xs:annotation><xs:documentation>Sample frame content starting with the tt:Frame node.</xs:documentation></xs:annotation>
+					</xs:element>
+					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first ONVIF then Vendor -->
+				</xs:sequence>
+				<xs:attribute name="Type" type="xs:QName" use="required">
+					<xs:annotation>
+						<xs:documentation>Reference to an AnalyticsModule Type.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:anyAttribute/>
+			</xs:complexType>
+			<!--===============================-->
 		</xs:schema>
 	</wsdl:types>
 	<wsdl:message name="GetServiceCapabilitiesRequest">
@@ -428,12 +473,16 @@
 	<wsdl:message name="GetAnalyticsModuleOptionsResponse">
 		<wsdl:part name="parameters" element="tan:GetAnalyticsModuleOptionsResponse"/>
 	</wsdl:message>
+	<wsdl:message name="GetSupportedMetadataRequest">
+		<wsdl:part name="parameters" element="tan:GetSupportedMetadata"/>
+	</wsdl:message>
+	<wsdl:message name="GetSupportedMetadataResponse">
+		<wsdl:part name="parameters" element="tan:GetSupportedMetadataResponse"/>
+	</wsdl:message>
 	<wsdl:portType name="RuleEnginePort">
 		<wsdl:operation name="GetSupportedRules">
 			<wsdl:documentation>
 				List all rules that are supported by the given VideoAnalyticsConfiguration.
-				The result of this method may depend on the overall Video analytics configuration of the device,
-				which is available via the current set of profiles. 
 			</wsdl:documentation>
 			<wsdl:input message="tan:GetSupportedRulesRequest"/>
 			<wsdl:output message="tan:GetSupportedRulesResponse"/>
@@ -545,6 +594,17 @@
 			</wsdl:documentation>
 			<wsdl:input message="tan:ModifyAnalyticsModulesRequest"/>
 			<wsdl:output message="tan:ModifyAnalyticsModulesResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="GetSupportedMetadata">
+			<wsdl:documentation>
+				This method provides a computer readable description of the metadata that the selected analytics modules can generate. 
+				The type parameter allows to select a single analytics module. By default the output shall relate to all analytics modules that exist in the device.<br/> 
+				The response shall provide a sample XML frame. 
+				The sample frame shall include all potentially generated elements by the selected analytics modules. 
+				Note that this e.g. does not need to include all possible class type enumerations.
+			</wsdl:documentation>
+			<wsdl:input message="tan:GetSupportedMetadataRequest"/>
+			<wsdl:output message="tan:GetSupportedMetadataResponse"/>
 		</wsdl:operation>
 	</wsdl:portType>
 	<wsdl:binding name="RuleEngineBinding" type="tan:RuleEnginePort">
@@ -662,6 +722,15 @@
 		</wsdl:operation>
 		<wsdl:operation name="ModifyAnalyticsModules">
 			<soap:operation soapAction="http://www.onvif.org/ver20/analytics/wsdl/ModifyAnalyticsModules"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetSupportedMetadata">
+			<soap:operation soapAction="http://www.onvif.org/ver20/analytics/wsdl/GetSupportedMetadata"/>
 			<wsdl:input>
 				<soap:body use="literal"/>
 			</wsdl:input>

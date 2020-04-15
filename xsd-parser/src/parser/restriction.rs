@@ -136,8 +136,38 @@ fn is_simple_enumerations(node: &Node) -> bool {
 }
 
 fn is_simple_enumeration(node: &Node) -> bool {
-    node.attr_value()
-        .unwrap()
-        .chars()
-        .all(|c| c.is_alphanumeric() || c == '-')
+    let val = node
+        .attr_value()
+        .expect("Value required for xsd:enumeration");
+    !val.is_empty() && val.chars().all(|c| c.is_alphanumeric() || c == '-')
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use crate::parser::utils::find_child;
+
+    #[test]
+    fn test_simple_type_restriction() {
+        let doc = roxmltree::Document::parse(
+            r#"
+    <xs:schema xmlns:tt="http://www.onvif.org/ver10/schema" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.onvif.org/ver10/schema">
+        <xs:simpleType name="SomeType">
+            <xs:restriction base="xs:string">
+                <xs:enumeration value=""/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:schema>
+                "#
+        ).unwrap();
+        let root = doc.root_element().first_element_child().unwrap();
+        let restriction = find_child(&root, "restriction").unwrap();
+
+        match simple_type_restriction(&restriction) {
+            RsEntity::TupleStruct(ts) => {
+                assert_eq!(ts.type_name, "xs:string");
+            }
+            _ => unreachable!("Test failed"),
+        }
+    }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?xml-stylesheet type="text/xsl" href="../../ver20/util/onvif-wsdl-viewer.xsl"?>
 <!--
-Copyright (c) 2010-2018 by ONVIF: Open Network Video Interface Forum. All rights reserved.
+Copyright (c) 2010-2019 by ONVIF: Open Network Video Interface Forum. All rights reserved.
 
 Recipients of this document may copy, distribute, publish, or display this
 document so long as this copyright notice, license and disclaimer are
@@ -38,7 +38,7 @@ CERTAIN WRITTEN POLICIES OF THE CORPORATION.
 				   xmlns:pt="http://www.onvif.org/ver10/pacs"
 				   xmlns:tdc="http://www.onvif.org/ver10/doorcontrol/wsdl"
 				   elementFormDefault="qualified"
-				   version="18.12">
+				   version="19.12">
 			<xs:import namespace="http://www.onvif.org/ver10/pacs" schemaLocation="types.xsd"/>
 			<!--====== types ======-->
 			<xs:complexType name="ServiceCapabilities">
@@ -73,6 +73,15 @@ CERTAIN WRITTEN POLICIES OF THE CORPORATION.
 						<xs:documentation>
 							Indicates that the client is allowed to supply the token when creating doors.
 							To enable the use of the command SetDoor, the value must be set to true.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="DoorManagementSupported" type="xs:boolean" default="false">
+					<xs:annotation>
+						<xs:documentation>
+							Indicates that the client can perform CRUD operations (create, read, update and delete)
+							on doors. To enable the use of the commands GetDoors, GetDoorList, CreateDoor, ModifyDoor
+							and DeleteDoor, the value must be set to true.
 						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>

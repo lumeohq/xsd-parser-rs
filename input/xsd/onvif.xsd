@@ -8,15 +8,7 @@ Recipients of this document may copy, distribute, publish, or display this docum
 THIS DOCUMENT IS PROVIDED "AS IS," AND THE CORPORATION AND ITS MEMBERS AND THEIR AFFILIATES, MAKE NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO, WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, OR TITLE; THAT THE CONTENTS OF THIS DOCUMENT ARE SUITABLE FOR ANY PURPOSE; OR THAT THE IMPLEMENTATION OF SUCH CONTENTS WILL NOT INFRINGE ANY PATENTS, COPYRIGHTS, TRADEMARKS OR OTHER RIGHTS.
 IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL, INCIDENTAL, PUNITIVE OR CONSEQUENTIAL DAMAGES, ARISING OUT OF OR RELATING TO ANY USE OR DISTRIBUTION OF THIS DOCUMENT, WHETHER OR NOT (1) THE CORPORATION, MEMBERS OR THEIR AFFILIATES HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR (2) SUCH DAMAGES WERE REASONABLY FORESEEABLE, AND ARISING OUT OF OR RELATING TO ANY USE OR DISTRIBUTION OF THIS DOCUMENT.  THE FOREGOING DISCLAIMER AND LIMITATION ON LIABILITY DO NOT APPLY TO, INVALIDATE, OR LIMIT REPRESENTATIONS AND WARRANTIES MADE BY THE MEMBERS AND THEIR RESPECTIVE AFFILIATES TO THE CORPORATION AND OTHER MEMBERS IN CERTAIN WRITTEN POLICIES OF THE CORPORATION.
 -->
-<xs:schema xmlns:tt="http://www.onvif.org/ver10/schema"
-		   xmlns:xs="http://www.w3.org/2001/XMLSchema"
-		   xmlns:xmime="http://www.w3.org/2005/05/xmlmime"
-		   xmlns:wsnt="http://docs.oasis-open.org/wsn/b-2"
-		   xmlns:xop="http://www.w3.org/2004/08/xop/include"
-		   xmlns:soapenv="http://www.w3.org/2003/05/soap-envelope"
-		   targetNamespace="http://www.onvif.org/ver10/schema"
-		   elementFormDefault="qualified"
-		   version="19.06">
+<xs:schema xmlns:tt="http://www.onvif.org/ver10/schema" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:wsnt="http://docs.oasis-open.org/wsn/b-2" xmlns:xop="http://www.w3.org/2004/08/xop/include" xmlns:soapenv="http://www.w3.org/2003/05/soap-envelope" targetNamespace="http://www.onvif.org/ver10/schema" elementFormDefault="qualified" version="19.12">
 	<xs:include schemaLocation="common.xsd"/>
 	<xs:import namespace="http://www.w3.org/2005/05/xmlmime" schemaLocation="http://www.w3.org/2005/05/xmlmime"/>
 	<xs:import namespace="http://www.w3.org/2003/05/soap-envelope" schemaLocation="http://www.w3.org/2003/05/soap-envelope"/>
@@ -37,12 +29,12 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 	</xs:complexType>
 	<!--===============================-->
 	<xs:simpleType name="Name">
-		<xs:restriction base="xs:string">
-			<xs:maxLength value="64"/>
-		</xs:restriction>
 		<xs:annotation>
 			<xs:documentation>User readable name. Length up to 64 characters.</xs:documentation>
 		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="64"/>
+		</xs:restriction>
 	</xs:simpleType>
 	<!--===============================-->
 	<xs:complexType name="IntRectangle">
@@ -103,7 +95,7 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
-	<xs:complexType name="IntList">
+	<xs:complexType name="IntItems">
 		<xs:annotation>
 			<xs:documentation>List of values.</xs:documentation>
 		</xs:annotation>
@@ -124,11 +116,15 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 		<xs:list itemType="xs:string"/>
 	</xs:simpleType>
 	<!--===============================-->
+	<xs:simpleType name="StringList">
+		<xs:list itemType="xs:string"/>
+	</xs:simpleType>
+	<!--===============================-->
 	<xs:simpleType name="ReferenceTokenList">
 		<xs:list itemType="tt:ReferenceToken"/>
 	</xs:simpleType>
 	<!--===============================-->
-	<xs:complexType name="FloatList">
+	<xs:complexType name="FloatItems">
 		<xs:sequence>
 			<xs:element name="Items" type="xs:float" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
@@ -141,7 +137,7 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
-	<xs:element name="StringList" type="tt:StringAttrList"/>
+	<xs:element name="StringList" type="tt:StringList"/>
 	<xs:element name="IntRange" type="tt:IntRange"/>
 	<xs:element name="IntList" type="tt:IntAttrList"/>
 	<xs:element name="FloatRange" type="tt:FloatRange"/>
@@ -555,7 +551,7 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 					<xs:documentation>Supported options of Rotate mode parameter.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="DegreeList" type="tt:IntList" minOccurs="0">
+			<xs:element name="DegreeList" type="tt:IntItems" minOccurs="0">
 				<xs:annotation>
 					<xs:documentation>List of supported degree value for rotation.</xs:documentation>
 				</xs:annotation>
@@ -1282,12 +1278,12 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 					<xs:documentation>The enoding used for audio data (either G.711, G.726 or AAC)</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="BitrateList" type="tt:IntList">
+			<xs:element name="BitrateList" type="tt:IntItems">
 				<xs:annotation>
 					<xs:documentation>List of supported bitrates in kbps for the specified Encoding</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="SampleRateList" type="tt:IntList">
+			<xs:element name="SampleRateList" type="tt:IntItems">
 				<xs:annotation>
 					<xs:documentation>List of supported Sample Rates in kHz for the specified Encoding</xs:documentation>
 				</xs:annotation>
@@ -1350,12 +1346,12 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 					<xs:documentation>Audio Media Subtype for the audio format. For definitions see tt:AudioEncodingMimeNames and <a href="https://www.iana.org/assignments/media-types/media-types.xhtml#audio"> IANA Media Types</a>.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="BitrateList" type="tt:IntList">
+			<xs:element name="BitrateList" type="tt:IntItems">
 				<xs:annotation>
 					<xs:documentation>List of supported bitrates in kbps for the specified Encoding</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="SampleRateList" type="tt:IntList">
+			<xs:element name="SampleRateList" type="tt:IntItems">
 				<xs:annotation>
 					<xs:documentation>List of supported Sample Rates in kHz for the specified Encoding</xs:documentation>
 				</xs:annotation>
@@ -1418,7 +1414,12 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 						</xs:annotation>
 					</xs:element>
 					<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-					<xs:element name="AnalyticsEngineConfiguration" type="tt:AnalyticsEngineConfiguration" minOccurs="0"/>
+					<xs:element name="AnalyticsEngineConfiguration" type="tt:AnalyticsEngineConfiguration" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Indication which AnalyticsModules shall output metadata.
+							Note that the streaming behavior is undefined if the list includes items that are not part of the associated AnalyticsConfiguration.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
 					<xs:element name="Extension" type="tt:MetadataConfigurationExtension" minOccurs="0"/>
 				</xs:sequence>
 				<xs:attribute name="CompressionType" type="xs:string">
@@ -1865,12 +1866,12 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="G711DecOptions">
 		<xs:sequence>
-			<xs:element name="Bitrate" type="tt:IntList">
+			<xs:element name="Bitrate" type="tt:IntItems">
 				<xs:annotation>
 					<xs:documentation>List of supported bitrates in kbps</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="SampleRateRange" type="tt:IntList">
+			<xs:element name="SampleRateRange" type="tt:IntItems">
 				<xs:annotation>
 					<xs:documentation>List of supported sample rates in kHz</xs:documentation>
 				</xs:annotation>
@@ -1882,12 +1883,12 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="AACDecOptions">
 		<xs:sequence>
-			<xs:element name="Bitrate" type="tt:IntList">
+			<xs:element name="Bitrate" type="tt:IntItems">
 				<xs:annotation>
 					<xs:documentation>List of supported bitrates in kbps</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="SampleRateRange" type="tt:IntList">
+			<xs:element name="SampleRateRange" type="tt:IntItems">
 				<xs:annotation>
 					<xs:documentation>List of supported sample rates in kHz</xs:documentation>
 				</xs:annotation>
@@ -1899,12 +1900,12 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="G726DecOptions">
 		<xs:sequence>
-			<xs:element name="Bitrate" type="tt:IntList">
+			<xs:element name="Bitrate" type="tt:IntItems">
 				<xs:annotation>
 					<xs:documentation>List of supported bitrates in kbps</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="SampleRateRange" type="tt:IntList">
+			<xs:element name="SampleRateRange" type="tt:IntItems">
 				<xs:annotation>
 					<xs:documentation>List of supported sample rates in kHz</xs:documentation>
 				</xs:annotation>
@@ -6503,8 +6504,12 @@ If set to 0.0, infinity will be used.</xs:documentation>
 	<!--===============================-->
 	<!--  Event and Analytics Types    -->
 	<!--===============================-->
-	<xs:simpleType name="TopicNamespaceLocation">
-		<xs:restriction base="xs:anyURI"/>
+	<xs:simpleType name="ImageSendingType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Embedded"/>
+			<xs:enumeration value="LocalStorage"/>
+			<xs:enumeration value="RemoteStorage"/>
+		</xs:restriction>
 	</xs:simpleType>
 	<!--===============================-->
 	<xs:simpleType name="PropertyOperation">
@@ -6776,11 +6781,7 @@ If set to 0.0, infinity will be used.</xs:documentation>
 								<xs:element name="ParentTopic" type="xs:string">
 									<xs:annotation>
 										<xs:documentation>
-											The ParentTopic labels the message (e.g. "nn:RuleEngine/LineCrossing"). The real message can extend the ParentTopic
-											by for example the name of the instaniated rule (e.g. "nn:RuleEngine/LineCrossing/corssMyFirstLine").
-											Even without knowing the complete topic name, the subscriber will be able to distiguish the
-											messages produced by different rule instances of the same type via the Source fields of the message.
-											There the name of the rule instance, which produced the message, must be listed.
+											The topic of the message. For historical reason the element is named ParentTopic, but the full topic is expected.
 										</xs:documentation>
 									</xs:annotation>
 								</xs:element>

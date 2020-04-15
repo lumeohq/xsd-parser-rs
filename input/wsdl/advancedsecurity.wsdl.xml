@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../ver20/util/onvif-wsdl-viewer.xsl"?>
 <!--
-	Copyright (c) 2013 - 2018 by ONVIF: Open Network Video Interface Forum. All rights reserved.
+	Copyright (c) 2013 - 2019 by ONVIF: Open Network Video Interface Forum. All rights reserved.
 	
 	Recipients of this document may copy, distribute, publish, or display this document so long as this copyright notice, license and disclaimer are retained with all copies of the document. No license is granted to modify this document.
 	
@@ -10,7 +10,7 @@
 -->
 <wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tas="http://www.onvif.org/ver10/advancedsecurity/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://www.onvif.org/ver10/advancedsecurity/wsdl">
 	<wsdl:types>
-		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.onvif.org/ver10/advancedsecurity/wsdl" version="18.12">
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.onvif.org/ver10/advancedsecurity/wsdl" version="19.12">
 			<!--===================================================-->
 			<!-- Data types used by the security configuration features -->
 			<!--===================================================-->
@@ -821,6 +821,11 @@
 				<xs:attribute name="TLSClientAuthSupported" type="xs:boolean">
 					<xs:annotation>
 						<xs:documentation>Indicates whether the device supports TLS client authentication.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="CnMapsToUserSupported" type="xs:boolean">
+					<xs:annotation>
+						<xs:documentation>Indicates whether the device supports TLS client authorization using common name to local user mapping.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 				<xs:attribute name="MaximumNumberOfTLSCertificationPathValidationPolicies" type="xs:nonNegativeInteger">
@@ -1777,6 +1782,34 @@
 				</xs:complexType>
 			</xs:element>
 			<!--===============================-->
+			<xs:element name="SetCnMapsToUser">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="cnMapsToUser" type="xs:boolean">
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="SetCnMapsToUserResponse">
+				<xs:complexType>
+					<xs:sequence/>
+				</xs:complexType>
+			</xs:element>
+			<!--===============================-->
+			<xs:element name="GetCnMapsToUser">
+				<xs:complexType>
+					<xs:sequence/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="GetCnMapsToUserResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="cnMapsToUser" type="xs:boolean">
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<!--===============================-->
 			<xs:element name="AddCertPathValidationPolicyAssignment">
 				<xs:complexType>
 					<xs:sequence>
@@ -2239,6 +2272,18 @@
 	</wsdl:message>
 	<wsdl:message name="GetClientAuthenticationRequiredResponse">
 		<wsdl:part name="parameters" element="tas:GetClientAuthenticationRequiredResponse"/>
+	</wsdl:message>
+	<wsdl:message name="SetCnMapsToUserRequest">
+		<wsdl:part name="parameters" element="tas:SetCnMapsToUser"/>
+	</wsdl:message>
+	<wsdl:message name="SetCnMapsToUserResponse">
+		<wsdl:part name="parameters" element="tas:SetCnMapsToUserResponse"/>
+	</wsdl:message>
+	<wsdl:message name="GetCnMapsToUserRequest">
+		<wsdl:part name="parameters" element="tas:GetCnMapsToUser"/>
+	</wsdl:message>
+	<wsdl:message name="GetCnMapsToUserResponse">
+		<wsdl:part name="parameters" element="tas:GetCnMapsToUserResponse"/>
 	</wsdl:message>
 	<wsdl:message name="AddCertPathValidationPolicyAssignmentRequest">
 		<wsdl:part name="parameters" element="tas:AddCertPathValidationPolicyAssignment"/>
@@ -2758,6 +2803,21 @@
 			<wsdl:input message="tas:GetClientAuthenticationRequiredRequest"/>
 			<wsdl:output message="tas:GetClientAuthenticationRequiredResponse"/>
 		</wsdl:operation>
+		<wsdl:operation name="SetCnMapsToUser">
+			<wsdl:documentation>
+        This operation enables or disables mapping of the Common Name present in the TLS client certificate to an existing user name in the device.
+        The TLS server on the device shall perform mapping if parameter clientAuthenticationRequired is set to true.
+      </wsdl:documentation>
+			<wsdl:input message="tas:SetCnMapsToUserRequest"/>
+			<wsdl:output message="tas:SetCnMapsToUserResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="GetCnMapsToUser">
+			<wsdl:documentation>
+        This operation returns whether the Common Name Mapping to User is enabled.
+      </wsdl:documentation>
+            <wsdl:input message="tas:GetCnMapsToUserRequest"/>
+            <wsdl:output message="tas:GetCnMapsToUserResponse"/>
+        </wsdl:operation>
 		<wsdl:operation name="AddCertPathValidationPolicyAssignment">
 			<wsdl:documentation>
         This operation assigns a certification path validation policy to the TLS server on the device. The TLS server shall enforce the policy when authenticating TLS clients and consider a client authentic if and only if the algorithm returns valid.
@@ -3190,6 +3250,24 @@
 		</wsdl:operation>
 		<wsdl:operation name="GetClientAuthenticationRequired">
 			<soap:operation soapAction="http://www.onvif.org/ver10/advancedsecurity/wsdl/GetClientAuthenticationRequired"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="SetCnMapsToUser">
+			<soap:operation soapAction="http://www.onvif.org/ver10/advancedsecurity/wsdl/SetCnMapsToUser"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetCnMapsToUser">
+			<soap:operation soapAction="http://www.onvif.org/ver10/advancedsecurity/wsdl/GetCnMapsToUser"/>
 			<wsdl:input>
 				<soap:body use="literal"/>
 			</wsdl:input>

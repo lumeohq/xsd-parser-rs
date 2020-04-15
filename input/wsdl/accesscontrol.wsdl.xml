@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?xml-stylesheet type="text/xsl" href="../../ver20/util/onvif-wsdl-viewer.xsl"?>
 <!--
-Copyright (c) 2010-2018 by ONVIF: Open Network Video Interface Forum. All rights reserved.
+Copyright (c) 2010-2019 by ONVIF: Open Network Video Interface Forum. All rights reserved.
 
 Recipients of this document may copy, distribute, publish, or display this
 document so long as this copyright notice, license and disclaimer are
@@ -37,7 +37,7 @@ CERTAIN WRITTEN POLICIES OF THE CORPORATION.
 				   xmlns:pt="http://www.onvif.org/ver10/pacs"
 				   xmlns:tac="http://www.onvif.org/ver10/accesscontrol/wsdl"
 				   elementFormDefault="qualified"
-				   version="18.12">
+				   version="19.12">
 			<xs:import namespace="http://www.onvif.org/ver10/pacs" schemaLocation="types.xsd"/>
 			<!--====== types ======-->
 			<xs:complexType name="ServiceCapabilities">
@@ -79,6 +79,25 @@ CERTAIN WRITTEN POLICIES OF THE CORPORATION.
 							Indicates that the client is allowed to supply the token when creating access
 							points and areas.
 							To enable the use of the commands SetAccessPoint and SetArea, the value must be set to true.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="AccessPointManagementSupported" type="xs:boolean" default="false">
+					<xs:annotation>
+						<xs:documentation>
+							Indicates that the client can perform CRUD operations (create, read, update and delete)
+							on access points. To enable the use of the commands GetAccessPoints, GetAccessPointList,
+							CreateAccessPoint, ModifyAccessPoint, DeleteAccessPoint, SetAccessPointAuthenticationProfile
+							and DeleteAccessPointAuthenticationProfile, the value must be set to true.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="AreaManagementSupported" type="xs:boolean" default="false">
+					<xs:annotation>
+						<xs:documentation>
+							Indicates that the client can perform CRUD operations (create, read, update and delete)
+							on areas. To enable the use of the commands GetAreas, GetAreaList, CreateArea, ModifyArea
+							and DeleteArea, the value must be set to true.
 						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
@@ -222,6 +241,10 @@ CERTAIN WRITTEN POLICIES OF THE CORPORATION.
 						<xs:annotation>
 							<xs:documentation>A list of security level tokens that this access point supports.
 								See [Authentication Behavior Service Specification].
+								This field is optional, and if omitted, the device cannot support multi-factor
+								authentication for this access point.
+								Please note that when an access point is updated, then any previously supported
+								security levels are replaced with the new list.
 							</xs:documentation>
 						</xs:annotation>
 					</xs:element>
@@ -270,7 +293,31 @@ CERTAIN WRITTEN POLICIES OF THE CORPORATION.
 						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-
+				<xs:attribute name="SupportedRecognitionTypes" type="pt:StringList">
+					<xs:annotation>
+						<xs:documentation>
+							A list of recognition types that the device supports. This field is only relevant for devices
+							that are not aware of security levels (see [ONVIF Authentication Behavior Service Specification]).
+							Please note that when an access point is updated, then any previously supported recognition types
+							are replaced with the new list.
+							Recognition types starting with the prefix pt: are reserved to define ONVIF-specific
+							types as defined in pt:RecognitionType. For custom defined identifier types, free text 
+							can be used.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="IdentiferAccess" type="xs:boolean">
+					<xs:annotation>
+						<xs:documentation>
+							Indicates whether or not this access point supports the AccessControl/Request/Identifier
+							event to request external authorization.
+							Identfier access requires that ExternalAuthorization is set to true.
+							The IdentifierAccess capability is typically enabled for devices that do not have any 
+							knowledge of credential tokens. When IdentifierAccess is set to true then the device 
+							shall support the identifier events.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 
 				<xs:anyAttribute processContents="lax"/>
 			</xs:complexType>

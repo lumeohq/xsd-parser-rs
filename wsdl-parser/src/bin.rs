@@ -48,7 +48,7 @@ fn main() {
 //TODO: Add a common mechanism for working with files
 fn process_dir(input_path: &Path, output_path: &Path) -> Result<(), String> {
     if !output_path.exists() {
-        fs::create_dir(output_path).map_err(|e| e.to_string())?;
+        fs::create_dir_all(output_path).map_err(|e| e.to_string())?;
     }
     for entry in fs::read_dir(input_path).map_err(|e| e.to_string())? {
         let path = entry.map_err(|e| e.to_string())?.path();
