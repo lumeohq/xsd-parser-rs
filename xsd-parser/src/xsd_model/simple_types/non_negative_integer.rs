@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 // xsd:nonNegativeInteger
 // The type xsd:nonNegativeInteger represents an arbitrarily large non-negative integer. An xsd:nonNegativeInteger is a sequence of digits, optionally preceded by a + sign. Leading zeros are permitted, but decimal points are not.
 //
@@ -35,18 +37,27 @@
 //                          restricted by xsd:unsignedByte
 //          restricted by xsd:positiveInteger
 #[derive(Default, Debug)]
-pub struct NonNegativeInteger(usize);
+pub struct NonNegativeInteger(pub usize);
 
-impl NonNegativeInteger {
-    pub fn new(s: &str) -> Self {
-        Self {
-            0: s.parse::<usize>().expect("Value mus be a digit"), //TODO: maybe fromStr
-        }
+impl FromStr for NonNegativeInteger {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let res = s.parse::<usize>().map_err(|er| format!("parse xsd:positiveInteger error: {}", er.to_string()))?;
+        Ok(Self(res))
     }
 }
 
-#[test]
-fn test_valid_values() {}
 
 #[test]
-fn test_invalid_values() {}
+fn test_parse() {
+    assert_eq!("1".parse::<NonNegativeInteger>().unwrap().0, 1);
+    assert_eq!("+10".parse::<NonNegativeInteger>().unwrap().0, 10);
+    assert_eq!("000122".parse::<NonNegativeInteger>().unwrap().0, 122);
+    assert_eq!("0".parse::<NonNegativeInteger>().unwrap().0, 0);
+
+    assert_eq!("-3".parse::<NonNegativeInteger>().err().unwrap(), "parse xsd:positiveInteger error: invalid digit found in string");
+    assert_eq!("3.0".parse::<NonNegativeInteger>().err().unwrap(), "parse xsd:positiveInteger error: invalid digit found in string");
+}
+
+
