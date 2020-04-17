@@ -10,6 +10,8 @@ pub mod schema;
 pub mod simple_type;
 pub mod union;
 pub mod utils;
+pub mod explicit_group;
+pub mod nested_particle;
 
 use crate::xsd_model::elements::{xsd_element_type, ElementType};
 use crate::xsd_model::simple_types::any_uri::AnyUri;
@@ -37,12 +39,7 @@ impl XsdNode for roxmltree::Node<'_, '_> {
         xsd_element_type(self.tag_name().name())
     }
 }
-//
-// impl PartialEq<&str> for AnyUri<'_> {
-//     fn eq(&self, other: &&str) -> bool {
-//         &self.0 == other
-//     }
-// }
+
 
 macro_rules! impl_from_attr {
     ($type_name:ident) => {
