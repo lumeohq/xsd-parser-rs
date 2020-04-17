@@ -1,5 +1,6 @@
 use crate::xml_to_xsd::XsdNode;
 use crate::xsd_model::elements::ElementType;
+use crate::xsd_model::groups::schema_top::SchemaTop;
 use crate::xsd_model::simple_types::any_uri::AnyUri;
 use crate::xsd_model::simple_types::block_set::BlockSet;
 use crate::xsd_model::simple_types::form_choice::FormChoice;
@@ -39,17 +40,15 @@ pub fn parse_document<'a>(doc: &'a Document) -> Result<Schema<'a>, String> {
         match ch.xsd_type()? {
             ElementType::Include => schema.includes.push(Include::parse(ch)?),
             ElementType::Import => schema.imports.push(Import::parse(ch)?),
-            ElementType::Redefine => {}
-            ElementType::Annotation => schema.annotations.push(Annotation::parse(ch)?),
-            //schemaTop
-            ElementType::SimpleType => {}
-            ElementType::ComplexType => {}
-            ElementType::Group => {}
-            ElementType::AttributeGroup => {}
-            ElementType::Element => {}
-            ElementType::Attribute => {}
-            ElementType::Notation => {}
-            _ => unreachable!("Not TopLevel element! {:#?}", ch),
+            ElementType::Redefine => unimplemented!("Not present in ONVIF"),
+            ElementType::Annotation => {
+                if let Some(val) = schema.content.last_mut() {
+                    val.1 = Some(Annotation::parse(ch)?)
+                } else {
+                    schema.annotations.push(Annotation::parse(ch)?)
+                }
+            }
+            x => schema.content.push((SchemaTop::parse(ch, x)?, None)),
         }
     }
 

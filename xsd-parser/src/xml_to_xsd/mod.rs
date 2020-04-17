@@ -11,6 +11,7 @@ pub mod list;
 pub mod nested_particle;
 pub mod restriction;
 pub mod schema;
+pub mod schema_top;
 pub mod simple_type;
 pub mod union;
 pub mod utils;

@@ -33,5 +33,5 @@ pub enum SchemaTop<'a> {
     AttributeGroup(Box<AttributeGroup<'a>>),
     Element(Box<TopLevelElement<'a>>),
     Attribute(Box<TopLevelAttribute<'a>>),
-    Notation(Notation<'a>),
+    Notation(Box<Notation<'a>>),
 }
