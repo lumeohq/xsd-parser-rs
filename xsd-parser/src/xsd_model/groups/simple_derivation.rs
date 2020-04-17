@@ -21,6 +21,6 @@ use crate::xsd_model::elements::union::Union;
 #[derive(Debug)]
 pub enum SimpleDerivation<'a> {
     Restriction(Box<Restriction<'a>>),
-    List(List<'a>),
-    Union(Union<'a>),
+    List(Box<List<'a>>),
+    Union(Box<Union<'a>>),
 }

@@ -38,6 +38,6 @@ pub struct ComplexContent<'a> {
 }
 
 pub enum ComplexContentChoice<'a> {
-    Restriction(ComplexRestriction<'a>),
-    Extension(Extension<'a>),
+    Restriction(Box<ComplexRestriction<'a>>),
+    Extension(Box<Extension<'a>>),
 }
