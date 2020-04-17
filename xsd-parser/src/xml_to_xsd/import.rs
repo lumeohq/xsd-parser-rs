@@ -1,19 +1,11 @@
-use crate::xml_to_xsd::XsdNode;
-use crate::xsd_model::elements::ElementType;
-use crate::xsd_model::Annotation;
 use crate::xsd_model::Import;
 use roxmltree::Node;
+use crate::xml_to_xsd::utils::annotation_only;
 
 impl<'a> Import<'a> {
     pub fn parse(node: Node<'a, '_>) -> Result<Import<'a>, String> {
         let mut res = Import::default();
-        if let Some(child) = node.first_element_child() {
-            if child.xsd_type()? != ElementType::Annotation {
-                return Err(format!("Invalid content type of xsd:import: {:?}", node));
-            } else {
-                res.annotation = Some(Annotation::parse(child)?);
-            }
-        }
+        res.annotation = annotation_only(node, "import")?;
 
         for attr in node.attributes() {
             match attr.name() {

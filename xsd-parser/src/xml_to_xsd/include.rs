@@ -1,19 +1,11 @@
-use crate::xml_to_xsd::XsdNode;
-use crate::xsd_model::elements::ElementType;
-use crate::xsd_model::Annotation;
 use crate::xsd_model::Include;
 use roxmltree::Node;
+use crate::xml_to_xsd::utils::annotation_only;
 
 impl<'a> Include<'a> {
     pub fn parse(node: Node<'a, '_>) -> Result<Include<'a>, String> {
         let mut res = Include::default();
-        if let Some(child) = node.first_element_child() {
-            if child.xsd_type()? != ElementType::Annotation {
-                return Err(format!("Invalid content type of xsd:include: {:?}", node));
-            } else {
-                res.annotation = Some(Annotation::parse(child)?);
-            }
-        }
+        res.annotation = annotation_only(node, "include")?;
 
         for attr in node.attributes() {
             match attr.name() {
