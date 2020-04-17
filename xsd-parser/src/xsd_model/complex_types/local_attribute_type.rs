@@ -45,8 +45,8 @@ pub struct LocalAttributeType<'a> {
     pub ref_: Option<QName<'a>>,
     pub type_: Option<QName<'a>>,
     pub use_: UseType,
-    pub default: &'a str,
-    pub fixed: &'a str,
+    pub default: Option<&'a str>,
+    pub fixed: Option<&'a str>,
     pub form: Option<FormChoice>,
 }
 
@@ -60,5 +60,16 @@ pub enum UseType {
 impl Default for UseType {
     fn default() -> Self {
         UseType::Optional
+    }
+}
+
+impl UseType {
+    pub fn parse(s: &str) -> Result<Self, String> {
+        Ok(match s {
+            "optional" => Self::Optional,
+            "prohibited" => Self::Prohibited,
+            "required" => Self::Required,
+            _ => return Err(format!("Error UseType parsing. Invalid value: {}", s)),
+        })
     }
 }

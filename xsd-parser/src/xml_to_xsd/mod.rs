@@ -1,6 +1,7 @@
 pub mod annotation;
 pub mod any;
 pub mod app_info;
+pub mod attribute;
 pub mod documentation;
 pub mod explicit_group;
 pub mod facets;

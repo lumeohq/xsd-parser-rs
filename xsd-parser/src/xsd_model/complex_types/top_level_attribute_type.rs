@@ -32,13 +32,14 @@ use crate::xsd_model::RawAttribute;
 //      xsd:openAttrs
 //          xsd:annotated
 //              xsd:topLevelAttributeType
+#[derive(Debug)]
 pub struct TopLevelAttributeType<'a> {
-    annotation: Option<Annotation<'a>>,
-    simple_type: Option<LocalSimpleType<'a>>,
-    attributes: Vec<RawAttribute<'a>>,
-    id: Id<'a>,
-    name: NCName<'a>,
-    type_: Option<QName<'a>>,
-    default: Option<&'a str>,
-    fixed: Option<&'a str>,
+    pub annotation: Option<Annotation<'a>>,
+    pub simple_type: Option<LocalSimpleType<'a>>,
+    pub attributes: Vec<RawAttribute<'a>>,
+    pub id: Id<'a>,
+    pub name: NCName<'a>,
+    pub type_: Option<QName<'a>>,
+    pub default: Option<&'a str>,
+    pub fixed: Option<&'a str>,
 }

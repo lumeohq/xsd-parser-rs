@@ -1,7 +1,7 @@
 use crate::xsd_model::complex_types::named_group::NamedGroup;
 use crate::xsd_model::elements::ElementType;
 use crate::xsd_model::groups::schema_top::SchemaTop;
-use crate::xsd_model::TopLevelSimpleType;
+use crate::xsd_model::{TopLevelAttribute, TopLevelSimpleType};
 use roxmltree::Node;
 
 impl<'a> SchemaTop<'a> {
@@ -14,7 +14,9 @@ impl<'a> SchemaTop<'a> {
             ElementType::Group => SchemaTop::Group(Box::from(NamedGroup::parse(node)?)),
             //ElementType::AttributeGroup => SchemaTop::AttributeGroup(NamedAttributeGroup::parse(node)?),
             //ElementType::Element => SchemaTop::Element(TopLevelElement::parse(node)?),
-            //ElementType::Attribute => SchemaTop::Attribute(TopLevelAttribute::parse(node)?),
+            ElementType::Attribute => {
+                SchemaTop::Attribute(Box::from(TopLevelAttribute::parse(node)?))
+            }
             //ElementType::Notation => SchemaTop::Notation(Notation::parse(node)?),
             _ => {
                 return Err(format!(
