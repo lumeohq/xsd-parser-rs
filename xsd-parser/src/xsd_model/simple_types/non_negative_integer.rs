@@ -36,7 +36,7 @@ use std::str::FromStr;
 //                      restricted by xsd:unsignedShort
 //                          restricted by xsd:unsignedByte
 //          restricted by xsd:positiveInteger
-#[derive(Default, Debug)]
+#[derive(Default, Debug, PartialEq)]
 pub struct NonNegativeInteger(pub usize);
 
 impl NonNegativeInteger{

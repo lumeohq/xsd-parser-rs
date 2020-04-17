@@ -3,6 +3,7 @@ use roxmltree::Node;
 use crate::xml_to_xsd::XsdNode;
 use crate::xsd_model::elements::ElementType;
 use crate::xsd_model::complex_types::explicit_group::ExplicitGroup;
+use crate::xsd_model::Any;
 
 impl<'a> NestedParticle<'a> {
     pub fn parse(node: Node<'a, '_>) -> Result<Self, String> {
@@ -11,7 +12,7 @@ impl<'a> NestedParticle<'a> {
             // ElementType::Group => Self::Group(::parse(node)?),
             ElementType::Choice => Self::Choice(ExplicitGroup::parse(node)?),
             ElementType::Sequence => Self::Sequence(ExplicitGroup::parse(node)?),
-            // ElementType::Any => Self::Any(::parse(node)?),
+            ElementType::Any => Self::Any(Any::parse(node)?),
             _ => return Err(format!("Error NestedParticle parsing. Invalid node: {:?}", node)),
         };
 

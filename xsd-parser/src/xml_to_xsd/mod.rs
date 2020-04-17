@@ -12,6 +12,7 @@ pub mod union;
 pub mod utils;
 pub mod explicit_group;
 pub mod nested_particle;
+pub mod any;
 
 use crate::xsd_model::elements::{xsd_element_type, ElementType};
 use crate::xsd_model::simple_types::any_uri::AnyUri;
