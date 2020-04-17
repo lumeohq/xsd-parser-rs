@@ -2,7 +2,6 @@ use roxmltree::Node;
 
 use crate::xml_to_xsd::XsdNode;
 use crate::xsd_model::elements::ElementType;
-use std::str::ParseBoolError;
 
 use crate::xsd_model::complex_types::explicit_group::ExplicitGroup;
 use crate::xsd_model::groups::nested_particle::NestedParticle;
@@ -29,5 +28,38 @@ impl<'a> ExplicitGroup<'a> {
         }
 
         Ok(res)
+    }
+}
+
+
+#[cfg(test)]
+mod test {
+    use crate::xsd_model::complex_types::explicit_group::ExplicitGroup;
+    use crate::xsd_model::MaxOccurs::Bounded;
+
+    #[test]
+    fn test_parse() {
+        let doc = roxmltree::Document::parse(
+            r###"
+            <xs:sequence xmlns:xs="http://www.w3.org/2001/XMLSchema" a='a' b='a' maxOccurs='5'>
+                <xs:element name="Parameters" type="xs:string" />
+                <xs:element name="Parameters2" type="xs:string" />
+                <xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            "###,
+        )
+        .unwrap();
+        let root = doc.root_element();
+        let res = ExplicitGroup::parse(root).unwrap();
+        assert!(res.annotation.is_none());
+        let np = &res.nested_particle;
+        assert_eq!(np.len(), 3);
+
+        assert_eq!(res.attributes.len(), 2);
+        assert_eq!(res.min_occurs.0, 1);
+        match &res.max_occurs {
+            Bounded(x) => assert_eq!(x.0, 5),
+            _ => unreachable!()
+        }
     }
 }
