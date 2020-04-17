@@ -13,11 +13,13 @@ pub mod utils;
 pub mod explicit_group;
 pub mod nested_particle;
 pub mod any;
+pub mod group;
 
 use crate::xsd_model::elements::{xsd_element_type, ElementType};
 use crate::xsd_model::simple_types::any_uri::AnyUri;
 use crate::xsd_model::simple_types::id::Id;
 use crate::xsd_model::simple_types::language::Language;
+use crate::xsd_model::simple_types::ncname::NCName;
 use roxmltree::Attribute;
 
 pub const XSD_NS_URI: &str = "http://www.w3.org/2001/XMLSchema";
@@ -55,3 +57,4 @@ macro_rules! impl_from_attr {
 impl_from_attr!(AnyUri);
 impl_from_attr!(Language);
 impl_from_attr!(Id);
+impl_from_attr!(NCName);
