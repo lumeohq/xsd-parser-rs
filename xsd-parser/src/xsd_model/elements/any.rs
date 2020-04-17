@@ -26,12 +26,13 @@ use crate::xsd_model::{MaxOccurs, RawAttribute};
 // Group xsd:nestedParticle
 // Type xsd:explicitGroup via reference to xsd:nestedParticle (Elements xsd:choice, xsd:sequence)
 // Type xsd:simpleExplicitGroup via reference to xsd:nestedParticle (Elements xsd:choice, xsd:sequence)
+#[derive(Debug)]
 pub struct Any<'a> {
-    annotation: Option<Annotation<'a>>,
-    attributes: Vec<RawAttribute<'a>>,
-    id: Id<'a>,
-    namespace: &'a str, //TODO: namespaceList
-    process_contents: &'a str,
-    min_occurs: NonNegativeInteger,
-    max_occurs: MaxOccurs,
+    pub annotation: Option<Annotation<'a>>,
+    pub attributes: Vec<RawAttribute<'a>>,
+    pub id: Id<'a>,
+    pub namespace: &'a str, //TODO: namespaceList
+    pub process_contents: &'a str,
+    pub min_occurs: NonNegativeInteger,
+    pub max_occurs: MaxOccurs,
 }

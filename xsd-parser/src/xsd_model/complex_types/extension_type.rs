@@ -31,11 +31,12 @@ use crate::xsd_model::RawAttribute;
 //
 // Used by
 // Element xsd:extension
+#[derive(Debug)]
 pub struct ExtensionType<'a> {
-    annotation: Option<Annotation<'a>>,
-    type_def_particle: TypeDefParticle<'a>,
-    attr_decls: AttrDecls<'a>,
-    attributes: Vec<RawAttribute<'a>>,
-    id: Id<'a>,
-    base: QName<'a>,
+    pub annotation: Option<Annotation<'a>>,
+    pub type_def_particle: TypeDefParticle<'a>,
+    pub attr_decls: AttrDecls<'a>,
+    pub attributes: Vec<RawAttribute<'a>>,
+    pub id: Id<'a>,
+    pub base: QName<'a>,
 }

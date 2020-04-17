@@ -33,11 +33,12 @@ use crate::xsd_model::{MaxOccurs, RawAttribute};
 //      xsd:openAttrs
 //          xsd:annotated
 //              xsd:allType
+#[derive(Debug)]
 pub struct AllType<'a> {
-    annotation: Option<Annotation<'a>>,
-    elements: Vec<Element<'a>>,
-    attributes: Vec<RawAttribute<'a>>,
-    id: Id<'a>,
-    min_occurs: Option<NonNegativeInteger>,
-    max_occurs: Option<MaxOccurs>,
+    pub annotation: Option<Annotation<'a>>,
+    pub elements: Vec<Element<'a>>,
+    pub attributes: Vec<RawAttribute<'a>>,
+    pub id: Id<'a>,
+    pub min_occurs: Option<NonNegativeInteger>,
+    pub max_occurs: Option<MaxOccurs>,
 }

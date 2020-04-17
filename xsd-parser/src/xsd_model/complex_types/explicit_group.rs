@@ -36,11 +36,25 @@ use crate::xsd_model::{MaxOccurs, RawAttribute};
 // xsd:openAttrs
 // xsd:annotated
 // xsd:explicitGroup
+#[derive(Debug)]
 pub struct ExplicitGroup<'a> {
-    annotation: Option<Annotation<'a>>,
-    nested_particle: Vec<NestedParticle<'a>>,
-    attributes: Vec<RawAttribute<'a>>,
-    id: Id<'a>,
-    min_occurs: NonNegativeInteger,
-    max_occurs: MaxOccurs,
+    pub annotation: Option<Annotation<'a>>,
+    pub nested_particle: Vec<NestedParticle<'a>>,
+    pub attributes: Vec<RawAttribute<'a>>,
+    pub id: Id<'a>,
+    pub min_occurs: NonNegativeInteger,
+    pub max_occurs: MaxOccurs,
+}
+
+impl<'a> Default for ExplicitGroup<'a> {
+    fn default() -> Self {
+        ExplicitGroup {
+            annotation: None,
+            nested_particle: vec![],
+            attributes: vec![],
+            id: None,
+            min_occurs: NonNegativeInteger(1),
+            max_occurs: MaxOccurs::Bounded(NonNegativeInteger(1))
+        }
+    }
 }

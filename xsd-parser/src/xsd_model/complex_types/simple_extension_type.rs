@@ -31,10 +31,11 @@ use crate::xsd_model::RawAttribute;
 // xsd:openAttrs
 // xsd:annotated
 // xsd:simpleExtensionType
+#[derive(Debug)]
 pub struct SimpleExtensionType<'a> {
-    annotation: Option<Annotation<'a>>,
-    attr_decls: AttrDecls<'a>,
-    attributes: Vec<RawAttribute<'a>>,
-    id: Id<'a>,
-    base: QName<'a>,
+    pub annotation: Option<Annotation<'a>>,
+    pub attr_decls: AttrDecls<'a>,
+    pub attributes: Vec<RawAttribute<'a>>,
+    pub id: Id<'a>,
+    pub base: QName<'a>,
 }

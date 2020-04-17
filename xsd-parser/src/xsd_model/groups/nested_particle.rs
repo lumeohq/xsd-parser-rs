@@ -21,6 +21,7 @@ use crate::xsd_model::elements::sequence::Sequence;
 // Used in
 // Type xsd:explicitGroup (Elements xsd:choice, xsd:sequence)
 // Type xsd:simpleExplicitGroup (Elements xsd:choice, xsd:sequence)
+#[derive(Debug)]
 pub enum NestedParticle<'a> {
     Element(Box<LocalElement<'a>>),
     Group(NamedGroupRef<'a>),

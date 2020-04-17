@@ -25,10 +25,11 @@ use crate::xsd_model::RawAttribute;
 //          xsd:annotated
 //              xsd:wildcard
 //                  extended by Anonymous type of element xsd:any
+#[derive(Debug)]
 pub struct Wildcard<'a> {
-    annotation: Option<Annotation<'a>>,
-    attributes: Vec<RawAttribute<'a>>,
-    id: Id<'a>,
-    namespace: &'a str, //TODO: namespaceList
-    process_contents: &'a str,
+    pub annotation: Option<Annotation<'a>>,
+    pub attributes: Vec<RawAttribute<'a>>,
+    pub id: Id<'a>,
+    pub namespace: &'a str, //TODO: namespaceList
+    pub process_contents: &'a str,
 }

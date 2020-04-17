@@ -25,6 +25,7 @@ use crate::xsd_model::RawAttribute;
 //      xsd:openAttrs
 //          xsd:annotated
 //              xsd:attributeGroupRef
+#[derive(Debug)]
 pub struct AttributeGroupRef<'a> {
     pub annotation: Option<Annotation<'a>>,
     pub attributes: Vec<RawAttribute<'a>>,

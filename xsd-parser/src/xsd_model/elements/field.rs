@@ -21,9 +21,10 @@ use crate::xsd_model::{RawAttribute, XPath};
 // Used in
 // Anonymous type of element xsd:keyref via extension of xsd:keybase
 // Type xsd:keybase (Elements xsd:unique, xsd:key)
+#[derive(Debug, Default)]
 pub struct Field<'a> {
-    annotation: Option<Annotation<'a>>,
-    attributes: Vec<RawAttribute<'a>>,
-    id: Id<'a>,
-    xpath: XPath<'a>,
+    pub annotation: Option<Annotation<'a>>,
+    pub attributes: Vec<RawAttribute<'a>>,
+    pub id: Id<'a>,
+    pub xpath: XPath<'a>,
 }

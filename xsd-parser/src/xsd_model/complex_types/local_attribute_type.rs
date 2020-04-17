@@ -35,20 +35,22 @@ use crate::xsd_model::RawAttribute;
 //      xsd:openAttrs
 //          xsd:annotated
 //              xsd:localAttributeType
+#[derive(Debug)]
 pub struct LocalAttributeType<'a> {
-    annotation: Option<Annotation<'a>>,
-    simple_type: Option<LocalSimpleType<'a>>,
-    attributes: Vec<RawAttribute<'a>>,
-    id: Id<'a>,
-    name: NCName<'a>,
-    ref_: Option<QName<'a>>,
-    type_: Option<QName<'a>>,
-    use_: UseType,
-    default: &'a str,
-    fixed: &'a str,
-    form: Option<FormChoice>,
+    pub annotation: Option<Annotation<'a>>,
+    pub simple_type: Option<LocalSimpleType<'a>>,
+    pub attributes: Vec<RawAttribute<'a>>,
+    pub id: Id<'a>,
+    pub name: NCName<'a>,
+    pub ref_: Option<QName<'a>>,
+    pub type_: Option<QName<'a>>,
+    pub use_: UseType,
+    pub default: &'a str,
+    pub fixed: &'a str,
+    pub form: Option<FormChoice>,
 }
 
+#[derive(Debug)]
 pub enum UseType {
     Optional,
     Prohibited,

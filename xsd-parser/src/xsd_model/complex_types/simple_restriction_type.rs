@@ -44,8 +44,9 @@ use crate::xsd_model::groups::simple_restriction_model::SimpleRestrictionModel;
 //      xsd:openAttrs
 //          xsd:annotated
 //              xsd:simpleRestrictionType
+#[derive(Debug)]
 pub struct SimpleRestrictionType<'a> {
-    annotation: Option<Annotation<'a>>,
-    model: SimpleRestrictionModel<'a>,
-    attr_decls: AttrDecls<'a>,
+    pub annotation: Option<Annotation<'a>>,
+    pub model: SimpleRestrictionModel<'a>,
+    pub attr_decls: AttrDecls<'a>,
 }

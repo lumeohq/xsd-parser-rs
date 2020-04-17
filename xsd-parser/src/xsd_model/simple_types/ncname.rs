@@ -33,4 +33,5 @@
 //                                  used in list xsd:IDREFS
 //                              restricted by xsd:ENTITY
 //                                  used in list xsd:ENTITIES
+#[derive(Debug)]
 pub struct NCName<'a>(&'a str);

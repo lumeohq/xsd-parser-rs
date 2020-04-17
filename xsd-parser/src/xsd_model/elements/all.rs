@@ -27,6 +27,7 @@ use crate::xsd_model::RawAttribute;
 //
 // Used in
 // Type xsd:namedGroup (Element xsd:group)
+#[derive(Debug)]
 pub struct All<'a> {
     annotation: Option<Annotation<'a>>,
     elements: Vec<Element<'a>>,

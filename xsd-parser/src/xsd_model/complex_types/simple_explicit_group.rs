@@ -32,9 +32,10 @@ use crate::xsd_model::RawAttribute;
 //      xsd:openAttrs
 //          xsd:annotated
 //              xsd:simpleExplicitGroup
+#[derive(Debug)]
 pub struct SimpleExplicitGroup<'a> {
-    annotation: Option<Annotation<'a>>,
-    nested_particle: Vec<NestedParticle<'a>>,
-    attributes: Vec<RawAttribute<'a>>,
-    id: Id<'a>,
+    pub annotation: Option<Annotation<'a>>,
+    pub nested_particle: Vec<NestedParticle<'a>>,
+    pub attributes: Vec<RawAttribute<'a>>,
+    pub id: Id<'a>,
 }

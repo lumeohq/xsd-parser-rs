@@ -32,12 +32,13 @@ use crate::xsd_model::RawAttribute;
 // Type xsd:localElement via reference to xsd:elementModel (Element xsd:element)
 // Type xsd:narrowMaxMin via reference to xsd:elementModel (Element xsd:element)
 // Type xsd:topLevelElement via reference to xsd:elementModel (Element xsd:element)
+#[derive(Debug)]
 pub struct KeyRef<'a> {
-    annotation: Option<Annotation<'a>>,
-    selector: Selector<'a>,
-    fields: Vec<Field<'a>>,
-    attributes: Vec<RawAttribute<'a>>,
-    id: Id<'a>,
-    name: NCName<'a>,
-    refer: QName<'a>,
+    pub annotation: Option<Annotation<'a>>,
+    pub selector: Selector<'a>,
+    pub fields: Vec<Field<'a>>,
+    pub attributes: Vec<RawAttribute<'a>>,
+    pub id: Id<'a>,
+    pub name: NCName<'a>,
+    pub refer: QName<'a>,
 }

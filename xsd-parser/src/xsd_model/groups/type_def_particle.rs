@@ -21,6 +21,7 @@ use crate::xsd_model::elements::sequence::Sequence;
 // Group xsd:complexTypeModel
 // Type xsd:complexRestrictionType (Element xsd:restriction)
 // Type xsd:extensionType (Element xsd:extension)
+#[derive(Debug)]
 pub enum TypeDefParticle<'a> {
     Group(Group<'a>),
     All(AllType<'a>),

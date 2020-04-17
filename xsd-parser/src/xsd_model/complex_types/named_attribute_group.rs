@@ -31,6 +31,7 @@ use crate::xsd_model::RawAttribute;
 //      xsd:openAttrs
 //          xsd:annotated
 //              xsd:namedAttributeGroup
+#[derive(Debug)]
 pub struct NamedAttributeGroup<'a> {
     pub annotation: Option<Annotation<'a>>,
     pub content: AttrDecls<'a>,

@@ -51,20 +51,21 @@ use crate::xsd_model::{MaxOccurs, RawAttribute};
 //          xsd:annotated
 //              xsd:localElement
 //                  xsd:narrowMaxMin
+#[derive(Debug)]
 pub struct NarrowMaxMin<'a> {
-    annotation: Option<Annotation<'a>>,
-    model: ElementModel<'a>,
-    identity_constraint: IdentityConstraint<'a>,
-    id: Id<'a>,
-    name: Option<NCName<'a>>,
-    ref_: Option<QName<'a>>,
-    type_: Option<QName<'a>>,
-    default: Option<&'a str>,
-    fixed: Option<&'a str>,
-    nillable: bool,
-    block: Option<BlockSet>,
-    form: Option<FormChoice>,
-    min_occurs: NonNegativeInteger, //Anonymous in doc, probably mistake
-    max_occurs: MaxOccurs,
-    attributes: Vec<RawAttribute<'a>>,
+    pub annotation: Option<Annotation<'a>>,
+    pub model: ElementModel<'a>,
+    pub identity_constraint: IdentityConstraint<'a>,
+    pub id: Id<'a>,
+    pub name: Option<NCName<'a>>,
+    pub ref_: Option<QName<'a>>,
+    pub type_: Option<QName<'a>>,
+    pub default: Option<&'a str>,
+    pub fixed: Option<&'a str>,
+    pub nillable: bool,
+    pub block: Option<BlockSet>,
+    pub form: Option<FormChoice>,
+    pub min_occurs: NonNegativeInteger, //Anonymous in doc, probably mistake
+    pub max_occurs: MaxOccurs,
+    pub attributes: Vec<RawAttribute<'a>>,
 }

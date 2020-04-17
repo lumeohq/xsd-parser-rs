@@ -33,11 +33,12 @@ use crate::xsd_model::RawAttribute;
 // xsd:annotated
 // xsd:keybase
 // extended by Anonymous type of element xsd:keyref
+#[derive(Debug)]
 pub struct KeyBase<'a> {
-    annotation: Option<Annotation<'a>>,
-    selector: Selector<'a>,
-    fields: Vec<Field<'a>>,
-    attributes: Vec<RawAttribute<'a>>,
-    id: Id<'a>,
-    name: NCName<'a>,
+    pub annotation: Option<Annotation<'a>>,
+    pub selector: Selector<'a>,
+    pub fields: Vec<Field<'a>>,
+    pub attributes: Vec<RawAttribute<'a>>,
+    pub id: Id<'a>,
+    pub name: NCName<'a>,
 }

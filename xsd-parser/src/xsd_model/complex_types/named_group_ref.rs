@@ -28,11 +28,12 @@ use crate::xsd_model::{MaxOccurs, RawAttribute};
 //      xsd:openAttrs
 //          xsd:annotated
 //              xsd:namedGroupRef
+#[derive(Debug)]
 pub struct NamedGroupRef<'a> {
-    annotation: Option<Annotation<'a>>,
-    attributes: Vec<RawAttribute<'a>>,
-    id: Id<'a>,
-    ref_: QName<'a>,
-    min_occurs: NonNegativeInteger,
-    max_occurs: MaxOccurs,
+    pub annotation: Option<Annotation<'a>>,
+    pub attributes: Vec<RawAttribute<'a>>,
+    pub id: Id<'a>,
+    pub ref_: QName<'a>,
+    pub min_occurs: NonNegativeInteger,
+    pub max_occurs: MaxOccurs,
 }

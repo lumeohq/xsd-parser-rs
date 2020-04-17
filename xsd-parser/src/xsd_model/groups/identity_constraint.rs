@@ -17,6 +17,7 @@ use crate::xsd_model::elements::unique::Unique;
 //
 // Used in
 // Group xsd:elementModel
+#[derive(Debug)]
 pub enum IdentityConstraint<'a> {
     Unique(Unique<'a>),
     Key(Key<'a>),

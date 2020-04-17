@@ -34,8 +34,9 @@ use crate::xsd_model::groups::type_def_particle::TypeDefParticle;
 //      xsd:openAttrs
 //          xsd:annotated
 //              xsd:complexRestrictionType
+#[derive(Debug)]
 pub struct ComplexRestrictionType<'a> {
-    annotation: Option<Annotation<'a>>,
-    type_def_particle: TypeDefParticle<'a>,
-    attr_decls: AttrDecls<'a>,
+    pub annotation: Option<Annotation<'a>>,
+    pub type_def_particle: TypeDefParticle<'a>,
+    pub attr_decls: AttrDecls<'a>,
 }

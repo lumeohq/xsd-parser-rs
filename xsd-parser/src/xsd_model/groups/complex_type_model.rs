@@ -28,6 +28,7 @@ use crate::xsd_model::groups::type_def_particle::TypeDefParticle;
 // Type xsd:complexType
 // Type xsd:localComplexType (Element xsd:complexType)
 // Type xsd:topLevelComplexType (Element xsd:complexType)
+#[derive(Debug)]
 pub enum ComplexTypeModel<'a> {
     SimpleContent(SimpleContent<'a>),
     ComplexContent(ComplexContent<'a>),

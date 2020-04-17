@@ -39,14 +39,20 @@ use std::str::FromStr;
 #[derive(Default, Debug)]
 pub struct NonNegativeInteger(pub usize);
 
+impl NonNegativeInteger{
+    pub fn parse(s: &str) -> Result<Self, String> {
+        let res = s
+            .parse::<usize>()
+            .map_err(|er| format!("parse xsd:nonNegativeInteger error: {}", er.to_string()))?;
+        Ok(Self(res))
+    }
+}
+
 impl FromStr for NonNegativeInteger {
     type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let res = s
-            .parse::<usize>()
-            .map_err(|er| format!("parse xsd:positiveInteger error: {}", er.to_string()))?;
-        Ok(Self(res))
+        Self::parse(s)
     }
 }
 

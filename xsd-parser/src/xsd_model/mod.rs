@@ -46,15 +46,31 @@ pub use elements::union::*;
 pub use elements::unique::*;
 pub use elements::white_space::*;
 
-pub const XSD_NS_URI: &str = "http://www.w3.org/2001/XMLSchema";
+use crate::xsd_model::simple_types::non_negative_integer::NonNegativeInteger;
+use std::str::FromStr;
 
 pub type RawAttribute<'a> = roxmltree::Attribute<'a>;
 pub type RawElement<'a> = roxmltree::Node<'a, 'a>;
 pub type Namespace<'a> = roxmltree::Namespace<'a>;
 
+#[derive(Debug)]
 pub enum MaxOccurs {
-    Bounded(usize),
+    Bounded(NonNegativeInteger),
     Unbounded,
+}
+
+
+impl FromStr for MaxOccurs {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Ok(
+            match s {
+                "unbounded" => Self::Unbounded,
+                _ => Self::Bounded(s.parse()?)
+            }
+        )
+    }
 }
 
 pub type XPath<'a> = &'a str;

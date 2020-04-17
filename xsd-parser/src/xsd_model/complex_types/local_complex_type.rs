@@ -38,10 +38,11 @@ use crate::xsd_model::RawAttribute;
 //      xsd:openAttrs
 //          xsd:annotated
 //              xsd:localComplexType
+#[derive(Debug)]
 pub struct LocalComplexType<'a> {
-    annotation: Option<Annotation<'a>>,
-    model: Box<ComplexTypeModel<'a>>,
-    id: Id<'a>,
-    mixed: bool,
-    attributes: Vec<RawAttribute<'a>>,
+    pub annotation: Option<Annotation<'a>>,
+    pub model: Box<ComplexTypeModel<'a>>,
+    pub id: Id<'a>,
+    pub mixed: bool,
+    pub attributes: Vec<RawAttribute<'a>>,
 }

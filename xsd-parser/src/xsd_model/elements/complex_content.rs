@@ -29,14 +29,16 @@ use crate::xsd_model::RawAttribute;
 // Type xsd:complexType via reference to xsd:complexTypeModel
 // Type xsd:localComplexType via reference to xsd:complexTypeModel (Element xsd:complexType)
 // Type xsd:topLevelComplexType via reference to xsd:complexTypeModel (Element xsd:complexType)
+#[derive(Debug)]
 pub struct ComplexContent<'a> {
-    annotation: Option<Annotation<'a>>,
-    content: ComplexContentChoice<'a>,
-    attributes: Vec<RawAttribute<'a>>,
-    id: Id<'a>,
-    mixed: bool,
+    pub annotation: Option<Annotation<'a>>,
+    pub content: ComplexContentChoice<'a>,
+    pub attributes: Vec<RawAttribute<'a>>,
+    pub id: Id<'a>,
+    pub mixed: bool,
 }
 
+#[derive(Debug)]
 pub enum ComplexContentChoice<'a> {
     Restriction(Box<ComplexRestriction<'a>>),
     Extension(Box<Extension<'a>>),

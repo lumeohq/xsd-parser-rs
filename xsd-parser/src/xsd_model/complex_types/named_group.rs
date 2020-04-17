@@ -33,14 +33,16 @@ use crate::xsd_model::RawAttribute;
 //      xsd:openAttrs
 //          xsd:annotated
 //              xsd:namedGroup
+#[derive(Debug)]
 pub struct NamedGroup<'a> {
-    annotation: Option<Annotation<'a>>,
-    content_choice: ContentChoice<'a>,
-    attributes: Vec<RawAttribute<'a>>,
-    id: Id<'a>,
-    name: NCName<'a>,
+    pub annotation: Option<Annotation<'a>>,
+    pub content_choice: ContentChoice<'a>,
+    pub attributes: Vec<RawAttribute<'a>>,
+    pub id: Id<'a>,
+    pub name: NCName<'a>,
 }
 
+#[derive(Debug)]
 pub enum ContentChoice<'a> {
     All(All<'a>),
     Choice(SimpleChoice<'a>),
