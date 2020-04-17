@@ -33,11 +33,12 @@ use crate::xsd_model::RawAttribute;
 //          xsd:annotated
 //              xsd:simpleType
 //                  xsd:topLevelSimpleType
+#[derive(Debug)]
 pub struct TopLevelSimpleType<'a> {
-    annotation: Option<Annotation<'a>>,
-    content_choice: SimpleDerivation<'a>,
-    id: Id<'a>,
-    final_: Option<SimpleDerivationSet>,
-    name: NCName<'a>,
-    attributes: Vec<RawAttribute<'a>>,
+    pub annotation: Option<Annotation<'a>>,
+    pub content_choice: SimpleDerivation<'a>,
+    pub id: Id<'a>,
+    pub final_: Option<SimpleDerivationSet>,
+    pub name: NCName<'a>,
+    pub attributes: Vec<RawAttribute<'a>>,
 }

@@ -59,17 +59,14 @@ pub enum MaxOccurs {
     Unbounded,
 }
 
-
 impl FromStr for MaxOccurs {
     type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(
-            match s {
-                "unbounded" => Self::Unbounded,
-                _ => Self::Bounded(s.parse()?)
-            }
-        )
+        Ok(match s {
+            "unbounded" => Self::Unbounded,
+            _ => Self::Bounded(s.parse()?),
+        })
     }
 }
 

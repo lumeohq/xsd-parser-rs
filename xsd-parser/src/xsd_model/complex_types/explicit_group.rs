@@ -54,7 +54,7 @@ impl<'a> Default for ExplicitGroup<'a> {
             attributes: vec![],
             id: None,
             min_occurs: NonNegativeInteger(1),
-            max_occurs: MaxOccurs::Bounded(NonNegativeInteger(1))
+            max_occurs: MaxOccurs::Bounded(NonNegativeInteger(1)),
         }
     }
 }

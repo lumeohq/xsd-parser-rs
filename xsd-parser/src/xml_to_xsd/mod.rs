@@ -1,19 +1,19 @@
 pub mod annotation;
+pub mod any;
 pub mod app_info;
 pub mod documentation;
+pub mod explicit_group;
 pub mod facets;
+pub mod group;
 pub mod import;
 pub mod include;
 pub mod list;
+pub mod nested_particle;
 pub mod restriction;
 pub mod schema;
 pub mod simple_type;
 pub mod union;
 pub mod utils;
-pub mod explicit_group;
-pub mod nested_particle;
-pub mod any;
-pub mod group;
 
 use crate::xsd_model::elements::{xsd_element_type, ElementType};
 use crate::xsd_model::simple_types::any_uri::AnyUri;
@@ -42,7 +42,6 @@ impl XsdNode for roxmltree::Node<'_, '_> {
         xsd_element_type(self.tag_name().name())
     }
 }
-
 
 macro_rules! impl_from_attr {
     ($type_name:ident) => {

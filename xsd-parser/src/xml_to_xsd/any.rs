@@ -1,6 +1,6 @@
+use crate::xml_to_xsd::utils::annotation_only;
 use crate::xsd_model::Any;
 use roxmltree::Node;
-use crate::xml_to_xsd::utils::annotation_only;
 
 impl<'a> Any<'a> {
     pub fn parse(node: Node<'a, '_>) -> Result<Self, String> {

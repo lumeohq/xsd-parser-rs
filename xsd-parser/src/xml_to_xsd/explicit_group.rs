@@ -11,7 +11,7 @@ impl<'a> ExplicitGroup<'a> {
     pub fn parse(node: Node<'a, '_>) -> Result<Self, String> {
         let mut res = Self::default();
 
-        for ch in node.children().filter(|n| n.is_element()){
+        for ch in node.children().filter(|n| n.is_element()) {
             match ch.xsd_type()? {
                 ElementType::Annotation => res.annotation = Some(Annotation::parse(ch)?),
                 _ => res.nested_particle.push(NestedParticle::parse(ch)?),
@@ -30,7 +30,6 @@ impl<'a> ExplicitGroup<'a> {
         Ok(res)
     }
 }
-
 
 #[cfg(test)]
 mod test {
@@ -59,7 +58,7 @@ mod test {
         assert_eq!(res.min_occurs.0, 1);
         match &res.max_occurs {
             Bounded(x) => assert_eq!(x.0, 5),
-            _ => unreachable!()
+            _ => unreachable!(),
         }
     }
 }

@@ -39,14 +39,14 @@ pub struct Any<'a> {
 
 impl<'a> Default for Any<'a> {
     fn default() -> Self {
-        Any{
+        Any {
             annotation: None,
             attributes: vec![],
             id: None,
             namespace: "##any",
             process_contents: "strict",
             min_occurs: NonNegativeInteger(1),
-            max_occurs: MaxOccurs::Bounded(NonNegativeInteger(1))
+            max_occurs: MaxOccurs::Bounded(NonNegativeInteger(1)),
         }
     }
 }

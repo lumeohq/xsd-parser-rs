@@ -39,7 +39,7 @@ use std::str::FromStr;
 #[derive(Default, Debug, PartialEq)]
 pub struct NonNegativeInteger(pub usize);
 
-impl NonNegativeInteger{
+impl NonNegativeInteger {
     pub fn parse(s: &str) -> Result<Self, String> {
         let res = s
             .parse::<usize>()

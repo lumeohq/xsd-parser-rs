@@ -1,6 +1,6 @@
+use crate::xml_to_xsd::utils::annotation_only;
 use crate::xsd_model::Import;
 use roxmltree::Node;
-use crate::xml_to_xsd::utils::annotation_only;
 
 impl<'a> Import<'a> {
     pub fn parse(node: Node<'a, '_>) -> Result<Import<'a>, String> {

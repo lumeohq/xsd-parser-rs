@@ -1,5 +1,6 @@
 use roxmltree::Node;
 
+use crate::xml_to_xsd::utils::annotation_only;
 use crate::xml_to_xsd::XsdNode;
 use crate::xsd_model::complex_types::facet::Facet;
 use crate::xsd_model::complex_types::no_fixed_facet::NoFixedFacet;
@@ -8,7 +9,6 @@ use crate::xsd_model::elements::ElementType;
 use crate::xsd_model::groups::facets::Facets;
 use crate::xsd_model::{Pattern, TotalDigits, WhiteSpace};
 use std::str::ParseBoolError;
-use crate::xml_to_xsd::utils::annotation_only;
 
 impl<'a> Facet<'a> {
     pub fn parse(node: Node<'a, '_>) -> Result<Self, String> {
