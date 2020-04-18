@@ -44,6 +44,78 @@ mod tests {
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
 
+    #[test]
+    fn integer_parse_test() {
+        assert_eq!(
+            Integer::from_str("12678967543233"),
+            Ok(Integer {
+                value: BigInt::from_str("12678967543233").unwrap()
+            })
+        );
+
+        assert_eq!(
+            Integer::from_str("+100000"),
+            Ok(Integer {
+                value: 100000.to_bigint().unwrap()
+            })
+        );
+
+        assert_eq!(
+            Integer::from_str("0"),
+            Ok(Integer {
+                value: 0.to_bigint().unwrap()
+            })
+        );
+
+        assert_eq!(
+            Integer::from_str("-1"),
+            Ok(Integer {
+                value: -1.to_bigint().unwrap()
+            })
+        );
+
+        // Invalid values.
+        assert!(Integer::from_str("A").is_err());
+        assert!(Integer::from_str("--1").is_err());
+        assert!(Integer::from_str("++1").is_err());
+        assert!(Integer::from_str("-+1").is_err());
+    }
+
+    #[test]
+    fn integer_display_test() {
+        assert_eq!(
+            Integer {
+                value: BigInt::from_str("12678967543233").unwrap()
+            }
+            .to_string(),
+            "12678967543233"
+        );
+
+        assert_eq!(
+            Integer {
+                value: 100000.to_bigint().unwrap()
+            }
+            .to_string(),
+            "100000"
+        );
+
+        assert_eq!(
+            Integer {
+                value: 0.to_bigint().unwrap()
+            }
+            .to_string(),
+            "0"
+        );
+
+        assert_eq!(
+            Integer {
+                value: -1.to_bigint().unwrap()
+            }
+            .to_string(),
+            "-1"
+        );
+    }
+
     #[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]
     #[yaserde(prefix = "t", namespace = "t: test")]
     pub struct IntegerPair {
