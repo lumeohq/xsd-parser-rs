@@ -10,5 +10,7 @@ pub mod parser;
 mod tests;
 #[allow(dead_code)]
 pub mod xml_to_xsd;
+pub mod xsd_to_abstract_code;
 #[allow(dead_code)]
 pub mod xsd_model;
+pub mod abstract_code_model;
