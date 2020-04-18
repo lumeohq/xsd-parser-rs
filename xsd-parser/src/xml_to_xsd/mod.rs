@@ -16,6 +16,8 @@ pub mod schema_top;
 pub mod simple_type;
 pub mod union;
 pub mod utils;
+pub mod complex_type;
+pub mod type_def_particle;
 
 use crate::xsd_model::elements::{xsd_element_type, ElementType};
 use crate::xsd_model::simple_types::any_uri::AnyUri;

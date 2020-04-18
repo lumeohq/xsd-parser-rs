@@ -19,12 +19,36 @@
 // Used by
 // Attribute block
 // Attribute final
+#[derive(Debug)]
 pub enum DerivationSet {
     All,
     List(Vec<DerivationSubset>),
 }
 
+impl DerivationSet {
+    pub fn parse(s: &str) -> Result<Self, String> {
+        Ok(match s {
+            "#all" => Self::All,
+            _ => {
+                let s: Result<Vec<_>, String> = s.split(' ').map(DerivationSubset::parse).collect();
+                Self::List(s?)
+            }
+        })
+    }
+}
+
+#[derive(Debug)]
 pub enum DerivationSubset {
     Extension,
     Restriction,
+}
+
+impl DerivationSubset {
+    pub fn parse(s: &str) -> Result<Self, String> {
+        Ok(match s {
+            "extension" => Self::Extension,
+            "restriction" => Self::Restriction,
+            _ => return Err(format!("Invalid value for xsd:derivationSet type: {}", s)),
+        })
+    }
 }

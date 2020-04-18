@@ -45,6 +45,7 @@ use crate::xsd_model::RawAttribute;
 //      xsd:openAttrs
 //          xsd:annotated
 //              xsd:topLevelComplexType
+#[derive(Debug)]
 pub struct TopLevelComplexType<'a> {
     annotation: Option<Annotation<'a>>,
     model: ComplexTypeModel<'a>,
