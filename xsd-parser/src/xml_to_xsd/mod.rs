@@ -1,8 +1,11 @@
 pub mod annotation;
 pub mod any;
+pub mod any_attribute;
 pub mod app_info;
+pub mod attr_decls;
 pub mod attribute;
 pub mod complex_type;
+pub mod complex_type_model;
 pub mod documentation;
 pub mod explicit_group;
 pub mod facets;

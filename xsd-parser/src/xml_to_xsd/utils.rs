@@ -21,3 +21,8 @@ pub fn annotation_only<'a>(
     }
     Ok(annotation)
 }
+
+pub fn annotation_first<'a>(node: Node<'a, '_>) -> Option<Annotation<'a>> {
+    node.first_element_child()
+        .and_then(|n| Annotation::parse(n).ok())
+}
