@@ -1,6 +1,9 @@
 use crate::xsd_model::elements::annotation::Annotation;
 use crate::xsd_model::groups::attr_decls::AttrDecls;
 use crate::xsd_model::groups::simple_restriction_model::SimpleRestrictionModel;
+use crate::xsd_model::simple_types::qname::QName;
+use crate::xsd_model::simple_types::Id;
+use crate::xsd_model::RawAttribute;
 
 // xsd:simpleRestrictionType
 // Complex type information
@@ -44,9 +47,12 @@ use crate::xsd_model::groups::simple_restriction_model::SimpleRestrictionModel;
 //      xsd:openAttrs
 //          xsd:annotated
 //              xsd:simpleRestrictionType
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct SimpleRestrictionType<'a> {
     pub annotation: Option<Annotation<'a>>,
     pub model: SimpleRestrictionModel<'a>,
     pub attr_decls: AttrDecls<'a>,
+    pub id: Id<'a>,
+    pub base: QName<'a>,
+    pub attributes: Vec<RawAttribute<'a>>,
 }

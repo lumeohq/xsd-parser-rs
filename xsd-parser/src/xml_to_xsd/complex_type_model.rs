@@ -1,11 +1,10 @@
 use crate::xml_to_xsd::{GroupErr, XsdNode};
+use crate::xsd_model::elements::ElementType;
 use crate::xsd_model::groups::attr_decls::AttrDecls;
 use crate::xsd_model::groups::complex_type_model::ComplexTypeModel;
 use crate::xsd_model::groups::type_def_particle::TypeDefParticle;
-use roxmltree::Node;
-use crate::xml_to_xsd::utils::parse_attr_decls;
-use crate::xsd_model::elements::ElementType;
 use crate::xsd_model::SimpleContent;
+use roxmltree::Node;
 
 impl<'a> ComplexTypeModel<'a> {
     pub fn parse(node: Node<'a, '_>) -> Result<Self, String> {
@@ -21,7 +20,7 @@ impl<'a> ComplexTypeModel<'a> {
             // }
             _ => ComplexTypeModel::Content(
                 TypeDefParticle::parse(node).ok(),
-                parse_attr_decls(node)?,
+                AttrDecls::parse(node)?,
             ),
         })
     }

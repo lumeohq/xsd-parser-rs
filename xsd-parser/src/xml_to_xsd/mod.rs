@@ -19,6 +19,8 @@ pub mod schema;
 pub mod schema_top;
 pub mod simple_content;
 pub mod simple_extension;
+pub mod simple_restriction;
+pub mod simple_restriction_model;
 pub mod simple_type;
 pub mod type_def_particle;
 pub mod union;
@@ -29,7 +31,7 @@ use crate::xsd_model::simple_types::any_uri::AnyUri;
 use crate::xsd_model::simple_types::id::Id;
 use crate::xsd_model::simple_types::language::Language;
 use crate::xsd_model::simple_types::ncname::NCName;
-use roxmltree::{Attribute, Node};
+use roxmltree::{Attribute, Children, Node};
 use std::str::FromStr;
 
 pub const XSD_NS_URI: &str = "http://www.w3.org/2001/XMLSchema";
@@ -68,13 +70,62 @@ impl_from_attr!(Language);
 impl_from_attr!(Id);
 impl_from_attr!(NCName);
 
-pub enum GroupErr {
+pub enum GroupErr<'a> {
     ElementParsing(String),
-    InvalidNode(String),
+    InvalidNode(Node<'a, 'a>),
 }
 
-impl GroupErr {
-    pub fn element(s: &str, node: &Node) -> Self {
-        GroupErr::InvalidNode(format!("Invalid node for xsd:{} group: {:?}", s, node))
+impl From<String> for GroupErr<'_> {
+    fn from(s: String) -> Self {
+        GroupErr::ElementParsing(s)
+    }
+}
+
+pub trait GroupResultConvert<T> {
+    fn into(&self) -> Result<T, String>;
+}
+
+#[derive(Clone)]
+pub struct ElementChildren<'a, 'input: 'a> {
+    front: Option<Node<'a, 'input>>,
+    back: Option<Node<'a, 'input>>,
+}
+
+impl<'a, 'input: 'a> Iterator for ElementChildren<'a, 'input> {
+    type Item = Node<'a, 'input>;
+
+    #[inline]
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.front == self.back {
+            let node = self.front.take();
+            self.back = None;
+            node
+        } else {
+            let node = self.front.take();
+            self.front = node.as_ref().and_then(Node::next_sibling_element);
+            node
+        }
+    }
+}
+
+impl<'a, 'input: 'a> ElementChildren<'a, 'input> {
+    #[inline]
+    fn prev(&mut self) -> Option<Node<'a, 'input>> {
+        let node = self.front.take();
+        self.front = node.as_ref().and_then(Node::prev_sibling_element);
+        node
+    }
+}
+
+pub trait ElementChildren_<'a, 'input: 'a> {
+    fn element_children(&self) -> ElementChildren<'a, 'input>;
+}
+
+impl<'a, 'input: 'a> ElementChildren_<'a, 'input> for Node<'a, 'input> {
+    fn element_children(&self) -> ElementChildren<'a, 'input> {
+        ElementChildren {
+            front: self.first_element_child(),
+            back: self.last_element_child(),
+        }
     }
 }

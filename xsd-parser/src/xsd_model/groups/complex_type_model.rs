@@ -32,5 +32,5 @@ use crate::xsd_model::groups::type_def_particle::TypeDefParticle;
 pub enum ComplexTypeModel<'a> {
     SimpleContent(SimpleContent<'a>),
     ComplexContent(ComplexContent<'a>),
-    Content(Option<TypeDefParticle<'a>>, Vec<AttrDecls<'a>>),
+    Content(Option<TypeDefParticle<'a>>, AttrDecls<'a>),
 }

@@ -1,4 +1,5 @@
-use crate::xml_to_xsd::utils::{annotation_first, parse_attr_decls};
+use crate::xml_to_xsd::utils::annotation_first;
+use crate::xml_to_xsd::GroupErr;
 use crate::xsd_model::groups::attr_decls::AttrDecls;
 use crate::xsd_model::simple_types::qname::QName;
 use crate::xsd_model::SimpleExtension;
@@ -8,7 +9,7 @@ impl<'a> SimpleExtension<'a> {
     pub fn parse(node: Node<'a, '_>) -> Result<Self, String> {
         let mut res = Self::default();
         res.annotation = annotation_first(node);
-        res.attr_decls = parse_attr_decls(node)?;
+        res.attr_decls = AttrDecls::parse(node)?;
 
         let mut base = None;
 

@@ -1,5 +1,5 @@
+use crate::xml_to_xsd::utils::annotation_first;
 use crate::xml_to_xsd::XsdNode;
-use crate::xsd_model::elements::ElementType;
 use crate::xsd_model::groups::facets::Facets;
 use crate::xsd_model::groups::simple_restriction_model::SimpleRestrictionModel;
 use crate::xsd_model::simple_types::qname::QName;
@@ -11,12 +11,7 @@ use roxmltree::Node;
 impl<'a> Restriction<'a> {
     pub fn parse(node: Node<'a, '_>) -> Result<Self, String> {
         let mut res = Self::default();
-        for ch in node.children().filter(|n| n.is_element()) {
-            if let ElementType::Annotation = ch.xsd_type()? {
-                res.annotation = Some(Annotation::parse(ch)?)
-            }
-        }
-
+        res.annotation = annotation_first(node);
         res.model = SimpleRestrictionModel::parse(node)?;
 
         for attr in node.attributes() {
@@ -26,24 +21,6 @@ impl<'a> Restriction<'a> {
                 _ => res.attributes.push(attr.clone()),
             };
         }
-        Ok(res)
-    }
-}
-
-impl<'a> SimpleRestrictionModel<'a> {
-    pub fn parse(node: Node<'a, '_>) -> Result<Self, String> {
-        use ElementType::*;
-        let mut res = Self::default();
-        for ch in node.children().filter(|n| n.is_element()) {
-            match ch.xsd_type()? {
-                Annotation => {}
-                SimpleType => res.simple_type = Some(LocalSimpleType::parse(ch)?),
-                _ => res.facets.push(Facets::parse(ch).map_err(|_| {
-                    format!("Invalid child node for xsd:restriction content: {:?}", node)
-                })?),
-            };
-        }
-
         Ok(res)
     }
 }

@@ -1,7 +1,7 @@
 use roxmltree::Node;
 
 use crate::xml_to_xsd::utils::annotation_only;
-use crate::xml_to_xsd::XsdNode;
+use crate::xml_to_xsd::{GroupErr, XsdNode};
 use crate::xsd_model::complex_types::facet::Facet;
 use crate::xsd_model::complex_types::no_fixed_facet::NoFixedFacet;
 use crate::xsd_model::complex_types::num_facet::NumFacet;
@@ -149,23 +149,21 @@ impl<'a> Pattern<'a> {
 }
 
 impl<'a> Facets<'a> {
-    pub fn parse(node: Node<'a, '_>) -> Result<Self, String> {
-        let res = match node.xsd_type()? {
-            ElementType::MinExclusive => Facets::MinExclusive(Facet::parse(node)?),
-            ElementType::MinInclusive => Facets::MinInclusive(Facet::parse(node)?),
-            ElementType::MaxExclusive => Facets::MaxExclusive(Facet::parse(node)?),
-            ElementType::MaxInclusive => Facets::MaxInclusive(Facet::parse(node)?),
-            ElementType::TotalDigits => Facets::TotalDigits(TotalDigits::parse(node)?),
-            ElementType::FractionDigits => Facets::FractionDigits(NumFacet::parse(node)?),
-            ElementType::Length => Facets::Length(NumFacet::parse(node)?),
-            ElementType::MinLength => Facets::MinLength(NumFacet::parse(node)?),
-            ElementType::MaxLength => Facets::MaxLength(NumFacet::parse(node)?),
-            ElementType::Enumeration => Facets::Enumeration(NoFixedFacet::parse(node)?),
-            ElementType::WhiteSpace => Facets::WhiteSpace(WhiteSpace::parse(node)?),
-            ElementType::Pattern => Facets::Pattern(Pattern::parse(node)?),
-            _ => return Err(format!("Error facet parsing. Invalid node: {:?}", node)),
-        };
-
-        Ok(res)
+    pub fn parse(node: Node<'a, '_>, element_type: ElementType) -> Result<Self, GroupErr<'a>> {
+        Ok(match element_type {
+            ElementType::MinExclusive => Self::MinExclusive(Facet::parse(node)?),
+            ElementType::MinInclusive => Self::MinInclusive(Facet::parse(node)?),
+            ElementType::MaxExclusive => Self::MaxExclusive(Facet::parse(node)?),
+            ElementType::MaxInclusive => Self::MaxInclusive(Facet::parse(node)?),
+            ElementType::TotalDigits => Self::TotalDigits(TotalDigits::parse(node)?),
+            ElementType::FractionDigits => Self::FractionDigits(NumFacet::parse(node)?),
+            ElementType::Length => Self::Length(NumFacet::parse(node)?),
+            ElementType::MinLength => Self::MinLength(NumFacet::parse(node)?),
+            ElementType::MaxLength => Self::MaxLength(NumFacet::parse(node)?),
+            ElementType::Enumeration => Self::Enumeration(NoFixedFacet::parse(node)?),
+            ElementType::WhiteSpace => Self::WhiteSpace(WhiteSpace::parse(node)?),
+            ElementType::Pattern => Self::Pattern(Pattern::parse(node)?),
+            _ => return Err(GroupErr::InvalidNode(node)),
+        })
     }
 }
