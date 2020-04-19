@@ -17,6 +17,8 @@ pub mod nested_particle;
 pub mod restriction;
 pub mod schema;
 pub mod schema_top;
+pub mod simple_content;
+pub mod simple_extension;
 pub mod simple_type;
 pub mod type_def_particle;
 pub mod union;
@@ -27,7 +29,8 @@ use crate::xsd_model::simple_types::any_uri::AnyUri;
 use crate::xsd_model::simple_types::id::Id;
 use crate::xsd_model::simple_types::language::Language;
 use crate::xsd_model::simple_types::ncname::NCName;
-use roxmltree::Attribute;
+use roxmltree::{Attribute, Node};
+use std::str::FromStr;
 
 pub const XSD_NS_URI: &str = "http://www.w3.org/2001/XMLSchema";
 
@@ -64,3 +67,14 @@ impl_from_attr!(AnyUri);
 impl_from_attr!(Language);
 impl_from_attr!(Id);
 impl_from_attr!(NCName);
+
+pub enum GroupErr {
+    ElementParsing(String),
+    InvalidNode(String),
+}
+
+impl GroupErr {
+    pub fn element(s: &str, node: &Node) -> Self {
+        GroupErr::InvalidNode(format!("Invalid node for xsd:{} group: {:?}", s, node))
+    }
+}
