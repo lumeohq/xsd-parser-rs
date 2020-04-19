@@ -47,13 +47,13 @@ use crate::xsd_model::RawAttribute;
 //              xsd:topLevelComplexType
 #[derive(Debug)]
 pub struct TopLevelComplexType<'a> {
-    annotation: Option<Annotation<'a>>,
-    model: ComplexTypeModel<'a>,
-    attributes: Vec<RawAttribute<'a>>,
-    id: Id<'a>,
-    name: QName<'a>,
-    abstract_: bool,
-    final_: Option<DerivationSet>,
-    block: Option<DerivationSet>,
-    mixed: bool,
+    pub annotation: Option<Annotation<'a>>,
+    pub model: ComplexTypeModel<'a>,
+    pub attributes: Vec<RawAttribute<'a>>,
+    pub id: Id<'a>,
+    pub name: QName<'a>,
+    pub abstract_: bool,
+    pub final_: Option<DerivationSet>,
+    pub block: Option<DerivationSet>,
+    pub mixed: bool,
 }
