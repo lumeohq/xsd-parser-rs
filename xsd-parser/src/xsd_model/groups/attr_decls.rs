@@ -22,14 +22,9 @@ use crate::xsd_model::elements::attribute_group::AttributeGroupRef;
 // Type xsd:namedAttributeGroup (Element xsd:attributeGroup)
 // Type xsd:simpleExtensionType (Element xsd:extension)
 // Type xsd:simpleRestrictionType (Element xsd:restriction)
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct AttrDecls<'a> {
-    pub choices: Vec<AttrChoice<'a>>,
+    pub attributes: Vec<LocalAttribute<'a>>,
+    pub attribute_groups: Vec<AttributeGroupRef<'a>>,
     pub any_attribute: Option<AnyAttribute<'a>>,
-}
-
-#[derive(Debug)]
-pub enum AttrChoice<'a> {
-    Attribute(Box<LocalAttribute<'a>>),
-    AttributeGroup(AttributeGroupRef<'a>),
 }
