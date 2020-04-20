@@ -26,3 +26,48 @@ impl<'a> SimpleRestrictionModel<'a> {
         Ok(res)
     }
 }
+
+#[cfg(test)]
+mod test {
+    use crate::xml_to_xsd::ElementChildren_;
+    use crate::xsd_model::groups::facets::Facets;
+    use crate::xsd_model::groups::simple_restriction_model::SimpleRestrictionModel;
+
+    #[test]
+    fn test_parse() {
+        let doc = roxmltree::Document::parse(
+            r#"<root id="ID" a='b' b='a'>
+                <simpleType id="STN">
+                    <list itemType="ListOfType" />
+                </simpleType>
+                <minInclusive value="1"/>
+                <maxInclusive value="5"/>
+                <pattern value="[0-9]"/>
+                </root>"#,
+        )
+        .unwrap();
+        let root = doc.root_element();
+        let mut iter = root.element_children();
+        let res = SimpleRestrictionModel::parse(&mut iter).unwrap();
+
+        assert_eq!(res.simple_type.unwrap().id.unwrap().0, "STN");
+        assert_eq!(res.facets.len(), 3);
+        if let Facets::MinInclusive(val) = &res.facets[0] {
+            assert_eq!(val.value, "1")
+        } else {
+            panic!()
+        }
+
+        if let Facets::MaxInclusive(val) = &res.facets[1] {
+            assert_eq!(val.value, "5")
+        } else {
+            panic!()
+        }
+
+        if let Facets::Pattern(val) = &res.facets[2] {
+            assert_eq!(val.value, "[0-9]")
+        } else {
+            panic!()
+        }
+    }
+}
