@@ -12,7 +12,7 @@ impl<'a> AttrDecls<'a> {
                 ElementType::Attribute => res.attributes.push(LocalAttribute::parse(ch)?),
                 ElementType::AttributeGroup => unimplemented!("AttributeGroupRef::parse"), //res.attribute_groups.push(AttributeGroupRef::parse(ch)?), //TODO:  AttributeGroupRef::parse
                 ElementType::AnyAttribute => res.any_attribute = Some(AnyAttribute::parse(ch)?),
-                _ => break,
+                _ => return Err(format!("Invalid nod for xsd::attrDecls group: {:?}", ch)),
             }
         }
         Ok(res)
@@ -32,7 +32,6 @@ mod test {
                    <xs:attribute name="Attr2" type="xs:boolean" />
                    <xs:attribute name="Attr3" type="xs:boolean" />
                    <xs:anyAttribute processContents="lax"/>
-                   <xs:any name="ThisIsTheEnd" />
                    </root>"#,
         )
         .unwrap();

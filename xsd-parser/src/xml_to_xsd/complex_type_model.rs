@@ -12,15 +12,13 @@ impl<'a> ComplexTypeModel<'a> {
             .first_element_child()
             .ok_or_else(|| format!("Content xsd:complexTypeModel required: {:?}", node))?;
 
-        let mut type_def_particle = None;
+        let type_def_particle;
 
         match first_child.xsd_type()? {
             ElementType::SimpleContent => {
-                return Ok(ComplexTypeModel::SimpleContent(SimpleContent::parse(
-                    first_child,
-                )?))
+                return Ok(Self::SimpleContent(SimpleContent::parse(first_child)?))
             }
-            // ElementType::ComplexContent => ComplexTypeModel::ComplexContent(ComplexContent::parse(first_child)?)
+            // ElementType::ComplexContent => Self::ComplexContent(ComplexContent::parse(first_child)?)
             x => type_def_particle = TypeDefParticle::parse(first_child, x)?,
         };
 
@@ -108,16 +106,7 @@ mod test {
 
         let root = doc.root_element();
     } //TODO: finish him!
-      //      Sequence [1..1]
-      //          Choice [0..1]       from group xsd:typeDefParticle
-      //              xsd:group
-      //              xsd:all         An "all" group that allows elements to appear in any order. Unlike other group types, does not allow other groups as children, only elements.
-      //              xsd:choice
-      //              xsd:sequence
-      //          Choice [0..*]       from group xsd:attrDecls
-      //              xsd:attribute
-      //              xsd:attributeGroup
-      //          xsd:anyAttribute [0..1]
+
     #[test]
     fn test_parse_content() {
         let doc = roxmltree::Document::parse(
@@ -147,6 +136,9 @@ mod test {
             } else {
                 panic!()
             }
+
+            assert_eq!(attr_decls.attributes.len(), 3);
+            assert_eq!(attr_decls.any_attribute.unwrap().process_contents, "lax");
         } else {
             panic!()
         }

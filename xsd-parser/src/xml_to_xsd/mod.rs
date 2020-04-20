@@ -77,10 +77,6 @@ pub struct GroupResult<'a, T> {
 
 impl<'a, T> GroupResult<'a, T> {}
 
-pub trait GroupResultConvert<T> {
-    fn into(&self) -> Result<T, String>;
-}
-
 #[derive(Clone)]
 pub struct ElementChildren<'a, 'input: 'a> {
     front: Option<Node<'a, 'input>>,
@@ -95,8 +91,7 @@ impl<'a, 'input: 'a> Iterator for ElementChildren<'a, 'input> {
         if self.front.is_none() {
             None
         } else if self.front == self.back {
-            let node = self.front.take();
-            node
+            self.front.take()
         } else {
             let node = self.front.take();
             self.front = node.as_ref().and_then(Node::next_sibling_element);
@@ -110,7 +105,7 @@ impl<'a, 'input: 'a> ElementChildren<'a, 'input> {
     pub fn prev(&mut self) -> Option<Node<'a, 'input>> {
         if self.front.is_none() {
             self.front = self.back.as_ref().and_then(Node::prev_sibling_element);
-            self.front.clone()
+            self.front
         } else {
             let node = self.front.take();
             self.front = node.as_ref().and_then(Node::prev_sibling_element);
