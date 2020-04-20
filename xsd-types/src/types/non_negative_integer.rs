@@ -6,6 +6,7 @@ use std::io::{Read, Write};
 use std::str::FromStr;
 use yaserde::{YaDeserialize, YaSerialize};
 
+// https://www.w3.org/TR/xmlschema-2/#nonNegativeInteger
 #[derive(Default, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
 pub struct NonNegativeInteger(BigUint);
 
