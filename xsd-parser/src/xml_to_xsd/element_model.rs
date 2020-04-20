@@ -12,9 +12,15 @@ impl<'a> ElementModel<'a> {
             match ch.xsd_type()? {
                 ElementType::Annotation => {} //ignore
                 ElementType::SimpleType => {
-                    res.choice = Some(ElementModelChoice::SimpleType(LocalSimpleType::parse(ch)?))
+                    res.choice = Some(ElementModelChoice::SimpleType(Box::from(
+                        LocalSimpleType::parse(ch)?,
+                    )))
                 }
-                //ElementType::ComplexType=> res.choice = ElementModelChoice::ComplexType(LocalComplexType::parse(ch)?),
+                ElementType::ComplexType => {
+                    res.choice = Some(ElementModelChoice::ComplexType(Box::from(
+                        LocalComplexType::parse(ch)?,
+                    )))
+                }
                 ElementType::Unique | ElementType::Key | ElementType::KeyRef => {} //Not present in ONVIF //res.identity_constraints.push(IdentityConstraint::parse(ch)?),
                 _ => {
                     return Err(format!(

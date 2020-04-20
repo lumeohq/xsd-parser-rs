@@ -30,6 +30,6 @@ pub struct ElementModel<'a> {
 
 #[derive(Debug)]
 pub enum ElementModelChoice<'a> {
-    SimpleType(LocalSimpleType<'a>),
-    ComplexType(LocalComplexType<'a>),
+    SimpleType(Box<LocalSimpleType<'a>>),
+    ComplexType(Box<LocalComplexType<'a>>),
 }

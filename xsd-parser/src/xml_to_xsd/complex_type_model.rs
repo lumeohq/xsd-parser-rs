@@ -4,7 +4,6 @@ use crate::xsd_model::groups::attr_decls::AttrDecls;
 use crate::xsd_model::groups::complex_type_model::ComplexTypeModel;
 use crate::xsd_model::groups::type_def_particle::TypeDefParticle;
 use crate::xsd_model::{ComplexContent, SimpleContent};
-use itertools::PeekingNext;
 use roxmltree::Node;
 
 impl<'a> ComplexTypeModel<'a> {
@@ -21,7 +20,7 @@ impl<'a> ComplexTypeModel<'a> {
         let first_child = first_child
             .ok_or_else(|| format!("Content xsd:complexTypeModel required: {:?}", node))?;
 
-        let mut type_def_particle = None;
+        let type_def_particle;
 
         match first_child.xsd_type()? {
             ElementType::SimpleContent => {
@@ -37,7 +36,7 @@ impl<'a> ComplexTypeModel<'a> {
 
         let res = ComplexTypeModel::Content(
             type_def_particle,
-            AttrDecls::parse(node.element_children().skip(skip))?,
+            Box::new(AttrDecls::parse(node.element_children().skip(skip))?),
         );
         Ok(res)
     }

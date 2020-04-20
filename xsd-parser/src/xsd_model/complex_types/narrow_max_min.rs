@@ -1,6 +1,5 @@
 use crate::xsd_model::elements::annotation::Annotation;
 use crate::xsd_model::groups::element_model::ElementModel;
-use crate::xsd_model::groups::identity_constraint::IdentityConstraint;
 use crate::xsd_model::simple_types::block_set::BlockSet;
 use crate::xsd_model::simple_types::form_choice::FormChoice;
 use crate::xsd_model::simple_types::ncname::NCName;
