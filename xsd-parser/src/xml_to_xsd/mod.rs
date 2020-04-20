@@ -23,6 +23,7 @@ pub mod restriction;
 pub mod schema;
 pub mod schema_top;
 pub mod simple_content;
+pub mod simple_explicit_group;
 pub mod simple_extension;
 pub mod simple_restriction;
 pub mod simple_restriction_model;

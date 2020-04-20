@@ -1,5 +1,6 @@
 use crate::xml_to_xsd::XsdNode;
 use crate::xsd_model::complex_types::named_group::{ContentChoice, NamedGroup};
+use crate::xsd_model::complex_types::simple_explicit_group::SimpleExplicitGroup;
 use crate::xsd_model::elements::ElementType;
 use crate::xsd_model::simple_types::ncname::NCName;
 use crate::xsd_model::Annotation;
@@ -46,14 +47,16 @@ impl<'a> NamedGroup<'a> {
 
 impl<'a> ContentChoice<'a> {
     pub fn parse(node: Node<'a, '_>, xsd_type: ElementType) -> Result<Self, String> {
-        match xsd_type {
+        Ok(match xsd_type {
             ElementType::All => unimplemented!("Not present in ONVIF"), //Self::All(All::parse(node)?),
-            // ElementType::Choice => Self::Choice(SimpleExplicitGroup::parse(node)?),
-            // ElementType::Sequence => Self::Sequence(SimpleExplicitGroup::parse(node)?),
-            _ => Err(format!(
-                "Invalid content type of xsd:namedGroup: {:?}",
-                node
-            )),
-        }
+            ElementType::Choice => Self::Choice(SimpleExplicitGroup::parse(node)?),
+            ElementType::Sequence => Self::Sequence(SimpleExplicitGroup::parse(node)?),
+            _ => {
+                return Err(format!(
+                    "Invalid content type of xsd:namedGroup: {:?}",
+                    node
+                ))
+            }
+        })
     }
 }
