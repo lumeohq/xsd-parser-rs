@@ -10,7 +10,10 @@ impl<'a> SimpleRestriction<'a> {
     pub fn parse(node: Node<'a, '_>) -> Result<Self, String> {
         let mut res = Self::default();
         res.annotation = annotation_first(node)?;
-        let mut iter = node.element_children();
+
+        let skip = if res.annotation.is_some() { 1 } else { 0 };
+        let mut iter = node.element_children().skip(skip);
+
         res.model = SimpleRestrictionModel::parse(&mut iter)?;
         res.attr_decls = AttrDecls::parse(iter)?;
 

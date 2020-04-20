@@ -54,27 +54,3 @@ pub fn parse_document<'a>(doc: &'a Document) -> Result<Schema<'a>, String> {
 
     Ok(schema)
 }
-
-#[cfg(test)]
-mod test {
-    use super::*;
-    use roxmltree::Document;
-
-    const TEXT: &str = include_str!("../../../input/xsd/onvif.xsd");
-    #[test]
-    fn test_parse_document() {
-        let doc = Document::parse(TEXT).unwrap();
-        let schema = parse_document(&doc).unwrap();
-        assert_eq!(
-            schema.target_namespace.unwrap().0,
-            "http://www.onvif.org/ver10/schema"
-        );
-        assert_eq!(schema.final_default.unwrap(), FullDerivationSet::All);
-        assert_eq!(schema.block_default.unwrap(), BlockSet::All);
-        assert_eq!(schema.id.unwrap().0, "ID");
-        assert_eq!(schema.element_form_default, FormChoice::Qualified);
-        assert_eq!(schema.lang.unwrap().0, "us");
-        assert_eq!(schema.imports.len(), 2);
-        assert_eq!(schema.includes.len(), 2);
-    }
-}

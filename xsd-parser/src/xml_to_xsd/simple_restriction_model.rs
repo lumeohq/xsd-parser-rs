@@ -10,7 +10,6 @@ impl<'a> SimpleRestrictionModel<'a> {
         let mut res = Self::default();
         for ch in iter {
             match ch.xsd_type()? {
-                ElementType::Annotation => {}
                 ElementType::SimpleType => res.simple_type = Some(LocalSimpleType::parse(ch)?),
                 x => {
                     let facet = Facets::parse(ch, x)?;

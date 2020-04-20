@@ -33,6 +33,8 @@ pub mod type_def_particle;
 pub mod union;
 pub mod utils;
 
+mod tests;
+
 use crate::xsd_model::elements::{xsd_element_type, ElementType};
 use crate::xsd_model::simple_types::any_uri::AnyUri;
 use crate::xsd_model::simple_types::id::Id;
