@@ -28,6 +28,8 @@ pub mod simple_type;
 pub mod type_def_particle;
 pub mod union;
 pub mod utils;
+pub mod local_element;
+pub mod element_model;
 
 use crate::xsd_model::elements::{xsd_element_type, ElementType};
 use crate::xsd_model::simple_types::any_uri::AnyUri;
