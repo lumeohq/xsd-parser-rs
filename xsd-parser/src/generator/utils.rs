@@ -31,10 +31,10 @@ pub fn match_built_in_type(type_name: &str, xsd_ns: &Option<Namespace>) -> Optio
         "boolean" => "bool",
 
         "integer" => "xs::Integer",
-        "nonNegativeInteger" => "xs::Integer",
-        "positiveInteger" => "xs::Integer",
-        "nonPositiveInteger" => "xs::Integer",
-        "negativeInteger" => "xs::Integer",
+        "nonNegativeInteger" => "xs::NonNegativeInteger",
+        "positiveInteger" => "xs::PositiveInteger",
+        "nonPositiveInteger" => "xs::NonPositiveInteger",
+        "negativeInteger" => "xs::NegativeInteger",
 
         "long" => "i64",
         "int" => "i32",
