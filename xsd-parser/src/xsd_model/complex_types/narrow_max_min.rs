@@ -22,7 +22,6 @@ use crate::xsd_model::{MaxOccurs, RawAttribute};
 //      Choice [0..1]    from group xsd:elementModel
 //          xsd:simpleType
 //          xsd:complexType
-//
 //      Choice [0..*]    from group xsd:identityConstraint
 //          xsd:unique
 //          xsd:key
@@ -55,7 +54,6 @@ use crate::xsd_model::{MaxOccurs, RawAttribute};
 pub struct NarrowMaxMin<'a> {
     pub annotation: Option<Annotation<'a>>,
     pub model: ElementModel<'a>,
-    pub identity_constraint: IdentityConstraint<'a>,
     pub id: Id<'a>,
     pub name: Option<NCName<'a>>,
     pub ref_: Option<QName<'a>>,
