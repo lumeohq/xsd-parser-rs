@@ -1,4 +1,4 @@
-use crate::xml_to_xsd::XsdNode;
+use crate::xml_to_xsd::{ElementChildren_, XsdNode};
 use crate::xsd_model::elements::ElementType;
 use crate::xsd_model::groups::schema_top::SchemaTop;
 use crate::xsd_model::simple_types::any_uri::AnyUri;
@@ -36,7 +36,7 @@ pub fn parse_document<'a>(doc: &'a Document) -> Result<Schema<'a>, String> {
         };
     }
 
-    for ch in schema_node.children().filter(|n| n.is_element()) {
+    for ch in schema_node.element_children() {
         match ch.xsd_type()? {
             ElementType::Include => schema.includes.push(Include::parse(ch)?),
             ElementType::Import => schema.imports.push(Import::parse(ch)?),
@@ -60,27 +60,7 @@ mod test {
     use super::*;
     use roxmltree::Document;
 
-    const TEXT: &str = r##"
-    <xs:schema xmlns:tt="http://www.onvif.org/ver10/schema"
-        xmlns:xs="http://www.w3.org/2001/XMLSchema"
-        targetNamespace="http://www.onvif.org/ver10/schema"
-        version="125"
-        finalDefault="#all"
-        blockDefault="#all"
-        elementFormDefault="qualified"
-        id="ID"
-        xml:lang="us"
-        >
-        <xs:include schemaLocation="common.xsd"/>
-        <xs:include schemaLocation="common2.xsd"/>
-        <xs:import namespace="http://www.w3.org/2005/05/xmlmime" schemaLocation="http://www.w3.org/2005/05/xmlmime"/>
-        <xs:import namespace="http://www.w3.org/2003/05/soap-envelope" schemaLocation="http://www.w3.org/2003/05/soap-envelope"/>
-        <xs:complexType name="DeviceEntity" />1
-        <xs:complexType name="VideoSource" />
-
-    </xs:schema>
-            "##;
-
+    const TEXT: &str = include_str!("../../../input/xsd/onvif.xsd");
     #[test]
     fn test_parse_document() {
         let doc = Document::parse(TEXT).unwrap();
@@ -89,7 +69,6 @@ mod test {
             schema.target_namespace.unwrap().0,
             "http://www.onvif.org/ver10/schema"
         );
-        assert_eq!(schema.version.unwrap().0, "125");
         assert_eq!(schema.final_default.unwrap(), FullDerivationSet::All);
         assert_eq!(schema.block_default.unwrap(), BlockSet::All);
         assert_eq!(schema.id.unwrap().0, "ID");

@@ -91,7 +91,7 @@ impl<'a> LocalAttribute<'a> {
                 "name" => name = Some(attr.into()),
                 "ref" => ref_ = Some(QName::new(attr.value())),
                 "type" => type_ = Some(QName::new(attr.value())),
-                "use_" => use_ = UseType::parse(attr.value())?,
+                "use" => use_ = UseType::parse(attr.value())?,
                 "default" => default = Some(attr.value()),
                 "fixed" => fixed = Some(attr.value()),
                 "form" => form = Some(FormChoice::parse(attr.value())?),

@@ -50,7 +50,7 @@ pub struct LocalAttributeType<'a> {
     pub form: Option<FormChoice>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum UseType {
     Optional,
     Prohibited,

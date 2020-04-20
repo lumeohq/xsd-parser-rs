@@ -12,7 +12,12 @@ impl<'a> AttrDecls<'a> {
                 ElementType::Attribute => res.attributes.push(LocalAttribute::parse(ch)?),
                 ElementType::AttributeGroup => unimplemented!("AttributeGroupRef::parse"), //res.attribute_groups.push(AttributeGroupRef::parse(ch)?), //TODO:  AttributeGroupRef::parse
                 ElementType::AnyAttribute => res.any_attribute = Some(AnyAttribute::parse(ch)?),
-                _ => return Err(format!("Invalid nod for xsd::attrDecls group: {:?}", ch)),
+                _ => {
+                    return Err(
+                        format!("Invalid nod for xsd::attrDecls group: {:?}***", ch,)
+                            + ch.document().input_text()[ch.range().start..ch.range().end].as_ref(),
+                    )
+                }
             }
         }
         Ok(res)

@@ -36,7 +36,7 @@ impl<'a> ComplexTypeModel<'a> {
 
         let res = ComplexTypeModel::Content(
             type_def_particle,
-            Box::new(AttrDecls::parse(node.element_children().skip(skip))?),
+            Box::new(AttrDecls::parse(iter.skip(skip))?),
         );
         Ok(res)
     }
@@ -44,6 +44,7 @@ impl<'a> ComplexTypeModel<'a> {
 
 #[cfg(test)]
 mod test {
+    use crate::xsd_model::complex_types::local_attribute_type::UseType;
     use crate::xsd_model::groups::complex_type_model::ComplexTypeModel;
     use crate::xsd_model::groups::type_def_particle::TypeDefParticle;
     use crate::xsd_model::{ComplexContentChoice, MaxOccurs, SimpleContentChoice};
@@ -224,6 +225,38 @@ mod test {
             } else {
                 panic!("Test failed!");
             }
+        } else {
+            panic!("Test failed!");
+        }
+    }
+
+    #[test]
+    fn test_skip_annotation2() {
+        let doc = roxmltree::Document::parse(
+            r###"<xs:complexType name="DeviceEntity" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                        <xs:annotation>
+                            <xs:documentation>Base class for physical entities like inputs and outputs.</xs:documentation>
+                        </xs:annotation>
+                        <xs:attribute name="token" type="tt:ReferenceToken" use="required">
+                            <xs:annotation>
+                                <xs:documentation>Unique identifier referencing the physical entity.</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                    </xs:complexType>
+                 "###,
+        )
+        .unwrap();
+
+        let root = doc.root_element();
+        if let ComplexTypeModel::Content(type_def, attr_decls) =
+            ComplexTypeModel::parse(root).unwrap()
+        {
+            assert!(type_def.is_none());
+            assert!(attr_decls.any_attribute.is_none());
+            assert_eq!(attr_decls.attribute_groups.len(), 0);
+            assert_eq!(attr_decls.attributes.len(), 1);
+            assert_eq!(attr_decls.attributes[0].name.as_ref().unwrap().0, "token");
+            assert_eq!(attr_decls.attributes[0].use_, UseType::Required);
         } else {
             panic!("Test failed!");
         }
