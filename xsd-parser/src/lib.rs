@@ -1,4 +1,3 @@
-#![feature(in_band_lifetimes)]
 #[cfg(test)]
 extern crate log;
 #[cfg(test)]

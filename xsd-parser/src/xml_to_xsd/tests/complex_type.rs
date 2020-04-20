@@ -26,7 +26,7 @@ mod test {
         }
     }
 
-    fn test_1(ct: &Box<TopLevelComplexType<'a>>) {
+    fn test_1(ct: &Box<TopLevelComplexType<'_>>) {
         assert_eq!(ct.name.name, "IntRange");
         assert_eq!(
             ct.annotation.as_ref().unwrap().doc_str(0).unwrap(),
