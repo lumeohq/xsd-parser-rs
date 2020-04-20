@@ -8,58 +8,60 @@ This is still a work in progress.  So please feel free to open issues and submit
 
 A following mapping used to represent built-in XSD types as rust types:
 
-|XSD               |rust              |
-|------------------|------------------|
-|hexBinary         |String            |
-|base64Binary      |String            |
-|boolean           |bool              |
-|integer           |Integer (1)       |
-|nonNegativeInteger|Integer (1)       |
-|positiveInteger   |Integer (1)       |
-|nonPositiveInteger|Integer (1)       |
-|negativeInteger   |Integer (1)       |
-|long              |i64               |
-|int               |i32               |
-|short             |i16               |
-|byte              |i8                |
-|unsignedLong      |u64               |
-|unsignedInt       |u32               |
-|unsignedShort     |u16               |
-|unsignedByte      |u8                |
-|decimal           |Decimal (2)       |
-|double            |f64               |
-|float             |f64               |
-|date              |Date (3)          |
-|time              |Time (3)          |
-|dateTime          |DateTime (3)      |
-|dateTimeStamp     |DateTimeStamp (3) |
-|duration          |Duration (4)      |
-|gDay              |GDay (5)          |
-|gMonth            |GMonth (5)        |
-|gMonthDay         |GMonthDay (5)     |
-|gYear             |GYear (5)         |
-|gYearMonth        |GYearMonth (5)    |
-|string            |String            |
-|normalizedString  |String            |
-|token             |String            |
-|language          |String            |
-|Name              |String            |
-|NCName            |String            |
-|ENTITY            |String            |
-|ID                |String            |
-|IDREF             |String            |
-|NMTOKEN           |String            |
-|anyURI            |String            |
-|QName             |String            |
-|NOTATION          |String            |
-|ENTITIES          |Vec\<String\>     |
-|IDREFS            |Vec\<String\>     |
-|NMTOKENS          |Vec\<String\>     |
+|XSD               |rust                   |
+|------------------|-----------------------|
+|hexBinary         |String                 |
+|base64Binary      |String                 |
+|boolean           |bool                   |
+|integer           |Integer (1)            |
+|nonNegativeInteger|NonNegativeInteger (1) |
+|positiveInteger   |PositiveInteger (1)    |
+|nonPositiveInteger|NonPositiveInteger (1) |
+|negativeInteger   |NegativeInteger (1)    |
+|long              |i64                    |
+|int               |i32                    |
+|short             |i16                    |
+|byte              |i8                     |
+|unsignedLong      |u64                    |
+|unsignedInt       |u32                    |
+|unsignedShort     |u16                    |
+|unsignedByte      |u8                     |
+|decimal           |Decimal (2)            |
+|double            |f64                    |
+|float             |f64                    |
+|date              |Date (3)               |
+|time              |Time (3)               |
+|dateTime          |DateTime (3)           |
+|dateTimeStamp     |DateTimeStamp (3)      |
+|duration          |Duration (4)           |
+|gDay              |GDay (5)               |
+|gMonth            |GMonth (5)             |
+|gMonthDay         |GMonthDay (5)          |
+|gYear             |GYear (5)              |
+|gYearMonth        |GYearMonth (5)         |
+|string            |String                 |
+|normalizedString  |String                 |
+|token             |String                 |
+|language          |String                 |
+|Name              |String                 |
+|NCName            |String                 |
+|ENTITY            |String                 |
+|ID                |String                 |
+|IDREF             |String                 |
+|NMTOKEN           |String                 |
+|anyURI            |String                 |
+|QName             |String                 |
+|NOTATION          |String                 |
+|ENTITIES          |Vec\<String\>          |
+|IDREFS            |Vec\<String\>          |
+|NMTOKENS          |Vec\<String\>          |
 
 Notes:
 
-(1) we are using our own type `Integer`, which wraps `num_bigint::Bigintg` and provides 
-XML (de)serialization with `yaserde`. You can find `Integer` in `xsd-types/src/types/integer.rs`
+(1) we are using our own big integer types, that wrap `num_bigint::BigInt` and `num_bigint::BigUint`
+and provide XML (de)serialization with `yaserde`. You can find `Integer`, `NonNegativeInteger`,
+`PositiveInteger`, `NonPositiveInteger` and `NegativeInteger` in the corresponding files within
+`xsd-types/src/types/`
 
 (2) we are using our own type `Decimal`, which wraps `bigdecimal::BigDecimal` and provides 
 XML (de)serialization with `yaserde`. You can find `Decimal` in `xsd-types/src/types/decimal.rs`
