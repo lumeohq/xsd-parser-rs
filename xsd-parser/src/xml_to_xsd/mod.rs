@@ -28,6 +28,7 @@ pub mod simple_restriction;
 pub mod simple_restriction_model;
 pub mod simple_type;
 pub mod top_level_complex_type;
+pub mod top_level_element;
 pub mod type_def_particle;
 pub mod union;
 pub mod utils;

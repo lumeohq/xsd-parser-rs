@@ -2,6 +2,7 @@ use crate::xsd_model::elements::annotation::Annotation;
 use crate::xsd_model::groups::element_model::ElementModel;
 use crate::xsd_model::simple_types::block_set::BlockSet;
 use crate::xsd_model::simple_types::derivation_set::DerivationSet;
+use crate::xsd_model::simple_types::ncname::NCName;
 use crate::xsd_model::simple_types::qname::QName;
 use crate::xsd_model::simple_types::Id;
 use crate::xsd_model::RawAttribute;
@@ -44,18 +45,19 @@ use crate::xsd_model::RawAttribute;
 //      xsd:openAttrs
 //          xsd:annotated
 //              xsd:topLevelElement
+#[derive(Debug, Default)]
 pub struct TopLevelElement<'a> {
-    annotation: Option<Annotation<'a>>,
-    model: ElementModel<'a>,
-    attributes: Vec<RawAttribute<'a>>,
-    id: Id<'a>,
-    name: QName<'a>,
-    type_: Option<QName<'a>>,
-    substitution_group: Option<QName<'a>>,
-    default: Option<&'a str>,
-    fixed: Option<&'a str>,
-    nillable: bool,
-    abstract_: bool,
-    final_: Option<DerivationSet>,
-    block: Option<BlockSet>,
+    pub annotation: Option<Annotation<'a>>,
+    pub model: ElementModel<'a>,
+    pub attributes: Vec<RawAttribute<'a>>,
+    pub id: Id<'a>,
+    pub name: NCName<'a>,
+    pub type_: Option<QName<'a>>,
+    pub substitution_group: Option<QName<'a>>,
+    pub default: Option<&'a str>,
+    pub fixed: Option<&'a str>,
+    pub nillable: bool,
+    pub abstract_: bool,
+    pub final_: Option<DerivationSet>,
+    pub block: Option<BlockSet>,
 }
