@@ -2,6 +2,7 @@ use crate::xsd_model::elements::annotation::Annotation;
 use crate::xsd_model::groups::element_model::ElementModel;
 use crate::xsd_model::simple_types::block_set::BlockSet;
 use crate::xsd_model::simple_types::form_choice::FormChoice;
+use crate::xsd_model::simple_types::ncname::NCName;
 use crate::xsd_model::simple_types::non_negative_integer::NonNegativeInteger;
 use crate::xsd_model::simple_types::qname::QName;
 use crate::xsd_model::simple_types::Id;
@@ -54,7 +55,7 @@ pub struct LocalElement<'a> {
     pub model: ElementModel<'a>,
     pub attributes: Vec<RawAttribute<'a>>,
     pub id: Id<'a>,
-    pub name: Option<QName<'a>>,
+    pub name: Option<NCName<'a>>,
     pub ref_: Option<QName<'a>>,
     pub type_: Option<QName<'a>>,
     pub min_occurs: NonNegativeInteger,
@@ -64,4 +65,25 @@ pub struct LocalElement<'a> {
     pub nillable: bool,
     pub block: Option<BlockSet>,
     pub form: Option<FormChoice>,
+}
+
+impl Default for LocalElement<'_> {
+    fn default() -> Self {
+        Self {
+            annotation: None,
+            model: Default::default(),
+            attributes: vec![],
+            id: None,
+            name: None,
+            ref_: None,
+            type_: None,
+            min_occurs: NonNegativeInteger(1),
+            max_occurs: MaxOccurs::Bounded(NonNegativeInteger(1)),
+            default: None,
+            fixed: None,
+            nillable: false,
+            block: None,
+            form: None,
+        }
+    }
 }

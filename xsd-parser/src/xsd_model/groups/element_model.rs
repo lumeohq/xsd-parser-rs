@@ -22,10 +22,10 @@ use crate::xsd_model::groups::identity_constraint::IdentityConstraint;
 // Type xsd:localElement (Element xsd:element)
 // Type xsd:narrowMaxMin (Element xsd:element)
 // Type xsd:topLevelElement (Element xsd:element)
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct ElementModel<'a> {
-    choice: ElementModelChoice<'a>,
-    identity_constraint: IdentityConstraint<'a>,
+    pub choice: Option<ElementModelChoice<'a>>,
+    pub identity_constraints: Vec<IdentityConstraint<'a>>,
 }
 
 #[derive(Debug)]

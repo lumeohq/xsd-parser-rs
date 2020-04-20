@@ -8,7 +8,6 @@ use crate::xsd_model::simple_types::qname::QName;
 use crate::xsd_model::{LocalElement, MaxOccurs};
 use roxmltree::Node;
 
-
 impl<'a> LocalElement<'a> {
     pub fn parse(node: Node<'a, '_>) -> Result<Self, String> {
         let mut res = Self {
