@@ -1,9 +1,11 @@
 use crate::xsd_model::elements::annotation::Annotation;
+use crate::xsd_model::groups::attr_decls::AttrDecls;
 use crate::xsd_model::groups::complex_type_model::ComplexTypeModel;
+use crate::xsd_model::groups::type_def_particle::TypeDefParticle;
 use crate::xsd_model::simple_types::derivation_set::DerivationSet;
 use crate::xsd_model::simple_types::qname::QName;
 use crate::xsd_model::simple_types::Id;
-use crate::xsd_model::RawAttribute;
+use crate::xsd_model::{ComplexContent, RawAttribute, SimpleContent};
 
 // xsd:topLevelComplexType
 // Complex type information
@@ -56,4 +58,34 @@ pub struct TopLevelComplexType<'a> {
     pub final_: Option<DerivationSet>,
     pub block: Option<DerivationSet>,
     pub mixed: bool,
+}
+
+impl<'a> TopLevelComplexType<'a> {
+    pub fn simple_content(&self) -> Option<&SimpleContent<'a>> {
+        match &self.model {
+            ComplexTypeModel::SimpleContent(sc) => Some(sc),
+            _ => None,
+        }
+    }
+
+    pub fn complex_content(&self) -> Option<&ComplexContent<'a>> {
+        match &self.model {
+            ComplexTypeModel::ComplexContent(sc) => Some(sc),
+            _ => None,
+        }
+    }
+
+    pub fn type_def_particle(&self) -> Option<&TypeDefParticle<'a>> {
+        match &self.model {
+            ComplexTypeModel::Content(tdp, _) => tdp.as_ref(),
+            _ => None,
+        }
+    }
+
+    pub fn attr_decls(&self) -> Option<&AttrDecls<'a>> {
+        match &self.model {
+            ComplexTypeModel::Content(_, attr_decls) => Some(attr_decls),
+            _ => None,
+        }
+    }
 }
