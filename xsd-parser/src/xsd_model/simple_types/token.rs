@@ -47,4 +47,5 @@
 //                              used in list xsd:IDREFS
 //                          restricted by xsd:ENTITY
 //                              used in list xsd:ENTITIES
+#[derive(Debug)]
 pub struct Token<'a>(pub &'a str);

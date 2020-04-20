@@ -65,10 +65,10 @@ fn test_parse() {
 
     assert_eq!(
         "-3".parse::<NonNegativeInteger>().err().unwrap(),
-        "parse xsd:positiveInteger error: invalid digit found in string"
+        "parse xsd:nonNegativeInteger error: invalid digit found in string"
     );
     assert_eq!(
         "3.0".parse::<NonNegativeInteger>().err().unwrap(),
-        "parse xsd:positiveInteger error: invalid digit found in string"
+        "parse xsd:nonNegativeInteger error: invalid digit found in string"
     );
 }

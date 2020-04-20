@@ -26,6 +26,7 @@ use crate::xsd_model::elements::simple_type::TopLevelSimpleType;
 //
 // Used in
 // Anonymous type of element xsd:schema
+#[derive(Debug)]
 pub enum SchemaTop<'a> {
     SimpleType(Box<TopLevelSimpleType<'a>>),
     ComplexType(Box<TopLevelComplexType<'a>>),

@@ -59,7 +59,7 @@ use crate::xsd_model::{Namespace, RawAttribute};
 // key	attributeGroup 	    xs:attributeGroup	                @name
 // key	notation	        xs:notation	                        @name
 // key	identityConstraint	.//xs:key|.//xs:unique|.//xs:keyref	@name
-#[derive(Default)]
+#[derive(Default, Debug)]
 pub struct Schema<'a> {
     pub includes: Vec<Include<'a>>,
     pub imports: Vec<Import<'a>>,

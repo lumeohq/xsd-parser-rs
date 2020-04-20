@@ -26,11 +26,12 @@ use crate::xsd_model::RawAttribute;
 // Used in
 // Group xsd:schemaTop
 // Anonymous type of element xsd:schema via reference to xsd:schemaTop
+#[derive(Debug)]
 pub struct Notation<'a> {
-    annotation: Option<Annotation<'a>>,
-    attributes: Vec<RawAttribute<'a>>,
-    id: Id<'a>,
-    name: NCName<'a>,
-    public: Option<Public<'a>>,
-    system: Option<AnyUri<'a>>,
+    pub annotation: Option<Annotation<'a>>,
+    pub attributes: Vec<RawAttribute<'a>>,
+    pub id: Id<'a>,
+    pub name: NCName<'a>,
+    pub public: Option<Public<'a>>,
+    pub system: Option<AnyUri<'a>>,
 }

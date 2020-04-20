@@ -74,3 +74,9 @@ pub struct Annotation<'a> {
     pub attributes: Vec<RawAttribute<'a>>,
     pub id: Id<'a>,
 }
+
+impl<'a> Annotation<'a> {
+    pub fn doc_str(&self, index: usize) -> Option<&'a str> {
+        self.documentations.get(index).and_then(|d| d.text)
+    }
+}
