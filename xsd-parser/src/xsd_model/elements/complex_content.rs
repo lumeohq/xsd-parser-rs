@@ -35,7 +35,7 @@ pub struct ComplexContent<'a> {
     pub content: ComplexContentChoice<'a>,
     pub attributes: Vec<RawAttribute<'a>>,
     pub id: Id<'a>,
-    pub mixed: bool,
+    pub mixed: Option<bool>,
 }
 
 #[derive(Debug)]

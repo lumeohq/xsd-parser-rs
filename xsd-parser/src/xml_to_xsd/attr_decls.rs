@@ -21,7 +21,7 @@ impl<'a> AttrDecls<'a> {
 
 #[cfg(test)]
 mod test {
-    use crate::xml_to_xsd::{ElementChildren, ElementChildren_};
+    use crate::xml_to_xsd::ElementChildren_;
     use crate::xsd_model::groups::attr_decls::AttrDecls;
 
     #[test]
