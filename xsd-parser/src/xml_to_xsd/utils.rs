@@ -1,4 +1,4 @@
-use crate::xml_to_xsd::{GroupErr, XsdNode};
+use crate::xml_to_xsd::XsdNode;
 use crate::xsd_model::elements::ElementType;
 use crate::xsd_model::Annotation;
 use roxmltree::Node;
@@ -22,7 +22,11 @@ pub fn annotation_only<'a>(
     Ok(annotation)
 }
 
-pub fn annotation_first<'a>(node: Node<'a, '_>) -> Option<Annotation<'a>> {
-    node.first_element_child()
-        .and_then(|n| Annotation::parse(n).ok())
+pub fn annotation_first<'a>(node: Node<'a, '_>) -> Result<Option<Annotation<'a>>, String> {
+    if let Some(ch) = node.first_element_child() {
+        if ch.xsd_type()? == ElementType::Annotation {
+            return Ok(Some(Annotation::parse(ch)?));
+        }
+    }
+    Ok(None)
 }

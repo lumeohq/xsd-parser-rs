@@ -1,7 +1,6 @@
 use roxmltree::Node;
 
 use crate::xml_to_xsd::utils::annotation_only;
-use crate::xml_to_xsd::{GroupErr, XsdNode};
 use crate::xsd_model::complex_types::facet::Facet;
 use crate::xsd_model::complex_types::no_fixed_facet::NoFixedFacet;
 use crate::xsd_model::complex_types::num_facet::NumFacet;
@@ -149,8 +148,8 @@ impl<'a> Pattern<'a> {
 }
 
 impl<'a> Facets<'a> {
-    pub fn parse(node: Node<'a, '_>, element_type: ElementType) -> Result<Self, GroupErr<'a>> {
-        Ok(match element_type {
+    pub fn parse(node: Node<'a, '_>, element_type: ElementType) -> Result<Option<Self>, String> {
+        Ok(Some(match element_type {
             ElementType::MinExclusive => Self::MinExclusive(Facet::parse(node)?),
             ElementType::MinInclusive => Self::MinInclusive(Facet::parse(node)?),
             ElementType::MaxExclusive => Self::MaxExclusive(Facet::parse(node)?),
@@ -163,7 +162,7 @@ impl<'a> Facets<'a> {
             ElementType::Enumeration => Self::Enumeration(NoFixedFacet::parse(node)?),
             ElementType::WhiteSpace => Self::WhiteSpace(WhiteSpace::parse(node)?),
             ElementType::Pattern => Self::Pattern(Pattern::parse(node)?),
-            _ => return Err(GroupErr::InvalidNode(node)),
-        })
+            _ => return Ok(None),
+        }))
     }
 }

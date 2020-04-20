@@ -7,7 +7,7 @@ use roxmltree::Node;
 
 impl<'a> TopLevelComplexType<'a> {
     pub fn parse(node: Node<'a, '_>) -> Result<Self, String> {
-        let annotation = annotation_first(node);
+        let annotation = annotation_first(node)?;
         let model = ComplexTypeModel::parse(node)?;
 
         let mut attributes = vec![];

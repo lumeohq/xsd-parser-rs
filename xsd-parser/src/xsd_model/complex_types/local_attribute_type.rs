@@ -41,7 +41,7 @@ pub struct LocalAttributeType<'a> {
     pub simple_type: Option<LocalSimpleType<'a>>,
     pub attributes: Vec<RawAttribute<'a>>,
     pub id: Id<'a>,
-    pub name: NCName<'a>,
+    pub name: Option<NCName<'a>>,
     pub ref_: Option<QName<'a>>,
     pub type_: Option<QName<'a>>,
     pub use_: UseType,

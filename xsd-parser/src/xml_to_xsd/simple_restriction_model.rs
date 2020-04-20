@@ -6,15 +6,20 @@ use crate::xsd_model::LocalSimpleType;
 use roxmltree::Node;
 
 impl<'a> SimpleRestrictionModel<'a> {
-    pub fn parse(node: Node<'a, '_>) -> Result<Self, String> {
+    pub fn parse(iter: &mut impl Iterator<Item = Node<'a, 'a>>) -> Result<Self, String> {
         let mut res = Self::default();
-        for ch in node.children().filter(|n| n.is_element()) {
+        for ch in iter {
             match ch.xsd_type()? {
                 ElementType::Annotation => {}
                 ElementType::SimpleType => res.simple_type = Some(LocalSimpleType::parse(ch)?),
-                x => res.facets.push(Facets::parse(ch, x).map_err(|_| {
-                    format!("Invalid child node for xsd:restriction content: {:?}", ch)
-                })?),
+                x => {
+                    let facet = Facets::parse(ch, x)?;
+                    if let Some(x) = facet {
+                        res.facets.push(x);
+                    } else {
+                        break;
+                    }
+                }
             };
         }
 

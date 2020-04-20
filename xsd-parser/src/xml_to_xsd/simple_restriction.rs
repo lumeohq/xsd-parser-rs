@@ -1,30 +1,20 @@
 use crate::xml_to_xsd::utils::annotation_first;
-use crate::xml_to_xsd::{GroupErr, XsdNode};
+use crate::xml_to_xsd::{ElementChildren_, XsdNode};
 use crate::xsd_model::complex_types::facet::Facet;
-use crate::xsd_model::complex_types::local_simple_type::LocalSimpleType;
 use crate::xsd_model::elements::ElementType;
 use crate::xsd_model::groups::attr_decls::AttrDecls;
-use crate::xsd_model::groups::facets::Facets;
 use crate::xsd_model::groups::simple_restriction_model::SimpleRestrictionModel;
 use crate::xsd_model::simple_types::qname::QName;
-use crate::xsd_model::{Annotation, SimpleRestriction};
+use crate::xsd_model::SimpleRestriction;
 use roxmltree::{Children, Node};
 
 impl<'a> SimpleRestriction<'a> {
     pub fn parse(node: Node<'a, '_>) -> Result<Self, String> {
         let mut res = Self::default();
-
-        let mut iter = node.children().filter(|n| n.is_element());
-        while let Some(ch) = iter.next() {
-            let element_type = ch.xsd_type()?;
-            if element_type == ElementType::Annotation {
-                res.annotation = Some(Annotation::parse(ch)?);
-            }
-        }
-
-        res.annotation = annotation_first(node);
-        res.model = SimpleRestrictionModel::parse(node)?;
-        res.attr_decls = AttrDecls::parse(node)?;
+        res.annotation = annotation_first(node)?;
+        let mut iter = node.element_children();
+        res.model = SimpleRestrictionModel::parse(&mut iter)?;
+        res.attr_decls = AttrDecls::parse(iter)?;
 
         let mut base = None;
 

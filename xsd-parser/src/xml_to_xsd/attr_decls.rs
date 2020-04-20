@@ -1,13 +1,13 @@
-use crate::xml_to_xsd::{ElementChildren_, GroupErr, XsdNode};
+use crate::xml_to_xsd::XsdNode;
 use crate::xsd_model::elements::ElementType;
 use crate::xsd_model::groups::attr_decls::AttrDecls;
 use crate::xsd_model::{AnyAttribute, LocalAttribute};
 use roxmltree::Node;
 
 impl<'a> AttrDecls<'a> {
-    pub fn parse(node: Node<'a, '_>) -> Result<Self, String> {
+    pub fn parse(iter: impl Iterator<Item = Node<'a, 'a>>) -> Result<Self, String> {
         let mut res = Self::default();
-        for ch in node.element_children() {
+        for ch in iter {
             match ch.xsd_type()? {
                 ElementType::Attribute => res.attributes.push(LocalAttribute::parse(ch)?),
                 ElementType::AttributeGroup => unimplemented!("AttributeGroupRef::parse"), //res.attribute_groups.push(AttributeGroupRef::parse(ch)?), //TODO:  AttributeGroupRef::parse
@@ -21,7 +21,7 @@ impl<'a> AttrDecls<'a> {
 
 #[cfg(test)]
 mod test {
-    use crate::xml_to_xsd::{ElementChildren_, GroupErr};
+    use crate::xml_to_xsd::{ElementChildren, ElementChildren_};
     use crate::xsd_model::groups::attr_decls::AttrDecls;
 
     #[test]
@@ -36,8 +36,11 @@ mod test {
                    </root>"#,
         )
         .unwrap();
+
         let root = doc.root_element();
-        let res = AttrDecls::parse(root).unwrap();
+        let mut iter = root.element_children();
+
+        let res = AttrDecls::parse(&mut iter).unwrap();
         assert_eq!(res.attribute_groups.len(), 0);
         assert_eq!(res.attributes.len(), 3);
         assert!(res.any_attribute.is_some());

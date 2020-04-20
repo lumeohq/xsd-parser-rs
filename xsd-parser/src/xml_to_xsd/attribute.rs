@@ -99,9 +99,6 @@ impl<'a> LocalAttribute<'a> {
             };
         }
 
-        let name =
-            name.ok_or_else(|| format!("Name required for xsd:topLevelAttribute: {:?}", node))?;
-
         Ok(Self {
             annotation,
             simple_type,

@@ -1,18 +1,16 @@
 use crate::xml_to_xsd::utils::annotation_first;
-use crate::xml_to_xsd::XsdNode;
-use crate::xsd_model::groups::facets::Facets;
+use crate::xml_to_xsd::ElementChildren_;
 use crate::xsd_model::groups::simple_restriction_model::SimpleRestrictionModel;
 use crate::xsd_model::simple_types::qname::QName;
-use crate::xsd_model::Annotation;
-use crate::xsd_model::LocalSimpleType;
 use crate::xsd_model::Restriction;
 use roxmltree::Node;
 
 impl<'a> Restriction<'a> {
     pub fn parse(node: Node<'a, '_>) -> Result<Self, String> {
         let mut res = Self::default();
-        res.annotation = annotation_first(node);
-        res.model = SimpleRestrictionModel::parse(node)?;
+        res.annotation = annotation_first(node)?;
+        let mut iter = node.element_children().skip(1); // TODO: fix this
+        res.model = SimpleRestrictionModel::parse(&mut iter)?;
 
         for attr in node.attributes() {
             match attr.name() {

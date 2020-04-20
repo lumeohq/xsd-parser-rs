@@ -31,8 +31,7 @@ use crate::xsd_model::simple_types::any_uri::AnyUri;
 use crate::xsd_model::simple_types::id::Id;
 use crate::xsd_model::simple_types::language::Language;
 use crate::xsd_model::simple_types::ncname::NCName;
-use roxmltree::{Attribute, Children, Node};
-use std::str::FromStr;
+use roxmltree::{Attribute, Node};
 
 pub const XSD_NS_URI: &str = "http://www.w3.org/2001/XMLSchema";
 
@@ -70,16 +69,13 @@ impl_from_attr!(Language);
 impl_from_attr!(Id);
 impl_from_attr!(NCName);
 
-pub enum GroupErr<'a> {
-    ElementParsing(String),
-    InvalidNode(Node<'a, 'a>),
+#[derive(Default, Debug)]
+pub struct GroupResult<'a, T> {
+    pub res: Option<T>,
+    pub end_node: Option<Node<'a, 'a>>,
 }
 
-impl From<String> for GroupErr<'_> {
-    fn from(s: String) -> Self {
-        GroupErr::ElementParsing(s)
-    }
-}
+impl<'a, T> GroupResult<'a, T> {}
 
 pub trait GroupResultConvert<T> {
     fn into(&self) -> Result<T, String>;
@@ -96,9 +92,10 @@ impl<'a, 'input: 'a> Iterator for ElementChildren<'a, 'input> {
 
     #[inline]
     fn next(&mut self) -> Option<Self::Item> {
-        if self.front == self.back {
+        if self.front.is_none() {
+            None
+        } else if self.front == self.back {
             let node = self.front.take();
-            self.back = None;
             node
         } else {
             let node = self.front.take();
@@ -110,10 +107,20 @@ impl<'a, 'input: 'a> Iterator for ElementChildren<'a, 'input> {
 
 impl<'a, 'input: 'a> ElementChildren<'a, 'input> {
     #[inline]
-    fn prev(&mut self) -> Option<Node<'a, 'input>> {
-        let node = self.front.take();
-        self.front = node.as_ref().and_then(Node::prev_sibling_element);
-        node
+    pub fn prev(&mut self) -> Option<Node<'a, 'input>> {
+        if self.front.is_none() {
+            self.front = self.back.as_ref().and_then(Node::prev_sibling_element);
+            self.front.clone()
+        } else {
+            let node = self.front.take();
+            self.front = node.as_ref().and_then(Node::prev_sibling_element);
+            node
+        }
+    }
+
+    #[inline]
+    fn has_next(&self) -> bool {
+        self.front.is_none()
     }
 }
 
