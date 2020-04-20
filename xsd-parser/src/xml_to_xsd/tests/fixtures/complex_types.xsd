@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--<?xml-stylesheet type="text/xsl" href="onvif-schema-viewer.xsl"?>-->
+<!--
+
+-->
+<xs:schema
+        xmlns:tt="http://www.onvif.org/ver10/schema"
+		xmlns="http://www.w3.org/2001/XMLSchema"
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://www.onvif.org/ver10/schema"
+        version="1.0"
+>
+	<!--=========COMPLEX TYPES===========-->
+	<!--= 1 sequence ==============++====-->
+	<xs:complexType name="IntRange" vendorSpecificAttr="Whatever!">
+		<xs:annotation>
+			<xs:documentation>Doc Text</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Min" type="xs:int"/>
+			<xs:element name="Max" type="xs:int"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--= 2 attrDecls ===================-->
+	<xs:complexType name="IntRectangle">
+		<xs:annotation>
+			<xs:documentation>Rectangle defined by lower left corner position and size. Units are pixel.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="token" type="tt:ReferenceToken" use="required">
+			<xs:annotation>
+				<xs:documentation>Unique identifier referencing the physical entity.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="y" type="xs:int" use="required"/>
+		<xs:attribute name="width" type="xs:int" use="required"/>
+		<xs:attribute name="height" type="xs:int" use="required"/>
+		<xs:anyAttribute namespace='##other' />
+	</xs:complexType>
+	<!--= 3 complexContent ================-->
+	<xs:complexType name="VideoSource">
+		<xs:annotation>
+			<xs:documentation>Representation of a physical video input.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="tt:DeviceEntity">
+				<xs:sequence>
+					<xs:element name="Framerate" type="xs:float">
+						<xs:annotation>
+							<xs:documentation>Frame rate in frames per second.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Resolution" type="tt:VideoResolution">
+						<xs:annotation>
+							<xs:documentation>Horizontal and vertical resolution</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Imaging" type="tt:ImagingSettings" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Optional configuration of the image sensor.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Extension" type="tt:VideoSourceExtension" minOccurs="0"/>
+				</xs:sequence>
+				<xs:anyAttribute processContents="lax"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+
+
+</xs:schema>
