@@ -3,10 +3,10 @@ use crate::xsd_model::elements::ElementType;
 use crate::xsd_model::groups::attr_decls::AttrDecls;
 use crate::xsd_model::groups::type_def_particle::TypeDefParticle;
 use crate::xsd_model::simple_types::qname::QName;
-use crate::xsd_model::{Annotation, Extension};
+use crate::xsd_model::{Annotation, ComplexRestriction};
 use roxmltree::Node;
 
-impl<'a> Extension<'a> {
+impl<'a> ComplexRestriction<'a> {
     pub fn parse(node: Node<'a, '_>) -> Result<Self, String> {
         let mut res = Self::default();
 
@@ -53,17 +53,17 @@ impl<'a> Extension<'a> {
 #[cfg(test)]
 mod test {
     use crate::xsd_model::groups::type_def_particle::TypeDefParticle;
-    use crate::xsd_model::Extension;
+    use crate::xsd_model::ComplexRestriction;
 
     #[test]
     fn test_empty() {
         let doc = roxmltree::Document::parse(
-            r#"<xs:extension base="tns:BarType" xmlns:xs="http://www.w3.org/2001/XMLSchema" a='a' b='b' id="ID">
-                    </xs:extension>"#,
+            r#"<xs:restriction base="tns:BarType" xmlns:xs="http://www.w3.org/2001/XMLSchema" a='a' b='b' id="ID">
+                    </xs:restriction>"#,
         )
         .unwrap();
         let root = doc.root_element();
-        let res = Extension::parse(root).unwrap();
+        let res = ComplexRestriction::parse(root).unwrap();
         assert!(res.annotation.is_none());
         assert_eq!(res.base.name, "BarType");
         assert_eq!(res.base.prefix, Some("tns"));
@@ -74,9 +74,9 @@ mod test {
     }
 
     #[test]
-    fn test() {
+    fn test_full() {
         let doc = roxmltree::Document::parse(
-            r###"<xs:extension base="tns:BarType" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            r###"<xs:restriction base="tns:BarType" xmlns:xs="http://www.w3.org/2001/XMLSchema">
                         <xs:annotation>
 							<xs:documentation>Text</xs:documentation>
 						</xs:annotation>
@@ -89,11 +89,11 @@ mod test {
                         <xs:attribute name="Attr2" type="xs:anyURI"/>
                         <xs:attribute name="Attr3" type="xs:unsignedInt" use="required"/>
                         <xs:anyAttribute namespace="##other" processContents="lax"/>
-                    </xs:extension>"###,
+                    </xs:restriction>"###,
         )
         .unwrap();
         let root = doc.root_element();
-        let res = Extension::parse(root).unwrap();
+        let res = ComplexRestriction::parse(root).unwrap();
         assert!(res.annotation.is_some());
         if let TypeDefParticle::Sequence(val) = res.type_def_particle.unwrap() {
             assert!(val.annotation.is_some());
@@ -101,6 +101,26 @@ mod test {
             panic!()
         }
 
+        let attr = &res.attr_decls;
+        assert_eq!(attr.attributes.len(), 3);
+        assert_eq!(attr.any_attribute.as_ref().unwrap().process_contents, "lax");
+    }
+
+    #[test]
+    fn test_only_attr_decls() {
+        let doc = roxmltree::Document::parse(
+            r###"<xs:restriction base="tns:BarType" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                        <xs:attribute name="Attr1" type="xs:unsignedInt" use="required"/>
+                        <xs:attribute name="Attr2" type="xs:anyURI"/>
+                        <xs:attribute name="Attr3" type="xs:unsignedInt" use="required"/>
+                        <xs:anyAttribute namespace="##other" processContents="lax"/>
+                    </xs:restriction>"###,
+        )
+        .unwrap();
+        let root = doc.root_element();
+        let res = ComplexRestriction::parse(root).unwrap();
+        assert!(res.annotation.is_none());
+        assert!(res.type_def_particle.is_none());
         let attr = &res.attr_decls;
         assert_eq!(attr.attributes.len(), 3);
         assert_eq!(attr.any_attribute.as_ref().unwrap().process_contents, "lax");

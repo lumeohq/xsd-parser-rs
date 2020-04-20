@@ -25,9 +25,9 @@ use crate::xsd_model::RawAttribute;
 //      xsd:anyAttribute [0..1]
 //
 // Attributes
-// Any attribute	[0..*]		Namespace: ##other, Process Contents: lax	from type xsd:openAttrs
-// id	[0..1]	xsd:ID		from type xsd:annotated
-// base	[1..1]	xsd:QName
+// Any attribute	[0..*]		        Namespace: ##other, Process Contents: lax	from type xsd:openAttrs
+// id	            [0..1]	xsd:ID		                                            from type xsd:annotated
+// base	            [1..1]	xsd:QName
 //
 // Used by
 // Element xsd:extension

@@ -5,6 +5,7 @@ pub mod app_info;
 pub mod attr_decls;
 pub mod attribute;
 pub mod complex_content;
+pub mod complex_restriction;
 pub mod complex_type;
 pub mod complex_type_model;
 pub mod documentation;

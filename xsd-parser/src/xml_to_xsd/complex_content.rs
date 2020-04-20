@@ -12,7 +12,11 @@ impl<'a> ComplexContent<'a> {
         for ch in node.children().filter(|n| n.is_element()) {
             match ch.xsd_type()? {
                 ElementType::Annotation => annotation = Some(Annotation::parse(ch)?),
-                //ElementType::Restriction => content = Some(ComplexContentChoice::Restriction(Box::new(ComplexRestriction::parse(ch)))),
+                ElementType::Restriction => {
+                    content = Some(ComplexContentChoice::Restriction(Box::new(
+                        ComplexRestriction::parse(ch)?,
+                    )))
+                }
                 ElementType::Extension => {
                     content = Some(ComplexContentChoice::Extension(Box::new(Extension::parse(
                         ch,

@@ -1,6 +1,9 @@
 use crate::xsd_model::elements::annotation::Annotation;
 use crate::xsd_model::groups::attr_decls::AttrDecls;
 use crate::xsd_model::groups::type_def_particle::TypeDefParticle;
+use crate::xsd_model::simple_types::qname::QName;
+use crate::xsd_model::simple_types::Id;
+use crate::xsd_model::RawAttribute;
 
 // xsd:complexRestrictionType
 // Complex type information
@@ -34,9 +37,12 @@ use crate::xsd_model::groups::type_def_particle::TypeDefParticle;
 //      xsd:openAttrs
 //          xsd:annotated
 //              xsd:complexRestrictionType
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct ComplexRestrictionType<'a> {
     pub annotation: Option<Annotation<'a>>,
-    pub type_def_particle: TypeDefParticle<'a>,
+    pub type_def_particle: Option<TypeDefParticle<'a>>,
     pub attr_decls: AttrDecls<'a>,
+    pub attributes: Vec<RawAttribute<'a>>,
+    pub id: Id<'a>,
+    pub base: QName<'a>,
 }

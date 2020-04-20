@@ -3,7 +3,7 @@ use crate::xsd_model::elements::ElementType;
 use crate::xsd_model::groups::attr_decls::AttrDecls;
 use crate::xsd_model::groups::complex_type_model::ComplexTypeModel;
 use crate::xsd_model::groups::type_def_particle::TypeDefParticle;
-use crate::xsd_model::SimpleContent;
+use crate::xsd_model::{ComplexContent, SimpleContent};
 use roxmltree::Node;
 
 impl<'a> ComplexTypeModel<'a> {
@@ -12,13 +12,15 @@ impl<'a> ComplexTypeModel<'a> {
             .first_element_child()
             .ok_or_else(|| format!("Content xsd:complexTypeModel required: {:?}", node))?;
 
-        let type_def_particle;
+        let mut type_def_particle = None;
 
         match first_child.xsd_type()? {
             ElementType::SimpleContent => {
                 return Ok(Self::SimpleContent(SimpleContent::parse(first_child)?))
             }
-            // ElementType::ComplexContent => Self::ComplexContent(ComplexContent::parse(first_child)?)
+            ElementType::ComplexContent => {
+                return Ok(Self::ComplexContent(ComplexContent::parse(first_child)?))
+            }
             x => type_def_particle = TypeDefParticle::parse(first_child, x)?,
         };
 
@@ -36,7 +38,7 @@ impl<'a> ComplexTypeModel<'a> {
 mod test {
     use crate::xsd_model::groups::complex_type_model::ComplexTypeModel;
     use crate::xsd_model::groups::type_def_particle::TypeDefParticle;
-    use crate::xsd_model::{MaxOccurs, SimpleContentChoice};
+    use crate::xsd_model::{ComplexContentChoice, MaxOccurs, SimpleContentChoice};
 
     #[test]
     fn test_parse_simple_content() {
@@ -92,7 +94,7 @@ mod test {
                                 <xs:annotation>
                                     <xs:documentation>Text</xs:documentation>
                                 </xs:annotation>
-                                <xs:restriction base="xs:anyType">
+                                <xs:restriction base="xs:anyType" a='a'>
                                     <xs:attribute name="Attr1" type="xs:unsignedInt" use="required"/>
                                     <xs:attribute name="Attr2" type="xs:anyURI"/>
                                     <xs:attribute name="Attr3" type="xs:unsignedInt" use="required"/>
@@ -105,7 +107,31 @@ mod test {
         .unwrap();
 
         let root = doc.root_element();
-    } //TODO: finish him!
+        if let ComplexTypeModel::ComplexContent(cc) = ComplexTypeModel::parse(root).unwrap() {
+            assert!(cc.annotation.is_some());
+            assert_eq!(
+                cc.annotation
+                    .unwrap()
+                    .documentations
+                    .first()
+                    .unwrap()
+                    .text
+                    .unwrap(),
+                "Text"
+            );
+
+            if let ComplexContentChoice::Restriction(restr) = cc.content {
+                assert_eq!(restr.base.name, "anyType");
+                assert_eq!(restr.base.prefix.unwrap(), "xs");
+                assert_eq!(restr.attributes.len(), 1);
+                assert_eq!(restr.attr_decls.attributes.len(), 3);
+            } else {
+                panic!("Test failed!");
+            }
+        } else {
+            panic!("Test failed!");
+        }
+    }
 
     #[test]
     fn test_parse_content() {
