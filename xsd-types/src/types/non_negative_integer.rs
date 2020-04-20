@@ -7,19 +7,17 @@ use std::str::FromStr;
 use yaserde::{YaDeserialize, YaSerialize};
 
 #[derive(Default, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
-pub struct NonNegativeInteger {
-    pub value: BigUint,
-}
+pub struct NonNegativeInteger(BigUint);
 
 impl NonNegativeInteger {
     pub fn from_biguint(bigint: BigUint) -> Self {
-        NonNegativeInteger { value: bigint }
+        NonNegativeInteger(bigint)
     }
 }
 
 impl ToBigUint for NonNegativeInteger {
     fn to_biguint(&self) -> Option<BigUint> {
-        Some(self.value.clone())
+        Some(self.0.clone())
     }
 }
 
@@ -31,14 +29,14 @@ impl FromStr for NonNegativeInteger {
         if value < 0.to_biguint().unwrap() {
             Err("Bad value for NonNegativeInteger".to_string())
         } else {
-            Ok(NonNegativeInteger { value })
+            Ok(NonNegativeInteger(value))
         }
     }
 }
 
 impl fmt::Display for NonNegativeInteger {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.value.to_str_radix(10))
+        write!(f, "{}", self.0.to_str_radix(10))
     }
 }
 
@@ -51,23 +49,19 @@ mod tests {
     fn non_negative_integer_parse_test() {
         assert_eq!(
             NonNegativeInteger::from_str("12678967543233"),
-            Ok(NonNegativeInteger {
-                value: BigUint::from_str("12678967543233").unwrap()
-            })
+            Ok(NonNegativeInteger(
+                BigUint::from_str("12678967543233").unwrap()
+            ))
         );
 
         assert_eq!(
             NonNegativeInteger::from_str("+100000"),
-            Ok(NonNegativeInteger {
-                value: 100000.to_biguint().unwrap()
-            })
+            Ok(NonNegativeInteger(100000.to_biguint().unwrap()))
         );
 
         assert_eq!(
             NonNegativeInteger::from_str("0"),
-            Ok(NonNegativeInteger {
-                value: 0.to_biguint().unwrap()
-            })
+            Ok(NonNegativeInteger(0.to_biguint().unwrap()))
         );
 
         // Invalid values.
@@ -82,28 +76,16 @@ mod tests {
     #[test]
     fn non_negative_integer_display_test() {
         assert_eq!(
-            NonNegativeInteger {
-                value: BigUint::from_str("12678967543233").unwrap()
-            }
-            .to_string(),
+            NonNegativeInteger(BigUint::from_str("12678967543233").unwrap()).to_string(),
             "12678967543233"
         );
 
         assert_eq!(
-            NonNegativeInteger {
-                value: 100000.to_biguint().unwrap()
-            }
-            .to_string(),
+            NonNegativeInteger(100000.to_biguint().unwrap()).to_string(),
             "100000"
         );
 
-        assert_eq!(
-            NonNegativeInteger {
-                value: 0.to_biguint().unwrap()
-            }
-            .to_string(),
-            "0"
-        );
+        assert_eq!(NonNegativeInteger(0.to_biguint().unwrap()).to_string(), "0");
     }
 
     #[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]

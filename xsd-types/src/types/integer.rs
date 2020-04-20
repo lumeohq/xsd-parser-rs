@@ -7,19 +7,17 @@ use std::str::FromStr;
 use yaserde::{YaDeserialize, YaSerialize};
 
 #[derive(Default, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
-pub struct Integer {
-    pub value: BigInt,
-}
+pub struct Integer(BigInt);
 
 impl Integer {
     pub fn from_bigint(bigint: BigInt) -> Self {
-        Integer { value: bigint }
+        Integer(bigint)
     }
 }
 
 impl ToBigInt for Integer {
     fn to_bigint(&self) -> Option<BigInt> {
-        Some(self.value.clone())
+        Some(self.0.clone())
     }
 }
 
@@ -27,15 +25,13 @@ impl FromStr for Integer {
     type Err = ParseBigIntError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(Integer {
-            value: BigInt::from_str(s)?,
-        })
+        Ok(Integer(BigInt::from_str(s)?))
     }
 }
 
 impl fmt::Display for Integer {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.value.to_str_radix(10))
+        write!(f, "{}", self.0.to_str_radix(10))
     }
 }
 
@@ -48,30 +44,19 @@ mod tests {
     fn integer_parse_test() {
         assert_eq!(
             Integer::from_str("12678967543233"),
-            Ok(Integer {
-                value: BigInt::from_str("12678967543233").unwrap()
-            })
+            Ok(Integer(BigInt::from_str("12678967543233").unwrap()))
         );
 
         assert_eq!(
             Integer::from_str("+100000"),
-            Ok(Integer {
-                value: 100000.to_bigint().unwrap()
-            })
+            Ok(Integer(100000.to_bigint().unwrap()))
         );
 
-        assert_eq!(
-            Integer::from_str("0"),
-            Ok(Integer {
-                value: 0.to_bigint().unwrap()
-            })
-        );
+        assert_eq!(Integer::from_str("0"), Ok(Integer(0.to_bigint().unwrap())));
 
         assert_eq!(
             Integer::from_str("-1"),
-            Ok(Integer {
-                value: -1.to_bigint().unwrap()
-            })
+            Ok(Integer(-1.to_bigint().unwrap()))
         );
 
         // Invalid values.
@@ -84,36 +69,15 @@ mod tests {
     #[test]
     fn integer_display_test() {
         assert_eq!(
-            Integer {
-                value: BigInt::from_str("12678967543233").unwrap()
-            }
-            .to_string(),
+            Integer(BigInt::from_str("12678967543233").unwrap()).to_string(),
             "12678967543233"
         );
 
-        assert_eq!(
-            Integer {
-                value: 100000.to_bigint().unwrap()
-            }
-            .to_string(),
-            "100000"
-        );
+        assert_eq!(Integer(100000.to_bigint().unwrap()).to_string(), "100000");
 
-        assert_eq!(
-            Integer {
-                value: 0.to_bigint().unwrap()
-            }
-            .to_string(),
-            "0"
-        );
+        assert_eq!(Integer(0.to_bigint().unwrap()).to_string(), "0");
 
-        assert_eq!(
-            Integer {
-                value: -1.to_bigint().unwrap()
-            }
-            .to_string(),
-            "-1"
-        );
+        assert_eq!(Integer(-1.to_bigint().unwrap()).to_string(), "-1");
     }
 
     #[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]

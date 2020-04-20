@@ -7,19 +7,17 @@ use std::str::FromStr;
 use yaserde::{YaDeserialize, YaSerialize};
 
 #[derive(Default, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
-pub struct PositiveInteger {
-    pub value: BigUint,
-}
+pub struct PositiveInteger(BigUint);
 
 impl PositiveInteger {
     pub fn from_biguint(bigint: BigUint) -> Self {
-        PositiveInteger { value: bigint }
+        PositiveInteger(bigint)
     }
 }
 
 impl ToBigUint for PositiveInteger {
     fn to_biguint(&self) -> Option<BigUint> {
-        Some(self.value.clone())
+        Some(self.0.clone())
     }
 }
 
@@ -31,14 +29,14 @@ impl FromStr for PositiveInteger {
         if value <= 0.to_biguint().unwrap() {
             Err("Bad value for PositiveInteger".to_string())
         } else {
-            Ok(PositiveInteger { value })
+            Ok(PositiveInteger(value))
         }
     }
 }
 
 impl fmt::Display for PositiveInteger {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.value.to_str_radix(10))
+        write!(f, "{}", self.0.to_str_radix(10))
     }
 }
 
@@ -51,16 +49,14 @@ mod tests {
     fn positive_integer_parse_test() {
         assert_eq!(
             PositiveInteger::from_str("12678967543233"),
-            Ok(PositiveInteger {
-                value: BigUint::from_str("12678967543233").unwrap()
-            })
+            Ok(PositiveInteger(
+                BigUint::from_str("12678967543233").unwrap()
+            ))
         );
 
         assert_eq!(
             PositiveInteger::from_str("+100000"),
-            Ok(PositiveInteger {
-                value: 100000.to_biguint().unwrap()
-            })
+            Ok(PositiveInteger(100000.to_biguint().unwrap()))
         );
 
         // Invalid values.
@@ -78,18 +74,12 @@ mod tests {
     #[test]
     fn positive_integer_display_test() {
         assert_eq!(
-            PositiveInteger {
-                value: BigUint::from_str("12678967543233").unwrap()
-            }
-            .to_string(),
+            PositiveInteger(BigUint::from_str("12678967543233").unwrap()).to_string(),
             "12678967543233"
         );
 
         assert_eq!(
-            PositiveInteger {
-                value: 100000.to_biguint().unwrap()
-            }
-            .to_string(),
+            PositiveInteger(100000.to_biguint().unwrap()).to_string(),
             "100000"
         );
     }

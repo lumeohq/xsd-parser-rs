@@ -7,19 +7,17 @@ use std::str::FromStr;
 use yaserde::{YaDeserialize, YaSerialize};
 
 #[derive(Default, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
-pub struct NegativeInteger {
-    pub value: BigInt,
-}
+pub struct NegativeInteger(BigInt);
 
 impl NegativeInteger {
     pub fn from_bigint(bigint: BigInt) -> Self {
-        NegativeInteger { value: bigint }
+        NegativeInteger(bigint)
     }
 }
 
 impl ToBigInt for NegativeInteger {
     fn to_bigint(&self) -> Option<BigInt> {
-        Some(self.value.clone())
+        Some(self.0.clone())
     }
 }
 
@@ -31,14 +29,14 @@ impl FromStr for NegativeInteger {
         if value >= 0.to_bigint().unwrap() {
             Err("Bad value for NegativeInteger".to_string())
         } else {
-            Ok(NegativeInteger { value })
+            Ok(NegativeInteger(value))
         }
     }
 }
 
 impl fmt::Display for NegativeInteger {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.value.to_str_radix(10))
+        write!(f, "{}", self.0.to_str_radix(10))
     }
 }
 
@@ -51,23 +49,19 @@ mod tests {
     fn negative_integer_parse_test() {
         assert_eq!(
             NegativeInteger::from_str("-12678967543233"),
-            Ok(NegativeInteger {
-                value: BigInt::from_str("-12678967543233").unwrap()
-            })
+            Ok(NegativeInteger(
+                BigInt::from_str("-12678967543233").unwrap()
+            ))
         );
 
         assert_eq!(
             NegativeInteger::from_str("-100000"),
-            Ok(NegativeInteger {
-                value: -100000.to_bigint().unwrap()
-            })
+            Ok(NegativeInteger(-100000.to_bigint().unwrap()))
         );
 
         assert_eq!(
             NegativeInteger::from_str("-1"),
-            Ok(NegativeInteger {
-                value: -1.to_bigint().unwrap()
-            })
+            Ok(NegativeInteger(-1.to_bigint().unwrap()))
         );
 
         // Invalid values.
@@ -85,28 +79,16 @@ mod tests {
     #[test]
     fn negative_integer_display_test() {
         assert_eq!(
-            NegativeInteger {
-                value: BigInt::from_str("-12678967543233").unwrap()
-            }
-            .to_string(),
+            NegativeInteger(BigInt::from_str("-12678967543233").unwrap()).to_string(),
             "-12678967543233"
         );
 
         assert_eq!(
-            NegativeInteger {
-                value: -100000.to_bigint().unwrap()
-            }
-            .to_string(),
+            NegativeInteger(-100000.to_bigint().unwrap()).to_string(),
             "-100000"
         );
 
-        assert_eq!(
-            NegativeInteger {
-                value: -1.to_bigint().unwrap()
-            }
-            .to_string(),
-            "-1"
-        );
+        assert_eq!(NegativeInteger(-1.to_bigint().unwrap()).to_string(), "-1");
     }
 
     #[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]

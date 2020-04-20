@@ -7,19 +7,17 @@ use std::str::FromStr;
 use yaserde::{YaDeserialize, YaSerialize};
 
 #[derive(Default, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
-pub struct NonPositiveInteger {
-    pub value: BigInt,
-}
+pub struct NonPositiveInteger(BigInt);
 
 impl NonPositiveInteger {
     pub fn from_bigint(bigint: BigInt) -> Self {
-        NonPositiveInteger { value: bigint }
+        NonPositiveInteger(bigint)
     }
 }
 
 impl ToBigInt for NonPositiveInteger {
     fn to_bigint(&self) -> Option<BigInt> {
-        Some(self.value.clone())
+        Some(self.0.clone())
     }
 }
 
@@ -31,14 +29,14 @@ impl FromStr for NonPositiveInteger {
         if value > 0.to_bigint().unwrap() {
             Err("Bad value for NonPositiveInteger".to_string())
         } else {
-            Ok(NonPositiveInteger { value })
+            Ok(NonPositiveInteger(value))
         }
     }
 }
 
 impl fmt::Display for NonPositiveInteger {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.value.to_str_radix(10))
+        write!(f, "{}", self.0.to_str_radix(10))
     }
 }
 
@@ -51,30 +49,24 @@ mod tests {
     fn non_positive_integer_parse_test() {
         assert_eq!(
             NonPositiveInteger::from_str("-12678967543233"),
-            Ok(NonPositiveInteger {
-                value: BigInt::from_str("-12678967543233").unwrap()
-            })
+            Ok(NonPositiveInteger(
+                BigInt::from_str("-12678967543233").unwrap()
+            ))
         );
 
         assert_eq!(
             NonPositiveInteger::from_str("-100000"),
-            Ok(NonPositiveInteger {
-                value: -100000.to_bigint().unwrap()
-            })
+            Ok(NonPositiveInteger(-100000.to_bigint().unwrap()))
         );
 
         assert_eq!(
             NonPositiveInteger::from_str("-1"),
-            Ok(NonPositiveInteger {
-                value: -1.to_bigint().unwrap()
-            })
+            Ok(NonPositiveInteger(-1.to_bigint().unwrap()))
         );
 
         assert_eq!(
             NonPositiveInteger::from_str("0"),
-            Ok(NonPositiveInteger {
-                value: 0.to_bigint().unwrap()
-            })
+            Ok(NonPositiveInteger(0.to_bigint().unwrap()))
         );
 
         // Invalid values.
@@ -89,34 +81,19 @@ mod tests {
     #[test]
     fn non_positive_integer_display_test() {
         assert_eq!(
-            NonPositiveInteger {
-                value: BigInt::from_str("-12678967543233").unwrap()
-            }
-            .to_string(),
+            NonPositiveInteger(BigInt::from_str("-12678967543233").unwrap()).to_string(),
             "-12678967543233"
         );
 
         assert_eq!(
-            NonPositiveInteger {
-                value: -100000.to_bigint().unwrap()
-            }
-            .to_string(),
+            NonPositiveInteger(-100000.to_bigint().unwrap()).to_string(),
             "-100000"
         );
 
-        assert_eq!(
-            NonPositiveInteger {
-                value: 0.to_bigint().unwrap()
-            }
-            .to_string(),
-            "0"
-        );
+        assert_eq!(NonPositiveInteger(0.to_bigint().unwrap()).to_string(), "0");
 
         assert_eq!(
-            NonPositiveInteger {
-                value: -1.to_bigint().unwrap()
-            }
-            .to_string(),
+            NonPositiveInteger(-1.to_bigint().unwrap()).to_string(),
             "-1"
         );
     }
