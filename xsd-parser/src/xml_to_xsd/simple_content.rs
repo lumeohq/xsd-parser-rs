@@ -1,6 +1,8 @@
 use crate::xml_to_xsd::XsdNode;
 use crate::xsd_model::elements::ElementType;
-use crate::xsd_model::{Annotation, SimpleContent, SimpleContentChoice, SimpleExtension};
+use crate::xsd_model::{
+    Annotation, SimpleContent, SimpleContentChoice, SimpleExtension, SimpleRestriction,
+};
 use roxmltree::Node;
 
 impl<'a> SimpleContent<'a> {
@@ -41,7 +43,9 @@ impl<'a> SimpleContentChoice<'a> {
             ElementType::Extension => {
                 SimpleContentChoice::Extension(Box::new(SimpleExtension::parse(node)?))
             }
-            //ElementType::Restriction => SimpleContentChoice::Restriction(Box::new(SimpleRestriction::parse(node)?)),
+            ElementType::Restriction => {
+                SimpleContentChoice::Restriction(Box::new(SimpleRestriction::parse(node)?))
+            }
             _ => {
                 return Err(format!(
                     "Invalid node for xsd:simpleContent content: {:?}",

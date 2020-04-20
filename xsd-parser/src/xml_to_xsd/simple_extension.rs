@@ -7,7 +7,6 @@ use roxmltree::Node;
 
 impl<'a> SimpleExtension<'a> {
     pub fn parse(node: Node<'a, '_>) -> Result<Self, String> {
-        println!("SimpleExtension: {:?}", node);
         let mut res = Self::default();
         let mut iter = node.element_children();
 
