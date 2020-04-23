@@ -1,4 +1,4 @@
-use crate::xml_to_xsd::{ElementChildren_, XsdNode};
+use crate::xml_to_xsd::{ElementChildren, XsdNode};
 use crate::xsd_model::elements::ElementType;
 use crate::xsd_model::groups::attr_decls::AttrDecls;
 use crate::xsd_model::groups::complex_type_model::ComplexTypeModel;

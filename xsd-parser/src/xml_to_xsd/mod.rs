@@ -59,7 +59,6 @@ impl XsdNode for roxmltree::Node<'_, '_> {
                 ));
             }
         }
-
         xsd_element_type(self.tag_name().name())
     }
 }
@@ -79,21 +78,13 @@ impl_from_attr!(Language);
 impl_from_attr!(Id);
 impl_from_attr!(NCName);
 
-#[derive(Default, Debug)]
-pub struct GroupResult<'a, T> {
-    pub res: Option<T>,
-    pub end_node: Option<Node<'a, 'a>>,
-}
-
-impl<'a, T> GroupResult<'a, T> {}
-
 #[derive(Clone)]
-pub struct ElementChildren<'a, 'input: 'a> {
+pub struct ElementChildrenIterator<'a, 'input: 'a> {
     front: Option<Node<'a, 'input>>,
     back: Option<Node<'a, 'input>>,
 }
 
-impl<'a, 'input: 'a> Iterator for ElementChildren<'a, 'input> {
+impl<'a, 'input: 'a> Iterator for ElementChildrenIterator<'a, 'input> {
     type Item = Node<'a, 'input>;
 
     #[inline]
@@ -110,7 +101,7 @@ impl<'a, 'input: 'a> Iterator for ElementChildren<'a, 'input> {
     }
 }
 
-impl<'a, 'input: 'a> ElementChildren<'a, 'input> {
+impl<'a, 'input: 'a> ElementChildrenIterator<'a, 'input> {
     #[inline]
     pub fn prev(&mut self) -> Option<Node<'a, 'input>> {
         if self.front.is_none() {
@@ -129,13 +120,13 @@ impl<'a, 'input: 'a> ElementChildren<'a, 'input> {
     }
 }
 
-pub trait ElementChildren_<'a, 'input: 'a> {
-    fn element_children(&self) -> ElementChildren<'a, 'input>;
+pub trait ElementChildren<'a, 'input: 'a> {
+    fn element_children(&self) -> ElementChildrenIterator<'a, 'input>;
 }
 
-impl<'a, 'input: 'a> ElementChildren_<'a, 'input> for Node<'a, 'input> {
-    fn element_children(&self) -> ElementChildren<'a, 'input> {
-        ElementChildren {
+impl<'a, 'input: 'a> ElementChildren<'a, 'input> for Node<'a, 'input> {
+    fn element_children(&self) -> ElementChildrenIterator<'a, 'input> {
+        ElementChildrenIterator {
             front: self.first_element_child(),
             back: self.last_element_child(),
         }

@@ -28,7 +28,7 @@ impl<'a> SimpleRestrictionModel<'a> {
 
 #[cfg(test)]
 mod test {
-    use crate::xml_to_xsd::ElementChildren_;
+    use crate::xml_to_xsd::ElementChildren;
     use crate::xsd_model::groups::facets::Facets;
     use crate::xsd_model::groups::simple_restriction_model::SimpleRestrictionModel;
 

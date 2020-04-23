@@ -5,21 +5,22 @@ use crate::xsd_model::{
     TopLevelAttribute, TopLevelComplexType, TopLevelElement, TopLevelSimpleType,
 };
 use roxmltree::Node;
+use std::rc::Rc;
 
 impl<'a> SchemaTop<'a> {
     pub fn parse(node: Node<'a, '_>, element_type: ElementType) -> Result<Self, String> {
         let res = match element_type {
             ElementType::SimpleType => {
-                SchemaTop::SimpleType(Box::new(TopLevelSimpleType::parse(node)?))
+                SchemaTop::SimpleType(Rc::new(TopLevelSimpleType::parse(node)?))
             }
             ElementType::ComplexType => {
-                SchemaTop::ComplexType(Box::new(TopLevelComplexType::parse(node)?))
+                SchemaTop::ComplexType(Rc::new(TopLevelComplexType::parse(node)?))
             }
-            ElementType::Group => SchemaTop::Group(Box::new(NamedGroup::parse(node)?)),
+            ElementType::Group => SchemaTop::Group(Rc::new(NamedGroup::parse(node)?)),
             //ElementType::AttributeGroup => SchemaTop::AttributeGroup(NamedAttributeGroup::parse(node)?),
-            ElementType::Element => SchemaTop::Element(Box::new(TopLevelElement::parse(node)?)),
+            ElementType::Element => SchemaTop::Element(Rc::new(TopLevelElement::parse(node)?)),
             ElementType::Attribute => {
-                SchemaTop::Attribute(Box::new(TopLevelAttribute::parse(node)?))
+                SchemaTop::Attribute(Rc::new(TopLevelAttribute::parse(node)?))
             }
             ElementType::Notation => unimplemented!("Not presented in ONVIF"), //SchemaTop::Notation(Notation::parse(node)?),
             _ => {

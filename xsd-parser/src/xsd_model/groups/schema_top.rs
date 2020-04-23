@@ -5,6 +5,7 @@ use crate::xsd_model::elements::element::TopLevelElement;
 use crate::xsd_model::elements::group::Group;
 use crate::xsd_model::elements::notation::Notation;
 use crate::xsd_model::elements::simple_type::TopLevelSimpleType;
+use std::rc::Rc;
 
 // xsd:schemaTop
 // This group is for the elements which occur freely at the top level of schemas. All of their types are based on the "annotated" type by extension.
@@ -28,11 +29,11 @@ use crate::xsd_model::elements::simple_type::TopLevelSimpleType;
 // Anonymous type of element xsd:schema
 #[derive(Debug)]
 pub enum SchemaTop<'a> {
-    SimpleType(Box<TopLevelSimpleType<'a>>),
-    ComplexType(Box<TopLevelComplexType<'a>>),
-    Group(Box<Group<'a>>),
-    AttributeGroup(Box<AttributeGroup<'a>>),
-    Element(Box<TopLevelElement<'a>>),
-    Attribute(Box<TopLevelAttribute<'a>>),
-    Notation(Box<Notation<'a>>),
+    SimpleType(Rc<TopLevelSimpleType<'a>>),
+    ComplexType(Rc<TopLevelComplexType<'a>>),
+    Group(Rc<Group<'a>>),
+    AttributeGroup(Rc<AttributeGroup<'a>>),
+    Element(Rc<TopLevelElement<'a>>),
+    Attribute(Rc<TopLevelAttribute<'a>>),
+    Notation(Rc<Notation<'a>>),
 }

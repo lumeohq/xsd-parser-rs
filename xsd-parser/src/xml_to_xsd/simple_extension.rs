@@ -1,5 +1,5 @@
 use crate::xml_to_xsd::utils::annotation_first;
-use crate::xml_to_xsd::ElementChildren_;
+use crate::xml_to_xsd::ElementChildren;
 use crate::xsd_model::groups::attr_decls::AttrDecls;
 use crate::xsd_model::simple_types::qname::QName;
 use crate::xsd_model::SimpleExtension;

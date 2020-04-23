@@ -3,9 +3,9 @@ use crate::xsd_model::groups::attr_decls::AttrDecls;
 use crate::xsd_model::groups::complex_type_model::ComplexTypeModel;
 use crate::xsd_model::groups::type_def_particle::TypeDefParticle;
 use crate::xsd_model::simple_types::derivation_set::DerivationSet;
-use crate::xsd_model::simple_types::qname::QName;
 use crate::xsd_model::simple_types::Id;
 use crate::xsd_model::{ComplexContent, RawAttribute, SimpleContent};
+use crate::xsd_model::simple_types::ncname::NCName;
 
 // xsd:topLevelComplexType
 // Complex type information
@@ -53,7 +53,7 @@ pub struct TopLevelComplexType<'a> {
     pub model: ComplexTypeModel<'a>,
     pub attributes: Vec<RawAttribute<'a>>,
     pub id: Id<'a>,
-    pub name: QName<'a>,
+    pub name: NCName<'a>,
     pub abstract_: bool,
     pub final_: Option<DerivationSet>,
     pub block: Option<DerivationSet>,

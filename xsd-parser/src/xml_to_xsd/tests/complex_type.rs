@@ -6,6 +6,7 @@ mod test {
     use crate::xsd_model::groups::type_def_particle::TypeDefParticle;
     use crate::xsd_model::{Annotation, TopLevelComplexType};
     use roxmltree::Document;
+    use std::rc::Rc;
 
     const TEXT: &str = include_str!("fixtures/complex_types.xsd");
     #[test]
@@ -19,15 +20,15 @@ mod test {
 
     fn next_complex_type<'a>(
         iter: &mut impl Iterator<Item = &'a (SchemaTop<'a>, Option<Annotation<'a>>)>,
-    ) -> &'a Box<TopLevelComplexType<'a>> {
+    ) -> &'a Rc<TopLevelComplexType<'a>> {
         match &iter.next().unwrap().0 {
             SchemaTop::ComplexType(ct) => ct,
             _ => panic!("Test failed!"),
         }
     }
 
-    fn test_1(ct: &Box<TopLevelComplexType<'_>>) {
-        assert_eq!(ct.name.name, "IntRange");
+    fn test_1(ct: &Rc<TopLevelComplexType<'_>>) {
+        assert_eq!(ct.name.0, "IntRange");
         assert_eq!(
             ct.annotation.as_ref().unwrap().doc_str(0).unwrap(),
             "Doc Text"
