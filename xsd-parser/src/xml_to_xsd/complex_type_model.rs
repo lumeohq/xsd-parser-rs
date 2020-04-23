@@ -17,8 +17,10 @@ impl<'a> ComplexTypeModel<'a> {
             }
         }
 
-        let first_child = first_child
-            .ok_or_else(|| format!("Content xsd:complexTypeModel required: {:?}", node))?;
+        let first_child = match first_child {
+            Some(x) => x,
+            None => return Ok(ComplexTypeModel::Content(None, Box::new(AttrDecls::default())))
+        };
 
         let type_def_particle;
 
