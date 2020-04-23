@@ -15,12 +15,12 @@ use crate::xsd_model::RawAttribute;
 //      Choice [1..1]                   from group xsd:complexTypeModel
 //          xsd:simpleContent
 //          xsd:complexContent
-//              Sequence [1..1]
-//                  Choice [0..1]           from group xsd:typeDefParticle
-//                      xsd:group
-//                      xsd:all    An "all" group that allows elements to appear in any order. Unlike other group types, does not allow other groups as children, only elements.
-//                      xsd:choice
-//                      xsd:sequence
+//          Sequence [1..1]
+//              Choice [0..1]           from group xsd:typeDefParticle
+//                  xsd:group
+//                  xsd:all    An "all" group that allows elements to appear in any order. Unlike other group types, does not allow other groups as children, only elements.
+//                  xsd:choice
+//                  xsd:sequence
 //              Choice [0..*]               from group xsd:attrDecls
 //                  xsd:attribute
 //                  xsd:attributeGroup
