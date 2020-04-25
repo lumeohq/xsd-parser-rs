@@ -7,6 +7,7 @@ use crate::xsd_model::simple_types::non_negative_integer::NonNegativeInteger;
 use crate::xsd_model::simple_types::qname::QName;
 use crate::xsd_model::simple_types::Id;
 use crate::xsd_model::{MaxOccurs, RawAttribute};
+use num_bigint::ToBigUint;
 
 // xsd:localElement
 // Complex type information
@@ -77,8 +78,8 @@ impl Default for LocalElement<'_> {
             name: None,
             ref_: None,
             type_: None,
-            min_occurs: NonNegativeInteger(1),
-            max_occurs: MaxOccurs::Bounded(NonNegativeInteger(1)),
+            min_occurs: NonNegativeInteger::from_biguint(1.to_biguint().unwrap()),
+            max_occurs: MaxOccurs::Bounded(NonNegativeInteger::from_biguint(1.to_biguint().unwrap())),
             default: None,
             fixed: None,
             nillable: false,

@@ -25,6 +25,7 @@ impl<'a> Any<'a> {
 mod test {
     use crate::xsd_model::elements::any::Any;
     use crate::xsd_model::MaxOccurs;
+    use num_bigint::ToBigUint;
 
     #[test]
     fn test_parse() {
@@ -38,7 +39,7 @@ mod test {
         assert_eq!(res.attributes.len(), 3);
         assert_eq!(res.namespace, "##any");
         assert_eq!(res.process_contents, "lax");
-        assert_eq!(res.min_occurs.0, 0);
+        assert_eq!(res.min_occurs.0, 0_i32.to_biguint().unwrap());
         assert_eq!(res.max_occurs, MaxOccurs::Unbounded);
     }
 }

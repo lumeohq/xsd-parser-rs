@@ -2,6 +2,7 @@ use crate::xsd_model::elements::annotation::Annotation;
 use crate::xsd_model::simple_types::non_negative_integer::NonNegativeInteger;
 use crate::xsd_model::simple_types::Id;
 use crate::xsd_model::{MaxOccurs, RawAttribute};
+use num_bigint::ToBigUint;
 
 // xsd:any
 // See http://www.w3.org/TR/xmlschema-1/#element-any.
@@ -45,8 +46,8 @@ impl<'a> Default for Any<'a> {
             id: None,
             namespace: "##any",
             process_contents: "strict",
-            min_occurs: NonNegativeInteger(1),
-            max_occurs: MaxOccurs::Bounded(NonNegativeInteger(1)),
+            min_occurs: NonNegativeInteger::from_biguint(1.to_biguint().unwrap()),
+            max_occurs: MaxOccurs::Bounded(NonNegativeInteger::from_biguint(1.to_biguint().unwrap())),
         }
     }
 }
