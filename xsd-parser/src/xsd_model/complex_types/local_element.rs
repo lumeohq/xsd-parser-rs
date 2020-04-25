@@ -79,7 +79,9 @@ impl Default for LocalElement<'_> {
             ref_: None,
             type_: None,
             min_occurs: NonNegativeInteger::from_biguint(1.to_biguint().unwrap()),
-            max_occurs: MaxOccurs::Bounded(NonNegativeInteger::from_biguint(1.to_biguint().unwrap())),
+            max_occurs: MaxOccurs::Bounded(NonNegativeInteger::from_biguint(
+                1.to_biguint().unwrap(),
+            )),
             default: None,
             fixed: None,
             nillable: false,

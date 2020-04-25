@@ -55,7 +55,9 @@ impl<'a> Default for ExplicitGroup<'a> {
             attributes: vec![],
             id: None,
             min_occurs: NonNegativeInteger::from_biguint(1.to_biguint().unwrap()),
-            max_occurs: MaxOccurs::Bounded(NonNegativeInteger::from_biguint(1.to_biguint().unwrap())),
+            max_occurs: MaxOccurs::Bounded(NonNegativeInteger::from_biguint(
+                1.to_biguint().unwrap(),
+            )),
         }
     }
 }
