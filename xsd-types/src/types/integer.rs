@@ -8,7 +8,7 @@ use yaserde::{YaDeserialize, YaSerialize};
 
 // https://www.w3.org/TR/xmlschema-2/#integer
 #[derive(Default, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
-pub struct Integer(BigInt);
+pub struct Integer(pub BigInt);
 
 impl Integer {
     pub fn from_bigint(bigint: BigInt) -> Self {
