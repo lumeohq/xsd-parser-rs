@@ -8,7 +8,7 @@ use yaserde::{YaDeserialize, YaSerialize};
 
 // https://www.w3.org/TR/xmlschema-2/#positiveInteger
 #[derive(Default, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
-pub struct PositiveInteger(BigUint);
+pub struct PositiveInteger(pub BigUint);
 
 impl PositiveInteger {
     pub fn from_biguint(bigint: BigUint) -> Self {

@@ -8,7 +8,7 @@ use yaserde::{YaDeserialize, YaSerialize};
 
 // https://www.w3.org/TR/xmlschema-2/#nonNegativeInteger
 #[derive(Default, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
-pub struct NonNegativeInteger(BigUint);
+pub struct NonNegativeInteger(pub BigUint);
 
 impl NonNegativeInteger {
     pub fn from_biguint(bigint: BigUint) -> Self {
