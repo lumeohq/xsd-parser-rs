@@ -19,6 +19,9 @@ path = "src/bin.rs"
 roxmltree = "0.10.1"
 Inflector = "*"
 clap = "2.33.0"
+xsd-types = { path = "../xsd-types" }
+num-bigint = "0.2.6"
+bigdecimal = "0.1.0"
 
 [dev-dependencies]
 syn = { version = "1.0", features = ["full"] }
@@ -29,6 +32,3 @@ yaserde_derive = { git = "https://github.com/media-io/yaserde", rev = "137af01" 
 text-diff = "0.4.0"
 itertools = "0.8.1"
 macro-utils = { path = "../macro-utils" }
-xsd-types = { path = "../xsd-types" }
-num-bigint = "0.2.6"
-bigdecimal = "0.1.0"

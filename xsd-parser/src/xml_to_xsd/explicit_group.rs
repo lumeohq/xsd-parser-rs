@@ -35,6 +35,7 @@ impl<'a> ExplicitGroup<'a> {
 mod test {
     use crate::xsd_model::complex_types::explicit_group::ExplicitGroup;
     use crate::xsd_model::MaxOccurs::Bounded;
+    use num_bigint::ToBigUint;
 
     #[test]
     fn test_parse() {
@@ -55,9 +56,9 @@ mod test {
         assert_eq!(np.len(), 3);
 
         assert_eq!(res.attributes.len(), 2);
-        assert_eq!(res.min_occurs.0, 1);
+        assert_eq!(res.min_occurs.0, 1_i32.to_biguint().unwrap());
         match &res.max_occurs {
-            Bounded(x) => assert_eq!(x.0, 5),
+            Bounded(x) => assert_eq!(x.0, 5_i32.to_biguint().unwrap()),
             _ => unreachable!(),
         }
     }
