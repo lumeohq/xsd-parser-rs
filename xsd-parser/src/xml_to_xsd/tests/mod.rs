@@ -31,7 +31,6 @@ mod onvif_files_test {
     fn test_b2() {
         const TEXT: &str = include_str!("../../../../input/xsd_external/b-2.xsd");
         let doc = Document::parse(TEXT).unwrap();
-        println!("{}", parse_document(&doc).err().unwrap());
         assert!(parse_document(&doc).is_ok());
     }
 

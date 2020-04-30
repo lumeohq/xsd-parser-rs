@@ -50,6 +50,7 @@ mod test {
     use crate::xsd_model::groups::complex_type_model::ComplexTypeModel;
     use crate::xsd_model::groups::type_def_particle::TypeDefParticle;
     use crate::xsd_model::{ComplexContentChoice, MaxOccurs, SimpleContentChoice};
+    use num_bigint::ToBigUint;
 
     #[test]
     fn test_parse_simple_content() {
@@ -164,9 +165,9 @@ mod test {
             ComplexTypeModel::parse(root).unwrap()
         {
             if let TypeDefParticle::Choice(ch) = type_def.unwrap() {
-                assert_eq!(ch.min_occurs.0, 2);
+                assert_eq!(ch.min_occurs.0, 2_i32.to_biguint().unwrap());
                 if let MaxOccurs::Bounded(x) = ch.max_occurs {
-                    assert_eq!(x.0, 5);
+                    assert_eq!(x.0, 5_i32.to_biguint().unwrap());
                 } else {
                     panic!()
                 }
