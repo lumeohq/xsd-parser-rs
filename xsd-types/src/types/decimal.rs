@@ -7,11 +7,11 @@ use std::str::FromStr;
 use yaserde::{YaDeserialize, YaSerialize};
 
 #[derive(Default, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
-pub struct Decimal (pub BigDecimal);
+pub struct Decimal(pub BigDecimal);
 
 impl Decimal {
     pub fn from_bigdecimal(bigdecimal: BigDecimal) -> Self {
-        Decimal ( bigdecimal )
+        Decimal(bigdecimal)
     }
 
     pub fn to_bigdecimal(&self) -> BigDecimal {
@@ -23,7 +23,7 @@ impl FromStr for Decimal {
     type Err = ParseBigDecimalError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(Decimal ( BigDecimal::from_str(s)?))
+        Ok(Decimal(BigDecimal::from_str(s)?))
     }
 }
 

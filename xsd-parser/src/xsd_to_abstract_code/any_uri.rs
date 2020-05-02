@@ -3,7 +3,7 @@ use crate::xsd_model::simple_types::any_uri::AnyUri as XsdAnyUri;
 
 impl<'a> AnyUri<'a> {
     pub fn parse(uri: &XsdAnyUri<'a>) -> AnyUri<'a> {
-        AnyUri( uri.0 )
+        AnyUri(uri.0)
     }
 }
 

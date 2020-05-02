@@ -3,7 +3,7 @@ use crate::xsd_model::simple_types::ncname::NCName as XsdNCName;
 
 impl<'a> NCName<'a> {
     pub fn parse(ncname: &XsdNCName<'a>) -> NCName<'a> {
-        NCName( ncname.0 )
+        NCName(ncname.0)
     }
 }
 
