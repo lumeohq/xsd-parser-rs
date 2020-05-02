@@ -5,11 +5,11 @@ All Simple types
 |anyURI| * |
 |base64Binary| * |
 |blockSet| * |
-|boolean
-|byte
-|date
-|dateTime
-|decimal
+|boolean| * |
+|byte| * |
+|date| * |
+|dateTime| * |
+|decimal| * |
 |derivationControl
 |derivationSet| * |
 |double

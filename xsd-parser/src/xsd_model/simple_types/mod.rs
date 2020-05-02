@@ -27,6 +27,7 @@ pub mod simple_derivation_set;
 pub mod time;
 pub mod token;
 pub mod boolean;
+pub mod byte;
 
 pub type AnySimpleType<'a> = &'a str;
 pub type Id<'a> = Option<id::Id<'a>>;
