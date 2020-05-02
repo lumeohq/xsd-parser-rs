@@ -13,7 +13,7 @@ impl<'a> Annotation<'a> {
                 .map(|x| AppInfo::parse(x))
                 .collect(),
             comment: Comment::parse_vec(&annotation.documentations),
-            id: Id::parse(&annotation.id)
+            id: Id::parse(&annotation.id),
         }
     }
 }

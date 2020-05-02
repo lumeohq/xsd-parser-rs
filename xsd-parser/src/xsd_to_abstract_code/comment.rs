@@ -4,17 +4,21 @@ use crate::xsd_model::Documentation;
 impl<'a> Comment<'a> {
     pub fn parse(doc: &Documentation<'a>) -> Comment<'a> {
         Comment {
-            text: if let Some(text) = doc.text { vec![text] } else { Vec::new() }
+            text: if let Some(text) = doc.text {
+                vec![text]
+            } else {
+                Vec::new()
+            },
         }
     }
 
     pub fn parse_vec(docs: &[Documentation<'a>]) -> Comment<'a> {
         Comment {
             text: docs
-            .iter()
-            .filter(|x| x.text.is_some())
-            .map(|x| x.text.unwrap())
-            .collect()
+                .iter()
+                .filter(|x| x.text.is_some())
+                .map(|x| x.text.unwrap())
+                .collect(),
         }
     }
 }
