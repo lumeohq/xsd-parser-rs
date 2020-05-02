@@ -1,10 +1,13 @@
 pub mod any_uri;
 pub mod base64binary;
 pub mod block_set;
+pub mod boolean;
+pub mod byte;
 pub mod date;
 pub mod datetime;
 pub mod decimal;
 pub mod derivation_set;
+pub mod deriviation_control;
 pub mod duration;
 pub mod form_choice;
 pub mod full_derivation_set;
@@ -24,11 +27,9 @@ pub mod positive_integer;
 pub mod public;
 pub mod qname;
 pub mod simple_derivation_set;
+pub mod string;
 pub mod time;
 pub mod token;
-pub mod boolean;
-pub mod byte;
-pub mod deriviation_control;
 
 pub type AnySimpleType<'a> = &'a str;
 pub type Id<'a> = Option<id::Id<'a>>;

@@ -1,6 +1,6 @@
 // xsd:byte
-// The type xsd:byte represents an integer between -128 and 127. 
-// An xsd:byte is a sequence of digits, optionally preceded by a + or - sign. 
+// The type xsd:byte represents an integer between -128 and 127.
+// An xsd:byte is a sequence of digits, optionally preceded by a + or - sign.
 // Leading zeros are permitted, but decimal points are not.
 
 // Simple Type Information
@@ -18,10 +18,10 @@
 
 // Examples
 // Valid values	Comment
-// +3	
-// 122	
-// 0	
-// -123	
+// +3
+// 122
+// 0
+// -123
 
 // Invalid values	Comment
 // 130	            number is too large
@@ -58,4 +58,3 @@ mod tests {
         assert!("".parse::<Byte>().is_err());
     }
 }
-

@@ -1,8 +1,8 @@
 pub mod complex_types;
 pub mod elements;
 pub mod groups;
-pub mod simple_types;
 pub mod schema_set;
+pub mod simple_types;
 
 pub use elements::all::*;
 pub use elements::annotation::*;

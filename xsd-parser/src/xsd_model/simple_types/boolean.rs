@@ -1,6 +1,6 @@
 // xsd:boolean
-// The type xsd:boolean represents logical yes/no values. 
-// The valid values for xsd:boolean are true, false, 0, and 1. 
+// The type xsd:boolean represents logical yes/no values.
+// The valid values for xsd:boolean are true, false, 0, and 1.
 // Values that are capitalized (e.g. TRUE) or abbreviated (e.g. T) are not valid.
 
 // Simple Type Information
@@ -13,8 +13,8 @@
 // White Space: collapse
 // Examples
 // Valid values	    Comment
-// true	
-// false	
+// true
+// false
 // 0	            false
 // 1	            true
 
@@ -52,7 +52,10 @@ mod tests {
 
     #[test]
     fn test_invalid_values() {
-        assert_eq!(Boolean::parse("2").err().unwrap(), "Invalid value for boolean: 2".to_string());
+        assert_eq!(
+            Boolean::parse("2").err().unwrap(),
+            "Invalid value for boolean: 2".to_string()
+        );
         assert!(Boolean::parse("True").is_err());
         assert!(Boolean::parse("FALSE").is_err());
         assert!(Boolean::parse("").is_err());

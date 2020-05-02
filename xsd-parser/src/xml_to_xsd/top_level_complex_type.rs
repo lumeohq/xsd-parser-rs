@@ -54,11 +54,10 @@ impl<'a> TopLevelComplexType<'a> {
     }
 }
 
-
 #[cfg(test)]
 mod test {
-    use crate::xsd_model::TopLevelComplexType;
     use crate::xsd_model::groups::type_def_particle::TypeDefParticle;
+    use crate::xsd_model::TopLevelComplexType;
 
     #[test]
     fn test_top_level_complex_type_parse() {
@@ -89,4 +88,3 @@ mod test {
         }
     }
 }
-

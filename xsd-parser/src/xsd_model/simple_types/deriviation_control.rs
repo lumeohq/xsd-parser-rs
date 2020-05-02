@@ -40,7 +40,7 @@ impl DeriviationControl {
             "restriction" => Self::Restriction,
             "list" => Self::List,
             "union" => Self::Union,
-            _ => return Err(format!("Invalid value for DeriviationControl: {}", s))
+            _ => return Err(format!("Invalid value for DeriviationControl: {}", s)),
         })
     }
 }
@@ -50,11 +50,26 @@ mod test {
     use super::DeriviationControl;
     #[test]
     fn test_parse() {
-        assert_eq!(DeriviationControl::parse("substitution").unwrap(), DeriviationControl::Substitution);
-        assert_eq!(DeriviationControl::parse("extension").unwrap(), DeriviationControl::Extension);
-        assert_eq!(DeriviationControl::parse("restriction").unwrap(), DeriviationControl::Restriction);
-        assert_eq!(DeriviationControl::parse("list").unwrap(), DeriviationControl::List);
-        assert_eq!(DeriviationControl::parse("union").unwrap(), DeriviationControl::Union);
+        assert_eq!(
+            DeriviationControl::parse("substitution").unwrap(),
+            DeriviationControl::Substitution
+        );
+        assert_eq!(
+            DeriviationControl::parse("extension").unwrap(),
+            DeriviationControl::Extension
+        );
+        assert_eq!(
+            DeriviationControl::parse("restriction").unwrap(),
+            DeriviationControl::Restriction
+        );
+        assert_eq!(
+            DeriviationControl::parse("list").unwrap(),
+            DeriviationControl::List
+        );
+        assert_eq!(
+            DeriviationControl::parse("union").unwrap(),
+            DeriviationControl::Union
+        );
         assert!(DeriviationControl::parse("").is_err());
     }
 }
