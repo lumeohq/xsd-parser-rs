@@ -10,36 +10,36 @@ All Simple types
 |date| * |
 |dateTime| * |
 |decimal| * |
-|derivationControl
+|derivationControl| * |
 |derivationSet| * |
 |double
-|duration
+|duration| * |
 |ENTITIES
 |ENTITY
 |float
 |formChoice| * |
 |fullDerivationSet| * |
-|gDay
-|gMonth
-|gMonthDay
-|gYear
-|gYearMonth
+|gDay| * |
+|gMonth| * |
+|gMonthDay| * |
+|gYear| * |
+|gYearMonth| * |
 |hexBinary
 |ID| * |
 |IDREF
 |IDREFS
 |int
-|integer
+|integer| * |
 |language| * |
 |long
 |Name
 |namespaceList
 |NCName| * |
-|negativeInteger
+|negativeInteger| * |
 |NMTOKEN
 |NMTOKENS
 |nonNegativeInteger| * |
-|nonPositiveInteger
+|nonPositiveInteger| * |
 |normalizedString
 |NOTATION
 |positiveInteger| * |
@@ -47,8 +47,8 @@ All Simple types
 |QName| * |
 |short
 |simpleDerivationSet| * |
-|string
-|time
+|string| * |
+|time| * |
 |token| * |
 |unsignedByte
 |unsignedInt
