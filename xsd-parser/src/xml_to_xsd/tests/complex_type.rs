@@ -19,7 +19,7 @@ mod test {
     }
 
     fn next_complex_type<'a>(
-        iter: &mut impl Iterator<Item = &'a (SchemaTop<'a>, Option<Annotation<'a>>)>,
+        iter: &mut impl Iterator<Item = &'a (SchemaTop<'a>, Vec<Annotation<'a>>)>,
     ) -> &'a Rc<TopLevelComplexType<'a>> {
         match &iter.next().unwrap().0 {
             SchemaTop::ComplexType(ct) => ct,

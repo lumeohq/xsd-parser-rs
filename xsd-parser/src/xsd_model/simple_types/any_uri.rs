@@ -30,5 +30,7 @@
 // Type Inheritance Chain
 // xsd:anySimpleType
 //  restricted by xsd:anyURI
-#[derive(Debug, Default)]
+#[derive(Debug, Default, PartialEq)]
 pub struct AnyUri<'a>(pub &'a str);
+
+impl<'a> Eq for AnyUri<'a> {}

@@ -5,6 +5,7 @@ use crate::xsd_model::elements::element::TopLevelElement;
 use crate::xsd_model::elements::group::Group;
 use crate::xsd_model::elements::notation::Notation;
 use crate::xsd_model::elements::simple_type::TopLevelSimpleType;
+use crate::xsd_model::simple_types::ncname::NCName;
 use std::rc::Rc;
 
 // xsd:schemaTop
@@ -36,4 +37,18 @@ pub enum SchemaTop<'a> {
     Element(Rc<TopLevelElement<'a>>),
     Attribute(Rc<TopLevelAttribute<'a>>),
     Notation(Rc<Notation<'a>>),
+}
+
+impl<'a> SchemaTop<'a> {
+    pub fn name(&self) -> NCName {
+        match self {
+            SchemaTop::SimpleType(val) => val.name.clone(),
+            SchemaTop::ComplexType(val) => val.name.clone(),
+            SchemaTop::Group(val) => val.name.clone(),
+            SchemaTop::AttributeGroup(val) => val.name.clone(),
+            SchemaTop::Element(val) => val.name.clone(),
+            SchemaTop::Attribute(val) => val.name.clone(),
+            SchemaTop::Notation(val) => val.name.clone(),
+        }
+    }
 }

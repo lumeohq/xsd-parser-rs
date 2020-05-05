@@ -21,6 +21,7 @@ pub mod local_element;
 pub mod nested_particle;
 pub mod restriction;
 pub mod schema;
+pub mod schema_set;
 pub mod schema_top;
 pub mod simple_content;
 pub mod simple_explicit_group;

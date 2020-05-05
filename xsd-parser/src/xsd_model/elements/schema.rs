@@ -65,7 +65,7 @@ pub struct Schema<'a> {
     pub imports: Vec<Import<'a>>,
     pub redefines: Vec<Redefine<'a>>,
     pub annotations: Vec<Annotation<'a>>,
-    pub content: Vec<(SchemaTop<'a>, Option<Annotation<'a>>)>,
+    pub content: Vec<(SchemaTop<'a>, Vec<Annotation<'a>>)>,
     pub attributes: Vec<RawAttribute<'a>>,
     pub target_namespace: Option<AnyUri<'a>>,
     pub version: Option<Token<'a>>,

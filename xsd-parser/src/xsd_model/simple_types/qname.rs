@@ -1,3 +1,5 @@
+use std::fmt;
+
 // xsd:QName
 // The type xsd:QName represents an XML namespace-qualified name. A xsd:QName value consists of a prefix and a local part, separated by a colon, both of which are NCName values. The prefix and colon are optional, but if they are not present, it is assumed that either the name is namespace-qualified by other means (e.g., by a default namespace declaration), or the name is not in a namespace.
 // Simple Type Information
@@ -33,6 +35,16 @@ impl<'a> QName<'a> {
                 name: &name[index + 1..],
             },
             None => Self { prefix: None, name },
+        }
+    }
+}
+
+impl fmt::Display for QName<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if let Some(prefix) = self.prefix {
+            write!(f, "{}:{}", prefix, self.name)
+        } else {
+            write!(f, "{}", self.name)
         }
     }
 }

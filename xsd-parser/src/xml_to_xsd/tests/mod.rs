@@ -14,6 +14,13 @@ mod onvif_files_test {
     }
 
     #[test]
+    fn test_onvif() {
+        const TEXT: &str = include_str!("../../../../input/xsd/onvif.xsd");
+        let doc = Document::parse(TEXT).unwrap();
+        assert!(parse_document(&doc).is_ok());
+    }
+
+    #[test]
     fn test_common() {
         const TEXT: &str = include_str!("../../../../input/xsd/common.xsd");
         let doc = Document::parse(TEXT).unwrap();
