@@ -1,14 +1,14 @@
+use crate::xml_to_xsd::XSD_NS_URI;
 use crate::xsd_model::groups::schema_top::SchemaTop;
 use crate::xsd_model::simple_types::any_uri::AnyUri;
 use crate::xsd_model::simple_types::qname::QName;
-use crate::xsd_model::simple_types::{SimpleType, xsd_simple_type};
+use crate::xsd_model::simple_types::{xsd_simple_type, SimpleType};
 use crate::xsd_model::{
     Schema, TopLevelAttribute, TopLevelComplexType, TopLevelElement, TopLevelSimpleType,
 };
 use roxmltree::Node;
 use std::collections::HashMap;
 use std::rc::Rc;
-use crate::xml_to_xsd::XSD_NS_URI;
 
 #[derive(Debug)]
 pub enum CustomType<'a> {
@@ -27,7 +27,7 @@ pub struct GlobalTypesSet<'a> {
 impl<'a> GlobalTypesSet<'a> {
     pub fn from_schema(schema: &Schema<'a>) -> Result<Self, String> {
         let mut ret_val = Self::default();
-        ret_val.add_schema(schema);
+        ret_val.add_schema(schema)?;
         Ok(ret_val)
     }
 
@@ -94,15 +94,10 @@ impl<'a> SchemaSet<'a> {
             .map(|sw| SchemaWrapper {
                 schema_set: self,
                 schema: &sw.0,
-                node: sw.1.clone(),
+                node: sw.1,
             })
             .collect()
     }
-}
-
-pub enum GlobalType<'a> {
-    Builtin(SimpleType),
-    Custom(SchemaTop<'a>),
 }
 
 pub struct SchemaWrapper<'a> {
@@ -111,11 +106,13 @@ pub struct SchemaWrapper<'a> {
     node: Node<'a, 'a>,
 }
 
+#[derive(Debug)]
 pub enum AttributeType<'a> {
     Builtin(SimpleType),
-    Simple(Rc<TopLevelSimpleType<'a>>)
+    Simple(Rc<TopLevelSimpleType<'a>>),
 }
 
+#[derive(Debug)]
 pub enum AttributeBase<'a> {
     Builtin(SimpleType),
     Simple(Rc<TopLevelSimpleType<'a>>),
@@ -123,28 +120,35 @@ pub enum AttributeBase<'a> {
 }
 
 impl<'a> SchemaWrapper<'a> {
+    fn get_ns_uri(&self, name: &'a QName) -> &str {
+        if let Some(_) = name.prefix {
+            self.node.lookup_namespace_uri(name.prefix)
+        } else {
+            self.schema.target_namespace.as_ref().map(|val| val.0)
+        }
+        .unwrap_or("")
+    }
+
     pub fn schema(&self) -> &Schema<'a> {
         &self.schema
     }
 
     pub fn resolve_attribute_ref(&self, name: &QName) -> Option<&TopLevelAttribute<'a>> {
-        let ns_uri = self.node.lookup_namespace_uri(name.prefix);
+        let ns_uri = self.get_ns_uri(name);
         self.schema_set
             .types
-            .get(ns_uri.unwrap_or(""))
+            .get(ns_uri)
             .and_then(|gts| gts.attributes.get(name.name).map(|v| v.as_ref()))
     }
 
     pub fn resolve_attribute_type(&self, name: &QName) -> Result<AttributeType, String> {
-        let ns_uri = self.node.lookup_namespace_uri(name.prefix);
-        if let Some(uri) = ns_uri {
-            if uri == XSD_NS_URI {
-                return Ok(AttributeType::Builtin(xsd_simple_type(name.name)?));
-            }
+        let ns_uri = self.get_ns_uri(name);
+        if ns_uri == XSD_NS_URI {
+            return Ok(AttributeType::Builtin(xsd_simple_type(name.name)?));
         }
         self.schema_set
             .types
-            .get(ns_uri.unwrap_or(""))
+            .get(ns_uri)
             .ok_or_else(|| format!("Unknown namespace in qname: {}", name))
             .and_then(|gts|
                 gts
@@ -158,31 +162,32 @@ impl<'a> SchemaWrapper<'a> {
                         }
                     )
             )
-
     }
 
-    pub fn resolve_attribute_base(&self, name: &QName) -> Result<AttributeBase, String> {
-        let ns_uri = self.node.lookup_namespace_uri(name.prefix);
-        if let Some(uri) = ns_uri {
-            if uri == XSD_NS_URI {
-                return Ok(AttributeBase::Builtin(xsd_simple_type(name.name)?));
-            }
+    pub fn resolve_base(&self, name: &QName) -> Result<AttributeBase, String> {
+        let ns_uri = self.get_ns_uri(name);
+        if ns_uri == XSD_NS_URI {
+            return Ok(AttributeBase::Builtin(xsd_simple_type(name.name)?));
         }
         self.schema_set
             .types
-            .get(ns_uri.unwrap_or(""))
-            .and_then(|gts|
+            .get(ns_uri)
+            .and_then(|gts| {
                 gts.custom_types.get(name.name).map(|v| match v {
                     CustomType::Simple(val) => AttributeBase::Simple(val.clone()),
                     CustomType::Complex(val) => AttributeBase::Complex(val.clone()),
-                })).ok_or_else(|| format!("Type {} not declared", name))
+                })
+            })
+            .ok_or_else(|| format!("Type {} not declared", name))
     }
-
 }
 
 #[cfg(test)]
 mod test {
-    use crate::xml_to_xsd::schema_set::{GlobalTypesSet, SchemaSet};
+    use crate::xml_to_xsd::schema_set::{AttributeBase, AttributeType, GlobalTypesSet, SchemaSet};
+    use crate::xsd_model::groups::simple_derivation::SimpleDerivation;
+    use crate::xsd_model::simple_types::qname::QName;
+    use crate::xsd_model::simple_types::SimpleType;
     use crate::xsd_model::Schema;
     use roxmltree::Document;
 
@@ -194,9 +199,29 @@ mod test {
         schema_set.add_schema(doc.root_element()).unwrap();
 
         let sn = schema_set.types.values().next().unwrap();
+        assert_eq!(sn.custom_types.len(), 8);
 
-        println!("{}", sn.custom_types.len());
-        println!("{}", sn.attributes.len());
-        println!("{}", sn.elements.len());
+        let schemas = schema_set.schemas();
+        let schema_wrapper = schemas.first().unwrap();
+        let st = schema_wrapper
+            .resolve_attribute_type(&QName::new("Name"))
+            .unwrap();
+
+        if let AttributeType::Simple(v) = st {
+            if let SimpleDerivation::Restriction(ref r) = v.content_choice {
+                if let AttributeBase::Builtin(st) = schema_wrapper
+                    .resolve_base(r.base.as_ref().unwrap())
+                    .unwrap()
+                {
+                    assert_eq!(st, SimpleType::String);
+                } else {
+                    panic!("Test Failed!");
+                }
+            } else {
+                panic!("Test Failed!");
+            }
+        } else {
+            panic!("Test Failed!");
+        }
     }
 }

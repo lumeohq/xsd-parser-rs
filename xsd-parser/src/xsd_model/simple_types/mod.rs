@@ -34,6 +34,7 @@ pub mod token;
 pub type AnySimpleType<'a> = &'a str;
 pub type Id<'a> = Option<id::Id<'a>>;
 
+#[derive(Debug, PartialEq)]
 pub enum SimpleType {
     AnyURI,
     Base64Binary,
@@ -74,7 +75,7 @@ pub enum SimpleType {
     QName,
     Short,
     SimpleDerivationSet,
-    String_,
+    String,
     Time,
     Token,
     UnsignedByte,
@@ -125,7 +126,7 @@ pub fn xsd_simple_type(name: &str) -> Result<SimpleType, String> {
         "QName" => QName,
         "short" => Short,
         "simpleDerivationSet" => SimpleDerivationSet,
-        "string" => String_,
+        "string" => String,
         "time" => Time,
         "token" => Token,
         "unsignedByte" => UnsignedByte,
