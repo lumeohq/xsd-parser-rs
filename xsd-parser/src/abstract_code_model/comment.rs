@@ -1,4 +1,4 @@
-#[derive(Default, Debug)]
+#[derive(Debug, Default)]
 pub struct Comment<'a> {
-    pub text: Option<&'a str>,
+    pub text: Vec<&'a str>,
 }
