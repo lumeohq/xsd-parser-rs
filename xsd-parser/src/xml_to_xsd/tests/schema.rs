@@ -15,30 +15,9 @@ mod test {
             "http://www.onvif.org/ver10/schema"
         );
 
-        test_namespaces(&schema);
         test_attributes(&schema);
         test_includes(&schema);
         test_imports(&schema);
-    }
-
-    fn test_namespaces(schema: &Schema) {
-        const NAMESPACES: [&str; 7] = [
-            "tt=http://www.onvif.org/ver10/schema",
-            "=http://www.w3.org/2001/XMLSchema",
-            "xs=http://www.w3.org/2001/XMLSchema",
-            "xmime=http://www.w3.org/2005/05/xmlmime",
-            "wsnt=http://docs.oasis-open.org/wsn/b-2",
-            "xop=http://www.w3.org/2004/08/xop/include",
-            "soapenv=http://www.w3.org/2003/05/soap-envelope",
-        ];
-
-        let actual: Vec<String> = schema
-            .namespaces
-            .iter()
-            .map(|ns| format!("{}={}", ns.name().unwrap_or(""), ns.uri()))
-            .collect();
-
-        assert_eq!(NAMESPACES, actual.as_ref());
     }
 
     fn test_attributes(schema: &Schema) {

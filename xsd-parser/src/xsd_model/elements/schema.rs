@@ -10,7 +10,7 @@ use crate::xsd_model::simple_types::full_derivation_set::FullDerivationSet;
 use crate::xsd_model::simple_types::language::Language;
 use crate::xsd_model::simple_types::token::Token;
 use crate::xsd_model::simple_types::Id;
-use crate::xsd_model::{Namespace, RawAttribute};
+use crate::xsd_model::{RawAttribute};
 
 // xsd:schema
 // See http://www.w3.org/TR/xmlschema-1/#element-schema.
@@ -75,6 +75,4 @@ pub struct Schema<'a> {
     pub element_form_default: FormChoice,
     pub id: Id<'a>,
     pub lang: Option<Language<'a>>,
-
-    pub namespaces: Vec<Namespace<'a>>,
 }

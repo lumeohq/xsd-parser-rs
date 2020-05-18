@@ -23,8 +23,6 @@ impl<'a> Schema<'a> {
     pub fn parse(schema_node: Node<'a, '_>) -> Result<Self, String> {
         let mut schema = Schema::default();
 
-        schema.namespaces = Vec::from(schema_node.namespaces());
-
         for attr in schema_node.attributes() {
             match attr.name() {
                 "targetNamespace" => schema.target_namespace = Some(AnyUri(attr.value())),
