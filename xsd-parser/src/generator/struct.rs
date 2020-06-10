@@ -90,15 +90,17 @@ pub trait StructGenerator {
         match tns.as_ref() {
             Some(tn) => match tn.name() {
                 Some(name) => format!(
-                    "{derives}#[yaserde(prefix = \"{prefix}\", namespace = \"{prefix}: {uri}\")]\n",
+                    "{derives}#[yaserde(prefix = \"{prefix}\", namespace = \"{prefix}: {uri}\", rename = \"{rename}\")]\n",
                     derives = derives,
                     prefix = name,
-                    uri = tn.uri()
+                    uri = tn.uri(),
+                    rename = _entity.name.as_str()
                 ),
                 None => format!(
-                    "{derives}#[yaserde(namespace = \"{uri}\")]\n",
+                    "{derives}#[yaserde(namespace = \"{uri}\", rename = \"{rename}\")]\n",
                     derives = derives,
-                    uri = tn.uri()
+                    uri = tn.uri(),
+                    rename = _entity.name.as_str()
                 ),
             },
             None => format!("{derives}#[yaserde()]\n", derives = derives),
