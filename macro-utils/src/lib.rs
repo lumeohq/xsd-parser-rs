@@ -35,6 +35,10 @@ pub fn default_serde(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
             fn serialize<W: Write>(&self, writer: &mut yaserde::ser::Serializer<W>) -> Result<(), String> {
                 utils::yaserde::serialize(self, #struct_name_literal, writer, |s| s.to_string())
             }
+
+            fn serialize_attributes(&self, attributes: Vec<xml::attribute::OwnedAttribute>, namespace: xml::namespace::Namespace) -> Result<(Vec<xml::attribute::OwnedAttribute>, xml::namespace::Namespace), String> {
+                Ok((attributes, namespace))
+            }
         }
 
         impl YaDeserialize for #struct_name {

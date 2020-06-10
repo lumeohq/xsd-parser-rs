@@ -9,8 +9,8 @@ edition = "2018"
 [dependencies]
 log = "0.4.8"
 xml-rs = "0.8.0"
-yaserde = { git = "https://github.com/media-io/yaserde", rev = "137af01" }
-yaserde_derive = { git = "https://github.com/media-io/yaserde", rev = "137af01" }
+yaserde = "0.4"
+yaserde_derive = "0.4"
 chrono = "0.4.10"
 itertools = "0.8.1"
 macro-utils = { path = "../macro-utils" }
