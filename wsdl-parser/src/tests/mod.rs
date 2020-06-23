@@ -21,8 +21,7 @@ pub fn generate_wsdl(input: &str) -> String {
         .collect::<Vec<String>>();
 
     code.push(generate(&definitions));
-    let code = code.join("");
-    code
+    code.join("")
 }
 
 pub fn assert_ast_eq(expected: &str, actual: &str) {
