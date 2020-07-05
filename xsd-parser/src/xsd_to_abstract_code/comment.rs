@@ -19,6 +19,14 @@ impl<'a> Comment<'a> {
         Comment::from_comment_vec(&[app_info_comment, documentation_comment])
     }
 
+    pub fn from_opt_annotation(annotation: &Option<Annotation<'a>>) -> Comment<'a> {
+        if let Some(annotation) = annotation {
+            Comment::from_annotation(annotation)
+        } else {
+            Comment::default()
+        }
+    }
+
     pub fn from_notation(notation: &Notation<'a>) -> Comment<'a> {
         if let Some(annotation) = &notation.annotation {
             Comment::from_annotation(&annotation)
