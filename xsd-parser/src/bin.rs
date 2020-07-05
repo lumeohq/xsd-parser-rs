@@ -13,6 +13,8 @@ use std::path::{Path, PathBuf};
 use std::fs::OpenOptions;
 use xsd_parser::generator::builder::GeneratorBuilder;
 use xsd_parser::parser::parse;
+use roxmltree::Document;
+use xsd_parser::xml_to_xsd::schema_set::SchemaSet;
 
 fn main() {
     let matches = App::new("xsd-parser-rs")
@@ -35,6 +37,23 @@ fn main() {
 
     let input_path = matches.value_of("input").unwrap_or("input/xsd");
     let input_path = Path::new(input_path);
+
+
+    let sources = load_files(&input_path).unwrap();
+    let xml_docs = parse_xml_files(sources.as_slice()).unwrap();
+    let schema_set = SchemaSet::from_docs(xml_docs.as_slice()).unwrap();
+
+    let schemas = schema_set.schemas();
+    for wrapper in schema_set.schemas() {
+        println!("{:#?}", wrapper.schema());
+    }
+
+
+
+
+
+
+
     let output_path = matches.value_of("output");
     let md = fs::metadata(input_path).unwrap();
     if md.is_dir() {
@@ -93,3 +112,40 @@ fn write_to_file(path: &str, text: &str) -> Result<(), String> {
         .map_err(|e| e.to_string())?;
     file.write_all(text.as_bytes()).map_err(|e| e.to_string())
 }
+
+
+fn load_files(path: &Path) -> Result<Vec<String>, String> {
+    let md = fs::metadata(path).map_err(|err| err.to_string())?;
+
+    let mut res = vec![];
+    if md.is_dir() {
+        res = load_dir(path)?;
+
+    } else if md.is_file() {
+        res.push(load_file(&path)?);
+    } else {
+        panic!("symlink path")
+    }
+
+    Ok(res)
+}
+
+fn load_dir(input_path: &Path) -> Result<Vec<String>, String> {
+    let mut res = vec![];
+    for entry in fs::read_dir(input_path).map_err(|e| e.to_string())? {
+        let path = entry.map_err(|e| e.to_string())?.path();
+        if path.is_dir() {
+            res.append(&mut load_dir(&path)?);
+        } else {
+            res.push(load_file(&path)?)
+        }
+    }
+    Ok(res)
+}
+
+fn parse_xml_files(files: &[String]) -> Result<Vec<Document>, String> {
+    let s: Result<Vec<_>, _> = files.iter().map(|f| Document::parse(f.as_str())).collect();
+    s.map_err(|err| err.to_string())
+}
+
+

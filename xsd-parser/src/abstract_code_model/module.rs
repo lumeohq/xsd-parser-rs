@@ -5,7 +5,7 @@ use crate::abstract_code_model::Entity;
 pub struct Module<'a> {
     name: String,
     entities: Vec<Entity<'a>>,
-    public: bool
+    private: bool
 }
 
 

@@ -2,8 +2,10 @@ use crate::xml_to_xsd::schema_set::global_types_set::GlobalTypesSet;
 use crate::xml_to_xsd::schema_set::schema_wrapper::SchemaWrapper;
 use crate::xsd_model::simple_types::any_uri::AnyUri;
 use crate::xsd_model::Schema;
-use roxmltree::Node;
+use roxmltree::{Node, Document};
 use std::collections::HashMap;
+use crate::xml_to_xsd::{XsdNode, ElementChildren};
+use crate::xsd_model::elements::ElementType;
 
 mod global_types_set;
 pub mod results;
@@ -16,8 +18,25 @@ pub struct SchemaSet<'a> {
 }
 
 impl<'a> SchemaSet<'a> {
+    pub fn from_docs(docs: &'a [Document]) -> Result<Self, String> {
+        let mut res = SchemaSet::default();
+        for d in docs {
+            let root = d.root_element();
+            if root.xsd_type()? == ElementType::Schema {
+                res.add_schema(root);
+            } else {
+                for ch in root.element_children() {
+                    if ch.xsd_type()? == ElementType::Schema {
+                        res.add_schema(root);
+                    }
+                }
+            }
+        }
+        Ok(res)
+    }
+
     pub fn add_schema(&mut self, node: Node<'a, '_>) -> Result<(), String> {
-        let schema = Schema::parse(node).unwrap();
+        let schema = Schema::parse(node)?;
         let ns = schema.target_namespace.as_ref().unwrap_or(&AnyUri(""));
         self.types
             .entry(ns.0)

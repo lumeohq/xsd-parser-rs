@@ -7,6 +7,7 @@ use crate::xsd_model::simple_types::xsd_simple_type;
 use crate::xsd_model::{Schema, TopLevelAttribute, TopLevelElement};
 use roxmltree::Node;
 
+
 pub struct SchemaWrapper<'a> {
     schema_set: &'a SchemaSet<'a>,
     schema: &'a Schema<'a>,
