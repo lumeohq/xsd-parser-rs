@@ -116,7 +116,6 @@ fn write_to_file(path: &str, text: &str) -> Result<(), String> {
 
 fn load_files(path: &Path) -> Result<Vec<String>, String> {
     let md = fs::metadata(path).map_err(|err| err.to_string())?;
-
     let mut res = vec![];
     if md.is_dir() {
         res = load_dir(path)?;
