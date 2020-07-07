@@ -15,6 +15,8 @@ impl<'a> Enumeration<'a> {
     }
 }
 
+pub struct S;
+
 
 impl<'a> EnumItem<'a> {
     pub fn from_choice(choice: &'a Choice) -> Vec<EnumItem<'a>> {

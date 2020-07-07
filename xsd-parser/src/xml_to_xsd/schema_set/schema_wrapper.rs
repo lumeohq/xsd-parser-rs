@@ -45,7 +45,7 @@ impl<'a> SchemaWrapper<'a> {
             .and_then(|gts| gts.attributes.get(name.name).map(|v| v.as_ref()))
     }
 
-    // for 'type' attribute for xs:attribute
+    // for 'type' attribute in xs:attribute
     pub fn resolve_attribute_type(&self, name: &QName) -> Result<AttributeType, String> {
         let ns_uri = self.get_ns_uri(name);
         if ns_uri == XSD_NS_URI {

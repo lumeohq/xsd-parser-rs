@@ -4,6 +4,7 @@ pub mod module;
 pub mod enumeration;
 pub mod r#struct;
 pub mod abstract_field;
+pub mod import;
 
 use crate::abstract_code_model::alias::Alias;
 use crate::abstract_code_model::comment::Comment;
