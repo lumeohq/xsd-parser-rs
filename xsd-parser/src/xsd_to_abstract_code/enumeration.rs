@@ -7,9 +7,8 @@ impl<'a> Enumeration<'a> {
     pub fn from_choice(choice: &'a Choice) -> Self {
         Enumeration {
             name: None,
-            variants: EnumItem::from_choice(choice),
+            items: EnumItem::from_choice(choice),
             comment: Comment::from_opt_annotation(&choice.annotation),
-            type_name: None,
             subtypes: vec![]
         }
     }

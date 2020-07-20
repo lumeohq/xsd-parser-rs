@@ -6,9 +6,8 @@ use crate::abstract_code_model::abstract_field::AbstractField;
 #[derive(Debug, Default)]
 pub struct Enumeration<'a> {
     pub name: Option<Cow<'a, str>>,
-    pub variants: Vec<EnumItem<'a>>,
+    pub items: Vec<EnumItem<'a>>,
     pub comment: Comment<'a>,
-    pub type_name: Option<TypeName<'a>>,
     pub subtypes: Vec<Entity<'a>>,
 }
 

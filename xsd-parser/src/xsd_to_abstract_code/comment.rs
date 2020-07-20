@@ -4,6 +4,8 @@ use crate::xsd_model::AppInfo;
 use crate::xsd_model::Documentation;
 use crate::xsd_model::Notation;
 
+pub struct S{}
+
 impl<'a> Comment<'a> {
     pub fn from_documentation(doc: &Documentation<'a>) -> Comment<'a> {
         Comment::from_opt_str(doc.text)
