@@ -8,6 +8,7 @@ mod enumeration;
 mod extension_base;
 mod extension_base_multilayer;
 mod extension_base_two_files;
+mod nested_sequences;
 mod ref_to_attribute;
 mod rename_only_where_needed;
 mod restriction_any_type;

@@ -21,18 +21,22 @@ fn elements_to_fields(sequence: &Node, parent_name: &str) -> Vec<StructField> {
     sequence
         .children()
         .filter(|n| n.is_element() && n.xsd_type() != ElementType::Annotation)
-        .map(|n| match parse_node(&n, sequence) {
-            RsEntity::StructField(mut sf) => {
-                if sf.type_name.ends_with(parent_name) {
-                    sf.type_modifiers.push(TypeModifier::Recursive)
+        .flat_map(|n| {
+            let parsed_node = parse_node(&n, sequence);
+            match parsed_node {
+                RsEntity::StructField(mut sf) => {
+                    if sf.type_name.ends_with(parent_name) {
+                        sf.type_modifiers.push(TypeModifier::Recursive)
+                    }
+                    vec![sf]
                 }
-                sf
+                RsEntity::Enum(mut en) => {
+                    en.name = format!("{}Choice", parent_name);
+                    vec![enum_to_field(en)]
+                }
+                RsEntity::Struct(s) => s.fields.into_inner(),
+                _ => unreachable!("\nError: {:?}\n{:?}", n, parsed_node),
             }
-            RsEntity::Enum(mut en) => {
-                en.name = format!("{}Choice", parent_name);
-                enum_to_field(en)
-            }
-            _ => unreachable!("\nError: {:?}\n{:?}", n, parse_node(&n, sequence)),
         })
         .collect()
 }
