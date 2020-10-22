@@ -128,10 +128,7 @@ fn cases(facets: &[Facet]) -> Vec<EnumCase> {
 
 fn is_simple_enumerations(node: &Node) -> bool {
     node.children()
-        .filter(|n| match n.xsd_type() {
-            ElementType::Facet(FacetType::Enumeration(_)) => true,
-            _ => false,
-        })
+        .filter(|n| matches!(n.xsd_type(), ElementType::Facet(FacetType::Enumeration(_))))
         .all(|n| is_simple_enumeration(&n))
 }
 
