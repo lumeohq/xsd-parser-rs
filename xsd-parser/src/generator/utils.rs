@@ -124,6 +124,7 @@ const RS_KEYWORDS: &[&str] = &[
     "abstract",
     "alignof",
     "as",
+    "async",
     "become",
     "box",
     "break",
