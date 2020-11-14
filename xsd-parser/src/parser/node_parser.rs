@@ -4,7 +4,6 @@ use crate::parser::all::parse_all;
 use crate::parser::any::parse_any;
 use crate::parser::any_attribute::parse_any_attribute;
 use crate::parser::attribute::parse_attribute;
-use crate::parser::attribute_group::parse_attribute_group;
 use crate::parser::choice::parse_choice;
 use crate::parser::complex_content::parse_complex_content;
 use crate::parser::complex_type::parse_complex_type;
@@ -28,7 +27,6 @@ pub fn parse_node(node: &Node, parent: &Node) -> RsEntity {
         Any => parse_any(node),
         AnyAttribute => parse_any_attribute(node),
         Attribute => parse_attribute(node, parent),
-        AttributeGroup => parse_attribute_group(node, parent),
         Choice => parse_choice(node),
         ComplexContent => parse_complex_content(node),
         ComplexType => parse_complex_type(node, parent),

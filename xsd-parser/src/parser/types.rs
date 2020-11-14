@@ -10,7 +10,6 @@ pub struct RsFile<'input> {
     pub name: String,
     pub namespace: Option<String>,
     pub types: Vec<RsEntity>,
-    pub attribute_groups: Vec<RsEntity>,
     pub target_ns: Option<Namespace<'input>>,
     pub xsd_ns: Option<Namespace<'input>>,
 }
@@ -20,7 +19,6 @@ pub struct Struct {
     pub name: String,
     pub comment: Option<String>,
     pub fields: RefCell<Vec<StructField>>,
-    pub attribute_groups: RefCell<Vec<Alias>>,
     pub subtypes: Vec<RsEntity>,
 }
 
@@ -75,23 +73,6 @@ impl Struct {
                 s.extend_base(types);
             }
         }
-    }
-
-    pub fn extend_attribute_group(&self, types: &HashMap<&String, &Self>) {
-        let mut fields = self
-            .attribute_groups
-            .borrow()
-            .iter()
-            .flat_map(|f| {
-                let key = f.original.split(':').last().unwrap().to_string();
-                types
-                    .get(&key)
-                    .map(|s| s.fields.borrow().clone())
-                    .unwrap_or_else(Vec::new)
-            })
-            .collect::<Vec<StructField>>();
-
-        self.fields.borrow_mut().append(&mut fields);
     }
 }
 

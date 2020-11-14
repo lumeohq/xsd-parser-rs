@@ -6,7 +6,7 @@ use crate::parser::types::{
     Enum, EnumCase, EnumSource, Facet, RsEntity, Struct, StructField, StructFieldSource,
     TupleStruct,
 };
-use crate::parser::utils::{attributes_to_fields, attribute_groups_to_aliases, get_base, get_documentation, get_parent_name};
+use crate::parser::utils::{attributes_to_fields, get_base, get_documentation, get_parent_name};
 use crate::parser::xsd_elements::{ElementType, FacetType, RestrictionType, XsdNode};
 use roxmltree::Node;
 
@@ -93,7 +93,6 @@ fn complex_content_restriction(node: &Node) -> RsEntity {
     RsEntity::Struct(Struct {
         comment: get_documentation(node),
         fields: RefCell::new(fields),
-        attribute_groups: RefCell::new(attribute_groups_to_aliases(node)),
         ..Default::default()
     })
 }

@@ -2,7 +2,6 @@ mod all;
 mod any;
 mod any_attribute;
 mod attribute;
-mod attribute_group;
 mod choice;
 mod complex_content;
 mod complex_type;
@@ -45,15 +44,9 @@ pub fn parse(text: &str) -> Result<RsFile, ()> {
             map.extend(st.get_types_map());
         }
     }
-    for ag in &schema_rs.attribute_groups {
-        if let RsEntity::Struct(st) = ag {
-            map.extend(st.get_types_map());
-        }
-    }
     for ty in &schema_rs.types {
         if let RsEntity::Struct(st) = ty {
             st.extend_base(&map);
-            st.extend_attribute_group(&map);
         }
     }
 
