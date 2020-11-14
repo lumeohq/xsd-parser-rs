@@ -1,0 +1,8 @@
+<exam:Foo xmlns:exam="http://example.com">
+  <!-- B comes before A on purpose: 
+       Foo is defined as an `all` element. The order of
+       its children is not imposed.
+  -->
+  <exam:B>b-string</exam:B>
+  <exam:A>a-string</exam:A>
+</exam:Foo>

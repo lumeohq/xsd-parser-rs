@@ -15,6 +15,7 @@ pub fn parse_element(node: &Node, parent: &Node) -> RsEntity {
     match parent.xsd_type() {
         ElementType::Schema => parse_global_element(node),
         ElementType::Sequence => parse_field_of_sequence(node, parent),
+        ElementType::All => parse_field_of_all(node, parent),
         ElementType::Choice => parse_case_of_choice(node),
         _ => element_default(node),
     }
@@ -67,7 +68,15 @@ fn parse_case_of_choice(element: &Node) -> RsEntity {
     })
 }
 
+fn parse_field_of_all(node: &Node, _: &Node) -> RsEntity {
+    parse_field_of_element_container(node)
+}
+
 fn parse_field_of_sequence(node: &Node, _: &Node) -> RsEntity {
+    parse_field_of_element_container(node)
+}
+
+fn parse_field_of_element_container(node: &Node) -> RsEntity {
     let name = node
         .attr_name()
         .unwrap_or_else(|| node.attr_ref().unwrap_or("UNSUPPORTED_ELEMENT_NAME"))

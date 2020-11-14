@@ -6,7 +6,7 @@ use roxmltree::{Namespace, Node};
 
 use crate::parser::constants::attribute;
 use crate::parser::node_parser::parse_node;
-use crate::parser::types::{Enum, RsEntity, StructField, StructFieldSource};
+use crate::parser::types::{Enum, RsEntity, StructField, StructFieldSource, TypeModifier};
 use crate::parser::xsd_elements::{ElementType, XsdNode};
 
 pub fn target_namespace<'a, 'input>(node: &Node<'a, 'input>) -> Option<&'a Namespace<'input>> {
@@ -68,4 +68,23 @@ pub fn enum_to_field(en: Enum) -> StructField {
         source: StructFieldSource::Element,
         ..Default::default()
     }
+}
+
+pub fn elements_to_fields(node: &Node, parent_name: &str) -> Vec<StructField> {
+    node.children()
+        .filter(|n| n.is_element() && n.xsd_type() != ElementType::Annotation)
+        .map(|n| match parse_node(&n, node) {
+            RsEntity::StructField(mut sf) => {
+                if sf.type_name.ends_with(parent_name) {
+                    sf.type_modifiers.push(TypeModifier::Recursive)
+                }
+                sf
+            }
+            RsEntity::Enum(mut en) => {
+                en.name = format!("{}Choice", parent_name);
+                enum_to_field(en)
+            }
+            _ => unreachable!("\nError: {:?}\n{:?}", n, parse_node(&n, node)),
+        })
+        .collect()
 }

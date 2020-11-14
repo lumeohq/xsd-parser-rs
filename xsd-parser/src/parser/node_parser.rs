@@ -1,5 +1,6 @@
 use roxmltree::Node;
 
+use crate::parser::all::parse_all;
 use crate::parser::any::parse_any;
 use crate::parser::any_attribute::parse_any_attribute;
 use crate::parser::attribute::parse_attribute;
@@ -22,6 +23,7 @@ pub fn parse_node(node: &Node, parent: &Node) -> RsEntity {
     use ElementType::*;
 
     match node.xsd_type() {
+        All => parse_all(node, parent),
         Any => parse_any(node),
         AnyAttribute => parse_any_attribute(node),
         Attribute => parse_attribute(node, parent),
