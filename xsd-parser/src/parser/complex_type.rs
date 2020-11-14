@@ -4,7 +4,9 @@ use roxmltree::Node;
 
 use crate::parser::node_parser::parse_node;
 use crate::parser::types::{RsEntity, Struct, StructField, StructFieldSource};
-use crate::parser::utils::{attributes_to_fields, attribute_groups_to_aliases, get_documentation, get_parent_name};
+use crate::parser::utils::{
+    attribute_groups_to_aliases, attributes_to_fields, get_documentation, get_parent_name,
+};
 use crate::parser::xsd_elements::{ElementType, XsdNode};
 
 // A complex type can contain one and only one of the following elements,

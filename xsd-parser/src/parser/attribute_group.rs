@@ -29,7 +29,7 @@ fn parse_global_attribute_group(node: &Node) -> RsEntity {
         .unwrap_or_else(|| panic!("Name attribute required. {:?}", node));
 
     let fields = attributes_to_fields(node);
-    
+
     RsEntity::Struct(Struct {
         name: name.to_string(),
         fields: std::cell::RefCell::new(fields),
@@ -88,5 +88,4 @@ mod test {
             _ => unreachable!("Test Failed!"),
         }
     }
-
 }

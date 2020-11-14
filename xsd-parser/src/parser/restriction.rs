@@ -6,7 +6,9 @@ use crate::parser::types::{
     Enum, EnumCase, EnumSource, Facet, RsEntity, Struct, StructField, StructFieldSource,
     TupleStruct,
 };
-use crate::parser::utils::{attributes_to_fields, attribute_groups_to_aliases, get_base, get_documentation, get_parent_name};
+use crate::parser::utils::{
+    attribute_groups_to_aliases, attributes_to_fields, get_base, get_documentation, get_parent_name,
+};
 use crate::parser::xsd_elements::{ElementType, FacetType, RestrictionType, XsdNode};
 use roxmltree::Node;
 
