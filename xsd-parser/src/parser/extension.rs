@@ -1,7 +1,7 @@
 use crate::parser::constants::{attribute, tag};
 use crate::parser::node_parser::parse_node;
 use crate::parser::types::{RsEntity, Struct, StructField, StructFieldSource};
-use crate::parser::utils::{attributes_to_fields, get_base, get_documentation};
+use crate::parser::utils::{attributes_to_fields, attribute_groups_to_aliases, get_base, get_documentation};
 use crate::parser::xsd_elements::{ElementType, ExtensionType, XsdNode};
 use roxmltree::Node;
 use std::cell::RefCell;
@@ -41,6 +41,7 @@ fn simple_content_extension(node: &Node) -> RsEntity {
         subtypes: vec![],
         comment: get_documentation(node),
         fields: RefCell::new(fields),
+        attribute_groups: RefCell::new(attribute_groups_to_aliases(node))
     })
 }
 
@@ -80,6 +81,7 @@ fn complex_content_extension(node: &Node) -> RsEntity {
     RsEntity::Struct(Struct {
         comment: get_documentation(node),
         fields: RefCell::new(fields),
+        attribute_groups: RefCell::new(attribute_groups_to_aliases(node)),
         ..Default::default()
     })
 }

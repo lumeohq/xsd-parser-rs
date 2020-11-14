@@ -25,6 +25,14 @@ pub fn parse_schema<'input>(schema: &Node<'_, 'input>) -> RsFile<'input> {
             })
             .map(|node| parse_node(&node, schema))
             .collect(),
+        attribute_groups: schema
+            .children()
+            .filter(|n| {
+                n.is_element()
+                    && n.xsd_type() == ElementType::AttributeGroup
+            })
+            .map(|node| parse_node(&node, schema))
+            .collect(),
     }
 }
 
