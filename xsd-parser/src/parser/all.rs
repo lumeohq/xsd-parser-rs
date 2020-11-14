@@ -12,6 +12,5 @@ pub fn parse_all(node: &Node, parent: &Node) -> RsEntity {
         comment: get_documentation(parent),
         subtypes: vec![],
         fields: RefCell::new(elements_to_fields(node, name)),
-        ..Default::default()
     })
 }
