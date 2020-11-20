@@ -1,10 +1,7 @@
-extern crate clap;
-use clap::{App, Arg};
-
-#[cfg(test)]
-extern crate log;
 #[cfg(test)]
 extern crate yaserde_derive;
+
+use clap::{App, Arg};
 
 use std::fs;
 use std::io::{prelude::*, Read};

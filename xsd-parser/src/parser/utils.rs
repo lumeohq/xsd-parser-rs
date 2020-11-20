@@ -1,7 +1,5 @@
 use std::str;
 
-extern crate inflector;
-
 use roxmltree::{Namespace, Node};
 
 use crate::parser::constants::attribute;
