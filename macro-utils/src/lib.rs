@@ -1,11 +1,12 @@
 use quote::quote;
+use syn::{parse_macro_input, DeriveInput};
 
 mod tuple;
 mod union;
 
 #[proc_macro_derive(UtilsTupleIo)]
 pub fn tuple_serde(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let ast = syn::parse(input).unwrap();
+    let ast = parse_macro_input!(input as DeriveInput);
 
     let from_str = tuple::from_str(&ast);
     let display = tuple::display(&ast);
@@ -21,7 +22,7 @@ pub fn tuple_serde(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 // Adds YaSerialize and YaDeserialize implementations for types that support FromStr and Display traits.
 #[proc_macro_derive(UtilsDefaultSerde)]
 pub fn default_serde(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let ast: syn::DeriveInput = syn::parse(input).unwrap();
+    let ast = parse_macro_input!(input as DeriveInput);
 
     let struct_name = &ast.ident;
     let struct_name_literal = &ast.ident.to_string();
@@ -59,7 +60,7 @@ pub fn default_serde(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
 
 #[proc_macro_derive(UtilsUnionSerDe)]
 pub fn union_serde(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let ast = syn::parse(input).unwrap();
+    let ast = parse_macro_input!(input as DeriveInput);
 
     let serde = union::serde(&ast);
 
