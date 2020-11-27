@@ -59,6 +59,20 @@ pub fn serde(ast: &syn::DeriveInput) -> TokenStream {
                     }
                 })
             }
+
+            fn serialize_attributes(
+                &self,
+                attributes: Vec<xml::attribute::OwnedAttribute>,
+                namespace: xml::namespace::Namespace,
+            ) -> Result<
+                (
+                    Vec<xml::attribute::OwnedAttribute>,
+                    xml::namespace::Namespace,
+                ),
+                std::string::String,
+            > {
+                Ok((attributes, namespace))
+            }
         }
 
         impl YaDeserialize for #struct_name {
