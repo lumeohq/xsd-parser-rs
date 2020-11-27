@@ -61,5 +61,7 @@ pub fn default_serde(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
 #[proc_macro_derive(UtilsUnionSerDe)]
 pub fn union_serde(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let ast = parse_macro_input!(input as DeriveInput);
-    union::serde(&ast).into()
+    union::serde(&ast)
+        .unwrap_or_else(|err| err.to_compile_error())
+        .into()
 }
