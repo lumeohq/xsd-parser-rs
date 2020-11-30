@@ -57,12 +57,12 @@ mod tests {
 
         assert_eq!(
             NonPositiveInteger::from_str("-100000"),
-            Ok(NonPositiveInteger(-100000.to_bigint().unwrap()))
+            Ok(NonPositiveInteger((-100000).to_bigint().unwrap()))
         );
 
         assert_eq!(
             NonPositiveInteger::from_str("-1"),
-            Ok(NonPositiveInteger(-1.to_bigint().unwrap()))
+            Ok(NonPositiveInteger((-1).to_bigint().unwrap()))
         );
 
         assert_eq!(
@@ -87,14 +87,14 @@ mod tests {
         );
 
         assert_eq!(
-            NonPositiveInteger(-100000.to_bigint().unwrap()).to_string(),
+            NonPositiveInteger((-100000).to_bigint().unwrap()).to_string(),
             "-100000"
         );
 
         assert_eq!(NonPositiveInteger(0.to_bigint().unwrap()).to_string(), "0");
 
         assert_eq!(
-            NonPositiveInteger(-1.to_bigint().unwrap()).to_string(),
+            NonPositiveInteger((-1).to_bigint().unwrap()).to_string(),
             "-1"
         );
     }
@@ -120,7 +120,7 @@ mod tests {
             "#;
         let i = NonPositiveIntegerPair {
             first: NonPositiveInteger::from_bigint(0.to_bigint().unwrap()),
-            second: NonPositiveInteger::from_bigint(-1234.to_bigint().unwrap()),
+            second: NonPositiveInteger::from_bigint((-1234).to_bigint().unwrap()),
         };
         let actual = yaserde::ser::to_string(&i).unwrap();
         assert_xml_eq(&actual, expected);
@@ -137,6 +137,6 @@ mod tests {
             "#;
         let i: NonPositiveIntegerPair = yaserde::de::from_str(&s).unwrap();
         assert_eq!(i.first.to_bigint().unwrap(), 0.to_bigint().unwrap());
-        assert_eq!(i.second.to_bigint().unwrap(), -1234.to_bigint().unwrap());
+        assert_eq!(i.second.to_bigint().unwrap(), (-1234).to_bigint().unwrap());
     }
 }

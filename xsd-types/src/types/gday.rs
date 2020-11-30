@@ -49,8 +49,8 @@ impl FromStr for GDay {
             token.parse::<i32>().map_err(|e| e.to_string())
         }
 
-        if s.ends_with('Z') {
-            return GDay::new(parse_value(&s[..s.len() - 1])?, Some(FixedOffset::east(0)));
+        if let Some(s) = s.strip_suffix('Z') {
+            return GDay::new(parse_value(s)?, Some(FixedOffset::east(0)));
         }
 
         if s.contains('+') {

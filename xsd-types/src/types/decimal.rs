@@ -60,7 +60,7 @@ mod tests {
             "#;
         let i = DecimalPair {
             first: Decimal::from_bigdecimal(BigDecimal::new(1234.to_bigint().unwrap(), 5)),
-            second: Decimal::from_bigdecimal(BigDecimal::new(-1234.to_bigint().unwrap(), 2)),
+            second: Decimal::from_bigdecimal(BigDecimal::new((-1234).to_bigint().unwrap(), 2)),
         };
         let actual = yaserde::ser::to_string(&i).unwrap();
         assert_xml_eq(&actual, expected);
@@ -83,7 +83,7 @@ mod tests {
         );
         assert_eq!(
             i.second.to_bigdecimal(),
-            BigDecimal::new(-1234.to_bigint().unwrap(), 2)
+            BigDecimal::new((-1234).to_bigint().unwrap(), 2)
         );
     }
 }

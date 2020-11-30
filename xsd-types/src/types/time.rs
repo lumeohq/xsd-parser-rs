@@ -43,9 +43,9 @@ impl FromStr for Time {
             NaiveTime::parse_from_str(s, "%H:%M:%S").map_err(|e| e.to_string())
         }
 
-        if s.ends_with('Z') {
+        if let Some(s) = s.strip_suffix('Z') {
             return Ok(Time {
-                value: parse_naive_time(&s[..s.len() - 1])?,
+                value: parse_naive_time(s)?,
                 timezone: Some(FixedOffset::east(0)),
             });
         }

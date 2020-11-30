@@ -57,12 +57,12 @@ mod tests {
 
         assert_eq!(
             NegativeInteger::from_str("-100000"),
-            Ok(NegativeInteger(-100000.to_bigint().unwrap()))
+            Ok(NegativeInteger((-100000).to_bigint().unwrap()))
         );
 
         assert_eq!(
             NegativeInteger::from_str("-1"),
-            Ok(NegativeInteger(-1.to_bigint().unwrap()))
+            Ok(NegativeInteger((-1).to_bigint().unwrap()))
         );
 
         // Invalid values.
@@ -85,11 +85,11 @@ mod tests {
         );
 
         assert_eq!(
-            NegativeInteger(-100000.to_bigint().unwrap()).to_string(),
+            NegativeInteger((-100000).to_bigint().unwrap()).to_string(),
             "-100000"
         );
 
-        assert_eq!(NegativeInteger(-1.to_bigint().unwrap()).to_string(), "-1");
+        assert_eq!(NegativeInteger((-1).to_bigint().unwrap()).to_string(), "-1");
     }
 
     #[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]
@@ -112,8 +112,8 @@ mod tests {
             </t:NegativeIntegerPair>
             "#;
         let i = NegativeIntegerPair {
-            first: NegativeInteger::from_bigint(-1.to_bigint().unwrap()),
-            second: NegativeInteger::from_bigint(-1234.to_bigint().unwrap()),
+            first: NegativeInteger::from_bigint((-1).to_bigint().unwrap()),
+            second: NegativeInteger::from_bigint((-1234).to_bigint().unwrap()),
         };
         let actual = yaserde::ser::to_string(&i).unwrap();
         assert_xml_eq(&actual, expected);
@@ -129,7 +129,7 @@ mod tests {
             </t:NegativeIntegerPair>
             "#;
         let i: NegativeIntegerPair = yaserde::de::from_str(&s).unwrap();
-        assert_eq!(i.first.to_bigint().unwrap(), -1.to_bigint().unwrap());
-        assert_eq!(i.second.to_bigint().unwrap(), -1234.to_bigint().unwrap());
+        assert_eq!(i.first.to_bigint().unwrap(), (-1).to_bigint().unwrap());
+        assert_eq!(i.second.to_bigint().unwrap(), (-1234).to_bigint().unwrap());
     }
 }

@@ -87,8 +87,8 @@ impl FromStr for GMonthDay {
             Ok((month, day))
         }
 
-        if s.ends_with('Z') {
-            let (month, day) = parse_value(&s[..s.len() - 1])?;
+        if let Some(s) = s.strip_suffix('Z') {
+            let (month, day) = parse_value(s)?;
             return GMonthDay::new(month, day, Some(FixedOffset::east(0)));
         }
 

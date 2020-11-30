@@ -43,9 +43,9 @@ impl FromStr for Date {
             NaiveDate::parse_from_str(&s, "%Y-%m-%d").map_err(|e| e.to_string())
         }
 
-        if s.ends_with('Z') {
+        if let Some(s) = s.strip_suffix('Z') {
             return Ok(Date {
-                value: parse_naive_date(&s[..s.len() - 1])?,
+                value: parse_naive_date(s)?,
                 timezone: Some(FixedOffset::east(0)),
             });
         }
