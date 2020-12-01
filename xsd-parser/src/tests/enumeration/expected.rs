@@ -1,4 +1,5 @@
 #[derive(PartialEq, Debug, YaSerialize, YaDeserialize)]
+#[yaserde(prefix = "tns", namespace = "tns: http://example.com")]
 pub enum FooType {
     #[yaserde(rename = "OFF")]
     Off,
