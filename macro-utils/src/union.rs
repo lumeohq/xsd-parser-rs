@@ -1,4 +1,5 @@
 use proc_macro2::TokenStream;
+use quote::quote;
 
 pub fn serde(ast: &syn::DeriveInput) -> TokenStream {
     let struct_name = &ast.ident;
@@ -57,6 +58,20 @@ pub fn serde(ast: &syn::DeriveInput) -> TokenStream {
                         #struct_name::__Unknown__(_) => "".to_string()
                     }
                 })
+            }
+
+            fn serialize_attributes(
+                &self,
+                attributes: Vec<xml::attribute::OwnedAttribute>,
+                namespace: xml::namespace::Namespace,
+            ) -> Result<
+                (
+                    Vec<xml::attribute::OwnedAttribute>,
+                    xml::namespace::Namespace,
+                ),
+                std::string::String,
+            > {
+                Ok((attributes, namespace))
             }
         }
 

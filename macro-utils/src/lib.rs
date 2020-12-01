@@ -1,8 +1,4 @@
-extern crate proc_macro;
-extern crate proc_macro2;
-#[macro_use]
-extern crate quote;
-extern crate syn;
+use quote::quote;
 
 mod tuple;
 mod union;
@@ -34,6 +30,20 @@ pub fn default_serde(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
         impl YaSerialize for #struct_name {
             fn serialize<W: Write>(&self, writer: &mut yaserde::ser::Serializer<W>) -> Result<(), String> {
                 utils::yaserde::serialize(self, #struct_name_literal, writer, |s| s.to_string())
+            }
+
+            fn serialize_attributes(
+                &self,
+                attributes: Vec<xml::attribute::OwnedAttribute>,
+                namespace: xml::namespace::Namespace,
+            ) -> Result<
+                (
+                    Vec<xml::attribute::OwnedAttribute>,
+                    xml::namespace::Namespace,
+                ),
+                std::string::String,
+            > {
+                Ok((attributes, namespace))
             }
         }
 

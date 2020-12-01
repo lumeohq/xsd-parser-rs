@@ -5,6 +5,7 @@ pub struct BarType(pub String);
 pub struct BazType(pub i32);
 
 #[derive(PartialEq, Debug, YaSerialize, YaDeserialize)]
+#[yaserde(prefix = "tns", namespace = "tns: http://example.com")]
 pub enum FooTypeChoice {
     Bar(BarType),
     Baz(BazType),

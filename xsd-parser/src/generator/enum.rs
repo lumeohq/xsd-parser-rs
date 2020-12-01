@@ -62,11 +62,30 @@ pub trait EnumGenerator {
             .into()
     }
 
-    fn macros(&self, entity: &Enum, _gen: &Generator) -> Cow<'static, str> {
+    fn macros(&self, entity: &Enum, gen: &Generator) -> Cow<'static, str> {
         if entity.source == EnumSource::Union {
             return "#[derive(PartialEq, Debug, UtilsUnionSerDe)]".into();
         }
-        "#[derive(PartialEq, Debug, YaSerialize, YaDeserialize)]".into()
+
+        let derives = "#[derive(PartialEq, Debug, YaSerialize, YaDeserialize)]";
+        let tns = gen.target_ns.borrow();
+        match tns.as_ref() {
+            Some(tn) => match tn.name() {
+                Some(name) => format!(
+                    "{derives}#[yaserde(prefix = \"{prefix}\", namespace = \"{prefix}: {uri}\")]\n",
+                    derives = derives,
+                    prefix = name,
+                    uri = tn.uri()
+                ),
+                None => format!(
+                    "{derives}#[yaserde(namespace = \"{uri}\")]\n",
+                    derives = derives,
+                    uri = tn.uri()
+                ),
+            },
+            None => format!("{derives}#[yaserde()]\n", derives = derives),
+        }
+        .into()
     }
 
     fn format_comment(&self, entity: &Enum, gen: &Generator) -> String {
