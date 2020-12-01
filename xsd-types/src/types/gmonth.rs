@@ -49,8 +49,8 @@ impl FromStr for GMonth {
             token.parse::<i32>().map_err(|e| e.to_string())
         }
 
-        if s.ends_with('Z') {
-            return GMonth::new(parse_value(&s[..s.len() - 1])?, Some(FixedOffset::east(0)));
+        if let Some(s) = s.strip_suffix('Z') {
+            return GMonth::new(parse_value(s)?, Some(FixedOffset::east(0)));
         }
 
         if s.contains('+') {

@@ -38,8 +38,8 @@ impl FromStr for GYear {
     type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        if s.starts_with('-') {
-            let result = parse_str_positive(&s[1..]);
+        if let Some(s) = s.strip_prefix('-') {
+            let result = parse_str_positive(s);
             if let Ok(mut gyear) = result {
                 gyear.value *= -1;
                 return Ok(gyear);
@@ -62,8 +62,8 @@ fn parse_str_positive(s: &str) -> Result<GYear, String> {
         s.parse::<i32>().map_err(|e| e.to_string())
     }
 
-    if s.ends_with('Z') {
-        return GYear::new(parse_value(&s[..s.len() - 1])?, Some(FixedOffset::east(0)));
+    if let Some(s) = s.strip_suffix('Z') {
+        return GYear::new(parse_value(s)?, Some(FixedOffset::east(0)));
     }
 
     if s.contains('+') {

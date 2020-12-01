@@ -62,8 +62,8 @@ impl FromStr for GYearMonth {
     type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        if s.starts_with('-') {
-            let result = parse_str_positive(&s[1..]);
+        if let Some(s) = s.strip_prefix('-') {
+            let result = parse_str_positive(s);
             if let Ok(mut gyearmonth) = result {
                 gyearmonth.year *= -1;
                 return Ok(gyearmonth);
@@ -101,8 +101,8 @@ fn parse_str_positive(s: &str) -> Result<GYearMonth, String> {
         Ok((year, month))
     }
 
-    if s.ends_with('Z') {
-        let (year, month) = parse_value(&s[..s.len() - 1])?;
+    if let Some(s) = s.strip_suffix('Z') {
+        let (year, month) = parse_value(s)?;
         return GYearMonth::new(year, month, Some(FixedOffset::east(0)));
     }
 

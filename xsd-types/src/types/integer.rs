@@ -57,7 +57,7 @@ mod tests {
 
         assert_eq!(
             Integer::from_str("-1"),
-            Ok(Integer(-1.to_bigint().unwrap()))
+            Ok(Integer((-1).to_bigint().unwrap()))
         );
 
         // Invalid values.
@@ -78,7 +78,7 @@ mod tests {
 
         assert_eq!(Integer(0.to_bigint().unwrap()).to_string(), "0");
 
-        assert_eq!(Integer(-1.to_bigint().unwrap()).to_string(), "-1");
+        assert_eq!(Integer((-1).to_bigint().unwrap()).to_string(), "-1");
     }
 
     #[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]
@@ -102,7 +102,7 @@ mod tests {
             "#;
         let i = IntegerPair {
             first: Integer::from_bigint(1234.to_bigint().unwrap()),
-            second: Integer::from_bigint(-1234.to_bigint().unwrap()),
+            second: Integer::from_bigint((-1234).to_bigint().unwrap()),
         };
         let actual = yaserde::ser::to_string(&i).unwrap();
         assert_xml_eq(&actual, expected);
@@ -120,6 +120,6 @@ mod tests {
             "#;
         let i: IntegerPair = yaserde::de::from_str(&s).unwrap();
         assert_eq!(i.first.to_bigint().unwrap(), 1234.to_bigint().unwrap());
-        assert_eq!(i.second.to_bigint().unwrap(), -1234.to_bigint().unwrap());
+        assert_eq!(i.second.to_bigint().unwrap(), (-1234).to_bigint().unwrap());
     }
 }

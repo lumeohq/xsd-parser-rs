@@ -246,7 +246,7 @@ impl fmt::Display for Duration {
             }
         } else {
             s.push_str(&date_str);
-            s.push_str("T");
+            s.push('T');
             s.push_str(&time_str);
         }
 
