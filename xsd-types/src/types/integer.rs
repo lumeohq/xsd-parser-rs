@@ -1,10 +1,7 @@
-use crate::utils;
 use macro_utils::UtilsDefaultSerde;
 use num_bigint::{BigInt, ParseBigIntError, ToBigInt};
 use std::fmt;
-use std::io::{Read, Write};
 use std::str::FromStr;
-use yaserde::{YaDeserialize, YaSerialize};
 
 // https://www.w3.org/TR/xmlschema-2/#integer
 #[derive(Default, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
@@ -40,6 +37,8 @@ impl fmt::Display for Integer {
 mod tests {
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
+    use std::io::{Read, Write};
+    use yaserde::{YaDeserialize, YaSerialize};
 
     #[test]
     fn integer_parse_test() {

@@ -1,11 +1,8 @@
 use crate::types::datetime::DateTime;
-use crate::utils;
 use chrono::{format::ParseError, DateTime as CDateTime, FixedOffset};
 use macro_utils::UtilsDefaultSerde;
 use std::fmt;
-use std::io::{Read, Write};
 use std::str::FromStr;
-use yaserde::{YaDeserialize, YaSerialize};
 
 // The only difference from DateTime is that the time zone expression is required at the end of the value.
 #[derive(Default, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
@@ -47,6 +44,8 @@ mod tests {
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
     use chrono::NaiveDate;
+    use std::io::{Read, Write};
+    use yaserde::{YaDeserialize, YaSerialize};
 
     #[test]
     fn datetime_parse_test() {

@@ -1,9 +1,6 @@
-use crate::utils;
 use macro_utils::UtilsDefaultSerde;
 use std::fmt;
-use std::io::{Read, Write};
 use std::str::FromStr;
-use yaserde::{YaDeserialize, YaSerialize};
 
 #[derive(Default, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
 pub struct Duration {

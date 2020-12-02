@@ -1,10 +1,7 @@
-use crate::utils;
 use chrono::{format::ParseError, DateTime as CDateTime, FixedOffset};
 use macro_utils::UtilsDefaultSerde;
 use std::fmt;
-use std::io::{Read, Write};
 use std::str::FromStr;
-use yaserde::{YaDeserialize, YaSerialize};
 
 #[derive(PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
 pub struct DateTime {
@@ -62,6 +59,8 @@ mod tests {
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
     use chrono::NaiveDate;
+    use std::io::{Read, Write};
+    use yaserde::{YaDeserialize, YaSerialize};
 
     #[test]
     fn datetime_parse_test() {

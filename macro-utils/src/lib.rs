@@ -1,55 +1,62 @@
+use proc_macro::TokenStream;
 use quote::quote;
+use syn::{parse_macro_input, DeriveInput};
 
 mod tuple;
 mod union;
 
 #[proc_macro_derive(UtilsTupleIo)]
-pub fn tuple_serde(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let ast = syn::parse(input).unwrap();
-
-    let from_str = tuple::from_str(&ast);
-    let display = tuple::display(&ast);
-
-    let ts = quote! {
-        #from_str
-        #display
-    };
-
-    ts.into()
+pub fn tuple_serde(input: TokenStream) -> TokenStream {
+    let ast = parse_macro_input!(input as DeriveInput);
+    tuple::serde(&ast)
+        .unwrap_or_else(|err| err.to_compile_error())
+        .into()
 }
 
 // Adds YaSerialize and YaDeserialize implementations for types that support FromStr and Display traits.
 #[proc_macro_derive(UtilsDefaultSerde)]
-pub fn default_serde(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let ast: syn::DeriveInput = syn::parse(input).unwrap();
+pub fn default_serde(input: TokenStream) -> TokenStream {
+    let ast = parse_macro_input!(input as DeriveInput);
 
     let struct_name = &ast.ident;
     let struct_name_literal = &ast.ident.to_string();
 
     let serde = quote! {
-        impl YaSerialize for #struct_name {
-            fn serialize<W: Write>(&self, writer: &mut yaserde::ser::Serializer<W>) -> Result<(), String> {
-                utils::yaserde::serialize(self, #struct_name_literal, writer, |s| s.to_string())
+        impl ::yaserde::YaSerialize for #struct_name {
+            fn serialize<W: ::std::io::Write>(
+                &self,
+                writer: &mut ::yaserde::ser::Serializer<W>,
+            ) -> ::std::result::Result<(), ::std::string::String> {
+                ::xsd_types::utils::yaserde::serialize(
+                    self,
+                    #struct_name_literal,
+                    writer, |s| s.to_string(),
+                )
             }
 
             fn serialize_attributes(
                 &self,
-                attributes: Vec<xml::attribute::OwnedAttribute>,
-                namespace: xml::namespace::Namespace,
-            ) -> Result<
+                attributes: ::std::vec::Vec<::xml::attribute::OwnedAttribute>,
+                namespace: ::xml::namespace::Namespace,
+            ) -> ::std::result::Result<
                 (
-                    Vec<xml::attribute::OwnedAttribute>,
-                    xml::namespace::Namespace,
+                    ::std::vec::Vec<::xml::attribute::OwnedAttribute>,
+                    ::xml::namespace::Namespace,
                 ),
-                std::string::String,
+                ::std::string::String,
             > {
                 Ok((attributes, namespace))
             }
         }
 
-        impl YaDeserialize for #struct_name {
-            fn deserialize<R: Read>(reader: &mut yaserde::de::Deserializer<R>) -> Result<Self, String> {
-                utils::yaserde::deserialize(reader, |s| #struct_name::from_str(s).map_err(|e| e.to_string()))
+        impl ::yaserde::YaDeserialize for #struct_name {
+            fn deserialize<R: ::std::io::Read>(
+                reader: &mut ::yaserde::de::Deserializer<R>,
+            ) -> ::std::result::Result<Self, ::std::string::String> {
+                ::xsd_types::utils::yaserde::deserialize(
+                    reader,
+                    |s| #struct_name::from_str(s).map_err(|e| e.to_string()),
+                )
             }
         }
     };
@@ -58,14 +65,9 @@ pub fn default_serde(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
 }
 
 #[proc_macro_derive(UtilsUnionSerDe)]
-pub fn union_serde(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let ast = syn::parse(input).unwrap();
-
-    let serde = union::serde(&ast);
-
-    let ts = quote! {
-        #serde
-    };
-
-    ts.into()
+pub fn union_serde(input: TokenStream) -> TokenStream {
+    let ast = parse_macro_input!(input as DeriveInput);
+    union::serde(&ast)
+        .unwrap_or_else(|err| err.to_compile_error())
+        .into()
 }

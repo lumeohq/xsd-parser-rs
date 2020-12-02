@@ -1,10 +1,7 @@
-use crate::utils;
 use bigdecimal::{BigDecimal, ParseBigDecimalError};
 use macro_utils::UtilsDefaultSerde;
 use std::fmt;
-use std::io::{Read, Write};
 use std::str::FromStr;
-use yaserde::{YaDeserialize, YaSerialize};
 
 #[derive(Default, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
 pub struct Decimal(pub BigDecimal);
@@ -38,6 +35,8 @@ mod tests {
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
     use num_bigint::ToBigInt;
+    use std::io::{Read, Write};
+    use yaserde::{YaDeserialize, YaSerialize};
 
     #[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]
     #[yaserde(prefix = "t", namespace = "t: test")]

@@ -9,39 +9,51 @@ enum Type<'a> {
     Vec(&'a syn::Path, &'a syn::Path),
 }
 
-pub fn from_str(ast: &syn::DeriveInput) -> TokenStream {
+pub fn serde(ast: &syn::DeriveInput) -> syn::Result<TokenStream> {
+    let from_str = from_str(&ast)?;
+    let display = display(&ast)?;
+
+    Ok(quote! {
+        #from_str
+        #display
+    })
+}
+
+fn from_str(ast: &syn::DeriveInput) -> syn::Result<TokenStream> {
     let convert = match extract_field_type(ast) {
         Type::String(_) => quote! { s.to_string() },
         Type::Struct(ty) | Type::Simple(ty) => {
-            quote! { #ty::from_str(s).map_err(|e| e.to_string())? }
+            quote! { <#ty as ::std::str::FromStr>::from_str(s).map_err(|e| e.to_string())? }
         }
         Type::Vec(_, subtype) => match Type::from_path(&subtype) {
             Type::String(subtype) | Type::Struct(subtype) | Type::Simple(subtype) => quote! {
                 s.split_whitespace()
-                    .filter_map(|s| #subtype::from_str(s).ok())
+                    .filter_map(|s| <#subtype as ::std::str::FromStr>::from_str(s).ok())
                     .collect()
             },
-            _ => syn::Error::new(subtype.span(), "Not implemented for this subtype")
-                .to_compile_error(),
+            _ => {
+                return Err(syn::Error::new(
+                    subtype.span(),
+                    "Not implemented for this subtype",
+                ))
+            }
         },
     };
 
     let struct_name = &ast.ident;
 
-    quote! {
-        impl std::str::FromStr for #struct_name {
-            type Err = String;
+    Ok(quote! {
+        impl ::std::str::FromStr for #struct_name {
+            type Err = ::std::string::String;
 
-            fn from_str(s: &str) -> Result<Self, Self::Err> {
-                use std::str::FromStr;
-
+            fn from_str(s: &::std::primitive::str) -> ::std::result::Result<Self, Self::Err> {
                 Ok(#struct_name(#convert))
             }
         }
-    }
+    })
 }
 
-pub fn display(ast: &syn::DeriveInput) -> TokenStream {
+fn display(ast: &syn::DeriveInput) -> syn::Result<TokenStream> {
     let write = match extract_field_type(ast) {
         Type::String(_) | Type::Simple(_) | Type::Struct(_) => quote! {
             write!(f, "{}", self.0)
@@ -50,21 +62,25 @@ pub fn display(ast: &syn::DeriveInput) -> TokenStream {
             Type::String(_) | Type::Simple(_) | Type::Struct(_) => quote! {
                 write!(f, "{}", self.0.iter().join(" "))
             },
-            _ => syn::Error::new(subtype.span(), "Not implemented for this subtype")
-                .to_compile_error(),
+            _ => {
+                return Err(syn::Error::new(
+                    subtype.span(),
+                    "Not implemented for this subtype",
+                ))
+            }
         },
     };
 
     let struct_name = &ast.ident;
 
-    quote! {
+    Ok(quote! {
         impl std::fmt::Display for #struct_name {
             fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
                 use itertools::Itertools;
                 #write
             }
         }
-    }
+    })
 }
 
 impl Type<'_> {

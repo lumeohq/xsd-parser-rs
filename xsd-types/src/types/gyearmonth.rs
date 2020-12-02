@@ -1,13 +1,11 @@
 use crate::types::gmonth::GMonth;
 use crate::types::gyear::GYear;
 use crate::types::utils::parse_timezone;
-use crate::utils;
+
 use chrono::FixedOffset;
 use macro_utils::UtilsDefaultSerde;
 use std::fmt;
-use std::io::{Read, Write};
 use std::str::FromStr;
-use yaserde::{YaDeserialize, YaSerialize};
 
 #[derive(PartialEq, Debug, UtilsDefaultSerde)]
 pub struct GYearMonth {
@@ -150,6 +148,8 @@ impl fmt::Display for GYearMonth {
 mod tests {
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
+    use std::io::{Read, Write};
+    use yaserde::{YaDeserialize, YaSerialize};
 
     #[test]
     fn gyearmonth_parse_test() {
