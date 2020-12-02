@@ -22,29 +22,41 @@ pub fn default_serde(input: TokenStream) -> TokenStream {
     let struct_name_literal = &ast.ident.to_string();
 
     let serde = quote! {
-        impl YaSerialize for #struct_name {
-            fn serialize<W: Write>(&self, writer: &mut yaserde::ser::Serializer<W>) -> Result<(), String> {
-                utils::yaserde::serialize(self, #struct_name_literal, writer, |s| s.to_string())
+        impl ::yaserde::YaSerialize for #struct_name {
+            fn serialize<W: ::std::io::Write>(
+                &self,
+                writer: &mut ::yaserde::ser::Serializer<W>,
+            ) -> ::std::result::Result<(), ::std::string::String> {
+                utils::yaserde::serialize(
+                    self,
+                    #struct_name_literal,
+                    writer, |s| s.to_string(),
+                )
             }
 
             fn serialize_attributes(
                 &self,
-                attributes: Vec<xml::attribute::OwnedAttribute>,
-                namespace: xml::namespace::Namespace,
-            ) -> Result<
+                attributes: ::std::vec::Vec<::xml::attribute::OwnedAttribute>,
+                namespace: ::xml::namespace::Namespace,
+            ) -> ::std::result::Result<
                 (
-                    Vec<xml::attribute::OwnedAttribute>,
-                    xml::namespace::Namespace,
+                    ::std::vec::Vec<::xml::attribute::OwnedAttribute>,
+                    ::xml::namespace::Namespace,
                 ),
-                std::string::String,
+                ::std::string::String,
             > {
                 Ok((attributes, namespace))
             }
         }
 
-        impl YaDeserialize for #struct_name {
-            fn deserialize<R: Read>(reader: &mut yaserde::de::Deserializer<R>) -> Result<Self, String> {
-                utils::yaserde::deserialize(reader, |s| #struct_name::from_str(s).map_err(|e| e.to_string()))
+        impl ::yaserde::YaDeserialize for #struct_name {
+            fn deserialize<R: ::std::io::Read>(
+                reader: &mut ::yaserde::de::Deserializer<R>,
+            ) -> ::std::result::Result<Self, ::std::string::String> {
+                utils::yaserde::deserialize(
+                    reader,
+                    |s| #struct_name::from_str(s).map_err(|e| e.to_string()),
+                )
             }
         }
     };

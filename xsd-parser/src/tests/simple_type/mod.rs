@@ -4,10 +4,8 @@ use super::utils;
 fn deserialization_works() {
     mod expected {
         use macro_utils::*;
-        use std::io::{Read, Write};
         use std::str::FromStr;
         use xsd_types::utils;
-        use yaserde::{YaDeserialize, YaSerialize};
 
         trait Validate {
             fn validate(&self) -> Result<(), String>;

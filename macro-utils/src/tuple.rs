@@ -23,12 +23,12 @@ fn from_str(ast: &syn::DeriveInput) -> syn::Result<TokenStream> {
     let convert = match extract_field_type(ast) {
         Type::String(_) => quote! { s.to_string() },
         Type::Struct(ty) | Type::Simple(ty) => {
-            quote! { #ty::from_str(s).map_err(|e| e.to_string())? }
+            quote! { <#ty as ::std::str::FromStr>::from_str(s).map_err(|e| e.to_string())? }
         }
         Type::Vec(_, subtype) => match Type::from_path(&subtype) {
             Type::String(subtype) | Type::Struct(subtype) | Type::Simple(subtype) => quote! {
                 s.split_whitespace()
-                    .filter_map(|s| #subtype::from_str(s).ok())
+                    .filter_map(|s| <#subtype as ::std::str::FromStr>::from_str(s).ok())
                     .collect()
             },
             _ => {
@@ -43,12 +43,10 @@ fn from_str(ast: &syn::DeriveInput) -> syn::Result<TokenStream> {
     let struct_name = &ast.ident;
 
     Ok(quote! {
-        impl std::str::FromStr for #struct_name {
-            type Err = String;
+        impl ::std::str::FromStr for #struct_name {
+            type Err = ::std::string::String;
 
-            fn from_str(s: &str) -> Result<Self, Self::Err> {
-                use std::str::FromStr;
-
+            fn from_str(s: &::std::primitive::str) -> ::std::result::Result<Self, Self::Err> {
                 Ok(#struct_name(#convert))
             }
         }

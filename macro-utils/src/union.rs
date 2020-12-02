@@ -64,8 +64,11 @@ pub fn serde(ast: &syn::DeriveInput) -> syn::Result<TokenStream> {
         .collect::<TokenStream>();
 
     Ok(quote! {
-        impl YaSerialize for #struct_name {
-            fn serialize<W: Write>(&self, writer: &mut yaserde::ser::Serializer<W>) -> Result<(), String> {
+        impl ::yaserde::YaSerialize for #struct_name {
+            fn serialize<W: ::std::io::Write>(
+                &self,
+                writer: &mut ::yaserde::ser::Serializer<W>,
+            ) -> ::std::result::Result<(), ::std::string::String> {
                 utils::yaserde::serialize(self, #struct_name_literal, writer, |s| {
                     match s {
                         #ser_variants
@@ -76,21 +79,23 @@ pub fn serde(ast: &syn::DeriveInput) -> syn::Result<TokenStream> {
 
             fn serialize_attributes(
                 &self,
-                attributes: Vec<xml::attribute::OwnedAttribute>,
-                namespace: xml::namespace::Namespace,
-            ) -> Result<
+                attributes: ::std::vec::Vec<::xml::attribute::OwnedAttribute>,
+                namespace: ::xml::namespace::Namespace,
+            ) -> ::std::result::Result<
                 (
-                    Vec<xml::attribute::OwnedAttribute>,
-                    xml::namespace::Namespace,
+                    Vec<::xml::attribute::OwnedAttribute>,
+                    ::xml::namespace::Namespace,
                 ),
-                std::string::String,
+                ::std::string::String,
             > {
                 Ok((attributes, namespace))
             }
         }
 
-        impl YaDeserialize for #struct_name {
-            fn deserialize<R: Read>(reader: &mut yaserde::de::Deserializer<R>) -> Result<Self, String> {
+        impl ::yaserde::YaDeserialize for #struct_name {
+            fn deserialize<R: ::std::io::Read>(
+                reader: &mut ::yaserde::de::Deserializer<R>,
+            ) -> ::std::result::Result<Self, ::std::string::String> {
                 utils::yaserde::deserialize(reader, |s| {
                     #de_variants
                     Ok(#struct_name::__Unknown__(s.to_string()))

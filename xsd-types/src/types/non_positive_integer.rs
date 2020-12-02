@@ -2,9 +2,7 @@ use crate::utils;
 use macro_utils::UtilsDefaultSerde;
 use num_bigint::{BigInt, ToBigInt};
 use std::fmt;
-use std::io::{Read, Write};
 use std::str::FromStr;
-use yaserde::{YaDeserialize, YaSerialize};
 
 // https://www.w3.org/TR/xmlschema-2/#nonPositiveInteger
 #[derive(Default, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
@@ -45,6 +43,8 @@ impl fmt::Display for NonPositiveInteger {
 mod tests {
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
+    use std::io::{Read, Write};
+    use yaserde::{YaDeserialize, YaSerialize};
 
     #[test]
     fn non_positive_integer_parse_test() {
