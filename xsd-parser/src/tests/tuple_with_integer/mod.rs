@@ -8,7 +8,6 @@ fn deserialization_works() {
         use macro_utils::*;
         use std::str::FromStr;
         use xsd_types::types::Integer;
-        use xsd_types::utils;
 
         include!("expected.rs");
     }

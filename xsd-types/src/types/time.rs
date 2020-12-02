@@ -1,5 +1,4 @@
 use crate::types::utils::parse_timezone;
-use crate::utils;
 use chrono::{format::strftime::StrftimeItems, FixedOffset, NaiveTime};
 use macro_utils::UtilsDefaultSerde;
 use std::fmt;

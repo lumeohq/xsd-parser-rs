@@ -5,7 +5,6 @@ fn deserialization_works() {
     mod expected {
         use crate::generator::validator::Validate;
         use macro_utils::*;
-        use xsd_types::utils;
 
         include!("expected.rs");
     }

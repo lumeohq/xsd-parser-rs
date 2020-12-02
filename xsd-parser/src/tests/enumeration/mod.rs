@@ -7,7 +7,6 @@ fn deserialization_works() {
         use macro_utils::*;
         use std::io::{Read, Write};
         use std::str::FromStr;
-        use xsd_types::utils;
         use yaserde::{YaDeserialize, YaSerialize};
 
         include!("expected.rs");

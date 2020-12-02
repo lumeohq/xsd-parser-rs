@@ -69,7 +69,7 @@ pub fn serde(ast: &syn::DeriveInput) -> syn::Result<TokenStream> {
                 &self,
                 writer: &mut ::yaserde::ser::Serializer<W>,
             ) -> ::std::result::Result<(), ::std::string::String> {
-                utils::yaserde::serialize(self, #struct_name_literal, writer, |s| {
+                ::xsd_types::utils::yaserde::serialize(self, #struct_name_literal, writer, |s| {
                     match s {
                         #ser_variants
                         #struct_name::__Unknown__(_) => "".to_string()
@@ -96,7 +96,7 @@ pub fn serde(ast: &syn::DeriveInput) -> syn::Result<TokenStream> {
             fn deserialize<R: ::std::io::Read>(
                 reader: &mut ::yaserde::de::Deserializer<R>,
             ) -> ::std::result::Result<Self, ::std::string::String> {
-                utils::yaserde::deserialize(reader, |s| {
+                ::xsd_types::utils::yaserde::deserialize(reader, |s| {
                     #de_variants
                     Ok(#struct_name::__Unknown__(s.to_string()))
                 })

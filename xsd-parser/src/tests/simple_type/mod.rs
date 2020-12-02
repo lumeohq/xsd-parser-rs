@@ -5,7 +5,6 @@ fn deserialization_works() {
     mod expected {
         use macro_utils::*;
         use std::str::FromStr;
-        use xsd_types::utils;
 
         trait Validate {
             fn validate(&self) -> Result<(), String>;

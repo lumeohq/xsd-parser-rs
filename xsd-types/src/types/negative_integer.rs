@@ -1,4 +1,3 @@
-use crate::utils;
 use macro_utils::UtilsDefaultSerde;
 use num_bigint::{BigInt, ToBigInt};
 use std::fmt;

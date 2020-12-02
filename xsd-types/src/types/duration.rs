@@ -1,4 +1,3 @@
-use crate::utils;
 use macro_utils::UtilsDefaultSerde;
 use std::fmt;
 use std::str::FromStr;
