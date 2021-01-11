@@ -5,6 +5,7 @@ fn deserialization_works() {
     mod expected {
         use macro_utils::*;
         use std::str::FromStr;
+        use yaserde_derive::{YaDeserialize, YaSerialize};
 
         include!("expected.rs");
     }

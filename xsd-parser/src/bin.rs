@@ -1,6 +1,3 @@
-#[cfg(test)]
-extern crate yaserde_derive;
-
 use clap::{App, Arg};
 
 use std::fs;

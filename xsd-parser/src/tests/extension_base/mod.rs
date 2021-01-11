@@ -4,6 +4,7 @@ use super::utils;
 fn deserialization_works() {
     mod expected {
         use crate::generator::validator::Validate;
+        use yaserde_derive::{YaDeserialize, YaSerialize};
 
         include!("expected.rs");
     }

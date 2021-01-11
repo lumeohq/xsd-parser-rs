@@ -6,6 +6,7 @@ fn deserialization_works() {
         use crate::generator::validator::Validate;
         use macro_utils::*;
         use std::str::FromStr;
+        use yaserde_derive::{YaDeserialize, YaSerialize};
 
         include!("expected.rs");
     }
