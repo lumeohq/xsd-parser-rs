@@ -16,19 +16,17 @@ name = "wsdl-parser"
 path = "src/bin.rs"
 
 [dependencies]
-roxmltree = "0.13.0"
-Inflector = "0.11.4"
 clap = "2.33.3"
+Inflector = "0.11.4"
+roxmltree = "0.13.0"
 xsd-parser = { path = "../xsd-parser" }
 
 [dev-dependencies]
-syn = { version = "1.0.51", features = ["full"] }
-log = "0.4.11"
-xml-rs = "0.8.3"
-text-diff = "0.4.0"
-macro-utils = { path = "../macro-utils" }
-xsd-types = { path = "../xsd-types" }
-num-bigint = "0.3.1"
 bigdecimal = "0.2.0"
-
-
+log = "0.4.11"
+macro-utils = { path = "../macro-utils" }
+num-bigint = "0.3.1"
+syn = { version = "1.0.51", features = ["full"] }
+text-diff = "0.4.0"
+xml-rs = "0.8.3"
+xsd-types = { path = "../xsd-types" }
