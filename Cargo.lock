@@ -395,7 +395,6 @@ version = "0.1.0"
 dependencies = [
  "Inflector",
  "bigdecimal",
- "clap",
  "log",
  "macro-utils",
  "num-bigint",
@@ -405,6 +404,16 @@ dependencies = [
  "xml-rs",
  "xsd-parser",
  "xsd-types",
+]
+
+[[package]]
+name = "wsdl-parser-cli"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "roxmltree",
+ "wsdl-parser",
+ "xsd-parser",
 ]
 
 [[package]]
@@ -425,7 +434,6 @@ version = "0.1.0"
 dependencies = [
  "Inflector",
  "bigdecimal",
- "clap",
  "itertools",
  "log",
  "macro-utils",
@@ -437,6 +445,14 @@ dependencies = [
  "xsd-types",
  "yaserde",
  "yaserde_derive",
+]
+
+[[package]]
+name = "xsd-parser-cli"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "xsd-parser",
 ]
 
 [[package]]
