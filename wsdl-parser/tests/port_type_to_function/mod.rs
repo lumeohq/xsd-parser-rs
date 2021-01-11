@@ -1,4 +1,4 @@
-use crate::tests::{ast_test, generate_wsdl};
+use super::{ast_test, generate_wsdl};
 
 #[test]
 fn generator_does_not_panic() {

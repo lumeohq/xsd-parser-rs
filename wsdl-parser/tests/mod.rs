@@ -1,6 +1,6 @@
-use crate::generator::generate;
-use crate::parser::definitions::Definitions;
 use roxmltree::{Document, Node};
+use wsdl_parser::generator::generate;
+use wsdl_parser::parser::definitions::Definitions;
 use xsd_parser::generator::builder::GeneratorBuilder;
 use xsd_parser::parser::schema::parse_schema;
 
