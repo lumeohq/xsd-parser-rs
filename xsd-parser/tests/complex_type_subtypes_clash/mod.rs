@@ -3,7 +3,7 @@ use super::utils;
 #[test]
 fn deserialization_works() {
     mod expected {
-        use crate::generator::validator::Validate;
+        use xsd_parser::generator::validator::Validate;
         use yaserde_derive::{YaDeserialize, YaSerialize};
 
         include!("expected.rs");
@@ -16,11 +16,7 @@ fn deserialization_works() {
     assert_eq!(
         de,
         expected::FooType {
-            messages: expected::foo_type::MessagesType {
-                aa: 3,
-                bb: "qwe".to_string(),
-                a: "rty".to_string()
-            }
+            extension: expected::foo_type::ExtensionType {}
         }
     );
 }

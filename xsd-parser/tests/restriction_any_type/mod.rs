@@ -3,7 +3,7 @@ use super::utils;
 #[test]
 fn deserialization_works() {
     mod expected {
-        use crate::generator::validator::Validate;
+        use xsd_parser::generator::validator::Validate;
         use yaserde_derive::{YaDeserialize, YaSerialize};
 
         include!("expected.rs");
@@ -11,9 +11,16 @@ fn deserialization_works() {
 
     let ser = include_str!("example.xml");
 
-    let de: expected::FooType = yaserde::de::from_str(&ser).unwrap();
+    let de: expected::AppSequenceType = yaserde::de::from_str(&ser).unwrap();
 
-    assert_eq!(de, expected::FooType { min: 1, max: 2 });
+    assert_eq!(
+        de,
+        expected::AppSequenceType {
+            instance_id: 7,
+            sequence_id: Some("http://www.company.org/cum/sonoras".to_string()),
+            message_number: 7,
+        }
+    );
 }
 
 #[test]

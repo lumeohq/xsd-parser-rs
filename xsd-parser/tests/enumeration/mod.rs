@@ -3,7 +3,9 @@ use super::utils;
 #[test]
 fn deserialization_works() {
     mod expected {
-        use crate::generator::validator::Validate;
+        use macro_utils::*;
+        use std::str::FromStr;
+        use xsd_parser::generator::validator::Validate;
         use yaserde_derive::{YaDeserialize, YaSerialize};
 
         include!("expected.rs");
@@ -13,15 +15,7 @@ fn deserialization_works() {
 
     let de: expected::FooType = yaserde::de::from_str(&ser).unwrap();
 
-    assert_eq!(
-        de,
-        expected::FooType {
-            bar: expected::foo_type::BarType {
-                b: Some("string".to_string()),
-                a: Some("string".to_string())
-            }
-        }
-    );
+    assert_eq!(de, expected::FooType::Auto);
 }
 
 #[test]
