@@ -13,7 +13,7 @@ pub struct GDay {
 
 impl GDay {
     pub fn new(day: i32, timezone: Option<FixedOffset>) -> Result<Self, String> {
-        if day < 1 || day > 31 {
+        if !(1..=31).contains(&day) {
             return Err("gDay value should lie between 1 and 31".to_string());
         }
         Ok(GDay {

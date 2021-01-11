@@ -16,11 +16,11 @@ pub struct GMonthDay {
 
 impl GMonthDay {
     pub fn new(month: i32, day: i32, timezone: Option<FixedOffset>) -> Result<Self, String> {
-        if month < 1 || month > 12 {
+        if !(1..=12).contains(&month) {
             return Err("Month value within GMonthDay should lie between 1 and 12".to_string());
         }
 
-        if day < 1 || day > 31 {
+        if !(1..=31).contains(&day) {
             return Err("Day value within GMonthDay should lie between 1 and 31".to_string());
         }
 
