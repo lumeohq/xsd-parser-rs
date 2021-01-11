@@ -42,6 +42,7 @@ impl fmt::Display for NegativeInteger {
 mod tests {
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
+    use yaserde_derive::{YaDeserialize, YaSerialize};
 
     #[test]
     fn negative_integer_parse_test() {

@@ -128,6 +128,7 @@ impl fmt::Display for GMonthDay {
 mod tests {
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
+    use yaserde_derive::{YaDeserialize, YaSerialize};
 
     #[test]
     fn gmonthday_parse_test() {
