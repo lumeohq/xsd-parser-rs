@@ -4,8 +4,6 @@ use super::utils;
 fn deserialization_works() {
     mod expected {
         use crate::generator::validator::Validate;
-        use std::io::{Read, Write};
-        use yaserde::{YaDeserialize, YaSerialize};
 
         include!("expected.rs");
     }

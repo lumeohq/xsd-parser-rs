@@ -59,8 +59,6 @@ mod tests {
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
     use chrono::NaiveDate;
-    use std::io::{Read, Write};
-    use yaserde::{YaDeserialize, YaSerialize};
 
     #[test]
     fn datetime_parse_test() {

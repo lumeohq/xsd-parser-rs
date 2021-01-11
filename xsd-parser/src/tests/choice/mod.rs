@@ -4,9 +4,7 @@ use super::utils;
 fn deserialization_works() {
     mod expected {
         use macro_utils::*;
-        use std::io::{Read, Write};
         use std::str::FromStr;
-        use yaserde::{YaDeserialize, YaSerialize};
 
         include!("expected.rs");
     }

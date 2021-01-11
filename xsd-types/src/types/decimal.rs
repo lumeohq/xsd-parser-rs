@@ -35,8 +35,6 @@ mod tests {
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
     use num_bigint::ToBigInt;
-    use std::io::{Read, Write};
-    use yaserde::{YaDeserialize, YaSerialize};
 
     #[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]
     #[yaserde(prefix = "t", namespace = "t: test")]

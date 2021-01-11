@@ -3,9 +3,6 @@ use super::utils;
 #[test]
 fn deserialization_works() {
     mod expected {
-        use std::io::{Read, Write};
-        use yaserde::{YaDeserialize, YaSerialize};
-
         include!("expected.rs");
     }
 
