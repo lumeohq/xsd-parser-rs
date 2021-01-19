@@ -16,6 +16,6 @@ path = "src/main.rs"
 
 [dependencies]
 clap = "2.33.3"
-roxmltree = "0.13.0"
+roxmltree = "0.14.0"
 xsd-parser = { path = "../xsd-parser" }
 wsdl-parser = { path = "../wsdl-parser" }
