@@ -108,8 +108,7 @@ impl fmt::Display for GYear {
 mod tests {
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
-    use std::io::{Read, Write};
-    use yaserde::{YaDeserialize, YaSerialize};
+    use yaserde_derive::{YaDeserialize, YaSerialize};
 
     #[test]
     fn gyear_parse_test() {

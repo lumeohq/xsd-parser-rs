@@ -13,7 +13,7 @@ pub struct GMonth {
 
 impl GMonth {
     pub fn new(month: i32, timezone: Option<FixedOffset>) -> Result<Self, String> {
-        if month < 1 || month > 12 {
+        if !(1..=12).contains(&month) {
             return Err("GMonth value should lie between 1 and 12".to_string());
         }
         Ok(GMonth {
@@ -86,8 +86,7 @@ impl fmt::Display for GMonth {
 mod tests {
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
-    use std::io::{Read, Write};
-    use yaserde::{YaDeserialize, YaSerialize};
+    use yaserde_derive::{YaDeserialize, YaSerialize};
 
     #[test]
     fn gmonth_parse_test() {

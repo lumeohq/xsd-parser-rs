@@ -1,0 +1,21 @@
+[package]
+name = "wsdl-parser-cli"
+version = "0.1.0"
+authors = [
+    "Chris Bruce <chris@lumeo.com>",
+    "leonid.krutovsky <leonid.krutovsky@quantumsoft.ru>",
+    "DmitrySamoylov <dmitry.samoylov@quantumsoft.ru>",
+    "victor-soloviev <victor.soloviev@quantumsoft.ru>",
+]
+edition = "2018"
+license = "MIT OR Apache-2.0"
+
+[[bin]]
+name = "wsdl-parser"
+path = "src/main.rs"
+
+[dependencies]
+clap = "2.33.3"
+roxmltree = "0.14.0"
+xsd-parser = { path = "../xsd-parser" }
+wsdl-parser = { path = "../wsdl-parser" }

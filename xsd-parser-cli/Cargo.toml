@@ -1,0 +1,19 @@
+[package]
+name = "xsd-parser-cli"
+version = "0.1.0"
+authors = [
+    "Chris Bruce <chris@lumeo.com>",
+    "leonid.krutovsky <leonid.krutovsky@quantumsoft.ru>",
+    "DmitrySamoylov <dmitry.samoylov@quantumsoft.ru>",
+    "victor-soloviev <victor.soloviev@quantumsoft.ru>",
+]
+edition = "2018"
+license = "MIT OR Apache-2.0"
+
+[[bin]]
+name = "xsd-parser"
+path = "src/main.rs"
+
+[dependencies]
+clap = "2.33.3"
+xsd-parser = { path = "../xsd-parser" }

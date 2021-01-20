@@ -92,8 +92,7 @@ impl fmt::Display for Date {
 mod tests {
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
-    use std::io::{Read, Write};
-    use yaserde::{YaDeserialize, YaSerialize};
+    use yaserde_derive::{YaDeserialize, YaSerialize};
 
     #[test]
     fn date_parse_test() {

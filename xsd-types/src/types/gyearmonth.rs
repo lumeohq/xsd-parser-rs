@@ -20,7 +20,7 @@ impl GYearMonth {
             return Err("bad gYear format: year 0 occurred".to_string());
         }
 
-        if month < 1 || month > 12 {
+        if !(1..=12).contains(&month) {
             return Err("Month value within GYearMonth should lie between 1 and 12".to_string());
         }
 
@@ -148,8 +148,7 @@ impl fmt::Display for GYearMonth {
 mod tests {
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
-    use std::io::{Read, Write};
-    use yaserde::{YaDeserialize, YaSerialize};
+    use yaserde_derive::{YaDeserialize, YaSerialize};
 
     #[test]
     fn gyearmonth_parse_test() {

@@ -26,6 +26,8 @@ use crate::parser::schema::parse_schema;
 use crate::parser::types::{RsEntity, RsFile};
 use std::collections::HashMap;
 
+// FIXME: Actually pass up errors
+#[allow(clippy::result_unit_err)]
 pub fn parse(text: &str) -> Result<RsFile, ()> {
     let doc = roxmltree::Document::parse(&text).expect("Parse document error");
     let root = doc.root();

@@ -13,7 +13,7 @@ pub struct GDay {
 
 impl GDay {
     pub fn new(day: i32, timezone: Option<FixedOffset>) -> Result<Self, String> {
-        if day < 1 || day > 31 {
+        if !(1..=31).contains(&day) {
             return Err("gDay value should lie between 1 and 31".to_string());
         }
         Ok(GDay {
@@ -86,8 +86,7 @@ impl fmt::Display for GDay {
 mod tests {
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
-    use std::io::{Read, Write};
-    use yaserde::{YaDeserialize, YaSerialize};
+    use yaserde_derive::{YaDeserialize, YaSerialize};
 
     #[test]
     fn gday_parse_test() {
