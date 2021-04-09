@@ -131,12 +131,8 @@ fn extract_field_path(data_struct: &syn::DataStruct) -> Option<&syn::Path> {
 
 fn extract_subtype(path: &syn::PathSegment) -> Option<&syn::Path> {
     if let syn::PathArguments::AngleBracketed(args) = &path.arguments {
-        if let Some(arg) = args.args.last() {
-            if let syn::GenericArgument::Type(ty) = arg {
-                if let syn::Type::Path(path) = ty {
-                    return Some(&path.path);
-                }
-            }
+        if let Some(syn::GenericArgument::Type(syn::Type::Path(path))) = args.args.last() {
+            return Some(&path.path);
         }
     }
 

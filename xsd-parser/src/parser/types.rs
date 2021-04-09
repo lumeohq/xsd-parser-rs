@@ -115,6 +115,7 @@ impl StructField {
     }
 }
 
+#[allow(clippy::upper_case_acronyms)]
 #[derive(Debug, Clone)]
 pub enum StructFieldSource {
     Attribute,
@@ -156,6 +157,7 @@ pub struct Enum {
     pub source: EnumSource,
 }
 
+#[allow(clippy::upper_case_acronyms)]
 #[derive(Debug, Clone, PartialEq)]
 pub enum EnumSource {
     Restriction,
