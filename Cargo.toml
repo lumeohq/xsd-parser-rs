@@ -1,5 +1,6 @@
 [workspace]
 members = [
+  "macro-utils",
   "xsd-parser",
   "xsd-parser-cli",
   "xsd-types",
