@@ -24,5 +24,5 @@ syn = { version = "1.0.58", features = ["full"] }
 text-diff = "0.4.0"
 xml-rs = "0.8.3"
 xsd-types = { path = "../xsd-types" }
-yaserde = "0.5.1"
-yaserde_derive = "0.5.1"
+yaserde = "0.6.0"
+yaserde_derive = "0.6.0"
