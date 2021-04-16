@@ -13,6 +13,7 @@ mod rename_only_where_needed;
 mod restriction_any_type;
 mod simple_type;
 mod tuple_with_integer;
+mod tuple_with_string;
 mod type_name_clash;
 mod union;
 mod xsd_string;

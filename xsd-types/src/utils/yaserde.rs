@@ -45,6 +45,6 @@ pub fn deserialize<S, R: Read>(
     if let Ok(xml::reader::XmlEvent::Characters(ref text)) = reader.peek() {
         de_fn(text)
     } else {
-        Err("Start element not found".to_string())
+        de_fn("")
     }
 }
