@@ -15,8 +15,6 @@ roxmltree = "0.14.0"
 Inflector = "0.11.4"
 
 [dev-dependencies]
-bigdecimal = "0.2.0"
-itertools = "0.10.0"
 log = "0.4.13"
 macro-utils = { path = "../macro-utils" }
 num-bigint = "0.3.1"

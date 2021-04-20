@@ -60,7 +60,15 @@ fn display(ast: &syn::DeriveInput) -> syn::Result<TokenStream> {
         },
         Type::Vec(_, subtype) => match Type::from_path(&subtype) {
             Type::String(_) | Type::Simple(_) | Type::Struct(_) => quote! {
-                write!(f, "{}", self.0.iter().join(" "))
+                let mut it = self.0.iter();
+                if let Some(val) = it.next() {
+                    write!(f, "{}", val)?;
+                }
+                for val in it {
+                    write!(f, " {}", val)?;
+                }
+
+                Ok(())
             },
             _ => {
                 return Err(syn::Error::new(
@@ -76,7 +84,6 @@ fn display(ast: &syn::DeriveInput) -> syn::Result<TokenStream> {
     Ok(quote! {
         impl std::fmt::Display for #struct_name {
             fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                use itertools::Itertools;
                 #write
             }
         }
