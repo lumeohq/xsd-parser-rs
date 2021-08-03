@@ -56,9 +56,11 @@ impl Struct {
             })
             .filter(|f| {
                 //TODO: remove this workaround for fields names clash
-                !self.fields
+                !self
+                    .fields
                     .borrow()
-                    .iter().any(|field| field.name == f.name)
+                    .iter()
+                    .any(|field| field.name == f.name)
             })
             .collect::<Vec<StructField>>();
 
