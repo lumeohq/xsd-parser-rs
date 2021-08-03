@@ -15,5 +15,6 @@ name = "xsd-parser"
 path = "src/main.rs"
 
 [dependencies]
+anyhow = "1.0.42"
 clap = "2.33.3"
 xsd-parser = { path = "../xsd-parser" }
