@@ -116,7 +116,7 @@ mod tests {
                 <t:Second>-1234</t:Second>
             </t:IntegerPair>
             "#;
-        let i: IntegerPair = yaserde::de::from_str(&s).unwrap();
+        let i: IntegerPair = yaserde::de::from_str(s).unwrap();
         assert_eq!(i.first.to_bigint().unwrap(), 1234.to_bigint().unwrap());
         assert_eq!(i.second.to_bigint().unwrap(), (-1234).to_bigint().unwrap());
     }

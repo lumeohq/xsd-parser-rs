@@ -25,8 +25,8 @@ pub fn generate_wsdl(input: &str) -> String {
 }
 
 pub fn assert_ast_eq(expected: &str, actual: &str) {
-    let expected = syn::parse_file(&expected).unwrap();
-    let actual = syn::parse_file(&actual).unwrap();
+    let expected = syn::parse_file(expected).unwrap();
+    let actual = syn::parse_file(actual).unwrap();
 
     assert_eq!(expected, actual)
 }

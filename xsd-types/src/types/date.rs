@@ -37,7 +37,7 @@ impl FromStr for Date {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         fn parse_naive_date(s: &str) -> Result<NaiveDate, String> {
-            NaiveDate::parse_from_str(&s, "%Y-%m-%d").map_err(|e| e.to_string())
+            NaiveDate::parse_from_str(s, "%Y-%m-%d").map_err(|e| e.to_string())
         }
 
         if let Some(s) = s.strip_suffix('Z') {
@@ -215,7 +215,7 @@ mod tests {
                 <t:Text>Hello world</t:Text>
             </t:Message>
             "#;
-        let m: Message = yaserde::de::from_str(&s).unwrap();
+        let m: Message = yaserde::de::from_str(s).unwrap();
         assert_eq!(m.created_at.value, NaiveDate::from_ymd(2020, 2, 2));
         assert_eq!(
             m.created_at.timezone,

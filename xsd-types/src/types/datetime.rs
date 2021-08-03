@@ -166,7 +166,7 @@ mod tests {
                 <t:Text>Hello world</t:Text>
             </t:Message>
             "#;
-        let m: Message = yaserde::de::from_str(&s).unwrap();
+        let m: Message = yaserde::de::from_str(s).unwrap();
 
         let offset = FixedOffset::west(6 * 3600 + 30 * 60);
         let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;

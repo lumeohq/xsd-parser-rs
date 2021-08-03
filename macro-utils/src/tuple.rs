@@ -10,8 +10,8 @@ enum Type<'a> {
 }
 
 pub fn serde(ast: &syn::DeriveInput) -> syn::Result<TokenStream> {
-    let from_str = from_str(&ast)?;
-    let display = display(&ast)?;
+    let from_str = from_str(ast)?;
+    let display = display(ast)?;
 
     Ok(quote! {
         #from_str
@@ -25,7 +25,7 @@ fn from_str(ast: &syn::DeriveInput) -> syn::Result<TokenStream> {
         Type::Struct(ty) | Type::Simple(ty) => {
             quote! { <#ty as ::std::str::FromStr>::from_str(s).map_err(|e| e.to_string())? }
         }
-        Type::Vec(_, subtype) => match Type::from_path(&subtype) {
+        Type::Vec(_, subtype) => match Type::from_path(subtype) {
             Type::String(subtype) | Type::Struct(subtype) | Type::Simple(subtype) => quote! {
                 s.split_whitespace()
                     .filter_map(|s| <#subtype as ::std::str::FromStr>::from_str(s).ok())
@@ -58,7 +58,7 @@ fn display(ast: &syn::DeriveInput) -> syn::Result<TokenStream> {
         Type::String(_) | Type::Simple(_) | Type::Struct(_) => quote! {
             write!(f, "{}", self.0)
         },
-        Type::Vec(_, subtype) => match Type::from_path(&subtype) {
+        Type::Vec(_, subtype) => match Type::from_path(subtype) {
             Type::String(_) | Type::Simple(_) | Type::Struct(_) => quote! {
                 let mut it = self.0.iter();
                 if let Some(val) = it.next() {
@@ -116,9 +116,9 @@ impl Type<'_> {
 fn extract_field_type(ast: &syn::DeriveInput) -> Type {
     match &ast.data {
         syn::Data::Struct(data_struct) => {
-            let field_path = extract_field_path(&data_struct).expect("Bad field count or type");
+            let field_path = extract_field_path(data_struct).expect("Bad field count or type");
 
-            Type::from_path(&field_path)
+            Type::from_path(field_path)
         }
         _ => unimplemented!("Implemented only for structs"),
     }

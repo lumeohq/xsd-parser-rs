@@ -12,7 +12,7 @@ pub fn generate(definitions: &Definitions) -> String {
 
     for port_type in definitions.port_types().values() {
         for op in port_type.operations() {
-            let func = Function::new(&op, definitions);
+            let func = Function::new(op, definitions);
             res.push(generate_function(&func, definitions.target_namespace()));
         }
     }

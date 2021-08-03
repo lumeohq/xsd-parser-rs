@@ -133,7 +133,7 @@ mod tests {
                 <t:Second>-1234</t:Second>
             </t:NonPositiveIntegerPair>
             "#;
-        let i: NonPositiveIntegerPair = yaserde::de::from_str(&s).unwrap();
+        let i: NonPositiveIntegerPair = yaserde::de::from_str(s).unwrap();
         assert_eq!(i.first.to_bigint().unwrap(), 0.to_bigint().unwrap());
         assert_eq!(i.second.to_bigint().unwrap(), (-1234).to_bigint().unwrap());
     }

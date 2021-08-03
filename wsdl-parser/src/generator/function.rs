@@ -48,7 +48,7 @@ impl<'a> Function<'a> {
                 input_message = definitions.get_message_by_param(input);
                 output_message = definitions.get_message_by_param(output);
             }
-            OneWay { input } => input_message = definitions.get_message_by_param(&input),
+            OneWay { input } => input_message = definitions.get_message_by_param(input),
             _ => {
                 unreachable!("No present in ONVIF");
             }

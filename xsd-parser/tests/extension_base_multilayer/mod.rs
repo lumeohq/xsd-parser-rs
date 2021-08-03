@@ -11,7 +11,7 @@ fn deserialization_works() {
 
     let ser = include_str!("example.xml");
 
-    let de: expected::FooType = yaserde::de::from_str(&ser).unwrap();
+    let de: expected::FooType = yaserde::de::from_str(ser).unwrap();
 
     assert_eq!(
         de,

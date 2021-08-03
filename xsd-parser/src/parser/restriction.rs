@@ -25,9 +25,9 @@ const AVAILABLE_CONTENT_TYPES: [ElementType; 7] = [
 pub fn parse_restriction(node: &Node, _: &Node) -> RsEntity {
     use ElementType::Restriction;
     match node.xsd_type() {
-        Restriction(RestrictionType::SimpleType) => simple_type_restriction(&node),
-        Restriction(RestrictionType::SimpleContent) => simple_content_restriction(&node),
-        Restriction(RestrictionType::ComplexContent) => complex_content_restriction(&node),
+        Restriction(RestrictionType::SimpleType) => simple_type_restriction(node),
+        Restriction(RestrictionType::SimpleContent) => simple_content_restriction(node),
+        Restriction(RestrictionType::ComplexContent) => complex_content_restriction(node),
         _ => unreachable!("Invalid restriction node: {:#?}", node),
     }
 }

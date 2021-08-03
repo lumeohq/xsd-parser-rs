@@ -74,7 +74,7 @@ mod tests {
                 <t:Second>-12.34</t:Second>
             </t:DecimalPair>
             "#;
-        let i: DecimalPair = yaserde::de::from_str(&s).unwrap();
+        let i: DecimalPair = yaserde::de::from_str(s).unwrap();
         assert_eq!(
             i.first.to_bigdecimal(),
             BigDecimal::new(1234.to_bigint().unwrap(), 5)

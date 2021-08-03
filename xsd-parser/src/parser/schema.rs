@@ -9,7 +9,7 @@ pub fn parse_schema<'input>(schema: &Node<'_, 'input>) -> RsFile<'input> {
     RsFile {
         name: "".into(),
         namespace: None,
-        target_ns: target_namespace(&schema).cloned(),
+        target_ns: target_namespace(schema).cloned(),
         xsd_ns: schema
             .namespaces()
             .iter()

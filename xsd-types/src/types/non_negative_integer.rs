@@ -124,7 +124,7 @@ mod tests {
                 <t:Second>0</t:Second>
             </t:NonNegativeIntegerPair>
             "#;
-        let i: NonNegativeIntegerPair = yaserde::de::from_str(&s).unwrap();
+        let i: NonNegativeIntegerPair = yaserde::de::from_str(s).unwrap();
         assert_eq!(i.first.to_biguint().unwrap(), 1234.to_biguint().unwrap());
         assert_eq!(i.second.to_biguint().unwrap(), 0.to_biguint().unwrap());
     }

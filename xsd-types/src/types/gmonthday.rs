@@ -274,7 +274,7 @@ mod tests {
                 <t:Text>Hello world</t:Text>
             </t:Message>
             "#;
-        let m: Message = yaserde::de::from_str(&s).unwrap();
+        let m: Message = yaserde::de::from_str(s).unwrap();
         assert_eq!(m.created_at.month, 7);
         assert_eq!(m.created_at.day, 9);
         assert_eq!(

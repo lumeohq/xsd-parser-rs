@@ -120,7 +120,7 @@ mod tests {
                 <t:Second>1</t:Second>
             </t:PositiveIntegerPair>
             "#;
-        let i: PositiveIntegerPair = yaserde::de::from_str(&s).unwrap();
+        let i: PositiveIntegerPair = yaserde::de::from_str(s).unwrap();
         assert_eq!(i.first.to_biguint().unwrap(), 1234.to_biguint().unwrap());
         assert_eq!(i.second.to_biguint().unwrap(), 1.to_biguint().unwrap());
     }

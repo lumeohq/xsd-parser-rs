@@ -20,8 +20,8 @@ const AVAILABLE_CONTENT_TYPES: [ElementType; 6] = [
 pub fn parse_extension(node: &Node, _: &Node) -> RsEntity {
     use ElementType::Extension;
     match node.xsd_type() {
-        Extension(ExtensionType::SimpleContent) => simple_content_extension(&node),
-        Extension(ExtensionType::ComplexContent) => complex_content_extension(&node),
+        Extension(ExtensionType::SimpleContent) => simple_content_extension(node),
+        Extension(ExtensionType::ComplexContent) => complex_content_extension(node),
         _ => unreachable!("Invalid extension node: {:#?}", node),
     }
 }

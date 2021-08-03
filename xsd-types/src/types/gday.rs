@@ -218,7 +218,7 @@ mod tests {
                 <t:Text>Hello world</t:Text>
             </t:Message>
             "#;
-        let m: Message = yaserde::de::from_str(&s).unwrap();
+        let m: Message = yaserde::de::from_str(s).unwrap();
         assert_eq!(m.created_at.value, 29);
         assert_eq!(
             m.created_at.timezone,

@@ -12,7 +12,7 @@ fn deserialization_works() {
     {
         let ser = include_str!("example.xml");
 
-        let de: expected::FooType = yaserde::de::from_str(&ser).unwrap();
+        let de: expected::FooType = yaserde::de::from_str(ser).unwrap();
 
         assert_eq!(de, expected::FooType("abc".to_string()));
     }
@@ -21,7 +21,7 @@ fn deserialization_works() {
         // Empty element should be deserialized into an empty string
         let ser = include_str!("example_empty.xml");
 
-        let de: expected::FooType = yaserde::de::from_str(&ser).unwrap();
+        let de: expected::FooType = yaserde::de::from_str(ser).unwrap();
 
         assert_eq!(de, expected::FooType("".to_string()));
     }
