@@ -1,9 +1,9 @@
 use crate::types::utils::parse_timezone;
 
 use chrono::FixedOffset;
-use macro_utils::UtilsDefaultSerde;
 use std::fmt;
 use std::str::FromStr;
+use xsd_macro_utils::UtilsDefaultSerde;
 
 #[derive(PartialEq, Debug, UtilsDefaultSerde)]
 pub struct GMonth {

@@ -1,8 +1,8 @@
 use crate::types::datetime::DateTime;
 use chrono::{format::ParseError, DateTime as CDateTime, FixedOffset};
-use macro_utils::UtilsDefaultSerde;
 use std::fmt;
 use std::str::FromStr;
+use xsd_macro_utils::UtilsDefaultSerde;
 
 // The only difference from DateTime is that the time zone expression is required at the end of the value.
 #[derive(Default, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]

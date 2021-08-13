@@ -3,7 +3,7 @@ use super::utils;
 #[test]
 fn deserialization_works() {
     mod expected {
-        use macro_utils::*;
+        use xsd_macro_utils::*;
         use xsd_parser::generator::validator::Validate;
 
         include!("expected.rs");

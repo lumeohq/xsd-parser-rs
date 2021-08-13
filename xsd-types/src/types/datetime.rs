@@ -1,7 +1,7 @@
 use chrono::{format::ParseError, DateTime as CDateTime, FixedOffset};
-use macro_utils::UtilsDefaultSerde;
 use std::fmt;
 use std::str::FromStr;
+use xsd_macro_utils::UtilsDefaultSerde;
 
 #[derive(PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
 pub struct DateTime {

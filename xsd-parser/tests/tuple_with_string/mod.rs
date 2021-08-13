@@ -3,8 +3,8 @@ use super::utils;
 #[test]
 fn deserialization_works() {
     mod expected {
-        use macro_utils::*;
         use std::str::FromStr;
+        use xsd_macro_utils::*;
 
         include!("expected.rs");
     }

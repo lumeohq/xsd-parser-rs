@@ -1,7 +1,7 @@
-use macro_utils::UtilsDefaultSerde;
 use num_bigint::{BigUint, ToBigUint};
 use std::fmt;
 use std::str::FromStr;
+use xsd_macro_utils::UtilsDefaultSerde;
 
 // https://www.w3.org/TR/xmlschema-2/#positiveInteger
 #[derive(Default, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]

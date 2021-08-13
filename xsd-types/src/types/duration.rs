@@ -1,6 +1,6 @@
-use macro_utils::UtilsDefaultSerde;
 use std::fmt;
 use std::str::FromStr;
+use xsd_macro_utils::UtilsDefaultSerde;
 
 #[derive(Default, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
 pub struct Duration {
