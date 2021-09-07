@@ -411,7 +411,6 @@ name = "xsd-parser"
 version = "0.1.0"
 dependencies = [
  "Inflector",
- "log",
  "num-bigint",
  "roxmltree",
  "syn",
@@ -438,7 +437,6 @@ version = "0.1.0"
 dependencies = [
  "bigdecimal",
  "chrono",
- "log",
  "num-bigint",
  "xml-rs",
  "xsd-macro-utils",
