@@ -22,5 +22,5 @@ text-diff = "0.4.0"
 xml-rs = "0.8.3"
 xsd-macro-utils = { path = "../xsd-macro-utils" }
 xsd-types = { path = "../xsd-types" }
-yaserde = "0.6.0"
-yaserde_derive = "0.6.0"
+yaserde = "0.7.1"
+yaserde_derive = "0.7.1"
