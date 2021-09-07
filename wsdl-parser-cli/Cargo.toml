@@ -18,5 +18,5 @@ path = "src/main.rs"
 anyhow = "1.0.42"
 clap = "2.33.3"
 roxmltree = { version = "0.14.0", features = ["std"] }
-xsd-parser = { path = "../xsd-parser" }
 wsdl-parser = { path = "../wsdl-parser" }
+xsd-parser = { path = "../xsd-parser" }
