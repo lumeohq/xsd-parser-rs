@@ -411,7 +411,6 @@ name = "xsd-parser"
 version = "0.1.0"
 dependencies = [
  "Inflector",
- "log",
  "num-bigint",
  "roxmltree",
  "syn",
@@ -438,7 +437,6 @@ version = "0.1.0"
 dependencies = [
  "bigdecimal",
  "chrono",
- "log",
  "num-bigint",
  "xml-rs",
  "xsd-macro-utils",
@@ -448,9 +446,9 @@ dependencies = [
 
 [[package]]
 name = "yaserde"
-version = "0.6.0"
+version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bc096efbee9ec8fee0600a15bb4fd651ccc14570cb05b6d4dd66b0325e4a0b5e"
+checksum = "a2776ec5bb20e76d89268e87e1ea66c078b94f55e9771e4d648adda3019f87fc"
 dependencies = [
  "log",
  "xml-rs",
@@ -458,12 +456,14 @@ dependencies = [
 
 [[package]]
 name = "yaserde_derive"
-version = "0.6.0"
+version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9af81f1d48039716dd825cf4a7d61d39583f8b12705994abb446bae749a977bb"
+checksum = "5c0b0a4701f203ebaecce4971a6bb8575aa07b617bdc39ddfc6ffeff3a38530d"
 dependencies = [
  "heck",
+ "log",
  "proc-macro2",
  "quote",
  "syn",
+ "xml-rs",
 ]
