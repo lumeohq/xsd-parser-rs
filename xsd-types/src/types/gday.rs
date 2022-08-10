@@ -41,7 +41,7 @@ impl FromStr for GDay {
                 return Err("bad gDay format".to_string());
             }
             let token = &s[3..5];
-            if !token.chars().all(|c| c.is_digit(10)) {
+            if !token.chars().all(|c| c.is_ascii_digit()) {
                 return Err("bad gDay format".to_string());
             }
             token.parse::<i32>().map_err(|e| e.to_string())

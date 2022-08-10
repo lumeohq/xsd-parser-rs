@@ -71,13 +71,13 @@ impl FromStr for GMonthDay {
             }
 
             let month_token = &s[2..4];
-            if !month_token.chars().all(|c| c.is_digit(10)) {
+            if !month_token.chars().all(|c| c.is_ascii_digit()) {
                 return Err("bad month format within gMonthDay".to_string());
             }
             let month = month_token.parse::<i32>().map_err(|e| e.to_string())?;
 
             let day_token = &s[5..7];
-            if !day_token.chars().all(|c| c.is_digit(10)) {
+            if !day_token.chars().all(|c| c.is_ascii_digit()) {
                 return Err("bad day format within gMonthDay".to_string());
             }
             let day = day_token.parse::<i32>().map_err(|e| e.to_string())?;

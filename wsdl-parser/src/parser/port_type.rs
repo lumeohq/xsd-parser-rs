@@ -147,8 +147,8 @@ impl<'a> OperationType<'a> {
                         assert_eq!(
                             output_node.wsdl_type(),
                             ElementType::Output,
-                            "{}",
-                            format!("{:?}", output_node)
+                            "{:?}",
+                            output_node
                         );
                         OperationType::RequestResponse {
                             input: Param::new(&ch),

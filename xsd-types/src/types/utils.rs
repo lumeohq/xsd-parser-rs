@@ -10,7 +10,7 @@ pub fn parse_timezone(s: &str) -> Result<FixedOffset, String> {
     if tokens.len() != 2 || tokens[0].len() != 2 || tokens[1].len() != 2 {
         return Err("bad timezone format".to_string());
     }
-    if !tokens.iter().all(|t| t.chars().all(|c| c.is_digit(10))) {
+    if !tokens.iter().all(|t| t.chars().all(|c| c.is_ascii_digit())) {
         return Err("bad timezone format".to_string());
     }
 
