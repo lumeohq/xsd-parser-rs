@@ -53,7 +53,7 @@ fn parse_str_positive(s: &str) -> Result<GYear, String> {
         if s.len() < 4 {
             return Err("bad gYear format: to short".to_string());
         }
-        if !s.chars().all(|c| c.is_digit(10)) {
+        if !s.chars().all(|c| c.is_ascii_digit()) {
             return Err("bad gYear format".to_string());
         }
         s.parse::<i32>().map_err(|e| e.to_string())

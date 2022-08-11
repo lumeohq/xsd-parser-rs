@@ -1,4 +1,5 @@
 use std::fmt;
+use std::fmt::Write;
 use std::str::FromStr;
 use xsd_macro_utils::UtilsDefaultSerde;
 
@@ -166,7 +167,7 @@ impl FromStr for Duration {
                     context.is_dot_found = true;
                 }
                 digit => {
-                    if !digit.is_digit(10) {
+                    if !digit.is_ascii_digit() {
                         return Err("Incorrect character occurred".into());
                     }
 
@@ -215,24 +216,24 @@ impl fmt::Display for Duration {
 
         let mut date_str = String::new();
         if self.years > 0 {
-            date_str.push_str(&format!("{}Y", self.years));
+            write!(&mut date_str, "{}Y", self.years)?;
         }
         if self.months > 0 {
-            date_str.push_str(&format!("{}M", self.months));
+            write!(&mut date_str, "{}M", self.months)?;
         }
         if self.days > 0 {
-            date_str.push_str(&format!("{}D", self.days));
+            write!(&mut date_str, "{}D", self.days)?;
         }
 
         let mut time_str = String::new();
         if self.hours > 0 {
-            time_str.push_str(&format!("{}H", self.hours));
+            write!(&mut time_str, "{}H", self.hours)?;
         }
         if self.minutes > 0 {
-            time_str.push_str(&format!("{}M", self.minutes));
+            write!(&mut time_str, "{}M", self.minutes)?;
         }
         if self.seconds > 0.0 {
-            time_str.push_str(&format!("{}S", self.seconds));
+            write!(&mut time_str, "{}S", self.seconds)?;
         }
 
         if time_str.is_empty() {

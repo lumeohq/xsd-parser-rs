@@ -86,12 +86,12 @@ fn parse_str_positive(s: &str) -> Result<GYearMonth, String> {
             return Err("bad gYearMonth format".to_string());
         }
 
-        if !year_token.chars().all(|c| c.is_digit(10)) {
+        if !year_token.chars().all(|c| c.is_ascii_digit()) {
             return Err("bad year format within gYearMonth".to_string());
         }
         let year = year_token.parse::<i32>().map_err(|e| e.to_string())?;
 
-        if !month_token.chars().all(|c| c.is_digit(10)) {
+        if !month_token.chars().all(|c| c.is_ascii_digit()) {
             return Err("bad month format within gYearMonth".to_string());
         }
         let month = month_token.parse::<i32>().map_err(|e| e.to_string())?;
