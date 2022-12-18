@@ -49,8 +49,11 @@ mod tests {
     #[test]
     fn datetime_parse_test() {
         // No timezone.
-        let offset = FixedOffset::east(0);
-        let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;
+        let offset = FixedOffset::east_opt(0).unwrap();
+        let dt_utc = NaiveDate::from_ymd_opt(2020, 3, 7)
+            .unwrap()
+            .and_hms_opt(4, 40, 0).unwrap()
+            - offset;
         let dt = CDateTime::<FixedOffset>::from_utc(dt_utc, offset);
         assert!(DateTimeStamp::from_str("2020-03-07T04:40:00").is_err());
         // Timezone "Z".
@@ -60,8 +63,8 @@ mod tests {
         );
 
         // Positive offset.
-        let offset = FixedOffset::east(6 * 3600 + 30 * 60);
-        let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;
+        let offset = FixedOffset::east_opt(6 * 3600 + 30 * 60).unwrap();
+        let dt_utc = NaiveDate::from_ymd_opt(2020, 3, 7).unwrap().and_hms_opt(4, 40, 0).unwrap() - offset;
         let dt = CDateTime::<FixedOffset>::from_utc(dt_utc, offset);
         assert_eq!(
             DateTimeStamp::from_str("2020-03-07T04:40:00+06:30"),
@@ -69,8 +72,8 @@ mod tests {
         );
 
         // Negative offset.
-        let offset = FixedOffset::west(6 * 3600 + 30 * 60);
-        let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;
+        let offset = FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap();
+        let dt_utc = NaiveDate::from_ymd_opt(2020, 3, 7).unwrap().and_hms_opt(4, 40, 0).unwrap() - offset;
         let dt = CDateTime::<FixedOffset>::from_utc(dt_utc, offset);
         assert_eq!(
             DateTimeStamp::from_str("2020-03-07T04:40:00-06:30"),
@@ -81,8 +84,8 @@ mod tests {
     #[test]
     fn datetime_display_test() {
         // Timezone +00:00.
-        let offset = FixedOffset::east(0);
-        let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;
+        let offset = FixedOffset::east_opt(0).unwrap();
+        let dt_utc = NaiveDate::from_ymd_opt(2020, 3, 7).unwrap().and_hms_opt(4, 40, 0).unwrap() - offset;
         let dt = CDateTime::<FixedOffset>::from_utc(dt_utc, offset);
         assert_eq!(
             DateTimeStamp::from_chrono_datetime(dt).to_string(),
@@ -90,8 +93,8 @@ mod tests {
         );
 
         // Positive offset.
-        let offset = FixedOffset::east(6 * 3600 + 30 * 60);
-        let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;
+        let offset = FixedOffset::east_opt(6 * 3600 + 30 * 60).unwrap();
+        let dt_utc = NaiveDate::from_ymd_opt(2020, 3, 7).unwrap().and_hms_opt(4, 40, 0).unwrap() - offset;
         let dt = CDateTime::<FixedOffset>::from_utc(dt_utc, offset);
         assert_eq!(
             DateTimeStamp::from_chrono_datetime(dt).to_string(),
@@ -99,8 +102,8 @@ mod tests {
         );
 
         // Negative offset.
-        let offset = FixedOffset::west(6 * 3600 + 30 * 60);
-        let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;
+        let offset = FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap();
+        let dt_utc = NaiveDate::from_ymd_opt(2020, 3, 7).unwrap().and_hms_opt(4, 40, 0).unwrap() - offset;
         let dt = CDateTime::<FixedOffset>::from_utc(dt_utc, offset);
         assert_eq!(
             DateTimeStamp::from_chrono_datetime(dt).to_string(),
@@ -128,8 +131,8 @@ mod tests {
             </t:Message>
             "#;
 
-        let offset = FixedOffset::east(6 * 3600 + 30 * 60);
-        let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;
+        let offset = FixedOffset::east_opt(6 * 3600 + 30 * 60).unwrap();
+        let dt_utc = NaiveDate::from_ymd_opt(2020, 3, 7).unwrap().and_hms_opt(4, 40, 0).unwrap() - offset;
         let dt = CDateTime::<FixedOffset>::from_utc(dt_utc, offset);
         let m = Message {
             created_at: DateTimeStamp::from_chrono_datetime(dt),
@@ -150,8 +153,8 @@ mod tests {
             "#;
         let m: Message = yaserde::de::from_str(s).unwrap();
 
-        let offset = FixedOffset::west(6 * 3600 + 30 * 60);
-        let dt_utc = NaiveDate::from_ymd(2020, 3, 7).and_hms(4, 40, 0) - offset;
+        let offset = FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap();
+        let dt_utc = NaiveDate::from_ymd_opt(2020, 3, 7).unwrap().and_hms_opt(4, 40, 0).unwrap() - offset;
         let dt = CDateTime::<FixedOffset>::from_utc(dt_utc, offset);
 
         assert_eq!(m.created_at.value, DateTime::from_chrono_datetime(dt));

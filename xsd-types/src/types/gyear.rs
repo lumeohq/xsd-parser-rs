@@ -60,7 +60,7 @@ fn parse_str_positive(s: &str) -> Result<GYear, String> {
     }
 
     if let Some(s) = s.strip_suffix('Z') {
-        return GYear::new(parse_value(s)?, Some(FixedOffset::east(0)));
+        return GYear::new(parse_value(s)?, Some(FixedOffset::east_opt(0).unwrap()));
     }
 
     if s.contains('+') {
@@ -126,7 +126,7 @@ mod tests {
             GYear::from_str("2020Z"),
             Ok(GYear {
                 value: 2020,
-                timezone: Some(FixedOffset::east(0))
+                timezone: Some(FixedOffset::east_opt(0).unwrap())
             })
         );
 
@@ -135,7 +135,7 @@ mod tests {
             GYear::from_str("2020+06:30"),
             Ok(GYear {
                 value: 2020,
-                timezone: Some(FixedOffset::east(6 * 3600 + 30 * 60))
+                timezone: Some(FixedOffset::east_opt(6 * 3600 + 30 * 60).unwrap())
             })
         );
 
@@ -144,7 +144,7 @@ mod tests {
             GYear::from_str("2020-06:30"),
             Ok(GYear {
                 value: 2020,
-                timezone: Some(FixedOffset::west(6 * 3600 + 30 * 60))
+                timezone: Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap())
             })
         );
 
@@ -153,7 +153,7 @@ mod tests {
             GYear::from_str("-0020-06:30"),
             Ok(GYear {
                 value: -20,
-                timezone: Some(FixedOffset::west(6 * 3600 + 30 * 60))
+                timezone: Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap())
             })
         );
 
@@ -162,7 +162,7 @@ mod tests {
             GYear::from_str("-20000-06:30"),
             Ok(GYear {
                 value: -20000,
-                timezone: Some(FixedOffset::west(6 * 3600 + 30 * 60))
+                timezone: Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap())
             })
         );
 
@@ -189,7 +189,7 @@ mod tests {
         assert_eq!(
             GYear {
                 value: 987,
-                timezone: Some(FixedOffset::east(0))
+                timezone: Some(FixedOffset::east_opt(0).unwrap())
             }
             .to_string(),
             "0987+00:00"
@@ -199,7 +199,7 @@ mod tests {
         assert_eq!(
             GYear {
                 value: 987,
-                timezone: Some(FixedOffset::east(6 * 3600 + 30 * 60))
+                timezone: Some(FixedOffset::east_opt(6 * 3600 + 30 * 60).unwrap())
             }
             .to_string(),
             "0987+06:30"
@@ -209,7 +209,7 @@ mod tests {
         assert_eq!(
             GYear {
                 value: 987,
-                timezone: Some(FixedOffset::west(6 * 3600 + 30 * 60))
+                timezone: Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap())
             }
             .to_string(),
             "0987-06:30"
@@ -219,7 +219,7 @@ mod tests {
         assert_eq!(
             GYear {
                 value: -987,
-                timezone: Some(FixedOffset::west(6 * 3600 + 30 * 60))
+                timezone: Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap())
             }
             .to_string(),
             "-0987-06:30"
@@ -229,7 +229,7 @@ mod tests {
         assert_eq!(
             GYear {
                 value: -98765,
-                timezone: Some(FixedOffset::west(6 * 3600 + 30 * 60))
+                timezone: Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap())
             }
             .to_string(),
             "-98765-06:30"
@@ -258,7 +258,7 @@ mod tests {
         let m = Message {
             created_at: GYear {
                 value: 2007,
-                timezone: Some(FixedOffset::east(6 * 3600 + 30 * 60)),
+                timezone: Some(FixedOffset::east_opt(6 * 3600 + 30 * 60).unwrap()),
             },
             text: "Hello world".to_string(),
         };
@@ -279,7 +279,7 @@ mod tests {
         assert_eq!(m.created_at.value, 2007);
         assert_eq!(
             m.created_at.timezone,
-            Some(FixedOffset::west(6 * 3600 + 30 * 60)),
+            Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap()),
         );
         assert_eq!(m.text, "Hello world".to_string());
     }
