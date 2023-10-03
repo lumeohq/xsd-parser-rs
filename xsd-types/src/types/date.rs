@@ -188,8 +188,7 @@ mod tests {
 
     #[test]
     fn date_serialize_test() {
-        let expected = r#"
-            <?xml version="1.0" encoding="utf-8"?>
+        let expected = r#"<?xml version="1.0" encoding="utf-8"?>
             <t:Message xmlns:t="test">
                 <t:CreatedAt>2020-02-02+06:30</t:CreatedAt>
                 <t:Text>Hello world</t:Text>
@@ -208,8 +207,7 @@ mod tests {
 
     #[test]
     fn date_deserialize_test() {
-        let s = r#"
-            <?xml version="1.0" encoding="utf-8"?>
+        let s = r#"<?xml version="1.0" encoding="utf-8"?>
             <t:Message xmlns:t="test">
                 <t:CreatedAt>2020-02-02-06:30</t:CreatedAt>
                 <t:Text>Hello world</t:Text>

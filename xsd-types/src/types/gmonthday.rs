@@ -246,8 +246,7 @@ mod tests {
 
     #[test]
     fn gmonthday_serialize_test() {
-        let expected = r#"
-            <?xml version="1.0" encoding="utf-8"?>
+        let expected = r#"<?xml version="1.0" encoding="utf-8"?>
             <t:Message xmlns:t="test">
                 <t:CreatedAt>--07-09+06:30</t:CreatedAt>
                 <t:Text>Hello world</t:Text>
@@ -267,8 +266,7 @@ mod tests {
 
     #[test]
     fn gmonthday_deserialize_test() {
-        let s = r#"
-            <?xml version="1.0" encoding="utf-8"?>
+        let s = r#"<?xml version="1.0" encoding="utf-8"?>
             <t:Message xmlns:t="test">
                 <t:CreatedAt>--07-09-06:30</t:CreatedAt>
                 <t:Text>Hello world</t:Text>

@@ -102,8 +102,7 @@ mod tests {
 
     #[test]
     fn negative_integer_serialize_test() {
-        let expected = r#"
-            <?xml version="1.0" encoding="utf-8"?>
+        let expected = r#"<?xml version="1.0" encoding="utf-8"?>
             <t:NegativeIntegerPair xmlns:t="test">
                 <t:First>-1</t:First>
                 <t:Second>-1234</t:Second>
@@ -119,8 +118,7 @@ mod tests {
 
     #[test]
     fn negative_integer_deserialize_test() {
-        let s = r#"
-            <?xml version="1.0" encoding="utf-8"?>
+        let s = r#"<?xml version="1.0" encoding="utf-8"?>
             <t:NegativeIntegerPair xmlns:t="test">
                 <t:First>-1</t:First>
                 <t:Second>-1234</t:Second>

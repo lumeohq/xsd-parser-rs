@@ -95,8 +95,7 @@ mod tests {
 
     #[test]
     fn positive_integer_serialize_test() {
-        let expected = r#"
-            <?xml version="1.0" encoding="utf-8"?>
+        let expected = r#"<?xml version="1.0" encoding="utf-8"?>
             <t:PositiveIntegerPair xmlns:t="test">
                 <t:First>1234</t:First>
                 <t:Second>1</t:Second>
@@ -113,8 +112,7 @@ mod tests {
     #[test]
     fn positive_integer_deserialize_test() {
         // Value "+1234" is used to check optional plus sign deserialization.
-        let s = r#"
-            <?xml version="1.0" encoding="utf-8"?>
+        let s = r#"<?xml version="1.0" encoding="utf-8"?>
             <t:PositiveIntegerPair xmlns:t="test">
                 <t:First>+1234</t:First>
                 <t:Second>1</t:Second>

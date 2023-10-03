@@ -49,8 +49,7 @@ mod tests {
 
     #[test]
     fn integer_serialize_test() {
-        let expected = r#"
-            <?xml version="1.0" encoding="utf-8"?>
+        let expected = r#"<?xml version="1.0" encoding="utf-8"?>
             <t:DecimalPair xmlns:t="test">
                 <t:First>0.01234</t:First>
                 <t:Second>-12.34</t:Second>
@@ -67,8 +66,7 @@ mod tests {
     #[test]
     fn integer_deserialize_test() {
         // Value "+0.01234" is used to check optional plus sign deserialization.
-        let s = r#"
-            <?xml version="1.0" encoding="utf-8"?>
+        let s = r#"<?xml version="1.0" encoding="utf-8"?>
             <t:DecimalPair xmlns:t="test">
                 <t:First>+0.01234</t:First>
                 <t:Second>-12.34</t:Second>
