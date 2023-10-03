@@ -13,7 +13,7 @@ license = "MIT OR Apache-2.0"
 [dependencies]
 proc-macro2 = "1"
 quote = "1"
-syn = "1"
+syn = "2"
 
 [lib]
 proc-macro = true

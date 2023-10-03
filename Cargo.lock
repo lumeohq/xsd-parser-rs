@@ -493,7 +493,7 @@ version = "0.1.0"
 dependencies = [
  "Inflector",
  "roxmltree",
- "syn 1.0.74",
+ "syn 2.0.37",
  "text-diff",
  "xsd-parser",
 ]
@@ -527,7 +527,7 @@ version = "0.1.0"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 1.0.74",
+ "syn 2.0.37",
 ]
 
 [[package]]
@@ -537,7 +537,7 @@ dependencies = [
  "Inflector",
  "num-bigint",
  "roxmltree",
- "syn 1.0.74",
+ "syn 2.0.37",
  "text-diff",
  "xml-rs",
  "xsd-macro-utils",

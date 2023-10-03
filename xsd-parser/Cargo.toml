@@ -16,7 +16,7 @@ roxmltree = "0.14"
 
 [dev-dependencies]
 num-bigint = "0.4"
-syn = { version = "1", features = ["full"] }
+syn = { version = "2", features = ["full", "extra-traits"] }
 text-diff = "0.4"
 xml-rs = "0.8"
 xsd-macro-utils = { path = "../xsd-macro-utils" }
