@@ -11,7 +11,7 @@ edition = "2018"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-bigdecimal = "0.3"
+bigdecimal = "0.4"
 chrono = "0.4"
 num-bigint = "0.4"
 xml-rs = "0.8"
