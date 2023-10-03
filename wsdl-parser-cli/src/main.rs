@@ -89,7 +89,7 @@ fn process_single_file(input_path: &Path, output_path: Option<&str>) -> anyhow::
 }
 
 fn load_file(path: &Path) -> std::io::Result<String> {
-    let mut file = fs::File::open(&path)?;
+    let mut file = fs::File::open(path)?;
     let mut text = String::new();
     file.read_to_string(&mut text)?;
     Ok(text)

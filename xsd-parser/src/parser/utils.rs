@@ -19,7 +19,7 @@ pub fn find_child<'a, 'input>(node: &Node<'a, 'input>, tag_name: &str) -> Option
         .find(|e| e.is_element() && e.tag_name().name() == tag_name)
 }
 
-pub fn get_documentation<'a>(node: &Node<'a, '_>) -> Option<String> {
+pub fn get_documentation(node: &Node<'_, '_>) -> Option<String> {
     find_child(node, "annotation")
         .and_then(|node| find_child(&node, "documentation"))
         .and_then(|node| node.text().map(|s| s.to_string()))

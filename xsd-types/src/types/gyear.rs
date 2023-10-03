@@ -36,13 +36,9 @@ impl FromStr for GYear {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         if let Some(s) = s.strip_prefix('-') {
-            let result = parse_str_positive(s);
-            if let Ok(mut gyear) = result {
-                gyear.value *= -1;
-                return Ok(gyear);
-            } else {
-                return result;
-            }
+            let mut gyear = parse_str_positive(s)?;
+            gyear.value *= -1;
+            return Ok(gyear);
         }
         parse_str_positive(s)
     }
