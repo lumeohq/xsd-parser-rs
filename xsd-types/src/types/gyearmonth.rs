@@ -97,7 +97,7 @@ fn parse_str_positive(s: &str) -> Result<GYearMonth, String> {
 
     if let Some(s) = s.strip_suffix('Z') {
         let (year, month) = parse_value(s)?;
-        return GYearMonth::new(year, month, Some(FixedOffset::east(0)));
+        return GYearMonth::new(year, month, Some(FixedOffset::east_opt(0).unwrap()));
     }
 
     if s.contains('+') {
@@ -164,7 +164,7 @@ mod tests {
             Ok(GYearMonth {
                 year: 2020,
                 month: 3,
-                timezone: Some(FixedOffset::east(0))
+                timezone: Some(FixedOffset::east_opt(0).unwrap())
             })
         );
 
@@ -174,7 +174,7 @@ mod tests {
             Ok(GYearMonth {
                 year: 2020,
                 month: 3,
-                timezone: Some(FixedOffset::east(6 * 3600 + 30 * 60))
+                timezone: Some(FixedOffset::east_opt(6 * 3600 + 30 * 60).unwrap())
             })
         );
 
@@ -184,7 +184,7 @@ mod tests {
             Ok(GYearMonth {
                 year: 2020,
                 month: 3,
-                timezone: Some(FixedOffset::west(6 * 3600 + 30 * 60))
+                timezone: Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap())
             })
         );
 
@@ -194,7 +194,7 @@ mod tests {
             Ok(GYearMonth {
                 year: -20,
                 month: 3,
-                timezone: Some(FixedOffset::west(6 * 3600 + 30 * 60))
+                timezone: Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap())
             })
         );
 
@@ -204,7 +204,7 @@ mod tests {
             Ok(GYearMonth {
                 year: -20000,
                 month: 3,
-                timezone: Some(FixedOffset::west(6 * 3600 + 30 * 60))
+                timezone: Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap())
             })
         );
 
@@ -238,7 +238,7 @@ mod tests {
             GYearMonth {
                 year: 987,
                 month: 6,
-                timezone: Some(FixedOffset::east(0))
+                timezone: Some(FixedOffset::east_opt(0).unwrap())
             }
             .to_string(),
             "0987-06+00:00"
@@ -249,7 +249,7 @@ mod tests {
             GYearMonth {
                 year: 987,
                 month: 6,
-                timezone: Some(FixedOffset::east(6 * 3600 + 30 * 60))
+                timezone: Some(FixedOffset::east_opt(6 * 3600 + 30 * 60).unwrap())
             }
             .to_string(),
             "0987-06+06:30"
@@ -260,7 +260,7 @@ mod tests {
             GYearMonth {
                 year: 987,
                 month: 6,
-                timezone: Some(FixedOffset::west(6 * 3600 + 30 * 60))
+                timezone: Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap())
             }
             .to_string(),
             "0987-06-06:30"
@@ -271,7 +271,7 @@ mod tests {
             GYearMonth {
                 year: -987,
                 month: 6,
-                timezone: Some(FixedOffset::west(6 * 3600 + 30 * 60))
+                timezone: Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap())
             }
             .to_string(),
             "-0987-06-06:30"
@@ -282,7 +282,7 @@ mod tests {
             GYearMonth {
                 year: -98765,
                 month: 6,
-                timezone: Some(FixedOffset::west(6 * 3600 + 30 * 60))
+                timezone: Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap())
             }
             .to_string(),
             "-98765-06-06:30"
@@ -311,7 +311,7 @@ mod tests {
             created_at: GYearMonth {
                 year: 2007,
                 month: 2,
-                timezone: Some(FixedOffset::east(6 * 3600 + 30 * 60)),
+                timezone: Some(FixedOffset::east_opt(6 * 3600 + 30 * 60).unwrap()),
             },
             text: "Hello world".to_string(),
         };
@@ -332,7 +332,7 @@ mod tests {
         assert_eq!(m.created_at.month, 2);
         assert_eq!(
             m.created_at.timezone,
-            Some(FixedOffset::west(6 * 3600 + 30 * 60)),
+            Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap()),
         );
         assert_eq!(m.text, "Hello world".to_string());
     }
