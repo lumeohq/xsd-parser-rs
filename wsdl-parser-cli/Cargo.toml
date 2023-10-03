@@ -16,7 +16,7 @@ path = "src/main.rs"
 
 [dependencies]
 anyhow = "1"
-clap = "2"
+clap = { version = "4", features = ["derive"] }
 roxmltree = { version = "0.14", features = ["std"] }
 wsdl-parser = { path = "../wsdl-parser" }
 xsd-parser = { path = "../xsd-parser" }
