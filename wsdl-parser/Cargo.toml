@@ -11,10 +11,10 @@ edition = "2018"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-Inflector = "0.11.4"
-roxmltree = "0.14.0"
+Inflector = "0.11"
+roxmltree = "0.14"
 
 [dev-dependencies]
-syn = { version = "1.0.58", features = ["full"] }
-text-diff = "0.4.0"
+syn = { version = "2", features = ["full", "extra-traits"] }
+text-diff = "0.4"
 xsd-parser = { path = "../xsd-parser" }

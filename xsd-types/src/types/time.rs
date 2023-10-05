@@ -26,7 +26,7 @@ impl Time {
 impl Default for Time {
     fn default() -> Time {
         Self {
-            value: NaiveTime::from_hms(0, 0, 0),
+            value: NaiveTime::from_hms_opt(0, 0, 0).unwrap(),
             timezone: None,
         }
     }
@@ -43,7 +43,7 @@ impl FromStr for Time {
         if let Some(s) = s.strip_suffix('Z') {
             return Ok(Time {
                 value: parse_naive_time(s)?,
-                timezone: Some(FixedOffset::east(0)),
+                timezone: Some(FixedOffset::east_opt(0).unwrap()),
             });
         }
 
@@ -104,7 +104,7 @@ mod tests {
         assert_eq!(
             Time::from_str("04:40:00"),
             Ok(Time {
-                value: NaiveTime::from_hms(4, 40, 0),
+                value: NaiveTime::from_hms_opt(4, 40, 0).unwrap(),
                 timezone: None
             })
         );
@@ -113,8 +113,8 @@ mod tests {
         assert_eq!(
             Time::from_str("04:40:00Z"),
             Ok(Time {
-                value: NaiveTime::from_hms(4, 40, 0),
-                timezone: Some(FixedOffset::east(0))
+                value: NaiveTime::from_hms_opt(4, 40, 0).unwrap(),
+                timezone: Some(FixedOffset::east_opt(0).unwrap())
             })
         );
 
@@ -122,8 +122,8 @@ mod tests {
         assert_eq!(
             Time::from_str("04:40:00+06:30"),
             Ok(Time {
-                value: NaiveTime::from_hms(4, 40, 0),
-                timezone: Some(FixedOffset::east(6 * 3600 + 30 * 60))
+                value: NaiveTime::from_hms_opt(4, 40, 0).unwrap(),
+                timezone: Some(FixedOffset::east_opt(6 * 3600 + 30 * 60).unwrap())
             })
         );
 
@@ -131,8 +131,8 @@ mod tests {
         assert_eq!(
             Time::from_str("04:40:00-06:30"),
             Ok(Time {
-                value: NaiveTime::from_hms(4, 40, 0),
-                timezone: Some(FixedOffset::west(6 * 3600 + 30 * 60))
+                value: NaiveTime::from_hms_opt(4, 40, 0).unwrap(),
+                timezone: Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap())
             })
         );
     }
@@ -142,7 +142,7 @@ mod tests {
         // No timezone.
         assert_eq!(
             Time {
-                value: NaiveTime::from_hms(4, 40, 0),
+                value: NaiveTime::from_hms_opt(4, 40, 0).unwrap(),
                 timezone: None
             }
             .to_string(),
@@ -152,8 +152,8 @@ mod tests {
         // Timezone +00:00.
         assert_eq!(
             Time {
-                value: NaiveTime::from_hms(4, 40, 0),
-                timezone: Some(FixedOffset::east(0))
+                value: NaiveTime::from_hms_opt(4, 40, 0).unwrap(),
+                timezone: Some(FixedOffset::east_opt(0).unwrap())
             }
             .to_string(),
             "04:40:00+00:00"
@@ -162,8 +162,8 @@ mod tests {
         // Positive offset.
         assert_eq!(
             Time {
-                value: NaiveTime::from_hms(4, 40, 0),
-                timezone: Some(FixedOffset::east(6 * 3600 + 30 * 60))
+                value: NaiveTime::from_hms_opt(4, 40, 0).unwrap(),
+                timezone: Some(FixedOffset::east_opt(6 * 3600 + 30 * 60).unwrap())
             }
             .to_string(),
             "04:40:00+06:30"
@@ -172,8 +172,8 @@ mod tests {
         // Negative offset.
         assert_eq!(
             Time {
-                value: NaiveTime::from_hms(4, 40, 0),
-                timezone: Some(FixedOffset::west(6 * 3600 + 30 * 60))
+                value: NaiveTime::from_hms_opt(4, 40, 0).unwrap(),
+                timezone: Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap())
             }
             .to_string(),
             "04:40:00-06:30"
@@ -192,8 +192,7 @@ mod tests {
 
     #[test]
     fn datetime_serialize_test() {
-        let expected = r#"
-            <?xml version="1.0" encoding="utf-8"?>
+        let expected = r#"<?xml version="1.0" encoding="utf-8"?>
             <t:Message xmlns:t="test">
                 <t:CreatedAt>04:40:00+06:30</t:CreatedAt>
                 <t:Text>Hello world</t:Text>
@@ -201,8 +200,8 @@ mod tests {
             "#;
         let m = Message {
             created_at: Time {
-                value: NaiveTime::from_hms(4, 40, 0),
-                timezone: Some(FixedOffset::east(6 * 3600 + 30 * 60)),
+                value: NaiveTime::from_hms_opt(4, 40, 0).unwrap(),
+                timezone: Some(FixedOffset::east_opt(6 * 3600 + 30 * 60).unwrap()),
             },
             text: "Hello world".to_string(),
         };
@@ -212,18 +211,20 @@ mod tests {
 
     #[test]
     fn integer_deserialize_test() {
-        let s = r#"
-            <?xml version="1.0" encoding="utf-8"?>
+        let s = r#"<?xml version="1.0" encoding="utf-8"?>
             <t:Message xmlns:t="test">
                 <t:CreatedAt>04:40:00-06:30</t:CreatedAt>
                 <t:Text>Hello world</t:Text>
             </t:Message>
             "#;
         let m: Message = yaserde::de::from_str(s).unwrap();
-        assert_eq!(m.created_at.value, NaiveTime::from_hms(4, 40, 0));
+        assert_eq!(
+            m.created_at.value,
+            NaiveTime::from_hms_opt(4, 40, 0).unwrap()
+        );
         assert_eq!(
             m.created_at.timezone,
-            Some(FixedOffset::west(6 * 3600 + 30 * 60))
+            Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap())
         );
         assert_eq!(m.text, "Hello world".to_string());
     }

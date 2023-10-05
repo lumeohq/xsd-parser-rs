@@ -11,9 +11,9 @@ edition = "2018"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-proc-macro2 = "1.0.24"
-quote = "1.0.8"
-syn = "1.0.58"
+proc-macro2 = "1"
+quote = "1"
+syn = "2"
 
 [lib]
 proc-macro = true

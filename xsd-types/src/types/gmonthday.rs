@@ -87,7 +87,7 @@ impl FromStr for GMonthDay {
 
         if let Some(s) = s.strip_suffix('Z') {
             let (month, day) = parse_value(s)?;
-            return GMonthDay::new(month, day, Some(FixedOffset::east(0)));
+            return GMonthDay::new(month, day, Some(FixedOffset::east_opt(0).unwrap()));
         }
 
         if s.contains('+') {
@@ -148,7 +148,7 @@ mod tests {
             Ok(GMonthDay {
                 month: 12,
                 day: 20,
-                timezone: Some(FixedOffset::east(0))
+                timezone: Some(FixedOffset::east_opt(0).unwrap())
             })
         );
 
@@ -158,7 +158,7 @@ mod tests {
             Ok(GMonthDay {
                 month: 12,
                 day: 20,
-                timezone: Some(FixedOffset::east(6 * 3600 + 30 * 60))
+                timezone: Some(FixedOffset::east_opt(6 * 3600 + 30 * 60).unwrap())
             })
         );
 
@@ -168,7 +168,7 @@ mod tests {
             Ok(GMonthDay {
                 month: 12,
                 day: 20,
-                timezone: Some(FixedOffset::west(6 * 3600 + 30 * 60))
+                timezone: Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap())
             })
         );
 
@@ -205,7 +205,7 @@ mod tests {
             GMonthDay {
                 month: 3,
                 day: 2,
-                timezone: Some(FixedOffset::east(0))
+                timezone: Some(FixedOffset::east_opt(0).unwrap())
             }
             .to_string(),
             "--03-02+00:00"
@@ -216,7 +216,7 @@ mod tests {
             GMonthDay {
                 month: 3,
                 day: 2,
-                timezone: Some(FixedOffset::east(6 * 3600 + 30 * 60))
+                timezone: Some(FixedOffset::east_opt(6 * 3600 + 30 * 60).unwrap())
             }
             .to_string(),
             "--03-02+06:30"
@@ -227,7 +227,7 @@ mod tests {
             GMonthDay {
                 month: 3,
                 day: 2,
-                timezone: Some(FixedOffset::west(6 * 3600 + 30 * 60))
+                timezone: Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap())
             }
             .to_string(),
             "--03-02-06:30"
@@ -246,8 +246,7 @@ mod tests {
 
     #[test]
     fn gmonthday_serialize_test() {
-        let expected = r#"
-            <?xml version="1.0" encoding="utf-8"?>
+        let expected = r#"<?xml version="1.0" encoding="utf-8"?>
             <t:Message xmlns:t="test">
                 <t:CreatedAt>--07-09+06:30</t:CreatedAt>
                 <t:Text>Hello world</t:Text>
@@ -257,7 +256,7 @@ mod tests {
             created_at: GMonthDay {
                 month: 7,
                 day: 9,
-                timezone: Some(FixedOffset::east(6 * 3600 + 30 * 60)),
+                timezone: Some(FixedOffset::east_opt(6 * 3600 + 30 * 60).unwrap()),
             },
             text: "Hello world".to_string(),
         };
@@ -267,8 +266,7 @@ mod tests {
 
     #[test]
     fn gmonthday_deserialize_test() {
-        let s = r#"
-            <?xml version="1.0" encoding="utf-8"?>
+        let s = r#"<?xml version="1.0" encoding="utf-8"?>
             <t:Message xmlns:t="test">
                 <t:CreatedAt>--07-09-06:30</t:CreatedAt>
                 <t:Text>Hello world</t:Text>
@@ -279,7 +277,7 @@ mod tests {
         assert_eq!(m.created_at.day, 9);
         assert_eq!(
             m.created_at.timezone,
-            Some(FixedOffset::west(6 * 3600 + 30 * 60)),
+            Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap()),
         );
         assert_eq!(m.text, "Hello world".to_string());
     }

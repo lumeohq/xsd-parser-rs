@@ -48,7 +48,7 @@ impl FromStr for GDay {
         }
 
         if let Some(s) = s.strip_suffix('Z') {
-            return GDay::new(parse_value(s)?, Some(FixedOffset::east(0)));
+            return GDay::new(parse_value(s)?, Some(FixedOffset::east_opt(0).unwrap()));
         }
 
         if s.contains('+') {
@@ -104,7 +104,7 @@ mod tests {
             GDay::from_str("---25Z"),
             Ok(GDay {
                 value: 25,
-                timezone: Some(FixedOffset::east(0))
+                timezone: Some(FixedOffset::east_opt(0).unwrap())
             })
         );
 
@@ -113,7 +113,7 @@ mod tests {
             GDay::from_str("---25+06:30"),
             Ok(GDay {
                 value: 25,
-                timezone: Some(FixedOffset::east(6 * 3600 + 30 * 60))
+                timezone: Some(FixedOffset::east_opt(6 * 3600 + 30 * 60).unwrap())
             })
         );
 
@@ -122,7 +122,7 @@ mod tests {
             GDay::from_str("---25-06:30"),
             Ok(GDay {
                 value: 25,
-                timezone: Some(FixedOffset::west(6 * 3600 + 30 * 60))
+                timezone: Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap())
             })
         );
 
@@ -152,7 +152,7 @@ mod tests {
         assert_eq!(
             GDay {
                 value: 3,
-                timezone: Some(FixedOffset::east(0))
+                timezone: Some(FixedOffset::east_opt(0).unwrap())
             }
             .to_string(),
             "---03+00:00"
@@ -162,7 +162,7 @@ mod tests {
         assert_eq!(
             GDay {
                 value: 3,
-                timezone: Some(FixedOffset::east(6 * 3600 + 30 * 60))
+                timezone: Some(FixedOffset::east_opt(6 * 3600 + 30 * 60).unwrap())
             }
             .to_string(),
             "---03+06:30"
@@ -172,7 +172,7 @@ mod tests {
         assert_eq!(
             GDay {
                 value: 3,
-                timezone: Some(FixedOffset::west(6 * 3600 + 30 * 60))
+                timezone: Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap())
             }
             .to_string(),
             "---03-06:30"
@@ -191,8 +191,7 @@ mod tests {
 
     #[test]
     fn gday_serialize_test() {
-        let expected = r#"
-            <?xml version="1.0" encoding="utf-8"?>
+        let expected = r#"<?xml version="1.0" encoding="utf-8"?>
             <t:Message xmlns:t="test">
                 <t:CreatedAt>---07+06:30</t:CreatedAt>
                 <t:Text>Hello world</t:Text>
@@ -201,7 +200,7 @@ mod tests {
         let m = Message {
             created_at: GDay {
                 value: 7,
-                timezone: Some(FixedOffset::east(6 * 3600 + 30 * 60)),
+                timezone: Some(FixedOffset::east_opt(6 * 3600 + 30 * 60).unwrap()),
             },
             text: "Hello world".to_string(),
         };
@@ -211,8 +210,7 @@ mod tests {
 
     #[test]
     fn gday_deserialize_test() {
-        let s = r#"
-            <?xml version="1.0" encoding="utf-8"?>
+        let s = r#"<?xml version="1.0" encoding="utf-8"?>
             <t:Message xmlns:t="test">
                 <t:CreatedAt>---29-06:30</t:CreatedAt>
                 <t:Text>Hello world</t:Text>
@@ -222,7 +220,7 @@ mod tests {
         assert_eq!(m.created_at.value, 29);
         assert_eq!(
             m.created_at.timezone,
-            Some(FixedOffset::west(6 * 3600 + 30 * 60)),
+            Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap()),
         );
         assert_eq!(m.text, "Hello world".to_string());
     }

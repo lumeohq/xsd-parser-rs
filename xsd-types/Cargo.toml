@@ -11,12 +11,12 @@ edition = "2018"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-bigdecimal = "0.3.0"
-chrono = "0.4.19"
-num-bigint = "0.4.2"
-xml-rs = "0.8.3"
+bigdecimal = "0.4"
+chrono = "0.4"
+num-bigint = "0.4"
+xml-rs = "0.8"
 xsd-macro-utils = { path = "../xsd-macro-utils" }
-yaserde = "0.7.1"
+yaserde = "0.7"
 
 [dev-dependencies]
-yaserde_derive = "0.7.1"
+yaserde_derive = "0.7"

@@ -11,15 +11,15 @@ edition = "2018"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-Inflector = "0.11.4"
-roxmltree = "0.14.0"
+Inflector = "0.11"
+roxmltree = "0.14"
 
 [dev-dependencies]
-num-bigint = "0.4.2"
-syn = { version = "1.0.58", features = ["full"] }
-text-diff = "0.4.0"
-xml-rs = "0.8.3"
+num-bigint = "0.4"
+syn = { version = "2", features = ["full", "extra-traits"] }
+text-diff = "0.4"
+xml-rs = "0.8"
 xsd-macro-utils = { path = "../xsd-macro-utils" }
 xsd-types = { path = "../xsd-types" }
-yaserde = "0.7.1"
-yaserde_derive = "0.7.1"
+yaserde = "0.7"
+yaserde_derive = "0.7"

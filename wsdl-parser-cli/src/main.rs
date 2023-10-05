@@ -1,4 +1,4 @@
-use clap::{App, Arg};
+use clap::Parser;
 
 use anyhow::Context;
 
@@ -11,35 +11,32 @@ use wsdl_parser::parser::definitions::Definitions;
 use xsd_parser::generator::builder::GeneratorBuilder;
 use xsd_parser::parser::schema::parse_schema;
 
+#[derive(Parser)]
+#[clap(name = env!("CARGO_PKG_NAME"))]
+#[clap(version = env!("CARGO_PKG_VERSION"))]
+#[clap(about = env!("CARGO_PKG_DESCRIPTION"))]
+struct Opt {
+    /// Input .wsdl file
+    #[clap(long, short)]
+    input: Option<PathBuf>,
+
+    /// Output file
+    #[clap(long, short)]
+    output: Option<PathBuf>,
+}
+
 fn main() -> anyhow::Result<()> {
-    let matches = App::new("wsdl-parser")
-        .about("An wsdl => rust code generator written in rust")
-        .arg(
-            Arg::with_name("input")
-                .short("i")
-                .long("input")
-                .takes_value(true)
-                .help("Input .wsdl file"),
-        )
-        .arg(
-            Arg::with_name("output")
-                .short("o")
-                .long("output")
-                .takes_value(true)
-                .help("Output file"),
-        )
-        .get_matches();
+    let opt: Opt = Opt::parse();
 
-    let input_path = matches.value_of("input").unwrap_or("input/wsdl");
-    let input_path = Path::new(input_path);
-    let output_path = matches.value_of("output");
-
-    let md = fs::metadata(input_path).unwrap();
+    let input_path = opt.input.unwrap_or_else(|| PathBuf::from("input/wsdl"));
+    let md = fs::metadata(&input_path).unwrap();
     if md.is_dir() {
-        let output_path = Path::new(output_path.unwrap_or("output/wsdl-rs"));
-        process_dir(input_path, output_path)?;
+        let output_path = opt
+            .output
+            .unwrap_or_else(|| PathBuf::from("output/wsdl-rs"));
+        process_dir(&input_path, &output_path)?;
     } else {
-        process_single_file(input_path, output_path)?;
+        process_single_file(&input_path, opt.output.as_deref())?;
     }
 
     Ok(())
@@ -57,13 +54,13 @@ fn process_dir(input_path: &Path, output_path: &Path) -> anyhow::Result<()> {
         } else {
             let output_file_path = PathBuf::from(path.file_name().unwrap()).with_extension("rs");
             let output_file_path = output_path.join(output_file_path);
-            process_single_file(&path, output_file_path.to_str())?;
+            process_single_file(&path, Some(&output_file_path))?;
         }
     }
     Ok(())
 }
 
-fn process_single_file(input_path: &Path, output_path: Option<&str>) -> anyhow::Result<()> {
+fn process_single_file(input_path: &Path, output_path: Option<&Path>) -> anyhow::Result<()> {
     let text = load_file(input_path)?;
     let doc = Document::parse(text.as_str()).context("Failed to parse input document")?;
     let definitions = Definitions::new(&doc.root_element());
@@ -89,13 +86,13 @@ fn process_single_file(input_path: &Path, output_path: Option<&str>) -> anyhow::
 }
 
 fn load_file(path: &Path) -> std::io::Result<String> {
-    let mut file = fs::File::open(&path)?;
+    let mut file = fs::File::open(path)?;
     let mut text = String::new();
     file.read_to_string(&mut text)?;
     Ok(text)
 }
 
-fn write_to_file(path: &str, text: &str) -> std::io::Result<()> {
+fn write_to_file(path: &Path, text: &str) -> std::io::Result<()> {
     let mut file = fs::File::create(path)?;
     file.write_all(text.as_bytes())?;
 

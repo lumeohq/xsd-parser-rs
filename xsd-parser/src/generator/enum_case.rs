@@ -21,7 +21,7 @@ pub trait EnumCaseGenerator {
     }
 
     fn get_name(&self, entity: &EnumCase, gen: &Generator) -> String {
-        default_format_type(entity.name.as_str(), &*gen.target_ns.borrow())
+        default_format_type(entity.name.as_str(), &gen.target_ns.borrow())
             .split("::")
             .last()
             .unwrap()

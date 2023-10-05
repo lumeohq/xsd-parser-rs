@@ -3,7 +3,7 @@ use chrono::FixedOffset;
 // Parses ISO 8601 timezone.
 pub fn parse_timezone(s: &str) -> Result<FixedOffset, String> {
     if s == "Z" {
-        return Ok(FixedOffset::east(0));
+        return Ok(FixedOffset::east_opt(0).unwrap());
     }
 
     let tokens: Vec<&str> = s[1..].split(':').collect();
@@ -23,8 +23,8 @@ pub fn parse_timezone(s: &str) -> Result<FixedOffset, String> {
 
     let offset_secs = 60 * (60 * hours + minutes);
     match s.chars().next().unwrap() {
-        '+' => Ok(FixedOffset::east(offset_secs)),
-        '-' => Ok(FixedOffset::west(offset_secs)),
+        '+' => FixedOffset::east_opt(offset_secs).ok_or("Seconds out of bound".to_owned()),
+        '-' => FixedOffset::west_opt(offset_secs).ok_or("Seconds out of bound".to_owned()),
         _ => Err("bad timezone format: timezone should start with '+' or '-'".to_string()),
     }
 }
@@ -36,25 +36,31 @@ mod tests {
     #[test]
     fn timezone_parse_test() {
         // Timezone "Z".
-        assert_eq!(parse_timezone("Z"), Ok(FixedOffset::east(0)));
+        assert_eq!(parse_timezone("Z"), Ok(FixedOffset::east_opt(0).unwrap()));
 
         // Positive offset.
         assert_eq!(
             parse_timezone("+06:30"),
-            Ok(FixedOffset::east(6 * 3600 + 30 * 60))
+            Ok(FixedOffset::east_opt(6 * 3600 + 30 * 60).unwrap())
         );
 
         // Negative offset.
         assert_eq!(
             parse_timezone("-06:30"),
-            Ok(FixedOffset::west(6 * 3600 + 30 * 60))
+            Ok(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap())
         );
 
         // Positive offset max.
-        assert_eq!(parse_timezone("+14:00"), Ok(FixedOffset::east(14 * 3600)));
+        assert_eq!(
+            parse_timezone("+14:00"),
+            Ok(FixedOffset::east_opt(14 * 3600).unwrap())
+        );
 
         // Negative offset max.
-        assert_eq!(parse_timezone("-14:00"), Ok(FixedOffset::west(14 * 3600)));
+        assert_eq!(
+            parse_timezone("-14:00"),
+            Ok(FixedOffset::west_opt(14 * 3600).unwrap())
+        );
 
         // Invalid values.
         assert!(parse_timezone("06:30").is_err());
