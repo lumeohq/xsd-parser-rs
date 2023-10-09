@@ -52,7 +52,7 @@ impl Struct {
                 types
                     .get(&key)
                     .map(|s| s.fields.borrow().clone())
-                    .unwrap_or_else(Vec::new)
+                    .unwrap_or_default()
             })
             .filter(|f| {
                 //TODO: remove this workaround for fields names clash
@@ -87,7 +87,7 @@ impl Struct {
                 types
                     .get(&key)
                     .map(|s| s.fields.borrow().clone())
-                    .unwrap_or_else(Vec::new)
+                    .unwrap_or_default()
             })
             .collect::<Vec<StructField>>();
 
