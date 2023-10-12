@@ -129,6 +129,7 @@ fn gen_min_length_validation(value: &str, name: &str) -> String {
 
     format!(
         r#"
+        #[allow(clippy::len_zero)]
         if self.{name}.len() < {value} {{
             return Err(format!("MinLength validation error. \nExpected: {name} length >= {value} \nActual: {name} length == {{}}", self.{name}.len()));
         }}"#,
@@ -208,6 +209,7 @@ mod test {
     #[test]
     fn test_gen_min_length_validation() {
         let expected = r#"
+        #[allow(clippy::len_zero)]
         if self.name.len() < 50 {
             return Err(format!("MinLength validation error. \nExpected: name length >= 50 \nActual: name length == {}", self.name.len()));
         }"#;
