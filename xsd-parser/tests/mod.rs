@@ -18,3 +18,4 @@ mod tuple_with_vec;
 mod type_name_clash;
 mod union;
 mod xsd_string;
+mod sequence_choice;
