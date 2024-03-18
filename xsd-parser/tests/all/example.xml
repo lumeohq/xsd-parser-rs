@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<exam:Foo xmlns:exam="http://example.com">
+  <exam:TwiceOrMore>111</exam:TwiceOrMore>
+  <exam:Once>222</exam:Once>
+  <exam:TwiceOrMore>333</exam:TwiceOrMore>
+  <exam:OnceSpecify>444</exam:OnceSpecify>
+  <exam:TwiceOrMore>555</exam:TwiceOrMore>
+</exam:Foo>

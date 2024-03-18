@@ -1,5 +1,6 @@
 #[macro_use]
 mod utils;
+mod all;
 mod any;
 mod choice;
 mod complex_type;
