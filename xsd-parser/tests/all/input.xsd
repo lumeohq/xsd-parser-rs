@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://example.com"
+           targetNamespace="http://example.com"
+           elementFormDefault="qualified">
+    <xs:complexType name="FooType">
+        <xs:all>
+            <xs:element name="Once" type="xs:int"/>
+            <xs:element name="Optional" type="xs:int" minOccurs="0"/>
+            <xs:element name="OnceSpecify" type="xs:int" minOccurs="1"/>
+            <xs:element name="TwiceOrMore" type="xs:int" minOccurs="2" maxOccurs="unbounded"/>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:element name="Foo" type="tns:FooType"/>
+</xs:schema>

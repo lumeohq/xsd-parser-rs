@@ -14,6 +14,7 @@ const SUPPORTED_CONTENT_TYPES: [ElementType; 2] =
 pub fn parse_element(node: &Node, parent: &Node) -> RsEntity {
     match parent.xsd_type() {
         ElementType::Schema => parse_global_element(node),
+        ElementType::All => parse_field_of_sequence(node, parent),
         ElementType::Sequence => parse_field_of_sequence(node, parent),
         ElementType::Choice => parse_case_of_choice(node),
         _ => element_default(node),
