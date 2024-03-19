@@ -4,6 +4,7 @@ use super::utils;
 fn deserialization_works() {
     mod expected {
         use std::str::FromStr;
+
         use xsd_macro_utils::*;
         use xsd_parser::generator::validator::Validate;
         use yaserde_derive::{YaDeserialize, YaSerialize};
@@ -15,12 +16,7 @@ fn deserialization_works() {
 
     let de: expected::FooType = yaserde::de::from_str(ser).unwrap();
 
-    assert_eq!(
-        de,
-        expected::FooType {
-            id: Some(expected::Id("abcd".to_string()))
-        }
-    );
+    assert_eq!(de, expected::FooType { id: Some(expected::Id("abcd".to_string())) });
 }
 
 #[test]

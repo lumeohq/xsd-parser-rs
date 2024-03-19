@@ -1,5 +1,4 @@
-use xsd_parser::generator::builder::GeneratorBuilder;
-use xsd_parser::parser::parse;
+use xsd_parser::{generator::builder::GeneratorBuilder, parser::parse};
 
 pub fn generate(input: &str) -> String {
     let f = parse(input).unwrap();

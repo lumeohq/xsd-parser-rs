@@ -1,6 +1,6 @@
+use std::{fmt, str::FromStr};
+
 use num_bigint::{BigUint, ToBigUint};
-use std::fmt;
-use std::str::FromStr;
 use xsd_macro_utils::UtilsDefaultSerde;
 
 // https://www.w3.org/TR/xmlschema-2/#nonNegativeInteger
@@ -40,17 +40,16 @@ impl fmt::Display for NonNegativeInteger {
 
 #[cfg(test)]
 mod tests {
+    use yaserde_derive::{YaDeserialize, YaSerialize};
+
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
-    use yaserde_derive::{YaDeserialize, YaSerialize};
 
     #[test]
     fn non_negative_integer_parse_test() {
         assert_eq!(
             NonNegativeInteger::from_str("12678967543233"),
-            Ok(NonNegativeInteger(
-                BigUint::from_str("12678967543233").unwrap()
-            ))
+            Ok(NonNegativeInteger(BigUint::from_str("12678967543233").unwrap()))
         );
 
         assert_eq!(
@@ -79,10 +78,7 @@ mod tests {
             "12678967543233"
         );
 
-        assert_eq!(
-            NonNegativeInteger(100000.to_biguint().unwrap()).to_string(),
-            "100000"
-        );
+        assert_eq!(NonNegativeInteger(100000.to_biguint().unwrap()).to_string(), "100000");
 
         assert_eq!(NonNegativeInteger(0.to_biguint().unwrap()).to_string(), "0");
     }

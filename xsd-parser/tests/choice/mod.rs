@@ -4,6 +4,7 @@ use super::utils;
 fn deserialization_works() {
     mod expected {
         use std::str::FromStr;
+
         use xsd_macro_utils::*;
         use yaserde_derive::{YaDeserialize, YaSerialize};
 
@@ -16,9 +17,7 @@ fn deserialization_works() {
 
     assert_eq!(
         de,
-        expected::FooType {
-            foo_type_choice: expected::FooTypeChoice::Baz(expected::BazType(3))
-        }
+        expected::FooType { foo_type_choice: expected::FooTypeChoice::Baz(expected::BazType(3)) }
     );
 }
 

@@ -1,19 +1,18 @@
-use roxmltree::Node;
-
-use crate::parser::constants::attribute;
-use crate::parser::node_parser::parse_node;
-use crate::parser::types::{Enum, EnumCase, EnumSource, RsEntity, Struct};
-use crate::parser::utils::{
-    attributes_to_fields, enum_to_field, get_documentation, get_parent_name,
-};
-use crate::parser::xsd_elements::{ElementType, XsdNode};
 use std::cell::RefCell;
 
+use roxmltree::Node;
+
+use crate::parser::{
+    constants::attribute,
+    node_parser::parse_node,
+    types::{Enum, EnumCase, EnumSource, RsEntity, Struct},
+    utils::{attributes_to_fields, enum_to_field, get_documentation, get_parent_name},
+    xsd_elements::{ElementType, XsdNode},
+};
+
 pub fn parse_union(union: &Node) -> RsEntity {
-    let mut cases = union
-        .attribute(attribute::MEMBER_TYPES)
-        .map(create_enum_cases)
-        .unwrap_or_default();
+    let mut cases =
+        union.attribute(attribute::MEMBER_TYPES).map(create_enum_cases).unwrap_or_default();
 
     let subtypes = union
         .children()
@@ -51,10 +50,7 @@ pub fn parse_union(union: &Node) -> RsEntity {
     } else {
         union_enum.name = format!("{}Choice", get_parent_name(union));
         fields.push(enum_to_field(union_enum));
-        RsEntity::Struct(Struct {
-            fields: RefCell::new(fields),
-            ..Default::default()
-        })
+        RsEntity::Struct(Struct { fields: RefCell::new(fields), ..Default::default() })
     }
 }
 
@@ -79,9 +75,11 @@ fn enum_subtype_from_node(node: &Node, parent: &Node, index: usize) -> RsEntity 
 
 #[cfg(test)]
 mod test {
-    use crate::parser::types::RsEntity;
-    use crate::parser::union::{create_enum_cases, parse_union};
-    use crate::parser::utils::find_child;
+    use crate::parser::{
+        types::RsEntity,
+        union::{create_enum_cases, parse_union},
+        utils::find_child,
+    };
 
     #[test]
     fn test_create_enum() {

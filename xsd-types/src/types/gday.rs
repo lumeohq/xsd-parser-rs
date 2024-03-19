@@ -1,9 +1,9 @@
-use crate::types::utils::parse_timezone;
+use std::{fmt, str::FromStr};
 
 use chrono::FixedOffset;
-use std::fmt;
-use std::str::FromStr;
 use xsd_macro_utils::UtilsDefaultSerde;
+
+use crate::types::utils::parse_timezone;
 
 #[derive(PartialEq, Debug, UtilsDefaultSerde)]
 pub struct GDay {
@@ -16,19 +16,13 @@ impl GDay {
         if !(1..=31).contains(&day) {
             return Err("gDay value should lie between 1 and 31".to_string());
         }
-        Ok(GDay {
-            value: day,
-            timezone,
-        })
+        Ok(GDay { value: day, timezone })
     }
 }
 
 impl Default for GDay {
     fn default() -> GDay {
-        Self {
-            value: 1,
-            timezone: None,
-        }
+        Self { value: 1, timezone: None }
     }
 }
 
@@ -84,28 +78,20 @@ impl fmt::Display for GDay {
 
 #[cfg(test)]
 mod tests {
+    use yaserde_derive::{YaDeserialize, YaSerialize};
+
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
-    use yaserde_derive::{YaDeserialize, YaSerialize};
 
     #[test]
     fn gday_parse_test() {
         // No timezone.
-        assert_eq!(
-            GDay::from_str("---25"),
-            Ok(GDay {
-                value: 25,
-                timezone: None
-            })
-        );
+        assert_eq!(GDay::from_str("---25"), Ok(GDay { value: 25, timezone: None }));
 
         // Timezone "Z".
         assert_eq!(
             GDay::from_str("---25Z"),
-            Ok(GDay {
-                value: 25,
-                timezone: Some(FixedOffset::east_opt(0).unwrap())
-            })
+            Ok(GDay { value: 25, timezone: Some(FixedOffset::east_opt(0).unwrap()) })
         );
 
         // Positive offset.
@@ -139,42 +125,25 @@ mod tests {
     #[test]
     fn gday_display_test() {
         // No timezone.
-        assert_eq!(
-            GDay {
-                value: 3,
-                timezone: None
-            }
-            .to_string(),
-            "---03"
-        );
+        assert_eq!(GDay { value: 3, timezone: None }.to_string(), "---03");
 
         // Timezone +00:00.
         assert_eq!(
-            GDay {
-                value: 3,
-                timezone: Some(FixedOffset::east_opt(0).unwrap())
-            }
-            .to_string(),
+            GDay { value: 3, timezone: Some(FixedOffset::east_opt(0).unwrap()) }.to_string(),
             "---03+00:00"
         );
 
         // Positive offset.
         assert_eq!(
-            GDay {
-                value: 3,
-                timezone: Some(FixedOffset::east_opt(6 * 3600 + 30 * 60).unwrap())
-            }
-            .to_string(),
+            GDay { value: 3, timezone: Some(FixedOffset::east_opt(6 * 3600 + 30 * 60).unwrap()) }
+                .to_string(),
             "---03+06:30"
         );
 
         // Negative offset.
         assert_eq!(
-            GDay {
-                value: 3,
-                timezone: Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap())
-            }
-            .to_string(),
+            GDay { value: 3, timezone: Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap()) }
+                .to_string(),
             "---03-06:30"
         );
     }
@@ -218,10 +187,7 @@ mod tests {
             "#;
         let m: Message = yaserde::de::from_str(s).unwrap();
         assert_eq!(m.created_at.value, 29);
-        assert_eq!(
-            m.created_at.timezone,
-            Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap()),
-        );
+        assert_eq!(m.created_at.timezone, Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap()),);
         assert_eq!(m.text, "Hello world".to_string());
     }
 }

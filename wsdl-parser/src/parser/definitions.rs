@@ -1,11 +1,15 @@
-use crate::parser::binding::Binding;
-use crate::parser::constants::attribute;
-use crate::parser::message::Message;
-use crate::parser::port_type::{Param, PortType};
-use crate::parser::types::Types;
-use crate::parser::{ElementType, WsdlElement};
-use roxmltree::{Namespace, Node};
 use std::collections::HashMap;
+
+use roxmltree::{Namespace, Node};
+
+use crate::parser::{
+    binding::Binding,
+    constants::attribute,
+    message::Message,
+    port_type::{Param, PortType},
+    types::Types,
+    ElementType, WsdlElement,
+};
 
 // Content: Sequence [1..1]
 //      wsdl:documentation [0..1]  from type wsdl:tDocumented
@@ -44,7 +48,7 @@ pub struct Definitions<'a> {
 impl<'a> Definitions<'a> {
     pub fn target_namespace(&self) -> Option<&'a Namespace<'_>> {
         match self.node().attribute(attribute::TARGET_NAMESPACE) {
-            Some(tn) => self.node().namespaces().iter().find(|a| a.uri() == tn),
+            Some(tn) => self.node().namespaces().find(|a| a.uri() == tn),
             None => None,
         }
     }
@@ -74,8 +78,7 @@ impl<'a> Definitions<'a> {
     }
 
     pub fn get_message_by_param(&self, param: &Param<'_>) -> Option<&Message> {
-        self.messages
-            .get(param.message().split(':').last().unwrap())
+        self.messages.get(param.message().split(':').last().unwrap())
     }
 
     pub fn new(definitions: &Node<'a, '_>) -> Self {
@@ -119,9 +122,7 @@ impl<'a> Definitions<'a> {
     fn add_port_type(&mut self, node: &Node<'a, '_>) {
         let port_type = PortType::new(node);
         assert!(
-            self.port_types
-                .insert(port_type.name(), port_type)
-                .is_none(),
+            self.port_types.insert(port_type.name(), port_type).is_none(),
             "portType name must be unique"
         );
     }
@@ -159,15 +160,11 @@ pub struct Import<'a> {
 
 impl<'a> Import<'a> {
     pub fn namespace(&self) -> &'a str {
-        self.node
-            .attribute(attribute::NAMESPACE)
-            .expect("Namespace required for wsdl:Import")
+        self.node.attribute(attribute::NAMESPACE).expect("Namespace required for wsdl:Import")
     }
 
     pub fn location(&self) -> &'a str {
-        self.node
-            .attribute(attribute::LOCATION)
-            .expect("Location required for wsdl:Import")
+        self.node.attribute(attribute::LOCATION).expect("Location required for wsdl:Import")
     }
 
     pub fn new(node: &Node<'a, '_>) -> Self {

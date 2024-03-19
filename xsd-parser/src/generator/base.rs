@@ -1,10 +1,15 @@
-use crate::generator::default::{
-    default_format_comment, default_format_name, default_format_type, default_modify_type,
-};
-use crate::generator::utils::match_built_in_type;
-use crate::generator::Generator;
-use crate::parser::types::{RsEntity, TypeModifier};
 use std::borrow::Cow;
+
+use crate::{
+    generator::{
+        default::{
+            default_format_comment, default_format_name, default_format_type, default_modify_type,
+        },
+        utils::match_built_in_type,
+        Generator,
+    },
+    parser::types::{RsEntity, TypeModifier},
+};
 
 pub trait BaseGenerator {
     fn indent(&self) -> String {
@@ -39,11 +44,7 @@ pub trait BaseGenerator {
     }
 
     fn join_subtypes(&self, subtypes: &[RsEntity], gen: &Generator) -> String {
-        subtypes
-            .iter()
-            .map(|f| gen.generate(f))
-            .collect::<Vec<String>>()
-            .join("\n")
+        subtypes.iter().map(|f| gen.generate(f)).collect::<Vec<String>>().join("\n")
     }
 }
 

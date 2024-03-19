@@ -1,6 +1,6 @@
+use std::{fmt, str::FromStr};
+
 use chrono::{format::ParseError, DateTime as CDateTime, FixedOffset};
-use std::fmt;
-use std::str::FromStr;
 use xsd_macro_utils::UtilsDefaultSerde;
 
 #[derive(PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
@@ -20,9 +20,7 @@ impl DateTime {
 
 impl Default for DateTime {
     fn default() -> DateTime {
-        Self {
-            value: CDateTime::parse_from_rfc3339("0001-01-01T00:00:00Z").unwrap(),
-        }
+        Self { value: CDateTime::parse_from_rfc3339("0001-01-01T00:00:00Z").unwrap() }
     }
 }
 
@@ -36,11 +34,7 @@ impl FromStr for DateTime {
     // 'Z' (which equals "+00:00") in case there is no timezone provided.
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let tz_provided = s.ends_with('Z') || s.contains('+') || s.matches('-').count() == 3;
-        let s_with_timezone = if tz_provided {
-            s.to_string()
-        } else {
-            format!("{}Z", s)
-        };
+        let s_with_timezone = if tz_provided { s.to_string() } else { format!("{}Z", s) };
         match CDateTime::parse_from_rfc3339(&s_with_timezone) {
             Ok(cdt) => Ok(DateTime { value: cdt }),
             Err(err) => Err(err),
@@ -56,98 +50,60 @@ impl fmt::Display for DateTime {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use crate::utils::xml_eq::assert_xml_eq;
     use chrono::NaiveDate;
     use yaserde_derive::{YaDeserialize, YaSerialize};
+
+    use super::*;
+    use crate::utils::xml_eq::assert_xml_eq;
 
     #[test]
     fn datetime_parse_test() {
         // No timezone.
         let offset = FixedOffset::east_opt(0).unwrap();
-        let dt_utc = NaiveDate::from_ymd_opt(2020, 3, 7)
-            .unwrap()
-            .and_hms_opt(4, 40, 0)
-            .unwrap()
-            - offset;
+        let dt_utc =
+            NaiveDate::from_ymd_opt(2020, 3, 7).unwrap().and_hms_opt(4, 40, 0).unwrap() - offset;
         let dt = CDateTime::<FixedOffset>::from_naive_utc_and_offset(dt_utc, offset);
-        assert_eq!(
-            DateTime::from_str("2020-03-07T04:40:00"),
-            Ok(DateTime { value: dt })
-        );
+        assert_eq!(DateTime::from_str("2020-03-07T04:40:00"), Ok(DateTime { value: dt }));
         // Timezone "Z".
-        assert_eq!(
-            DateTime::from_str("2020-03-07T04:40:00Z"),
-            Ok(DateTime { value: dt })
-        );
+        assert_eq!(DateTime::from_str("2020-03-07T04:40:00Z"), Ok(DateTime { value: dt }));
 
         // Positive offset.
         let offset = FixedOffset::east_opt(6 * 3600 + 30 * 60).unwrap();
-        let dt_utc = NaiveDate::from_ymd_opt(2020, 3, 7)
-            .unwrap()
-            .and_hms_opt(4, 40, 0)
-            .unwrap()
-            - offset;
+        let dt_utc =
+            NaiveDate::from_ymd_opt(2020, 3, 7).unwrap().and_hms_opt(4, 40, 0).unwrap() - offset;
         let dt = CDateTime::<FixedOffset>::from_naive_utc_and_offset(dt_utc, offset);
-        assert_eq!(
-            DateTime::from_str("2020-03-07T04:40:00+06:30"),
-            Ok(DateTime { value: dt })
-        );
+        assert_eq!(DateTime::from_str("2020-03-07T04:40:00+06:30"), Ok(DateTime { value: dt }));
 
         // Negative offset.
         let offset = FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap();
-        let dt_utc = NaiveDate::from_ymd_opt(2020, 3, 7)
-            .unwrap()
-            .and_hms_opt(4, 40, 0)
-            .unwrap()
-            - offset;
+        let dt_utc =
+            NaiveDate::from_ymd_opt(2020, 3, 7).unwrap().and_hms_opt(4, 40, 0).unwrap() - offset;
         let dt = CDateTime::<FixedOffset>::from_naive_utc_and_offset(dt_utc, offset);
-        assert_eq!(
-            DateTime::from_str("2020-03-07T04:40:00-06:30"),
-            Ok(DateTime { value: dt })
-        );
+        assert_eq!(DateTime::from_str("2020-03-07T04:40:00-06:30"), Ok(DateTime { value: dt }));
     }
 
     #[test]
     fn datetime_display_test() {
         // Timezone +00:00.
         let offset = FixedOffset::east_opt(0).unwrap();
-        let dt_utc = NaiveDate::from_ymd_opt(2020, 3, 7)
-            .unwrap()
-            .and_hms_opt(4, 40, 0)
-            .unwrap()
-            - offset;
+        let dt_utc =
+            NaiveDate::from_ymd_opt(2020, 3, 7).unwrap().and_hms_opt(4, 40, 0).unwrap() - offset;
         let dt = CDateTime::<FixedOffset>::from_naive_utc_and_offset(dt_utc, offset);
-        assert_eq!(
-            DateTime { value: dt }.to_string(),
-            "2020-03-07T04:40:00+00:00"
-        );
+        assert_eq!(DateTime { value: dt }.to_string(), "2020-03-07T04:40:00+00:00");
 
         // Positive offset.
         let offset = FixedOffset::east_opt(6 * 3600 + 30 * 60).unwrap();
-        let dt_utc = NaiveDate::from_ymd_opt(2020, 3, 7)
-            .unwrap()
-            .and_hms_opt(4, 40, 0)
-            .unwrap()
-            - offset;
+        let dt_utc =
+            NaiveDate::from_ymd_opt(2020, 3, 7).unwrap().and_hms_opt(4, 40, 0).unwrap() - offset;
         let dt = CDateTime::<FixedOffset>::from_naive_utc_and_offset(dt_utc, offset);
-        assert_eq!(
-            DateTime { value: dt }.to_string(),
-            "2020-03-07T04:40:00+06:30"
-        );
+        assert_eq!(DateTime { value: dt }.to_string(), "2020-03-07T04:40:00+06:30");
 
         // Negative offset.
         let offset = FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap();
-        let dt_utc = NaiveDate::from_ymd_opt(2020, 3, 7)
-            .unwrap()
-            .and_hms_opt(4, 40, 0)
-            .unwrap()
-            - offset;
+        let dt_utc =
+            NaiveDate::from_ymd_opt(2020, 3, 7).unwrap().and_hms_opt(4, 40, 0).unwrap() - offset;
         let dt = CDateTime::<FixedOffset>::from_naive_utc_and_offset(dt_utc, offset);
-        assert_eq!(
-            DateTime { value: dt }.to_string(),
-            "2020-03-07T04:40:00-06:30"
-        );
+        assert_eq!(DateTime { value: dt }.to_string(), "2020-03-07T04:40:00-06:30");
     }
 
     #[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]
@@ -170,16 +126,10 @@ mod tests {
             "#;
 
         let offset = FixedOffset::east_opt(6 * 3600 + 30 * 60).unwrap();
-        let dt_utc = NaiveDate::from_ymd_opt(2020, 3, 7)
-            .unwrap()
-            .and_hms_opt(4, 40, 0)
-            .unwrap()
-            - offset;
+        let dt_utc =
+            NaiveDate::from_ymd_opt(2020, 3, 7).unwrap().and_hms_opt(4, 40, 0).unwrap() - offset;
         let dt = CDateTime::<FixedOffset>::from_naive_utc_and_offset(dt_utc, offset);
-        let m = Message {
-            created_at: DateTime { value: dt },
-            text: "Hello world".to_string(),
-        };
+        let m = Message { created_at: DateTime { value: dt }, text: "Hello world".to_string() };
         let actual = yaserde::ser::to_string(&m).unwrap();
         assert_xml_eq(&actual, expected);
     }
@@ -195,11 +145,8 @@ mod tests {
         let m: Message = yaserde::de::from_str(s).unwrap();
 
         let offset = FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap();
-        let dt_utc = NaiveDate::from_ymd_opt(2020, 3, 7)
-            .unwrap()
-            .and_hms_opt(4, 40, 0)
-            .unwrap()
-            - offset;
+        let dt_utc =
+            NaiveDate::from_ymd_opt(2020, 3, 7).unwrap().and_hms_opt(4, 40, 0).unwrap() - offset;
         let dt = CDateTime::<FixedOffset>::from_naive_utc_and_offset(dt_utc, offset);
 
         assert_eq!(m.created_at.value, dt);

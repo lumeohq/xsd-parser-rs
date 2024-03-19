@@ -1,9 +1,12 @@
-use crate::generator::utils::{filter_type_name, sanitize, split_comment_line, split_name};
-use crate::parser::types::TypeModifier;
-use inflector::cases::pascalcase::to_pascal_case;
-use inflector::cases::snakecase::to_snake_case;
-use roxmltree::Namespace;
 use std::borrow::Cow;
+
+use inflector::cases::{pascalcase::to_pascal_case, snakecase::to_snake_case};
+use roxmltree::Namespace;
+
+use crate::{
+    generator::utils::{filter_type_name, sanitize, split_comment_line, split_name},
+    parser::types::TypeModifier,
+};
 
 pub fn default_format_comment(doc: Option<&str>, max_len: usize, indent: usize) -> String {
     doc.unwrap_or("")
@@ -86,10 +89,9 @@ pub fn yaserde_for_element(
     };
 
     match prefix {
-        Some(p) => format!(
-            "{}#[yaserde(prefix = \"{}\", rename = \"{}\")]\n",
-            indent, p, field_name
-        ),
+        Some(p) => {
+            format!("{}#[yaserde(prefix = \"{}\", rename = \"{}\")]\n", indent, p, field_name)
+        }
         None => format!("{}#[yaserde(rename = \"{}\")]\n", indent, field_name),
     }
 }
@@ -154,8 +156,10 @@ mod test {
             )
             .unwrap()
             .root_element()
-            .namespaces()[0]
-                .clone(),
+            .namespaces()
+            .next()
+            .cloned()
+            .unwrap(),
         );
         assert_eq!(default_format_type("tt:Type", &ns), "Type");
         assert_eq!(default_format_type("tt:TyName", &ns), "TyName");
@@ -183,17 +187,8 @@ mod test {
         assert_eq!(default_modify_type("Type", &[Array]), "Vec<Type>");
         assert_eq!(default_modify_type("Type", &[Empty]), "()");
 
-        assert_eq!(
-            default_modify_type("Type", &[Recursive, Option]),
-            "Vec<Type>"
-        );
-        assert_eq!(
-            default_modify_type("Type", &[Recursive, Array, Option]),
-            "Vec<Type>"
-        );
-        assert_eq!(
-            default_modify_type("Type", &[Recursive, Array, Empty]),
-            "()"
-        );
+        assert_eq!(default_modify_type("Type", &[Recursive, Option]), "Vec<Type>");
+        assert_eq!(default_modify_type("Type", &[Recursive, Array, Option]), "Vec<Type>");
+        assert_eq!(default_modify_type("Type", &[Recursive, Array, Empty]), "()");
     }
 }

@@ -11,19 +11,18 @@ pub mod tuple_struct;
 mod utils;
 pub mod validator;
 
-use roxmltree::Namespace;
-use std::borrow::Borrow;
-use std::cell::RefCell;
+use std::{borrow::Borrow, cell::RefCell};
 
-use crate::generator::alias::AliasGenerator;
-use crate::generator::base::BaseGenerator;
-use crate::generator::enum_case::EnumCaseGenerator;
-use crate::generator::import::ImportGenerator;
-use crate::generator::r#enum::EnumGenerator;
-use crate::generator::r#struct::StructGenerator;
-use crate::generator::struct_field::StructFieldGenerator;
-use crate::generator::tuple_struct::TupleStructGenerator;
-use crate::parser::types::{RsEntity, RsFile};
+use roxmltree::Namespace;
+
+use crate::{
+    generator::{
+        alias::AliasGenerator, base::BaseGenerator, enum_case::EnumCaseGenerator,
+        import::ImportGenerator, r#enum::EnumGenerator, r#struct::StructGenerator,
+        struct_field::StructFieldGenerator, tuple_struct::TupleStructGenerator,
+    },
+    parser::types::{RsEntity, RsFile},
+};
 
 #[derive(Default)]
 pub struct Generator<'input> {
@@ -44,11 +43,7 @@ impl<'input> Generator<'input> {
     pub fn generate_rs_file(&self, schema: &RsFile<'input>) -> String {
         *self.target_ns.borrow_mut() = schema.target_ns.clone();
         *self.xsd_ns.borrow_mut() = schema.xsd_ns.clone();
-        schema
-            .types
-            .iter()
-            .map(|entity| self.generate(entity))
-            .collect()
+        schema.types.iter().map(|entity| self.generate(entity)).collect()
     }
 
     pub fn generate(&self, entity: &RsEntity) -> String {
@@ -79,8 +74,10 @@ impl<'input> Generator<'input> {
 
 #[cfg(test)]
 mod test {
-    use crate::generator::builder::GeneratorBuilder;
-    use crate::parser::types::{RsEntity, RsFile, TupleStruct};
+    use crate::{
+        generator::builder::GeneratorBuilder,
+        parser::types::{RsEntity, RsFile, TupleStruct},
+    };
 
     #[test]
     fn test_generate_rs_file() {
@@ -97,10 +94,8 @@ mod test {
         let comment = "// comment\n";
         let macros = "#[derive(Default, PartialEq, Debug, UtilsTupleIo, UtilsDefaultSerde)]\n";
         let validation = "impl Validate for Name {}\n";
-        let expected = format!(
-            "{}{}pub struct Name (pub Type);\n\n{}",
-            comment, macros, validation
-        );
+        let expected =
+            format!("{}{}pub struct Name (pub Type);\n\n{}", comment, macros, validation);
         assert_eq!(gen.generate_rs_file(&rs_file), expected);
     }
 }

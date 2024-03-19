@@ -1,0 +1,6 @@
+use_small_heuristics = "Max"
+
+# These settings are no-ops on stable.
+# To run them, use `cargo +nightly fmt`.
+imports_granularity = "Crate"
+group_imports = "StdExternalCrate"

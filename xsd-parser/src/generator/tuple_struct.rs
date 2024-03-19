@@ -1,7 +1,12 @@
-use crate::generator::validator::{gen_facet_validation, gen_validate_impl};
-use crate::generator::Generator;
-use crate::parser::types::TupleStruct;
 use std::borrow::Cow;
+
+use crate::{
+    generator::{
+        validator::{gen_facet_validation, gen_validate_impl},
+        Generator,
+    },
+    parser::types::TupleStruct,
+};
 
 pub trait TupleStructGenerator {
     fn generate(&self, entity: &TupleStruct, gen: &Generator) -> String {
@@ -23,18 +28,14 @@ pub trait TupleStructGenerator {
     fn get_type_name(&self, entity: &TupleStruct, gen: &Generator) -> String {
         gen.base()
             .modify_type(
-                gen.base()
-                    .format_type_name(entity.type_name.as_str(), gen)
-                    .as_ref(),
+                gen.base().format_type_name(entity.type_name.as_str(), gen).as_ref(),
                 &entity.type_modifiers,
             )
             .into()
     }
 
     fn get_name(&self, entity: &TupleStruct, gen: &Generator) -> String {
-        gen.base()
-            .format_type_name(entity.name.as_str(), gen)
-            .into()
+        gen.base().format_type_name(entity.name.as_str(), gen).into()
     }
 
     fn macros(&self, _entity: &TupleStruct, _gen: &Generator) -> Cow<'static, str> {
@@ -51,10 +52,7 @@ pub trait TupleStructGenerator {
             .iter()
             .map(|f| gen_facet_validation(&f.facet_type, "0", &self.get_type_name(entity, gen)))
             .fold(String::new(), |x, y| (x + &y));
-        Cow::Owned(gen_validate_impl(
-            self.get_name(entity, gen).as_str(),
-            body.as_str(),
-        ))
+        Cow::Owned(gen_validate_impl(self.get_name(entity, gen).as_str(), body.as_str()))
     }
 }
 
