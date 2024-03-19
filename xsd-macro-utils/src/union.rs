@@ -36,10 +36,7 @@ pub fn serde(ast: &syn::DeriveInput) -> syn::Result<TokenStream> {
             })
             .collect::<syn::Result<Vec<_>>>()?,
         _ => {
-            return Err(syn::Error::new(
-                Span::call_site(),
-                "This macro can only be used on enums",
-            ));
+            return Err(syn::Error::new(Span::call_site(), "This macro can only be used on enums"));
         }
     };
 

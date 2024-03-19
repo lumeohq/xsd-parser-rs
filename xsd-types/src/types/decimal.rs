@@ -1,6 +1,6 @@
+use std::{fmt, str::FromStr};
+
 use bigdecimal::{BigDecimal, ParseBigDecimalError};
-use std::fmt;
-use std::str::FromStr;
 use xsd_macro_utils::UtilsDefaultSerde;
 
 #[derive(Default, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
@@ -32,10 +32,11 @@ impl fmt::Display for Decimal {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use crate::utils::xml_eq::assert_xml_eq;
     use num_bigint::ToBigInt;
     use yaserde_derive::{YaDeserialize, YaSerialize};
+
+    use super::*;
+    use crate::utils::xml_eq::assert_xml_eq;
 
     #[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]
     #[yaserde(prefix = "t", namespace = "t: test")]
@@ -73,13 +74,7 @@ mod tests {
             </t:DecimalPair>
             "#;
         let i: DecimalPair = yaserde::de::from_str(s).unwrap();
-        assert_eq!(
-            i.first.to_bigdecimal(),
-            BigDecimal::new(1234.to_bigint().unwrap(), 5)
-        );
-        assert_eq!(
-            i.second.to_bigdecimal(),
-            BigDecimal::new((-1234).to_bigint().unwrap(), 2)
-        );
+        assert_eq!(i.first.to_bigdecimal(), BigDecimal::new(1234.to_bigint().unwrap(), 5));
+        assert_eq!(i.second.to_bigdecimal(), BigDecimal::new((-1234).to_bigint().unwrap(), 2));
     }
 }

@@ -1,6 +1,9 @@
-use crate::parser::types::{RsEntity, StructField, StructFieldSource, TypeModifier};
-use crate::parser::utils::get_documentation;
 use roxmltree::Node;
+
+use crate::parser::{
+    types::{RsEntity, StructField, StructFieldSource, TypeModifier},
+    utils::get_documentation,
+};
 
 pub fn parse_any(node: &Node) -> RsEntity {
     RsEntity::StructField(StructField {

@@ -11,14 +11,7 @@ fn deserialization_works() {
 
     let de: expected::FooType = yaserde::de::from_str(ser).unwrap();
 
-    assert_eq!(
-        de,
-        expected::FooType {
-            a: 150.0,
-            b: 3,
-            c: "string".to_string(),
-        }
-    );
+    assert_eq!(de, expected::FooType { a: 150.0, b: 3, c: "string".to_string() });
 }
 
 #[test]

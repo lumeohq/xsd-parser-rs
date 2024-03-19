@@ -1,6 +1,6 @@
+use std::{fmt, str::FromStr};
+
 use num_bigint::{BigInt, ParseBigIntError, ToBigInt};
-use std::fmt;
-use std::str::FromStr;
 use xsd_macro_utils::UtilsDefaultSerde;
 
 // https://www.w3.org/TR/xmlschema-2/#integer
@@ -35,9 +35,10 @@ impl fmt::Display for Integer {
 
 #[cfg(test)]
 mod tests {
+    use yaserde_derive::{YaDeserialize, YaSerialize};
+
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
-    use yaserde_derive::{YaDeserialize, YaSerialize};
 
     #[test]
     fn integer_parse_test() {
@@ -46,17 +47,11 @@ mod tests {
             Ok(Integer(BigInt::from_str("12678967543233").unwrap()))
         );
 
-        assert_eq!(
-            Integer::from_str("+100000"),
-            Ok(Integer(100000.to_bigint().unwrap()))
-        );
+        assert_eq!(Integer::from_str("+100000"), Ok(Integer(100000.to_bigint().unwrap())));
 
         assert_eq!(Integer::from_str("0"), Ok(Integer(0.to_bigint().unwrap())));
 
-        assert_eq!(
-            Integer::from_str("-1"),
-            Ok(Integer((-1).to_bigint().unwrap()))
-        );
+        assert_eq!(Integer::from_str("-1"), Ok(Integer((-1).to_bigint().unwrap())));
 
         // Invalid values.
         assert!(Integer::from_str("A").is_err());

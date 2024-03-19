@@ -1,12 +1,14 @@
-use crate::generator::alias::{AliasGenerator, DefaultAliasGen};
-use crate::generator::base::{BaseGenerator, DefaultBaseGenerator};
-use crate::generator::enum_case::{DefaultEnumCaseGen, EnumCaseGenerator};
-use crate::generator::import::{DefaultImportGen, ImportGenerator};
-use crate::generator::r#enum::{DefaultEnumGen, EnumGenerator};
-use crate::generator::r#struct::{DefaultStructGen, StructGenerator};
-use crate::generator::struct_field::{DefaultStructFieldGen, StructFieldGenerator};
-use crate::generator::tuple_struct::{DefaultTupleStructGen, TupleStructGenerator};
-use crate::generator::Generator;
+use crate::generator::{
+    alias::{AliasGenerator, DefaultAliasGen},
+    base::{BaseGenerator, DefaultBaseGenerator},
+    enum_case::{DefaultEnumCaseGen, EnumCaseGenerator},
+    import::{DefaultImportGen, ImportGenerator},
+    r#enum::{DefaultEnumGen, EnumGenerator},
+    r#struct::{DefaultStructGen, StructGenerator},
+    struct_field::{DefaultStructFieldGen, StructFieldGenerator},
+    tuple_struct::{DefaultTupleStructGen, TupleStructGenerator},
+    Generator,
+};
 
 #[derive(Default)]
 pub struct GeneratorBuilder<'input> {
@@ -57,29 +59,21 @@ impl<'input> GeneratorBuilder<'input> {
 
     pub fn build(self) -> Generator<'input> {
         let mut gen = self.gen;
-        gen.base
-            .get_or_insert_with(|| Box::new(DefaultBaseGenerator {})); //.set_target_ns(&gen.target_ns);
+        gen.base.get_or_insert_with(|| Box::new(DefaultBaseGenerator {})); //.set_target_ns(&gen.target_ns);
 
-        gen.tuple_struct_gen
-            .get_or_insert_with(|| Box::new(DefaultTupleStructGen {}));
+        gen.tuple_struct_gen.get_or_insert_with(|| Box::new(DefaultTupleStructGen {}));
 
-        gen.struct_gen
-            .get_or_insert_with(|| Box::new(DefaultStructGen {}));
+        gen.struct_gen.get_or_insert_with(|| Box::new(DefaultStructGen {}));
 
-        gen.struct_field_gen
-            .get_or_insert_with(|| Box::new(DefaultStructFieldGen {}));
+        gen.struct_field_gen.get_or_insert_with(|| Box::new(DefaultStructFieldGen {}));
 
-        gen.enum_case_gen
-            .get_or_insert_with(|| Box::new(DefaultEnumCaseGen {}));
+        gen.enum_case_gen.get_or_insert_with(|| Box::new(DefaultEnumCaseGen {}));
 
-        gen.enum_gen
-            .get_or_insert_with(|| Box::new(DefaultEnumGen {}));
+        gen.enum_gen.get_or_insert_with(|| Box::new(DefaultEnumGen {}));
 
-        gen.alias_gen
-            .get_or_insert_with(|| Box::new(DefaultAliasGen {}));
+        gen.alias_gen.get_or_insert_with(|| Box::new(DefaultAliasGen {}));
 
-        gen.import_gen
-            .get_or_insert_with(|| Box::new(DefaultImportGen {}));
+        gen.import_gen.get_or_insert_with(|| Box::new(DefaultImportGen {}));
 
         gen
     }
@@ -87,10 +81,10 @@ impl<'input> GeneratorBuilder<'input> {
 
 #[cfg(test)]
 mod test {
-    use crate::generator::builder::GeneratorBuilder;
-    use crate::generator::tuple_struct::TupleStructGenerator;
-    use crate::generator::Generator;
-    use crate::parser::types::{RsEntity, TupleStruct};
+    use crate::{
+        generator::{builder::GeneratorBuilder, tuple_struct::TupleStructGenerator, Generator},
+        parser::types::{RsEntity, TupleStruct},
+    };
 
     fn test_generator_state(gen: &Generator) {
         assert!(gen.tuple_struct_gen.is_some());

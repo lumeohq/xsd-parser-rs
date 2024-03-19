@@ -1,8 +1,10 @@
 use roxmltree::Node;
 
-use crate::parser::node_parser::parse_node;
-use crate::parser::types::{Enum, EnumSource, RsEntity};
-use crate::parser::xsd_elements::{ElementType, XsdNode};
+use crate::parser::{
+    node_parser::parse_node,
+    types::{Enum, EnumSource, RsEntity},
+    xsd_elements::{ElementType, XsdNode},
+};
 
 pub fn parse_choice(choice: &Node) -> RsEntity {
     let enum_cases = choice

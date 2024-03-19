@@ -1,6 +1,5 @@
-use std::fmt;
-use std::fmt::Write;
-use std::str::FromStr;
+use std::{fmt, fmt::Write, str::FromStr};
+
 use xsd_macro_utils::UtilsDefaultSerde;
 
 #[derive(Default, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
@@ -208,11 +207,7 @@ impl FromStr for Duration {
 
 impl fmt::Display for Duration {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut s = if self.is_negative {
-            "-P".to_string()
-        } else {
-            "P".to_string()
-        };
+        let mut s = if self.is_negative { "-P".to_string() } else { "P".to_string() };
 
         let mut date_str = String::new();
         if self.years > 0 {

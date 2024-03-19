@@ -4,8 +4,7 @@ mod test {
 
     #[test]
     fn test_extension_base() {
-        use crate::parser::parse;
-        use crate::parser::types::RsEntity;
+        use crate::parser::{parse, types::RsEntity};
 
         let text = r#"
 <xs:schema xmlns:tt="http://www.onvif.org/ver10/schema"
@@ -66,8 +65,7 @@ mod test {
 
     #[test]
     fn test_restriction_any_type() {
-        use crate::parser::parse;
-        use crate::parser::types::RsEntity;
+        use crate::parser::{parse, types::RsEntity};
 
         let text = r#"
 <xs:schema targetNamespace="http://schemas.xmlsoap.org/ws/2005/04/discovery"

@@ -1,6 +1,6 @@
-use crate::parser::constants::attribute;
-use crate::parser::{ElementType, WsdlElement};
 use roxmltree::Node;
+
+use crate::parser::{constants::attribute, ElementType, WsdlElement};
 
 #[derive(Clone, Debug)]
 pub struct Binding<'a> {
@@ -10,15 +10,11 @@ pub struct Binding<'a> {
 
 impl<'a> Binding<'a> {
     pub fn name(&self) -> &'a str {
-        self.node
-            .attribute(attribute::NAME)
-            .expect("Namespace required for wsdl:binding")
+        self.node.attribute(attribute::NAME).expect("Namespace required for wsdl:binding")
     }
 
     pub fn type_(&self) -> &'a str {
-        self.node
-            .attribute(attribute::TYPE)
-            .expect("Location required for wsdl:binding")
+        self.node.attribute(attribute::TYPE).expect("Location required for wsdl:binding")
     }
 
     pub fn new(node: &Node<'a, '_>) -> Self {
@@ -48,9 +44,7 @@ pub struct Operation<'a> {
 
 impl<'a> Operation<'a> {
     pub fn name(&self) -> &'a str {
-        self.node
-            .attribute(attribute::NAME)
-            .expect("Namespace required for wsdl:binding")
+        self.node.attribute(attribute::NAME).expect("Namespace required for wsdl:binding")
     }
 
     pub fn new(node: &Node<'a, '_>) -> Self {
@@ -65,12 +59,7 @@ impl<'a> Operation<'a> {
                 _ => {}
             }
         }
-        Self {
-            node: *node,
-            input,
-            output,
-            faults,
-        }
+        Self { node: *node, input, output, faults }
     }
 }
 
