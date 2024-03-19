@@ -156,8 +156,10 @@ mod test {
             )
             .unwrap()
             .root_element()
-            .namespaces()[0]
-                .clone(),
+            .namespaces()
+            .next()
+            .cloned()
+            .unwrap(),
         );
         assert_eq!(default_format_type("tt:Type", &ns), "Type");
         assert_eq!(default_format_type("tt:TyName", &ns), "TyName");
