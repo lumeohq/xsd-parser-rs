@@ -1,6 +1,6 @@
-use crate::parser::constants::attribute;
-use crate::parser::{ElementType, WsdlElement};
 use roxmltree::Node;
+
+use crate::parser::{constants::attribute, ElementType, WsdlElement};
 
 // Content: Sequence [1..1]
 // wsdl:documentation   [0..1] from type wsdl:tDocumented
@@ -37,9 +37,7 @@ impl<'a> PortType<'a> {
     }
 
     pub fn name(&self) -> &'a str {
-        self.node
-            .attribute(attribute::NAME)
-            .expect("Name required for wsdl:portType")
+        self.node.attribute(attribute::NAME).expect("Name required for wsdl:portType")
     }
 
     pub fn operations(&self) -> &[Operation] {
@@ -83,16 +81,11 @@ pub struct Operation<'a> {
 
 impl<'a> Operation<'a> {
     pub fn new(node: &Node<'a, '_>) -> Self {
-        Self {
-            node: *node,
-            ty: OperationType::new(node),
-        }
+        Self { node: *node, ty: OperationType::new(node) }
     }
 
     pub fn name(&self) -> &'a str {
-        self.node
-            .attribute(attribute::NAME)
-            .expect("Name required for wsdl:operation")
+        self.node.attribute(attribute::NAME).expect("Name required for wsdl:operation")
     }
 
     pub fn parameter_order(&self) -> Option<&'a str> {
@@ -116,22 +109,10 @@ impl<'a> Operation<'a> {
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum OperationType<'a> {
-    RequestResponse {
-        input: Param<'a>,
-        output: Param<'a>,
-        faults: Vec<Fault<'a>>,
-    },
-    OneWay {
-        input: Param<'a>,
-    },
-    SolicitResponse {
-        output: Param<'a>,
-        input: Param<'a>,
-        faults: Vec<Fault<'a>>,
-    },
-    Notification {
-        output: Param<'a>,
-    },
+    RequestResponse { input: Param<'a>, output: Param<'a>, faults: Vec<Fault<'a>> },
+    OneWay { input: Param<'a> },
+    SolicitResponse { output: Param<'a>, input: Param<'a>, faults: Vec<Fault<'a>> },
+    Notification { output: Param<'a> },
 }
 
 impl<'a> OperationType<'a> {
@@ -162,9 +143,7 @@ impl<'a> OperationType<'a> {
                         }
                     } else {
                         // OneWay
-                        OperationType::OneWay {
-                            input: Param::new(&ch),
-                        }
+                        OperationType::OneWay { input: Param::new(&ch) }
                     };
                 }
                 ElementType::Output => {
@@ -183,9 +162,7 @@ impl<'a> OperationType<'a> {
                                 .collect(),
                         }
                     } else {
-                        OperationType::Notification {
-                            output: Param::new(&ch),
-                        }
+                        OperationType::Notification { output: Param::new(&ch) }
                     };
                 }
                 _ => continue,
@@ -227,14 +204,10 @@ impl<'a> Fault<'a> {
     }
 
     pub fn name(&self) -> &'a str {
-        self.node
-            .attribute(attribute::NAME)
-            .expect("Name required for wsdl:fault")
+        self.node.attribute(attribute::NAME).expect("Name required for wsdl:fault")
     }
 
     pub fn message(&self) -> &'a str {
-        self.node
-            .attribute(attribute::MESSAGE)
-            .expect("Message required for wsdl:fault")
+        self.node.attribute(attribute::MESSAGE).expect("Message required for wsdl:fault")
     }
 }

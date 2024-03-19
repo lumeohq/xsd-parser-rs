@@ -31,12 +31,7 @@ fn from_str(ast: &syn::DeriveInput) -> syn::Result<TokenStream> {
                     .filter_map(|s| <#subtype as ::std::str::FromStr>::from_str(s).ok())
                     .collect()
             },
-            _ => {
-                return Err(syn::Error::new(
-                    subtype.span(),
-                    "Not implemented for this subtype",
-                ))
-            }
+            _ => return Err(syn::Error::new(subtype.span(), "Not implemented for this subtype")),
         },
     };
 
@@ -70,12 +65,7 @@ fn display(ast: &syn::DeriveInput) -> syn::Result<TokenStream> {
 
                 Ok(())
             },
-            _ => {
-                return Err(syn::Error::new(
-                    subtype.span(),
-                    "Not implemented for this subtype",
-                ))
-            }
+            _ => return Err(syn::Error::new(subtype.span(), "Not implemented for this subtype")),
         },
     };
 
@@ -92,14 +82,7 @@ fn display(ast: &syn::DeriveInput) -> syn::Result<TokenStream> {
 
 impl Type<'_> {
     pub fn from_path(path: &syn::Path) -> Type {
-        match path
-            .segments
-            .last()
-            .expect("Empty type")
-            .ident
-            .to_string()
-            .as_str()
-        {
+        match path.segments.last().expect("Empty type").ident.to_string().as_str() {
             "bool" | "i8" | "u8" | "i16" | "u16" | "i32" | "u32" | "i64" | "u64" | "f32"
             | "f64" => Type::Simple(path),
             "String" => Type::String(path),

@@ -1,12 +1,14 @@
 use roxmltree::Node;
 
-use crate::parser::constants::attribute;
-use crate::parser::node_parser::parse_node;
-use crate::parser::types::{
-    Alias, EnumCase, EnumSource, RsEntity, Struct, StructField, StructFieldSource, TypeModifier,
+use crate::parser::{
+    constants::attribute,
+    node_parser::parse_node,
+    types::{
+        Alias, EnumCase, EnumSource, RsEntity, Struct, StructField, StructFieldSource, TypeModifier,
+    },
+    utils::get_documentation,
+    xsd_elements::{max_occurs, min_occurs, ElementType, MaxOccurs, XsdNode},
 };
-use crate::parser::utils::get_documentation;
-use crate::parser::xsd_elements::{max_occurs, min_occurs, ElementType, MaxOccurs, XsdNode};
 
 const SUPPORTED_CONTENT_TYPES: [ElementType; 2] =
     [ElementType::SimpleType, ElementType::ComplexType];
@@ -75,10 +77,8 @@ fn parse_field_of_sequence(node: &Node, _: &Node) -> RsEntity {
         .to_string();
 
     if node.has_attribute(attribute::TYPE) || node.has_attribute(attribute::REF) {
-        let type_name = node
-            .attr_type()
-            .unwrap_or_else(|| node.attr_ref().unwrap_or("String"))
-            .to_string();
+        let type_name =
+            node.attr_type().unwrap_or_else(|| node.attr_ref().unwrap_or("String")).to_string();
 
         return RsEntity::StructField(StructField {
             name,
@@ -94,12 +94,7 @@ fn parse_field_of_sequence(node: &Node, _: &Node) -> RsEntity {
         .children()
         .filter(|n| SUPPORTED_CONTENT_TYPES.contains(&n.xsd_type()))
         .last()
-        .unwrap_or_else(|| {
-            panic!(
-                "Must have content if no 'type' or 'ref' attribute: {:?}",
-                node
-            )
-        });
+        .unwrap_or_else(|| panic!("Must have content if no 'type' or 'ref' attribute: {:?}", node));
 
     let mut field_type = parse_node(&content_node, node);
 
@@ -116,9 +111,7 @@ fn parse_field_of_sequence(node: &Node, _: &Node) -> RsEntity {
 }
 
 fn parse_global_element(node: &Node) -> RsEntity {
-    let name = node
-        .attr_name()
-        .expect("Name required if the element is a child of the schema");
+    let name = node.attr_name().expect("Name required if the element is a child of the schema");
 
     if node.has_attribute(attribute::TYPE) {
         return RsEntity::Alias(Alias {
@@ -129,10 +122,8 @@ fn parse_global_element(node: &Node) -> RsEntity {
         });
     }
 
-    let content_node = node
-        .children()
-        .filter(|n| SUPPORTED_CONTENT_TYPES.contains(&n.xsd_type()))
-        .last();
+    let content_node =
+        node.children().filter(|n| SUPPORTED_CONTENT_TYPES.contains(&n.xsd_type())).last();
 
     if let Some(content) = content_node {
         let mut content_entity = parse_node(&content, node);
@@ -180,9 +171,7 @@ pub fn element_modifier(node: &Node) -> TypeModifier {
 
 #[cfg(test)]
 mod test {
-    use crate::parser::element::*;
-    use crate::parser::types::RsEntity;
-    use crate::parser::utils::find_child;
+    use crate::parser::{element::*, types::RsEntity, utils::find_child};
 
     #[test]
     fn test_global_element_without_type() {

@@ -13,12 +13,7 @@ fn deserialization_works() {
 
     let de: expected::FooType = yaserde::de::from_str(ser).unwrap();
 
-    assert_eq!(
-        de,
-        expected::FooType {
-            extension: expected::foo_type::ExtensionType {}
-        }
-    );
+    assert_eq!(de, expected::FooType { extension: expected::foo_type::ExtensionType {} });
 }
 
 #[test]

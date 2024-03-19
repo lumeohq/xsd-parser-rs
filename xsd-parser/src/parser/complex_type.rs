@@ -2,12 +2,14 @@ use std::cell::RefCell;
 
 use roxmltree::Node;
 
-use crate::parser::node_parser::parse_node;
-use crate::parser::types::{RsEntity, Struct, StructField, StructFieldSource};
-use crate::parser::utils::{
-    attribute_groups_to_aliases, attributes_to_fields, get_documentation, get_parent_name,
+use crate::parser::{
+    node_parser::parse_node,
+    types::{RsEntity, Struct, StructField, StructFieldSource},
+    utils::{
+        attribute_groups_to_aliases, attributes_to_fields, get_documentation, get_parent_name,
+    },
+    xsd_elements::{ElementType, XsdNode},
 };
-use crate::parser::xsd_elements::{ElementType, XsdNode};
 
 // A complex type can contain one and only one of the following elements,
 // which determines the type of content allowed in the complex type.
@@ -35,14 +37,7 @@ pub fn parse_complex_type(node: &Node, parent: &Node) -> RsEntity {
         .filter(|n| n.is_element() && AVAILABLE_CONTENT_TYPES.contains(&n.xsd_type()))
         .last();
 
-    if content.is_none()
-        || content
-            .unwrap()
-            .children()
-            .filter(|n| n.is_element())
-            .count()
-            == 0
-    {
+    if content.is_none() || content.unwrap().children().filter(|n| n.is_element()).count() == 0 {
         //No content (or empty), only attributes
 
         return RsEntity::Struct(Struct {

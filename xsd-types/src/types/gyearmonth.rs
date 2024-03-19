@@ -1,11 +1,9 @@
-use crate::types::gmonth::GMonth;
-use crate::types::gyear::GYear;
-use crate::types::utils::parse_timezone;
+use std::{fmt, str::FromStr};
 
 use chrono::FixedOffset;
-use std::fmt;
-use std::str::FromStr;
 use xsd_macro_utils::UtilsDefaultSerde;
+
+use crate::types::{gmonth::GMonth, gyear::GYear, utils::parse_timezone};
 
 #[derive(PartialEq, Debug, UtilsDefaultSerde)]
 pub struct GYearMonth {
@@ -24,35 +22,21 @@ impl GYearMonth {
             return Err("Month value within GYearMonth should lie between 1 and 12".to_string());
         }
 
-        Ok(GYearMonth {
-            year,
-            month,
-            timezone,
-        })
+        Ok(GYearMonth { year, month, timezone })
     }
 
     pub fn gyear(self) -> GYear {
-        GYear {
-            value: self.year,
-            timezone: self.timezone,
-        }
+        GYear { value: self.year, timezone: self.timezone }
     }
 
     pub fn gmonth(self) -> GMonth {
-        GMonth {
-            value: self.month,
-            timezone: self.timezone,
-        }
+        GMonth { value: self.month, timezone: self.timezone }
     }
 }
 
 impl Default for GYearMonth {
     fn default() -> GYearMonth {
-        Self {
-            year: 1,
-            month: 1,
-            timezone: None,
-        }
+        Self { year: 1, month: 1, timezone: None }
     }
 }
 
@@ -142,20 +126,17 @@ impl fmt::Display for GYearMonth {
 
 #[cfg(test)]
 mod tests {
+    use yaserde_derive::{YaDeserialize, YaSerialize};
+
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
-    use yaserde_derive::{YaDeserialize, YaSerialize};
 
     #[test]
     fn gyearmonth_parse_test() {
         // No timezone.
         assert_eq!(
             GYearMonth::from_str("2020-03"),
-            Ok(GYearMonth {
-                year: 2020,
-                month: 3,
-                timezone: None
-            })
+            Ok(GYearMonth { year: 2020, month: 3, timezone: None })
         );
 
         // Timezone "Z".
@@ -223,24 +204,12 @@ mod tests {
     #[test]
     fn gyearmonth_display_test() {
         // No timezone.
-        assert_eq!(
-            GYearMonth {
-                year: 987,
-                month: 6,
-                timezone: None
-            }
-            .to_string(),
-            "0987-06"
-        );
+        assert_eq!(GYearMonth { year: 987, month: 6, timezone: None }.to_string(), "0987-06");
 
         // Timezone +00:00.
         assert_eq!(
-            GYearMonth {
-                year: 987,
-                month: 6,
-                timezone: Some(FixedOffset::east_opt(0).unwrap())
-            }
-            .to_string(),
+            GYearMonth { year: 987, month: 6, timezone: Some(FixedOffset::east_opt(0).unwrap()) }
+                .to_string(),
             "0987-06+00:00"
         );
 
@@ -330,10 +299,7 @@ mod tests {
         let m: Message = yaserde::de::from_str(s).unwrap();
         assert_eq!(m.created_at.year, 2007);
         assert_eq!(m.created_at.month, 2);
-        assert_eq!(
-            m.created_at.timezone,
-            Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap()),
-        );
+        assert_eq!(m.created_at.timezone, Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap()),);
         assert_eq!(m.text, "Hello world".to_string());
     }
 }

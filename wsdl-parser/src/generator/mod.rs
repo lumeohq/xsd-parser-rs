@@ -1,9 +1,9 @@
-use crate::generator::function::Function;
-use crate::parser::definitions::Definitions;
-use inflector::cases::pascalcase::to_pascal_case;
-use inflector::cases::snakecase::to_snake_case;
-use roxmltree::Namespace;
 use std::borrow::Cow;
+
+use inflector::cases::{pascalcase::to_pascal_case, snakecase::to_snake_case};
+use roxmltree::Namespace;
+
+use crate::{generator::function::Function, parser::definitions::Definitions};
 
 pub mod function;
 

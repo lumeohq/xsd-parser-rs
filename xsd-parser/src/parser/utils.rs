@@ -2,10 +2,12 @@ use std::str;
 
 use roxmltree::{Namespace, Node};
 
-use crate::parser::constants::attribute;
-use crate::parser::node_parser::parse_node;
-use crate::parser::types::{Alias, Enum, RsEntity, StructField, StructFieldSource};
-use crate::parser::xsd_elements::{ElementType, XsdNode};
+use crate::parser::{
+    constants::attribute,
+    node_parser::parse_node,
+    types::{Alias, Enum, RsEntity, StructField, StructFieldSource},
+    xsd_elements::{ElementType, XsdNode},
+};
 
 pub fn target_namespace<'a, 'input>(node: &Node<'a, 'input>) -> Option<&'a Namespace<'input>> {
     match node.attribute(attribute::TARGET_NAMESPACE) {
@@ -15,8 +17,7 @@ pub fn target_namespace<'a, 'input>(node: &Node<'a, 'input>) -> Option<&'a Names
 }
 
 pub fn find_child<'a, 'input>(node: &Node<'a, 'input>, tag_name: &str) -> Option<Node<'a, 'input>> {
-    node.children()
-        .find(|e| e.is_element() && e.tag_name().name() == tag_name)
+    node.children().find(|e| e.is_element() && e.tag_name().name() == tag_name)
 }
 
 pub fn get_documentation(node: &Node<'_, '_>) -> Option<String> {
@@ -42,8 +43,7 @@ pub fn get_parent_name<'a>(node: &Node<'a, '_>) -> &'a str {
 }
 
 pub fn get_base<'a>(node: &Node<'a, '_>) -> &'a str {
-    node.attribute(attribute::BASE)
-        .expect("The base value is required")
+    node.attribute(attribute::BASE).expect("The base value is required")
 }
 
 pub fn attributes_to_fields(node: &Node) -> Vec<StructField> {

@@ -1,5 +1,6 @@
-use crate::parser::xsd_elements::FacetType;
 use std::borrow::Cow;
+
+use crate::parser::xsd_elements::FacetType;
 
 pub trait Validate {
     fn validate(&self) -> Result<(), String> {

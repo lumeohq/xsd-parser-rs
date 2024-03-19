@@ -1,14 +1,13 @@
-use clap::Parser;
+use std::{
+    fs,
+    fs::OpenOptions,
+    io::{prelude::*, Read},
+    path::{Path, PathBuf},
+};
 
 use anyhow::Context;
-
-use std::fs;
-use std::io::{prelude::*, Read};
-use std::path::{Path, PathBuf};
-
-use std::fs::OpenOptions;
-use xsd_parser::generator::builder::GeneratorBuilder;
-use xsd_parser::parser::parse;
+use clap::Parser;
+use xsd_parser::{generator::builder::GeneratorBuilder, parser::parse};
 
 #[derive(Parser)]
 #[clap(name = env!("CARGO_PKG_NAME"))]
@@ -77,10 +76,6 @@ fn load_file(path: &Path) -> std::io::Result<String> {
 }
 
 fn write_to_file(path: &Path, text: &str) -> std::io::Result<()> {
-    let mut file = OpenOptions::new()
-        .write(true)
-        .truncate(true)
-        .create(true)
-        .open(path)?;
+    let mut file = OpenOptions::new().write(true).truncate(true).create(true).open(path)?;
     file.write_all(text.as_bytes())
 }

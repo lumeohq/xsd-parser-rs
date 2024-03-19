@@ -1,6 +1,6 @@
+use std::{fmt, str::FromStr};
+
 use num_bigint::{BigInt, ToBigInt};
-use std::fmt;
-use std::str::FromStr;
 use xsd_macro_utils::UtilsDefaultSerde;
 
 // https://www.w3.org/TR/xmlschema-2/#negativeInteger
@@ -40,17 +40,16 @@ impl fmt::Display for NegativeInteger {
 
 #[cfg(test)]
 mod tests {
+    use yaserde_derive::{YaDeserialize, YaSerialize};
+
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
-    use yaserde_derive::{YaDeserialize, YaSerialize};
 
     #[test]
     fn negative_integer_parse_test() {
         assert_eq!(
             NegativeInteger::from_str("-12678967543233"),
-            Ok(NegativeInteger(
-                BigInt::from_str("-12678967543233").unwrap()
-            ))
+            Ok(NegativeInteger(BigInt::from_str("-12678967543233").unwrap()))
         );
 
         assert_eq!(
@@ -58,10 +57,7 @@ mod tests {
             Ok(NegativeInteger((-100000).to_bigint().unwrap()))
         );
 
-        assert_eq!(
-            NegativeInteger::from_str("-1"),
-            Ok(NegativeInteger((-1).to_bigint().unwrap()))
-        );
+        assert_eq!(NegativeInteger::from_str("-1"), Ok(NegativeInteger((-1).to_bigint().unwrap())));
 
         // Invalid values.
         assert!(NegativeInteger::from_str("0").is_err());
@@ -82,10 +78,7 @@ mod tests {
             "-12678967543233"
         );
 
-        assert_eq!(
-            NegativeInteger((-100000).to_bigint().unwrap()).to_string(),
-            "-100000"
-        );
+        assert_eq!(NegativeInteger((-100000).to_bigint().unwrap()).to_string(), "-100000");
 
         assert_eq!(NegativeInteger((-1).to_bigint().unwrap()).to_string(), "-1");
     }

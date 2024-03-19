@@ -8,9 +8,7 @@ mod union;
 #[proc_macro_derive(UtilsTupleIo)]
 pub fn tuple_serde(input: TokenStream) -> TokenStream {
     let ast = parse_macro_input!(input as DeriveInput);
-    tuple::serde(&ast)
-        .unwrap_or_else(|err| err.to_compile_error())
-        .into()
+    tuple::serde(&ast).unwrap_or_else(|err| err.to_compile_error()).into()
 }
 
 // Adds YaSerialize and YaDeserialize implementations for types that support FromStr and Display traits.
@@ -67,7 +65,5 @@ pub fn default_serde(input: TokenStream) -> TokenStream {
 #[proc_macro_derive(UtilsUnionSerDe)]
 pub fn union_serde(input: TokenStream) -> TokenStream {
     let ast = parse_macro_input!(input as DeriveInput);
-    union::serde(&ast)
-        .unwrap_or_else(|err| err.to_compile_error())
-        .into()
+    union::serde(&ast).unwrap_or_else(|err| err.to_compile_error()).into()
 }
