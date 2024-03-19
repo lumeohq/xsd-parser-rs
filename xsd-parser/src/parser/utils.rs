@@ -11,7 +11,7 @@ use crate::parser::{
 
 pub fn target_namespace<'a, 'input>(node: &Node<'a, 'input>) -> Option<&'a Namespace<'input>> {
     match node.attribute(attribute::TARGET_NAMESPACE) {
-        Some(tn) => node.namespaces().iter().find(|a| a.uri() == tn),
+        Some(tn) => node.namespaces().find(|a| a.uri() == tn),
         None => None,
     }
 }

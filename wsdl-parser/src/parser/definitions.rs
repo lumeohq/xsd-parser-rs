@@ -48,7 +48,7 @@ pub struct Definitions<'a> {
 impl<'a> Definitions<'a> {
     pub fn target_namespace(&self) -> Option<&'a Namespace<'_>> {
         match self.node().attribute(attribute::TARGET_NAMESPACE) {
-            Some(tn) => self.node().namespaces().iter().find(|a| a.uri() == tn),
+            Some(tn) => self.node().namespaces().find(|a| a.uri() == tn),
             None => None,
         }
     }

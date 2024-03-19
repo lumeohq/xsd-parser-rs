@@ -217,8 +217,10 @@ mod test {
             )
             .unwrap()
             .root_element()
-            .namespaces()[0]
-                .clone(),
+            .namespaces()
+            .next()
+            .cloned()
+            .unwrap(),
         );
 
         let match_type = |name| match_built_in_type(name, &xsd_ns);
