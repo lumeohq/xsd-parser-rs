@@ -1,3 +1,4 @@
+use std::convert::TryFrom;
 use std::fmt;
 use std::fmt::Write;
 use std::str::FromStr;
@@ -30,12 +31,50 @@ impl Duration {
         }
     }
 
-    // TODO: Add from_std_duration
+    pub fn from_std_duration(other: std::time::Duration) -> Result<Self, String> {
+        const NANOS_PER_SEC: u128 = 1_000_000_000;
+        let nanos = other.as_nanos() - other.as_secs() as u128 * NANOS_PER_SEC;
+
+        let mut rest_value = other.as_secs();
+        let seconds = (rest_value % 60) as f64 + nanos as f64 / 1e9;
+        rest_value /= 60;
+        let minutes = rest_value % 60;
+        rest_value /= 60;
+        let hours = rest_value % 24;
+        rest_value /= 24;
+        let days = rest_value;
+
+        if days > 28 {
+            return Err("Duration longer than 28 days is undefined".into());
+        }
+
+        Ok(Self {
+            days,
+            hours,
+            minutes,
+            seconds,
+            ..Default::default()
+        })
+    }
 
     // TODO: Add a version of to_std_duration that takes a moment at time to start from.
 
     // TODO: Implement normalization function that takes a moment at time to start from and
     // converts months & years to days.
+}
+
+impl TryFrom<std::time::Duration> for Duration {
+    type Error = String;
+    fn try_from(value: std::time::Duration) -> Result<Self, Self::Error> {
+        Duration::from_std_duration(value)
+    }
+}
+
+impl TryFrom<Duration> for std::time::Duration {
+    type Error = String;
+    fn try_from(value: Duration) -> Result<Self, Self::Error> {
+        value.to_std_duration()
+    }
 }
 
 impl FromStr for Duration {
@@ -319,5 +358,78 @@ mod tests {
         check_invalid("P2M1Y");
         check_invalid("P");
         check_invalid("PT15.S");
+    }
+
+    fn check_std_duration_equal(a: std::time::Duration, b: std::time::Duration) {
+        if (a.as_secs_f64() - b.as_secs_f64()).abs() > 1e-4 {
+            panic!(
+                "assertion `left == right` failed
+  left: {:?}
+ right: {:?}",
+                a, b
+            )
+        }
+    }
+    #[test]
+    fn convert_duration() {
+        // 1.0s
+        assert_eq!(
+            Duration::from_std_duration(std::time::Duration::new(1, 0)).unwrap(),
+            Duration::from_str("PT1S").unwrap()
+        );
+        check_std_duration_equal(
+            Duration::from_str("PT1S")
+                .unwrap()
+                .to_std_duration()
+                .unwrap(),
+            std::time::Duration::new(1, 0),
+        );
+
+        // 1:40.55
+        assert_eq!(
+            Duration::from_std_duration(std::time::Duration::new(100, 550_000_000)).unwrap(),
+            Duration::from_str("PT1M40.55S").unwrap()
+        );
+        check_std_duration_equal(
+            Duration::from_str("PT1M40.55S")
+                .unwrap()
+                .to_std_duration()
+                .unwrap(),
+            std::time::Duration::new(100, 550_000_000),
+        );
+
+        // 1:05:30.456
+        assert_eq!(
+            Duration::from_std_duration(std::time::Duration::new(
+                (1 * 60 + 5) * 60 + 30,
+                456_000_000
+            ))
+            .unwrap(),
+            Duration::from_str("PT1H5M30.456S").unwrap()
+        );
+        check_std_duration_equal(
+            Duration::from_str("PT1H5M30.456S")
+                .unwrap()
+                .to_std_duration()
+                .unwrap(),
+            std::time::Duration::new((1 * 60 + 5) * 60 + 30, 456_000_000),
+        );
+
+        // 10day 1:05:30.456
+        assert_eq!(
+            Duration::from_std_duration(std::time::Duration::new(
+                ((10 * 24 + 1) * 60 + 5) * 60 + 30,
+                456_000_000
+            ))
+            .unwrap(),
+            Duration::from_str("P10DT1H5M30.456S").unwrap()
+        );
+        check_std_duration_equal(
+            Duration::from_str("P10DT1H5M30.456S")
+                .unwrap()
+                .to_std_duration()
+                .unwrap(),
+            std::time::Duration::new(((10 * 24 + 1) * 60 + 5) * 60 + 30, 456_000_000),
+        );
     }
 }
