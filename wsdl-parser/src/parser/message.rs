@@ -1,6 +1,6 @@
-use crate::parser::constants::attribute;
-use crate::parser::{ElementType, WsdlElement};
 use roxmltree::Node;
+
+use crate::parser::{constants::attribute, ElementType, WsdlElement};
 
 // Element information:
 // Namespace: http://schemas.xmlsoap.org/wsdl/
@@ -47,9 +47,7 @@ impl<'a> Message<'a> {
     }
 
     pub fn name(&self) -> &'a str {
-        self.node
-            .attribute(attribute::NAME)
-            .expect("Name required for wsdl:message")
+        self.node.attribute(attribute::NAME).expect("Name required for wsdl:message")
     }
 
     pub fn parts(&self) -> &[Part<'a>] {
@@ -81,9 +79,7 @@ pub struct Part<'a> {
 
 impl<'a> Part<'a> {
     pub fn name(&self) -> &'a str {
-        self.node
-            .attribute(attribute::NAME)
-            .expect("Name required for wsdl:part")
+        self.node.attribute(attribute::NAME).expect("Name required for wsdl:part")
     }
 
     pub fn element(&self) -> Option<&'a str> {

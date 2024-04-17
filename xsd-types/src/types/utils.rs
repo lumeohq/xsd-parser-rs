@@ -51,16 +51,10 @@ mod tests {
         );
 
         // Positive offset max.
-        assert_eq!(
-            parse_timezone("+14:00"),
-            Ok(FixedOffset::east_opt(14 * 3600).unwrap())
-        );
+        assert_eq!(parse_timezone("+14:00"), Ok(FixedOffset::east_opt(14 * 3600).unwrap()));
 
         // Negative offset max.
-        assert_eq!(
-            parse_timezone("-14:00"),
-            Ok(FixedOffset::west_opt(14 * 3600).unwrap())
-        );
+        assert_eq!(parse_timezone("-14:00"), Ok(FixedOffset::west_opt(14 * 3600).unwrap()));
 
         // Invalid values.
         assert!(parse_timezone("06:30").is_err());

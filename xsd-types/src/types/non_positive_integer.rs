@@ -1,6 +1,6 @@
+use std::{fmt, str::FromStr};
+
 use num_bigint::{BigInt, ToBigInt};
-use std::fmt;
-use std::str::FromStr;
 use xsd_macro_utils::UtilsDefaultSerde;
 
 // https://www.w3.org/TR/xmlschema-2/#nonPositiveInteger
@@ -40,17 +40,16 @@ impl fmt::Display for NonPositiveInteger {
 
 #[cfg(test)]
 mod tests {
+    use yaserde_derive::{YaDeserialize, YaSerialize};
+
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
-    use yaserde_derive::{YaDeserialize, YaSerialize};
 
     #[test]
     fn non_positive_integer_parse_test() {
         assert_eq!(
             NonPositiveInteger::from_str("-12678967543233"),
-            Ok(NonPositiveInteger(
-                BigInt::from_str("-12678967543233").unwrap()
-            ))
+            Ok(NonPositiveInteger(BigInt::from_str("-12678967543233").unwrap()))
         );
 
         assert_eq!(
@@ -84,17 +83,11 @@ mod tests {
             "-12678967543233"
         );
 
-        assert_eq!(
-            NonPositiveInteger((-100000).to_bigint().unwrap()).to_string(),
-            "-100000"
-        );
+        assert_eq!(NonPositiveInteger((-100000).to_bigint().unwrap()).to_string(), "-100000");
 
         assert_eq!(NonPositiveInteger(0.to_bigint().unwrap()).to_string(), "0");
 
-        assert_eq!(
-            NonPositiveInteger((-1).to_bigint().unwrap()).to_string(),
-            "-1"
-        );
+        assert_eq!(NonPositiveInteger((-1).to_bigint().unwrap()).to_string(), "-1");
     }
 
     #[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]

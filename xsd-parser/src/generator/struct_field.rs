@@ -1,8 +1,10 @@
-use crate::generator::default::{
-    yaserde_for_attribute, yaserde_for_element, yaserde_for_flatten_element,
+use crate::{
+    generator::{
+        default::{yaserde_for_attribute, yaserde_for_element, yaserde_for_flatten_element},
+        Generator,
+    },
+    parser::types::{StructField, StructFieldSource, TypeModifier},
 };
-use crate::generator::Generator;
-use crate::parser::types::{StructField, StructFieldSource, TypeModifier};
 
 pub trait StructFieldGenerator {
     fn generate(&self, entity: &StructField, gen: &Generator) -> String {
@@ -22,9 +24,7 @@ pub trait StructFieldGenerator {
     fn get_type_name(&self, entity: &StructField, gen: &Generator) -> String {
         gen.base()
             .modify_type(
-                gen.base()
-                    .format_type_name(entity.type_name.as_str(), gen)
-                    .as_ref(),
+                gen.base().format_type_name(entity.type_name.as_str(), gen).as_ref(),
                 &entity.type_modifiers,
             )
             .into()
@@ -35,8 +35,7 @@ pub trait StructFieldGenerator {
     }
 
     fn format_comment(&self, entity: &StructField, gen: &Generator) -> String {
-        gen.base()
-            .format_comment(entity.comment.as_deref(), gen.base().indent_size())
+        gen.base().format_comment(entity.comment.as_deref(), gen.base().indent_size())
     }
 
     fn macros(&self, entity: &StructField, gen: &Generator) -> String {

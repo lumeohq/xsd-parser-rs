@@ -1,16 +1,14 @@
-use crate::parser::definitions::Definitions;
-use crate::parser::message::{Message, Part};
-use crate::parser::port_type::Operation;
-use crate::parser::port_type::OperationType::{OneWay, RequestResponse};
+use crate::parser::{
+    definitions::Definitions,
+    message::{Message, Part},
+    port_type::{
+        Operation,
+        OperationType::{OneWay, RequestResponse},
+    },
+};
 
-const GENERIC_TRANSPORT: Param<'static> = Param {
-    name: "T",
-    typename: "transport::Transport",
-};
-const ARGUMENT_TRANSPORT: Param<'static> = Param {
-    name: "transport",
-    typename: "T",
-};
+const GENERIC_TRANSPORT: Param<'static> = Param { name: "T", typename: "transport::Transport" };
+const ARGUMENT_TRANSPORT: Param<'static> = Param { name: "transport", typename: "T" };
 
 #[derive(Debug)]
 pub struct Function<'a> {
@@ -57,9 +55,7 @@ impl<'a> Function<'a> {
         Function {
             generic_params: vec![GENERIC_TRANSPORT],
             arguments: get_input_params(input_message),
-            return_type: output_message
-                .and_then(|m| m.parts()[0].element())
-                .unwrap_or(""),
+            return_type: output_message.and_then(|m| m.parts()[0].element()).unwrap_or(""),
             documentation: operation.documentation(),
             name: operation.name(),
         }
@@ -75,10 +71,7 @@ fn get_input_params<'a>(input: Option<&'a Message<'_>>) -> Vec<Param<'a>> {
 
     if input.parts().len() == 1 {
         // ONVIF case
-        result.push(Param {
-            name: "request",
-            typename: input.parts()[0].element().unwrap(),
-        })
+        result.push(Param { name: "request", typename: input.parts()[0].element().unwrap() })
     } else {
         result.append(&mut input.parts().iter().map(Param::new).collect());
     };

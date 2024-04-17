@@ -1,5 +1,4 @@
-use crate::generator::Generator;
-use crate::parser::types::Alias;
+use crate::{generator::Generator, parser::types::Alias};
 
 pub trait AliasGenerator {
     fn generate(&self, entity: &Alias, gen: &Generator) -> String {

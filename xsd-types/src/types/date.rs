@@ -1,8 +1,9 @@
-use crate::types::utils::parse_timezone;
+use std::{fmt, str::FromStr};
+
 use chrono::{format::strftime::StrftimeItems, FixedOffset, NaiveDate};
-use std::fmt;
-use std::str::FromStr;
 use xsd_macro_utils::UtilsDefaultSerde;
+
+use crate::types::utils::parse_timezone;
 
 #[derive(PartialEq, Debug, UtilsDefaultSerde)]
 pub struct Date {
@@ -12,10 +13,7 @@ pub struct Date {
 
 impl Date {
     pub fn from_chrono_naive_date(date: NaiveDate) -> Self {
-        Date {
-            value: date,
-            timezone: None,
-        }
+        Date { value: date, timezone: None }
     }
 
     pub fn to_chrono_naive_date(&self) -> NaiveDate {
@@ -25,10 +23,7 @@ impl Date {
 
 impl Default for Date {
     fn default() -> Date {
-        Self {
-            value: NaiveDate::from_ymd_opt(1, 1, 1).unwrap(),
-            timezone: None,
-        }
+        Self { value: NaiveDate::from_ymd_opt(1, 1, 1).unwrap(), timezone: None }
     }
 }
 
@@ -71,10 +66,7 @@ impl FromStr for Date {
             });
         }
 
-        Ok(Date {
-            value: parse_naive_date(s)?,
-            timezone: None,
-        })
+        Ok(Date { value: parse_naive_date(s)?, timezone: None })
     }
 }
 
@@ -90,19 +82,17 @@ impl fmt::Display for Date {
 
 #[cfg(test)]
 mod tests {
+    use yaserde_derive::{YaDeserialize, YaSerialize};
+
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
-    use yaserde_derive::{YaDeserialize, YaSerialize};
 
     #[test]
     fn date_parse_test() {
         // No timezone.
         assert_eq!(
             Date::from_str("2020-02-02"),
-            Ok(Date {
-                value: NaiveDate::from_ymd_opt(2020, 2, 2).unwrap(),
-                timezone: None
-            })
+            Ok(Date { value: NaiveDate::from_ymd_opt(2020, 2, 2).unwrap(), timezone: None })
         );
 
         // Timezone "Z".
@@ -137,11 +127,8 @@ mod tests {
     fn date_display_test() {
         // No timezone.
         assert_eq!(
-            Date {
-                value: NaiveDate::from_ymd_opt(2020, 2, 2).unwrap(),
-                timezone: None
-            }
-            .to_string(),
+            Date { value: NaiveDate::from_ymd_opt(2020, 2, 2).unwrap(), timezone: None }
+                .to_string(),
             "2020-02-02"
         );
 
@@ -214,14 +201,8 @@ mod tests {
             </t:Message>
             "#;
         let m: Message = yaserde::de::from_str(s).unwrap();
-        assert_eq!(
-            m.created_at.value,
-            NaiveDate::from_ymd_opt(2020, 2, 2).unwrap()
-        );
-        assert_eq!(
-            m.created_at.timezone,
-            Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap()),
-        );
+        assert_eq!(m.created_at.value, NaiveDate::from_ymd_opt(2020, 2, 2).unwrap());
+        assert_eq!(m.created_at.timezone, Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap()),);
         assert_eq!(m.text, "Hello world".to_string());
     }
 }

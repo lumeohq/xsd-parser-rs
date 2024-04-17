@@ -1,7 +1,9 @@
-use crate::generator::validator::gen_validate_impl;
-use crate::generator::Generator;
-use crate::parser::types::Struct;
 use std::borrow::Cow;
+
+use crate::{
+    generator::{validator::gen_validate_impl, Generator},
+    parser::types::Struct,
+};
 
 pub trait StructGenerator {
     fn generate(&self, entity: &Struct, gen: &Generator) -> String {
@@ -68,20 +70,12 @@ pub trait StructGenerator {
     fn shift(&self, text: &str, indent: &str) -> String {
         text.replace("\n\n\n", "\n") // TODO: fix this workaround replace
             .split('\n')
-            .map(|s| {
-                if !s.is_empty() {
-                    format!("\n{}{}", indent, s)
-                } else {
-                    "\n".to_string()
-                }
-            })
+            .map(|s| if !s.is_empty() { format!("\n{}{}", indent, s) } else { "\n".to_string() })
             .fold(indent.to_string(), |acc, x| acc + &x)
     }
 
     fn get_type_name(&self, entity: &Struct, gen: &Generator) -> String {
-        gen.base()
-            .format_type_name(entity.name.as_str(), gen)
-            .into()
+        gen.base().format_type_name(entity.name.as_str(), gen).into()
     }
 
     fn macros(&self, _entity: &Struct, gen: &Generator) -> Cow<'static, str> {
@@ -116,10 +110,7 @@ pub trait StructGenerator {
 
     fn validation(&self, entity: &Struct, gen: &Generator) -> Cow<'static, str> {
         // Empty validation
-        Cow::Owned(gen_validate_impl(
-            self.get_type_name(entity, gen).as_str(),
-            "",
-        ))
+        Cow::Owned(gen_validate_impl(self.get_type_name(entity, gen).as_str(), ""))
     }
 }
 

@@ -1,19 +1,19 @@
 use roxmltree::Node;
 
-use crate::parser::node_parser::parse_node;
-use crate::parser::types::{Alias, RsEntity, Struct, StructField};
-use crate::parser::utils::get_documentation;
-use crate::parser::xsd_elements::{ElementType, XsdNode};
+use crate::parser::{
+    node_parser::parse_node,
+    types::{Alias, RsEntity, Struct, StructField},
+    utils::get_documentation,
+    xsd_elements::{ElementType, XsdNode},
+};
 
 pub fn parse_attribute_group(node: &Node, parent: &Node) -> RsEntity {
     if parent.xsd_type() == ElementType::Schema {
         return parse_global_attribute_group(node);
     }
 
-    let reference = node
-        .attr_ref()
-        .expect("Non-global attributeGroups must be references.")
-        .to_string();
+    let reference =
+        node.attr_ref().expect("Non-global attributeGroups must be references.").to_string();
 
     RsEntity::Alias(Alias {
         name: reference.to_string(),
@@ -24,9 +24,7 @@ pub fn parse_attribute_group(node: &Node, parent: &Node) -> RsEntity {
 }
 
 fn parse_global_attribute_group(node: &Node) -> RsEntity {
-    let name = node
-        .attr_name()
-        .unwrap_or_else(|| panic!("Name attribute required. {:?}", node));
+    let name = node.attr_name().unwrap_or_else(|| panic!("Name attribute required. {:?}", node));
 
     let fields = attributes_to_fields(node);
 
@@ -51,9 +49,9 @@ pub fn attributes_to_fields(node: &Node) -> Vec<StructField> {
 
 #[cfg(test)]
 mod test {
-    use crate::parser::attribute_group::parse_global_attribute_group;
-    use crate::parser::types::RsEntity;
-    use crate::parser::utils::find_child;
+    use crate::parser::{
+        attribute_group::parse_global_attribute_group, types::RsEntity, utils::find_child,
+    };
 
     #[test]
     fn test_global_attribute_with_nested_type() {

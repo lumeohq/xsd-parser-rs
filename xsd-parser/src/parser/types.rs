@@ -1,9 +1,8 @@
-use std::cell::RefCell;
-use std::collections::HashMap;
+use std::{cell::RefCell, collections::HashMap};
 
-use crate::parser::constants::tag;
-use crate::parser::xsd_elements::FacetType;
 use roxmltree::Namespace;
+
+use crate::parser::{constants::tag, xsd_elements::FacetType};
 
 #[derive(Debug, Clone, Default)]
 pub struct RsFile<'input> {
@@ -37,10 +36,7 @@ impl Struct {
     }
 
     pub fn extend_base(&self, types: &HashMap<&String, &Self>) {
-        self.fields
-            .borrow_mut()
-            .iter_mut()
-            .for_each(|f| f.extend_base(types));
+        self.fields.borrow_mut().iter_mut().for_each(|f| f.extend_base(types));
 
         let mut fields = self
             .fields
@@ -49,26 +45,17 @@ impl Struct {
             .filter(|f| f.name.as_str() == tag::BASE)
             .flat_map(|f| {
                 let key = f.type_name.split(':').last().unwrap().to_string();
-                types
-                    .get(&key)
-                    .map(|s| s.fields.borrow().clone())
-                    .unwrap_or_default()
+                types.get(&key).map(|s| s.fields.borrow().clone()).unwrap_or_default()
             })
             .filter(|f| {
                 //TODO: remove this workaround for fields names clash
-                !self
-                    .fields
-                    .borrow()
-                    .iter()
-                    .any(|field| field.name == f.name)
+                !self.fields.borrow().iter().any(|field| field.name == f.name)
             })
             .collect::<Vec<StructField>>();
 
         self.fields.borrow_mut().append(&mut fields);
 
-        self.fields
-            .borrow_mut()
-            .retain(|field| field.name.as_str() != tag::BASE);
+        self.fields.borrow_mut().retain(|field| field.name.as_str() != tag::BASE);
 
         for subtype in &self.subtypes {
             if let RsEntity::Struct(s) = subtype {
@@ -84,10 +71,7 @@ impl Struct {
             .iter()
             .flat_map(|f| {
                 let key = f.original.split(':').last().unwrap().to_string();
-                types
-                    .get(&key)
-                    .map(|s| s.fields.borrow().clone())
-                    .unwrap_or_default()
+                types.get(&key).map(|s| s.fields.borrow().clone()).unwrap_or_default()
             })
             .collect::<Vec<StructField>>();
 

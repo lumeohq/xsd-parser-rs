@@ -1,6 +1,6 @@
+use std::{fmt, str::FromStr};
+
 use num_bigint::{BigUint, ToBigUint};
-use std::fmt;
-use std::str::FromStr;
 use xsd_macro_utils::UtilsDefaultSerde;
 
 // https://www.w3.org/TR/xmlschema-2/#positiveInteger
@@ -40,17 +40,16 @@ impl fmt::Display for PositiveInteger {
 
 #[cfg(test)]
 mod tests {
+    use yaserde_derive::{YaDeserialize, YaSerialize};
+
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
-    use yaserde_derive::{YaDeserialize, YaSerialize};
 
     #[test]
     fn positive_integer_parse_test() {
         assert_eq!(
             PositiveInteger::from_str("12678967543233"),
-            Ok(PositiveInteger(
-                BigUint::from_str("12678967543233").unwrap()
-            ))
+            Ok(PositiveInteger(BigUint::from_str("12678967543233").unwrap()))
         );
 
         assert_eq!(
@@ -77,10 +76,7 @@ mod tests {
             "12678967543233"
         );
 
-        assert_eq!(
-            PositiveInteger(100000.to_biguint().unwrap()).to_string(),
-            "100000"
-        );
+        assert_eq!(PositiveInteger(100000.to_biguint().unwrap()).to_string(), "100000");
     }
 
     #[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]

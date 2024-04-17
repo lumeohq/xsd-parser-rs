@@ -1,11 +1,9 @@
-use crate::types::gday::GDay;
-use crate::types::gmonth::GMonth;
-use crate::types::utils::parse_timezone;
+use std::{fmt, str::FromStr};
 
 use chrono::FixedOffset;
-use std::fmt;
-use std::str::FromStr;
 use xsd_macro_utils::UtilsDefaultSerde;
+
+use crate::types::{gday::GDay, gmonth::GMonth, utils::parse_timezone};
 
 #[derive(PartialEq, Debug, UtilsDefaultSerde)]
 pub struct GMonthDay {
@@ -29,35 +27,21 @@ impl GMonthDay {
             return Err("Day value within GMonthDay is to big for specified month".to_string());
         }
 
-        Ok(GMonthDay {
-            month,
-            day,
-            timezone,
-        })
+        Ok(GMonthDay { month, day, timezone })
     }
 
     pub fn gmonth(self) -> GMonth {
-        GMonth {
-            value: self.month,
-            timezone: self.timezone,
-        }
+        GMonth { value: self.month, timezone: self.timezone }
     }
 
     pub fn gday(self) -> GDay {
-        GDay {
-            value: self.day,
-            timezone: self.timezone,
-        }
+        GDay { value: self.day, timezone: self.timezone }
     }
 }
 
 impl Default for GMonthDay {
     fn default() -> GMonthDay {
-        Self {
-            month: 1,
-            day: 1,
-            timezone: None,
-        }
+        Self { month: 1, day: 1, timezone: None }
     }
 }
 
@@ -126,30 +110,23 @@ impl fmt::Display for GMonthDay {
 
 #[cfg(test)]
 mod tests {
+    use yaserde_derive::{YaDeserialize, YaSerialize};
+
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
-    use yaserde_derive::{YaDeserialize, YaSerialize};
 
     #[test]
     fn gmonthday_parse_test() {
         // No timezone.
         assert_eq!(
             GMonthDay::from_str("--12-20"),
-            Ok(GMonthDay {
-                month: 12,
-                day: 20,
-                timezone: None
-            })
+            Ok(GMonthDay { month: 12, day: 20, timezone: None })
         );
 
         // Timezone "Z".
         assert_eq!(
             GMonthDay::from_str("--12-20Z"),
-            Ok(GMonthDay {
-                month: 12,
-                day: 20,
-                timezone: Some(FixedOffset::east_opt(0).unwrap())
-            })
+            Ok(GMonthDay { month: 12, day: 20, timezone: Some(FixedOffset::east_opt(0).unwrap()) })
         );
 
         // Positive offset.
@@ -190,24 +167,12 @@ mod tests {
     #[test]
     fn gmonthday_display_test() {
         // No timezone.
-        assert_eq!(
-            GMonthDay {
-                month: 3,
-                day: 2,
-                timezone: None
-            }
-            .to_string(),
-            "--03-02"
-        );
+        assert_eq!(GMonthDay { month: 3, day: 2, timezone: None }.to_string(), "--03-02");
 
         // Timezone +00:00.
         assert_eq!(
-            GMonthDay {
-                month: 3,
-                day: 2,
-                timezone: Some(FixedOffset::east_opt(0).unwrap())
-            }
-            .to_string(),
+            GMonthDay { month: 3, day: 2, timezone: Some(FixedOffset::east_opt(0).unwrap()) }
+                .to_string(),
             "--03-02+00:00"
         );
 
@@ -275,10 +240,7 @@ mod tests {
         let m: Message = yaserde::de::from_str(s).unwrap();
         assert_eq!(m.created_at.month, 7);
         assert_eq!(m.created_at.day, 9);
-        assert_eq!(
-            m.created_at.timezone,
-            Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap()),
-        );
+        assert_eq!(m.created_at.timezone, Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap()),);
         assert_eq!(m.text, "Hello world".to_string());
     }
 }

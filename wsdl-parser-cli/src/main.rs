@@ -1,15 +1,14 @@
-use clap::Parser;
+use std::{
+    fs,
+    io::{prelude::*, Read},
+    path::{Path, PathBuf},
+};
 
 use anyhow::Context;
-
+use clap::Parser;
 use roxmltree::{Document, Node};
-use std::fs;
-use std::io::{prelude::*, Read};
-use std::path::{Path, PathBuf};
-use wsdl_parser::generator::generate;
-use wsdl_parser::parser::definitions::Definitions;
-use xsd_parser::generator::builder::GeneratorBuilder;
-use xsd_parser::parser::schema::parse_schema;
+use wsdl_parser::{generator::generate, parser::definitions::Definitions};
+use xsd_parser::{generator::builder::GeneratorBuilder, parser::schema::parse_schema};
 
 #[derive(Parser)]
 #[clap(name = env!("CARGO_PKG_NAME"))]
@@ -31,9 +30,7 @@ fn main() -> anyhow::Result<()> {
     let input_path = opt.input.unwrap_or_else(|| PathBuf::from("input/wsdl"));
     let md = fs::metadata(&input_path).unwrap();
     if md.is_dir() {
-        let output_path = opt
-            .output
-            .unwrap_or_else(|| PathBuf::from("output/wsdl-rs"));
+        let output_path = opt.output.unwrap_or_else(|| PathBuf::from("output/wsdl-rs"));
         process_dir(&input_path, &output_path)?;
     } else {
         process_single_file(&input_path, opt.output.as_deref())?;
@@ -65,15 +62,10 @@ fn process_single_file(input_path: &Path, output_path: Option<&Path>) -> anyhow:
     let doc = Document::parse(text.as_str()).context("Failed to parse input document")?;
     let definitions = Definitions::new(&doc.root_element());
     let gen = GeneratorBuilder::default().build();
-    let schemas = definitions
-        .types()
-        .iter()
-        .flat_map(|t| t.schemas())
-        .collect::<Vec<Node<'_, '_>>>();
-    let mut code = schemas
-        .iter()
-        .map(|f| gen.generate_rs_file(&parse_schema(f)))
-        .collect::<Vec<String>>();
+    let schemas =
+        definitions.types().iter().flat_map(|t| t.schemas()).collect::<Vec<Node<'_, '_>>>();
+    let mut code =
+        schemas.iter().map(|f| gen.generate_rs_file(&parse_schema(f))).collect::<Vec<String>>();
 
     code.push(generate(&definitions));
     let code = code.join("");

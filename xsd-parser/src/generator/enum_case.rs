@@ -1,7 +1,7 @@
-use crate::generator::default::default_format_type;
-use crate::generator::utils::split_name;
-use crate::generator::Generator;
-use crate::parser::types::{EnumCase, EnumSource};
+use crate::{
+    generator::{default::default_format_type, utils::split_name, Generator},
+    parser::types::{EnumCase, EnumSource},
+};
 
 pub trait EnumCaseGenerator {
     fn generate(&self, entity: &EnumCase, gen: &Generator) -> String {
@@ -29,17 +29,12 @@ pub trait EnumCaseGenerator {
     }
 
     fn get_type_name(&self, entity: &EnumCase, gen: &Generator) -> String {
-        let formatted_type = gen
-            .base()
-            .format_type_name(entity.type_name.as_ref().unwrap(), gen);
-        gen.base()
-            .modify_type(formatted_type.as_ref(), &entity.type_modifiers)
-            .into()
+        let formatted_type = gen.base().format_type_name(entity.type_name.as_ref().unwrap(), gen);
+        gen.base().modify_type(formatted_type.as_ref(), &entity.type_modifiers).into()
     }
 
     fn format_comment(&self, entity: &EnumCase, gen: &Generator) -> String {
-        gen.base()
-            .format_comment(entity.comment.as_deref(), gen.base().indent_size())
+        gen.base().format_comment(entity.comment.as_deref(), gen.base().indent_size())
     }
 
     fn macros(&self, entity: &EnumCase, gen: &Generator) -> String {

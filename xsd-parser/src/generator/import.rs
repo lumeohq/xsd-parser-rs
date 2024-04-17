@@ -1,5 +1,4 @@
-use crate::generator::Generator;
-use crate::parser::types::Import;
+use crate::{generator::Generator, parser::types::Import};
 
 pub trait ImportGenerator {
     fn generate(&self, entity: &Import, _gen: &Generator) -> String {

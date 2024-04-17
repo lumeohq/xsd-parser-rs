@@ -1,9 +1,11 @@
 use roxmltree::Node;
 
-use crate::parser::node_parser::parse_node;
-use crate::parser::types::RsEntity;
-use crate::parser::utils::get_documentation;
-use crate::parser::xsd_elements::{ElementType, XsdNode};
+use crate::parser::{
+    node_parser::parse_node,
+    types::RsEntity,
+    utils::get_documentation,
+    xsd_elements::{ElementType, XsdNode},
+};
 
 pub fn parse_simple_type(node: &Node, parent: &Node) -> RsEntity {
     let name = node.attr_name();
@@ -34,8 +36,7 @@ pub fn parse_simple_type(node: &Node, parent: &Node) -> RsEntity {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::parser::types::TypeModifier;
-    use crate::parser::utils::find_child;
+    use crate::parser::{types::TypeModifier, utils::find_child};
 
     #[test]
     fn test_parse_simple_type_with_list() {
@@ -65,10 +66,7 @@ mod test {
             RsEntity::TupleStruct(ts) => {
                 assert_eq!(ts.name, "SomeType");
                 assert_eq!(ts.type_name, "xs:SSD");
-                assert_eq!(
-                    ts.type_modifiers,
-                    vec![TypeModifier::Array, TypeModifier::Array]
-                );
+                assert_eq!(ts.type_modifiers, vec![TypeModifier::Array, TypeModifier::Array]);
                 assert_eq!(ts.comment.unwrap().trim(), "Some text");
                 assert!(ts.subtypes.is_empty());
             }

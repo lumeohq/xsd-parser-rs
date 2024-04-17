@@ -1,24 +1,26 @@
 use roxmltree::Node;
 
-use crate::parser::all::parse_all;
-use crate::parser::any::parse_any;
-use crate::parser::any_attribute::parse_any_attribute;
-use crate::parser::attribute::parse_attribute;
-use crate::parser::attribute_group::parse_attribute_group;
-use crate::parser::choice::parse_choice;
-use crate::parser::complex_content::parse_complex_content;
-use crate::parser::complex_type::parse_complex_type;
-use crate::parser::element::parse_element;
-use crate::parser::extension::parse_extension;
-use crate::parser::import::parse_import;
-use crate::parser::list::parse_list;
-use crate::parser::restriction::parse_restriction;
-use crate::parser::sequence::parse_sequence;
-use crate::parser::simple_content::parse_simple_content;
-use crate::parser::simple_type::parse_simple_type;
-use crate::parser::types::RsEntity;
-use crate::parser::union::parse_union;
-use crate::parser::xsd_elements::{ElementType, XsdNode};
+use crate::parser::{
+    all::parse_all,
+    any::parse_any,
+    any_attribute::parse_any_attribute,
+    attribute::parse_attribute,
+    attribute_group::parse_attribute_group,
+    choice::parse_choice,
+    complex_content::parse_complex_content,
+    complex_type::parse_complex_type,
+    element::parse_element,
+    extension::parse_extension,
+    import::parse_import,
+    list::parse_list,
+    restriction::parse_restriction,
+    sequence::parse_sequence,
+    simple_content::parse_simple_content,
+    simple_type::parse_simple_type,
+    types::RsEntity,
+    union::parse_union,
+    xsd_elements::{ElementType, XsdNode},
+};
 
 pub fn parse_node(node: &Node, parent: &Node) -> RsEntity {
     use ElementType::*;
@@ -42,10 +44,6 @@ pub fn parse_node(node: &Node, parent: &Node) -> RsEntity {
         SimpleType => parse_simple_type(node, parent),
         Union => parse_union(node),
 
-        _ => unreachable!(
-            "Unsupported node:\n {:?}\nparent = {:?}\n",
-            node,
-            node.parent()
-        ),
+        _ => unreachable!("Unsupported node:\n {:?}\nparent = {:?}\n", node, node.parent()),
     }
 }

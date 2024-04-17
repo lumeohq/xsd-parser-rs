@@ -1,16 +1,20 @@
 use std::cell::RefCell;
 
-use crate::parser::constants::tag;
-use crate::parser::node_parser::parse_node;
-use crate::parser::types::{
-    Enum, EnumCase, EnumSource, Facet, RsEntity, Struct, StructField, StructFieldSource,
-    TupleStruct,
-};
-use crate::parser::utils::{
-    attribute_groups_to_aliases, attributes_to_fields, get_base, get_documentation, get_parent_name,
-};
-use crate::parser::xsd_elements::{ElementType, FacetType, RestrictionType, XsdNode};
 use roxmltree::Node;
+
+use crate::parser::{
+    constants::tag,
+    node_parser::parse_node,
+    types::{
+        Enum, EnumCase, EnumSource, Facet, RsEntity, Struct, StructField, StructFieldSource,
+        TupleStruct,
+    },
+    utils::{
+        attribute_groups_to_aliases, attributes_to_fields, get_base, get_documentation,
+        get_parent_name,
+    },
+    xsd_elements::{ElementType, FacetType, RestrictionType, XsdNode},
+};
 
 const AVAILABLE_CONTENT_TYPES: [ElementType; 7] = [
     ElementType::All, // Not presented in ONVIF
@@ -49,11 +53,7 @@ fn simple_type_restriction(node: &Node) -> RsEntity {
         }
     };
 
-    RsEntity::TupleStruct(TupleStruct {
-        type_name: base.to_string(),
-        facets,
-        ..Default::default()
-    })
+    RsEntity::TupleStruct(TupleStruct { type_name: base.to_string(), facets, ..Default::default() })
 }
 
 fn simple_content_restriction(node: &Node) -> RsEntity {
@@ -103,10 +103,7 @@ fn complex_content_restriction(node: &Node) -> RsEntity {
 fn facets(node: &Node) -> Vec<Facet> {
     node.children()
         .filter_map(|n| match n.xsd_type() {
-            ElementType::Facet(x) => Some(Facet {
-                facet_type: x,
-                comment: get_documentation(&n),
-            }),
+            ElementType::Facet(x) => Some(Facet { facet_type: x, comment: get_documentation(&n) }),
             _ => None,
         })
         .collect()
@@ -136,9 +133,7 @@ fn is_simple_enumerations(node: &Node) -> bool {
 }
 
 fn is_simple_enumeration(node: &Node) -> bool {
-    let val = node
-        .attr_value()
-        .expect("Value required for xsd:enumeration");
+    let val = node.attr_value().expect("Value required for xsd:enumeration");
     !val.is_empty() && val.chars().all(|c| c.is_alphanumeric() || c == '-')
 }
 

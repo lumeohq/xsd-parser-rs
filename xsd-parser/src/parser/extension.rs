@@ -1,12 +1,14 @@
-use crate::parser::constants::{attribute, tag};
-use crate::parser::node_parser::parse_node;
-use crate::parser::types::{RsEntity, Struct, StructField, StructFieldSource};
-use crate::parser::utils::{
-    attribute_groups_to_aliases, attributes_to_fields, get_base, get_documentation,
-};
-use crate::parser::xsd_elements::{ElementType, ExtensionType, XsdNode};
-use roxmltree::Node;
 use std::cell::RefCell;
+
+use roxmltree::Node;
+
+use crate::parser::{
+    constants::{attribute, tag},
+    node_parser::parse_node,
+    types::{RsEntity, Struct, StructField, StructFieldSource},
+    utils::{attribute_groups_to_aliases, attributes_to_fields, get_base, get_documentation},
+    xsd_elements::{ElementType, ExtensionType, XsdNode},
+};
 
 const AVAILABLE_CONTENT_TYPES: [ElementType; 6] = [
     ElementType::All, // Not presented in ONVIF
@@ -48,9 +50,7 @@ fn simple_content_extension(node: &Node) -> RsEntity {
 }
 
 fn complex_content_extension(node: &Node) -> RsEntity {
-    let base = node
-        .attribute(attribute::BASE)
-        .expect("The base value is required");
+    let base = node.attribute(attribute::BASE).expect("The base value is required");
 
     let mut fields = attributes_to_fields(node);
 

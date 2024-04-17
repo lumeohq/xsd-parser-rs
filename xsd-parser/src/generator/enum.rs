@@ -1,7 +1,9 @@
-use crate::generator::validator::gen_validate_impl;
-use crate::generator::Generator;
-use crate::parser::types::{Enum, EnumSource};
 use std::borrow::Cow;
+
+use crate::{
+    generator::{validator::gen_validate_impl, Generator},
+    parser::types::{Enum, EnumSource},
+};
 
 pub trait EnumGenerator {
     fn generate(&self, entity: &Enum, gen: &Generator) -> String {
@@ -51,15 +53,11 @@ pub trait EnumGenerator {
     }
 
     fn get_type_name(&self, entity: &Enum, gen: &Generator) -> String {
-        gen.base()
-            .format_type_name(entity.type_name.as_str(), gen)
-            .into()
+        gen.base().format_type_name(entity.type_name.as_str(), gen).into()
     }
 
     fn get_name(&self, entity: &Enum, gen: &Generator) -> String {
-        gen.base()
-            .format_type_name(entity.name.as_str(), gen)
-            .into()
+        gen.base().format_type_name(entity.name.as_str(), gen).into()
     }
 
     fn macros(&self, entity: &Enum, gen: &Generator) -> Cow<'static, str> {

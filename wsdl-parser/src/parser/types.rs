@@ -20,9 +20,6 @@ impl<'a> Types<'a> {
     }
 
     pub fn schemas(&self) -> Vec<Node<'_, '_>> {
-        self.node
-            .children()
-            .filter(|n| n.is_element() && n.tag_name().name() == "schema")
-            .collect()
+        self.node.children().filter(|n| n.is_element() && n.tag_name().name() == "schema").collect()
     }
 }

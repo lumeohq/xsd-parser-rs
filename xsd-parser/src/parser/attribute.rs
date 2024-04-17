@@ -1,9 +1,11 @@
 use roxmltree::Node;
 
-use crate::parser::node_parser::parse_node;
-use crate::parser::types::{Alias, RsEntity, Struct, StructField, StructFieldSource, TypeModifier};
-use crate::parser::utils::get_documentation;
-use crate::parser::xsd_elements::{ElementType, UseType, XsdNode};
+use crate::parser::{
+    node_parser::parse_node,
+    types::{Alias, RsEntity, Struct, StructField, StructFieldSource, TypeModifier},
+    utils::get_documentation,
+    xsd_elements::{ElementType, UseType, XsdNode},
+};
 
 pub fn parse_attribute(node: &Node, parent: &Node) -> RsEntity {
     if parent.xsd_type() == ElementType::Schema {
@@ -16,11 +18,7 @@ pub fn parse_attribute(node: &Node, parent: &Node) -> RsEntity {
         .expect("All attributes have name or ref")
         .to_string();
 
-    let type_name = node
-        .attr_type()
-        .or_else(|| node.attr_ref())
-        .unwrap_or("String")
-        .to_string();
+    let type_name = node.attr_type().or_else(|| node.attr_ref()).unwrap_or("String").to_string();
 
     let type_modifier = match node.attr_use() {
         UseType::Optional => TypeModifier::Option,
@@ -48,9 +46,7 @@ fn parse_global_attribute(node: &Node) -> RsEntity {
         });
     }
 
-    let name = node
-        .attr_name()
-        .unwrap_or_else(|| panic!("Name attribute required. {:?}", node));
+    let name = node.attr_name().unwrap_or_else(|| panic!("Name attribute required. {:?}", node));
 
     if let Some(ty) = node.attr_type() {
         return RsEntity::Alias(Alias {
@@ -61,27 +57,20 @@ fn parse_global_attribute(node: &Node) -> RsEntity {
         });
     }
 
-    if let Some(content) = node
-        .children()
-        .filter(|n| n.is_element() && n.xsd_type() == ElementType::SimpleType)
-        .last()
+    if let Some(content) =
+        node.children().filter(|n| n.is_element() && n.xsd_type() == ElementType::SimpleType).last()
     {
         let mut entity = parse_node(&content, node);
         entity.set_name(name);
         return entity;
     }
 
-    RsEntity::Struct(Struct {
-        name: name.to_string(),
-        ..Default::default()
-    })
+    RsEntity::Struct(Struct { name: name.to_string(), ..Default::default() })
 }
 
 #[cfg(test)]
 mod test {
-    use crate::parser::attribute::parse_global_attribute;
-    use crate::parser::types::RsEntity;
-    use crate::parser::utils::find_child;
+    use crate::parser::{attribute::parse_global_attribute, types::RsEntity, utils::find_child};
 
     #[test]
     fn test_global_attribute_with_nested_type() {

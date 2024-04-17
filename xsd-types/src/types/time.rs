@@ -1,8 +1,9 @@
-use crate::types::utils::parse_timezone;
+use std::{fmt, str::FromStr};
+
 use chrono::{format::strftime::StrftimeItems, FixedOffset, NaiveTime};
-use std::fmt;
-use std::str::FromStr;
 use xsd_macro_utils::UtilsDefaultSerde;
+
+use crate::types::utils::parse_timezone;
 
 #[derive(PartialEq, Debug, UtilsDefaultSerde)]
 pub struct Time {
@@ -12,10 +13,7 @@ pub struct Time {
 
 impl Time {
     pub fn from_chrono_naive_time(time: NaiveTime) -> Self {
-        Time {
-            value: time,
-            timezone: None,
-        }
+        Time { value: time, timezone: None }
     }
 
     pub fn to_chrono_naive_time(&self) -> NaiveTime {
@@ -25,10 +23,7 @@ impl Time {
 
 impl Default for Time {
     fn default() -> Time {
-        Self {
-            value: NaiveTime::from_hms_opt(0, 0, 0).unwrap(),
-            timezone: None,
-        }
+        Self { value: NaiveTime::from_hms_opt(0, 0, 0).unwrap(), timezone: None }
     }
 }
 
@@ -75,10 +70,7 @@ impl FromStr for Time {
             });
         }
 
-        Ok(Time {
-            value: parse_naive_time(s)?,
-            timezone: None,
-        })
+        Ok(Time { value: parse_naive_time(s)?, timezone: None })
     }
 }
 
@@ -94,19 +86,17 @@ impl fmt::Display for Time {
 
 #[cfg(test)]
 mod tests {
+    use yaserde_derive::{YaDeserialize, YaSerialize};
+
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
-    use yaserde_derive::{YaDeserialize, YaSerialize};
 
     #[test]
     fn time_parse_test() {
         // No timezone.
         assert_eq!(
             Time::from_str("04:40:00"),
-            Ok(Time {
-                value: NaiveTime::from_hms_opt(4, 40, 0).unwrap(),
-                timezone: None
-            })
+            Ok(Time { value: NaiveTime::from_hms_opt(4, 40, 0).unwrap(), timezone: None })
         );
 
         // Timezone "Z".
@@ -141,11 +131,7 @@ mod tests {
     fn time_display_test() {
         // No timezone.
         assert_eq!(
-            Time {
-                value: NaiveTime::from_hms_opt(4, 40, 0).unwrap(),
-                timezone: None
-            }
-            .to_string(),
+            Time { value: NaiveTime::from_hms_opt(4, 40, 0).unwrap(), timezone: None }.to_string(),
             "04:40:00"
         );
 
@@ -218,14 +204,8 @@ mod tests {
             </t:Message>
             "#;
         let m: Message = yaserde::de::from_str(s).unwrap();
-        assert_eq!(
-            m.created_at.value,
-            NaiveTime::from_hms_opt(4, 40, 0).unwrap()
-        );
-        assert_eq!(
-            m.created_at.timezone,
-            Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap())
-        );
+        assert_eq!(m.created_at.value, NaiveTime::from_hms_opt(4, 40, 0).unwrap());
+        assert_eq!(m.created_at.timezone, Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap()));
         assert_eq!(m.text, "Hello world".to_string());
     }
 }

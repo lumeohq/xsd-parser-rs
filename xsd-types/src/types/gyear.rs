@@ -1,8 +1,9 @@
-use crate::types::utils::parse_timezone;
+use std::{fmt, str::FromStr};
+
 use chrono::FixedOffset;
-use std::fmt;
-use std::str::FromStr;
 use xsd_macro_utils::UtilsDefaultSerde;
+
+use crate::types::utils::parse_timezone;
 
 #[derive(PartialEq, Debug, UtilsDefaultSerde)]
 pub struct GYear {
@@ -15,19 +16,13 @@ impl GYear {
         if year == 0 {
             return Err("bad gYear format: year 0 occurred".to_string());
         }
-        Ok(GYear {
-            value: year,
-            timezone,
-        })
+        Ok(GYear { value: year, timezone })
     }
 }
 
 impl Default for GYear {
     fn default() -> GYear {
-        Self {
-            value: 1,
-            timezone: None,
-        }
+        Self { value: 1, timezone: None }
     }
 }
 
@@ -102,28 +97,20 @@ impl fmt::Display for GYear {
 
 #[cfg(test)]
 mod tests {
+    use yaserde_derive::{YaDeserialize, YaSerialize};
+
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
-    use yaserde_derive::{YaDeserialize, YaSerialize};
 
     #[test]
     fn gyear_parse_test() {
         // No timezone.
-        assert_eq!(
-            GYear::from_str("2020"),
-            Ok(GYear {
-                value: 2020,
-                timezone: None
-            })
-        );
+        assert_eq!(GYear::from_str("2020"), Ok(GYear { value: 2020, timezone: None }));
 
         // Timezone "Z".
         assert_eq!(
             GYear::from_str("2020Z"),
-            Ok(GYear {
-                value: 2020,
-                timezone: Some(FixedOffset::east_opt(0).unwrap())
-            })
+            Ok(GYear { value: 2020, timezone: Some(FixedOffset::east_opt(0).unwrap()) })
         );
 
         // Positive offset.
@@ -172,22 +159,11 @@ mod tests {
     #[test]
     fn gyear_display_test() {
         // No timezone.
-        assert_eq!(
-            GYear {
-                value: 987,
-                timezone: None
-            }
-            .to_string(),
-            "0987"
-        );
+        assert_eq!(GYear { value: 987, timezone: None }.to_string(), "0987");
 
         // Timezone +00:00.
         assert_eq!(
-            GYear {
-                value: 987,
-                timezone: Some(FixedOffset::east_opt(0).unwrap())
-            }
-            .to_string(),
+            GYear { value: 987, timezone: Some(FixedOffset::east_opt(0).unwrap()) }.to_string(),
             "0987+00:00"
         );
 
@@ -271,10 +247,7 @@ mod tests {
             "#;
         let m: Message = yaserde::de::from_str(s).unwrap();
         assert_eq!(m.created_at.value, 2007);
-        assert_eq!(
-            m.created_at.timezone,
-            Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap()),
-        );
+        assert_eq!(m.created_at.timezone, Some(FixedOffset::west_opt(6 * 3600 + 30 * 60).unwrap()),);
         assert_eq!(m.text, "Hello world".to_string());
     }
 }

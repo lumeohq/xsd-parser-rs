@@ -55,8 +55,9 @@ impl<'a> WsdlElement for roxmltree::Node<'a, '_> {
 
 #[cfg(test)]
 mod test {
-    use crate::parser::definitions::Definitions;
     use roxmltree::Document;
+
+    use crate::parser::definitions::Definitions;
 
     const TEXT: &str = r#"
 <wsdl:definitions
@@ -133,10 +134,7 @@ mod test {
         let doc = Document::parse(TEXT).unwrap();
         let def = Definitions::new(&doc.root_element());
 
-        assert_eq!(
-            def.target_namespace().unwrap().uri(),
-            "http://www.onvif.org/ver10/device/wsdl"
-        );
+        assert_eq!(def.target_namespace().unwrap().uri(), "http://www.onvif.org/ver10/device/wsdl");
         assert_eq!(def.types().len(), 1);
 
         let messages = def.messages();
@@ -146,14 +144,7 @@ mod test {
             assert_eq!(key, &value.name());
             assert_eq!(value.parts().len(), 1);
         }
-        assert_eq!(
-            def.messages()
-                .get("GetServicesRequest")
-                .unwrap()
-                .parts()
-                .len(),
-            1
-        );
+        assert_eq!(def.messages().get("GetServicesRequest").unwrap().parts().len(), 1);
         assert_eq!(def.imports().len(), 0);
         assert_eq!(def.port_types().len(), 1);
     }
