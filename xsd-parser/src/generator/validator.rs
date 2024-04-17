@@ -145,7 +145,7 @@ mod test {
 
     #[test]
     fn test_validator_for_tuple_struct() {
-        struct Foo(i64);
+        struct Foo(());
         impl Validate for Foo {
             fn validate(&self) -> Result<(), String> {
                 Err("Error".to_owned())
