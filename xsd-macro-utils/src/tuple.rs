@@ -6,7 +6,7 @@ enum Type<'a> {
     Simple(&'a syn::Path),
     String(&'a syn::Path),
     Struct(&'a syn::Path),
-    Vec(&'a syn::Path, &'a syn::Path),
+    Vec(&'a syn::Path),
 }
 
 pub fn serde(ast: &syn::DeriveInput) -> syn::Result<TokenStream> {
@@ -25,7 +25,7 @@ fn from_str(ast: &syn::DeriveInput) -> syn::Result<TokenStream> {
         Type::Struct(ty) | Type::Simple(ty) => {
             quote! { <#ty as ::std::str::FromStr>::from_str(s).map_err(|e| e.to_string())? }
         }
-        Type::Vec(_, subtype) => match Type::from_path(subtype) {
+        Type::Vec(subtype) => match Type::from_path(subtype) {
             Type::String(subtype) | Type::Struct(subtype) | Type::Simple(subtype) => quote! {
                 s.split_whitespace()
                     .filter_map(|s| <#subtype as ::std::str::FromStr>::from_str(s).ok())
@@ -53,7 +53,7 @@ fn display(ast: &syn::DeriveInput) -> syn::Result<TokenStream> {
         Type::String(_) | Type::Simple(_) | Type::Struct(_) => quote! {
             write!(f, "{}", self.0)
         },
-        Type::Vec(_, subtype) => match Type::from_path(subtype) {
+        Type::Vec(subtype) => match Type::from_path(subtype) {
             Type::String(_) | Type::Simple(_) | Type::Struct(_) => quote! {
                 let mut it = self.0.iter();
                 if let Some(val) = it.next() {
@@ -87,7 +87,6 @@ impl Type<'_> {
             | "f64" => Type::Simple(path),
             "String" => Type::String(path),
             "Vec" => Type::Vec(
-                path,
                 extract_subtype(path.segments.last().expect("Missing subtype"))
                     .expect("Vec subtype not found"),
             ),
