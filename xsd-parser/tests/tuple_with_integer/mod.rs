@@ -28,7 +28,6 @@ fn generator_does_not_panic() {
 }
 
 #[test]
-#[ignore] // Validation is not needed in this case
 fn generator_output_has_correct_ast() {
     utils::ast_test(include_str!("input.xsd"), include_str!("expected.rs"));
 }
