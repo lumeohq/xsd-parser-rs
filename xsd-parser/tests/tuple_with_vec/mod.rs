@@ -4,6 +4,7 @@ use super::utils;
 fn deserialization_works() {
     mod expected {
         use std::str::FromStr;
+        use xsd_parser::generator::validator::Validate;
 
         use xsd_macro_utils::*;
 

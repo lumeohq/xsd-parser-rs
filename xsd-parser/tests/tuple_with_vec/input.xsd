@@ -4,7 +4,7 @@
            targetNamespace="http://example.com"
            elementFormDefault="qualified">
     <xs:simpleType name="FooType">
-        <xs:list itemType="xs:string"/>
+        <xs:list itemType="xs:int"/>
     </xs:simpleType>
 
     <xs:element name="Foo" type="tns:FooType"/>
