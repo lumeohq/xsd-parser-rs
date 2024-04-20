@@ -15,7 +15,7 @@ mod restriction_any_type;
 mod simple_type;
 mod tuple_with_integer;
 mod tuple_with_string;
-mod tuple_with_vec;
+mod tuple_with_vec_int;
 mod type_name_clash;
 mod union;
 mod xsd_string;
