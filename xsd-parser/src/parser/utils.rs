@@ -73,7 +73,7 @@ pub fn enum_to_field(en: Enum) -> StructField {
         name: en.name.clone(),
         type_name: en.name.clone(),
         subtypes: vec![RsEntity::Enum(en)],
-        source: StructFieldSource::Element,
+        source: StructFieldSource::Choice,
         ..Default::default()
     }
 }
