@@ -4,12 +4,8 @@ use super::utils;
 fn deserialization_works() {
     mod expected {
         use std::str::FromStr;
-
         use xsd_macro_utils::*;
-
-        trait Validate {
-            fn validate(&self) -> Result<(), String>;
-        }
+        use xsd_parser::generator::validator::Validate;
 
         include!("expected.rs");
     }
@@ -27,7 +23,6 @@ fn generator_does_not_panic() {
 }
 
 #[test]
-#[ignore] // Validation is not needed in this case
 fn generator_output_has_correct_ast() {
     utils::ast_test(include_str!("input.xsd"), include_str!("expected.rs"));
 }

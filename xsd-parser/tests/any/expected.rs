@@ -4,3 +4,6 @@ pub struct FooType {
     #[yaserde(prefix = "tns", rename = "Name")]
     pub name: String,
 }
+
+impl Validate for FooType {}
+// pub type Foo = FooType;

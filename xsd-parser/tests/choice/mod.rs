@@ -6,6 +6,7 @@ fn deserialization_works() {
         use std::str::FromStr;
 
         use xsd_macro_utils::*;
+        use xsd_parser::generator::validator::Validate;
         use yaserde_derive::{YaDeserialize, YaSerialize};
 
         include!("expected.rs");
@@ -27,7 +28,6 @@ fn generator_does_not_panic() {
 }
 
 #[test]
-#[ignore] // Validation is not needed in this case
 fn generator_output_has_correct_ast() {
     utils::ast_test(include_str!("input.xsd"), include_str!("expected.rs"));
 }
