@@ -7,9 +7,10 @@ use super::utils;
 fn deserialization_works() {
     mod expected {
         use std::str::FromStr;
+        use xsd_parser::generator::validator::Validate;
 
         use xsd_macro_utils::*;
-        use xsd_types::types::Integer;
+        use xsd_types::types as xs;
 
         include!("expected.rs");
     }
