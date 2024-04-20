@@ -1,7 +1,7 @@
 #[derive(PartialEq, Debug, UtilsUnionSerDe)]
 pub enum FooType {
-    Int(i32),
-    String(String),
+    int(i32),
+    string(String),
     __Unknown__(String),
 }
 
