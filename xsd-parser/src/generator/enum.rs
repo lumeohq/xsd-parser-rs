@@ -61,8 +61,10 @@ pub trait EnumGenerator {
     }
 
     fn macros(&self, entity: &Enum, gen: &Generator) -> Cow<'static, str> {
+        let allows = "#[allow(non_camel_case_types)]\n";
+
         if entity.source == EnumSource::Union {
-            return "#[derive(PartialEq, Debug, UtilsUnionSerDe)]\n".into();
+            return format!("{allows}#[derive(PartialEq, Debug, UtilsUnionSerDe)]").into();
         }
 
         let derives = "#[derive(PartialEq, Debug, YaSerialize, YaDeserialize)]\n";
@@ -70,13 +72,13 @@ pub trait EnumGenerator {
         match tns.as_ref() {
             Some(tn) => match tn.name() {
                 Some(name) => format!(
-                    "{derives}#[yaserde(prefix = \"{prefix}\", namespace = \"{prefix}: {uri}\")]\n",
+                    "{allows}{derives}#[yaserde(prefix = \"{prefix}\", namespace = \"{prefix}: {uri}\")]\n",
                     derives = derives,
                     prefix = name,
                     uri = tn.uri()
                 ),
                 None => format!(
-                    "{derives}#[yaserde(namespace = \"{uri}\")]\n",
+                    "{allows}{derives}#[yaserde(namespace = \"{uri}\")]\n",
                     derives = derives,
                     uri = tn.uri()
                 ),
