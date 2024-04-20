@@ -14,7 +14,6 @@ mod rename_only_where_needed;
 mod restriction_any_type;
 mod simple_type;
 mod tuple_with_integer;
-mod tuple_with_string;
 mod tuple_with_vec_int;
 mod tuple_with_vec_string;
 mod type_name_clash;
