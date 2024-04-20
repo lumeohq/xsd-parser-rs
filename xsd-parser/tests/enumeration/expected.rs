@@ -1,3 +1,4 @@
+#[allow(non_camel_case_types)]
 #[derive(PartialEq, Debug, YaSerialize, YaDeserialize)]
 #[yaserde(prefix = "tns", namespace = "tns: http://example.com")]
 pub enum FooType {
@@ -14,6 +15,7 @@ impl Default for FooType {
 }
 impl Validate for FooType {}
 
+#[allow(non_camel_case_types)]
 #[derive(PartialEq, Debug, YaSerialize, YaDeserialize)]
 #[yaserde(prefix = "tns", namespace = "tns: http://example.com")]
 pub enum FooType1 {

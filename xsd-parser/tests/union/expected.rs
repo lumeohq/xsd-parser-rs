@@ -1,3 +1,4 @@
+#[allow(non_camel_case_types)]
 #[derive(PartialEq, Debug, UtilsUnionSerDe)]
 pub enum FooType {
     int(i32),
