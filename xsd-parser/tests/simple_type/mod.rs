@@ -4,12 +4,8 @@ use super::utils;
 fn deserialization_works() {
     mod expected {
         use std::str::FromStr;
-
         use xsd_macro_utils::*;
-
-        trait Validate {
-            fn validate(&self) -> Result<(), String>;
-        }
+        use xsd_parser::generator::validator::Validate;
 
         include!("expected.rs");
     }
