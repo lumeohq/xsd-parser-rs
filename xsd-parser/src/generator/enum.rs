@@ -19,7 +19,7 @@ pub trait EnumGenerator {
         );
 
         format!(
-            "{comment}{macros}\n\
+            "{comment}{macros}\
             pub enum {name} {{\n\
                 {cases}\n\
                 {indent}__Unknown__({typename}),\n\
@@ -62,10 +62,10 @@ pub trait EnumGenerator {
 
     fn macros(&self, entity: &Enum, gen: &Generator) -> Cow<'static, str> {
         if entity.source == EnumSource::Union {
-            return "#[derive(PartialEq, Debug, UtilsUnionSerDe)]".into();
+            return "#[derive(PartialEq, Debug, UtilsUnionSerDe)]\n".into();
         }
 
-        let derives = "#[derive(PartialEq, Debug, YaSerialize, YaDeserialize)]";
+        let derives = "#[derive(PartialEq, Debug, YaSerialize, YaDeserialize)]\n";
         let tns = gen.target_ns.borrow();
         match tns.as_ref() {
             Some(tn) => match tn.name() {
