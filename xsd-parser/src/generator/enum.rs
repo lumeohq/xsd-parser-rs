@@ -61,7 +61,7 @@ pub trait EnumGenerator {
     }
 
     fn macros(&self, entity: &Enum, gen: &Generator) -> Cow<'static, str> {
-        let allows = "#[allow(non_camel_case_types)]\n";
+        let allows = "#[allow(non_camel_case_types, clippy::upper_case_acronyms)]\n";
 
         if entity.source == EnumSource::Union {
             return format!("{allows}#[derive(PartialEq, Debug, UtilsUnionSerDe)]").into();
