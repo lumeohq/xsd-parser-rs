@@ -12,6 +12,14 @@
         </xs:restriction>
     </xs:simpleType>
 
+    <xs:simpleType name="FooType1">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="OFF"/>
+            <xs:enumeration value="ON"/>
+            <xs:enumeration value="On"/>
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:simpleType name="FooType2">
         <xs:restriction base="xs:string">
             <xs:enumeration value="xs:OFF"/>

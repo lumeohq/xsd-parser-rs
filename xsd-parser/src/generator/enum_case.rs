@@ -1,7 +1,9 @@
 use crate::{
-    generator::{default::default_format_type, utils::split_name, Generator},
+    generator::{utils::split_name, Generator},
     parser::types::{EnumCase, EnumSource},
 };
+
+use super::utils::{filter_type_name, sanitize};
 
 pub trait EnumCaseGenerator {
     fn generate(&self, entity: &EnumCase, gen: &Generator) -> String {
@@ -20,12 +22,8 @@ pub trait EnumCaseGenerator {
         )
     }
 
-    fn get_name(&self, entity: &EnumCase, gen: &Generator) -> String {
-        default_format_type(entity.name.as_str(), &gen.target_ns.borrow())
-            .split("::")
-            .last()
-            .unwrap()
-            .to_string()
+    fn get_name(&self, entity: &EnumCase, _: &Generator) -> String {
+        sanitize(filter_type_name(entity.name.split(':').last().unwrap_or(&entity.name.to_owned())))
     }
 
     fn get_type_name(&self, entity: &EnumCase, gen: &Generator) -> String {

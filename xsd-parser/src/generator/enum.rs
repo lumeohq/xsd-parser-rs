@@ -19,7 +19,7 @@ pub trait EnumGenerator {
         );
 
         format!(
-            "{comment}{macros}\n\
+            "{comment}{macros}\
             pub enum {name} {{\n\
                 {cases}\n\
                 {indent}__Unknown__({typename}),\n\
@@ -61,22 +61,24 @@ pub trait EnumGenerator {
     }
 
     fn macros(&self, entity: &Enum, gen: &Generator) -> Cow<'static, str> {
+        let allows = "#[allow(non_camel_case_types, clippy::upper_case_acronyms)]\n";
+
         if entity.source == EnumSource::Union {
-            return "#[derive(PartialEq, Debug, UtilsUnionSerDe)]".into();
+            return format!("{allows}#[derive(PartialEq, Debug, UtilsUnionSerDe)]").into();
         }
 
-        let derives = "#[derive(PartialEq, Debug, YaSerialize, YaDeserialize)]";
+        let derives = "#[derive(PartialEq, Debug, YaSerialize, YaDeserialize)]\n";
         let tns = gen.target_ns.borrow();
         match tns.as_ref() {
             Some(tn) => match tn.name() {
                 Some(name) => format!(
-                    "{derives}#[yaserde(prefix = \"{prefix}\", namespace = \"{prefix}: {uri}\")]\n",
+                    "{allows}{derives}#[yaserde(prefix = \"{prefix}\", namespace = \"{prefix}: {uri}\")]\n",
                     derives = derives,
                     prefix = name,
                     uri = tn.uri()
                 ),
                 None => format!(
-                    "{derives}#[yaserde(namespace = \"{uri}\")]\n",
+                    "{allows}{derives}#[yaserde(namespace = \"{uri}\")]\n",
                     derives = derives,
                     uri = tn.uri()
                 ),

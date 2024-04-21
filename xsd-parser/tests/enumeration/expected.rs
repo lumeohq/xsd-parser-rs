@@ -1,12 +1,10 @@
+#[allow(non_camel_case_types, clippy::upper_case_acronyms)]
 #[derive(PartialEq, Debug, YaSerialize, YaDeserialize)]
 #[yaserde(prefix = "tns", namespace = "tns: http://example.com")]
 pub enum FooType {
-    #[yaserde(rename = "OFF")]
-    Off,
-    #[yaserde(rename = "ON")]
-    On,
-    #[yaserde(rename = "AUTO")]
-    Auto,
+    OFF,
+    ON,
+    AUTO,
     __Unknown__(String),
 }
 
@@ -17,9 +15,24 @@ impl Default for FooType {
 }
 impl Validate for FooType {}
 
+#[allow(non_camel_case_types, clippy::upper_case_acronyms)]
+#[derive(PartialEq, Debug, YaSerialize, YaDeserialize)]
+#[yaserde(prefix = "tns", namespace = "tns: http://example.com")]
+pub enum FooType1 {
+    OFF,
+    ON,
+    On,
+    __Unknown__(String),
+}
+
+impl Default for FooType1 {
+    fn default() -> FooType1 {
+        Self::__Unknown__("No valid variants".into())
+    }
+}
+impl Validate for FooType1 {}
 
 #[derive(Default, PartialEq, Debug, UtilsTupleIo, UtilsDefaultSerde)]
 pub struct FooType2(pub String);
 
 impl Validate for FooType2 {}
-
