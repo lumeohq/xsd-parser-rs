@@ -23,9 +23,7 @@ pub trait EnumCaseGenerator {
     }
 
     fn get_name(&self, entity: &EnumCase, _: &Generator) -> String {
-        sanitize(filter_type_name(
-            &entity.name.split(':').last().unwrap_or(&entity.name.to_owned()),
-        ))
+        sanitize(filter_type_name(entity.name.split(':').last().unwrap_or(&entity.name.to_owned())))
     }
 
     fn get_type_name(&self, entity: &EnumCase, gen: &Generator) -> String {
