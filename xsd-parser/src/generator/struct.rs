@@ -7,7 +7,7 @@ use crate::{
 
 pub trait StructGenerator {
     fn generate(&self, entity: &Struct, gen: &Generator) -> String {
-        format!(
+        let str = format!(
             "{comment}{macros}pub struct {name} {{{fields}}}\n\n{validation}\n{subtypes}\n",
             comment = self.format_comment(entity, gen),
             macros = self.macros(entity, gen),
@@ -15,7 +15,10 @@ pub trait StructGenerator {
             fields = self.fields(entity, gen),
             subtypes = self.subtypes(entity, gen),
             validation = self.validation(entity, gen),
-        )
+        );
+        let name = self.get_type_name(entity, gen);
+        let str2 = format!("impl YaSerialize for Box<{name}> {{\nfn serialize<W: Write>(&self, writer: &mut Serializer<W>) -> Result<(), String> {{\nself.serialize(writer)\n}}\nfn serialize_attributes(&self, attributes: Vec<OwnedAttribute>, namespace: Namespace) -> Result<(Vec<OwnedAttribute>, Namespace), String> {{\nself.serialize_attributes(attributes, namespace)\n}}\n}}\n");
+        str + str2.as_str()
     }
 
     fn fields(&self, entity: &Struct, gen: &Generator) -> String {
