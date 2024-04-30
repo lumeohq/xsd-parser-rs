@@ -29,7 +29,7 @@ pub trait StructFieldGenerator {
                 &entity.type_modifiers,
             )
             .into();
-        if type_name != "f64" && !type_name.starts_with("Vec<") {
+        if type_name != "f64" && type_name != "String" && !type_name.starts_with("Vec<") {
             type_name = format!("Box<{type_name}>");
         }
         type_name
