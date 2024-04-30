@@ -41,7 +41,11 @@ pub trait EnumGenerator {
         let name = self.get_type_name(entity, gen);
         let str2 = format!("impl YaSerialize for Box<{name}> {{\n\tfn serialize<W: Write>(&self, writer: &mut Serializer<W>) -> Result<(), String> {{\nself.serialize(writer)\n}}\nfn serialize_attributes(&self, attributes: Vec<OwnedAttribute>, namespace: Namespace) -> Result<(Vec<OwnedAttribute>, Namespace), String> {{\nself.serialize_attributes(attributes, namespace)\n}}\n}}\n\n");
         let str3 = format!("impl YaDeserialize for Box<{name}> {{\n\tfn deserialize<R: Read>(reader: &mut Deserializer<R>) -> Result<Self, String> {{\n\t\tOk(Box::new({name}::deserialize(reader)?))}}\n}}\n\n");
-        str + str2.as_str() + str3.as_str()
+        if name == "String" {
+            str
+        } else {
+            str + str2.as_str() + str3.as_str()
+        }
     }
 
     fn cases(&self, entity: &Enum, gen: &Generator) -> String {
