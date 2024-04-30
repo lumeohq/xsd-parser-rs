@@ -23,7 +23,7 @@ pub trait StructFieldGenerator {
 
     fn get_type_name(&self, entity: &StructField, gen: &Generator) -> String {
         let mut type_name = gen.base().format_type_name(entity.type_name.as_str(), gen).to_string();
-        if entity.type_modifiers.is_empty() {
+        if entity.type_modifiers.is_empty() && !type_name.ends_with("Choice") {
             type_name = match type_name.to_string().as_str() {
                 "f64" => type_name.to_string(),
                 _ => format!("Box<{}>", type_name),
