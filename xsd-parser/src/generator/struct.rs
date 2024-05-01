@@ -22,7 +22,11 @@ pub trait StructGenerator {
         str2 += format!("\tfn serialize_attributes(&self, attributes: Vec<OwnedAttribute>, namespace: Namespace) -> Result<(Vec<OwnedAttribute>, Namespace), String> {{\n\t\tself.as_ref().serialize_attributes(attributes, namespace)\n}}\n}}\n\n").as_str();
         let mut str3 = format!("impl YaDeserialize for Box<{name}> {{\n\tfn deserialize<R: Read>(reader: &mut Deserializer<R>) -> Result<Self, String> {{\n");
         str3 += format!("\t\tOk(Box::new({name}::deserialize(reader)?))\n}}\n}}\n\n").as_str();
-        str + str2.as_str() + str3.as_str()
+        if name.contains("String") {
+            str
+        } else {
+            str + str2.as_str() + str3.as_str()
+        }
     }
 
     fn fields(&self, entity: &Struct, gen: &Generator) -> String {
