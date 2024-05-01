@@ -32,6 +32,7 @@ pub trait StructFieldGenerator {
         if type_name != "f64" && !type_name.contains("String") && !type_name.starts_with("Vec<") {
             type_name = format!("Box<{type_name}>");
         }
+        type_name = type_name.replace("Box<Option<", "Option<Box<");
         type_name
     }
 
