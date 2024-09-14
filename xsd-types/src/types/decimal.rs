@@ -3,7 +3,7 @@ use std::{fmt, str::FromStr};
 use bigdecimal::{BigDecimal, ParseBigDecimalError};
 use xsd_macro_utils::UtilsDefaultSerde;
 
-#[derive(Default, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
+#[derive(Default, Clone, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
 pub struct Decimal(pub BigDecimal);
 
 impl Decimal {
@@ -38,7 +38,7 @@ mod tests {
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
 
-    #[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]
+    #[derive(Default, Clone, PartialEq, Debug, YaSerialize, YaDeserialize)]
     #[yaserde(prefix = "t", namespace = "t: test")]
     pub struct DecimalPair {
         #[yaserde(prefix = "t", rename = "First")]

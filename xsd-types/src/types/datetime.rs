@@ -3,7 +3,7 @@ use std::{fmt, str::FromStr};
 use chrono::{format::ParseError, DateTime as CDateTime, FixedOffset};
 use xsd_macro_utils::UtilsDefaultSerde;
 
-#[derive(PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
+#[derive(PartialEq, PartialOrd, Debug, Clone, UtilsDefaultSerde)]
 pub struct DateTime {
     pub value: CDateTime<FixedOffset>,
 }
@@ -106,7 +106,7 @@ mod tests {
         assert_eq!(DateTime { value: dt }.to_string(), "2020-03-07T04:40:00-06:30");
     }
 
-    #[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]
+    #[derive(Default, Clone, PartialEq, Debug, YaSerialize, YaDeserialize)]
     #[yaserde(prefix = "t", namespace = "t: test")]
     pub struct Message {
         #[yaserde(prefix = "t", rename = "CreatedAt")]

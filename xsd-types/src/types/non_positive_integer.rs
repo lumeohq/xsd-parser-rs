@@ -4,7 +4,7 @@ use num_bigint::{BigInt, ToBigInt};
 use xsd_macro_utils::UtilsDefaultSerde;
 
 // https://www.w3.org/TR/xmlschema-2/#nonPositiveInteger
-#[derive(Default, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
+#[derive(Default, Clone, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
 pub struct NonPositiveInteger(pub BigInt);
 
 impl NonPositiveInteger {
@@ -90,7 +90,7 @@ mod tests {
         assert_eq!(NonPositiveInteger((-1).to_bigint().unwrap()).to_string(), "-1");
     }
 
-    #[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]
+    #[derive(Default, Clone, PartialEq, Debug, YaSerialize, YaDeserialize)]
     #[yaserde(prefix = "t", namespace = "t: test")]
     pub struct NonPositiveIntegerPair {
         #[yaserde(prefix = "t", rename = "First")]

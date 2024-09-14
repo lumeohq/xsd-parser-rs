@@ -5,7 +5,7 @@ use xsd_macro_utils::UtilsDefaultSerde;
 
 use crate::types::{gday::GDay, gmonth::GMonth, utils::parse_timezone};
 
-#[derive(PartialEq, Debug, UtilsDefaultSerde)]
+#[derive(PartialEq, Debug, Clone, UtilsDefaultSerde)]
 pub struct GMonthDay {
     pub month: i32,
     pub day: i32,
@@ -199,7 +199,7 @@ mod tests {
         );
     }
 
-    #[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]
+    #[derive(Default, Clone, PartialEq, Debug, YaSerialize, YaDeserialize)]
     #[yaserde(prefix = "t", namespace = "t: test")]
     pub struct Message {
         #[yaserde(prefix = "t", rename = "CreatedAt")]

@@ -4,7 +4,7 @@ use num_bigint::{BigInt, ParseBigIntError, ToBigInt};
 use xsd_macro_utils::UtilsDefaultSerde;
 
 // https://www.w3.org/TR/xmlschema-2/#integer
-#[derive(Default, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
+#[derive(Default, Clone, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
 pub struct Integer(pub BigInt);
 
 impl Integer {
@@ -74,7 +74,7 @@ mod tests {
         assert_eq!(Integer((-1).to_bigint().unwrap()).to_string(), "-1");
     }
 
-    #[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]
+    #[derive(Default, Clone, PartialEq, Debug, YaSerialize, YaDeserialize)]
     #[yaserde(prefix = "t", namespace = "t: test")]
     pub struct IntegerPair {
         #[yaserde(prefix = "t", rename = "First")]
