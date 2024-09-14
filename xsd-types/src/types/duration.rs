@@ -97,6 +97,11 @@ impl FromStr for Duration {
 
         let mut dur: Duration = Default::default();
         let mut context = ParsingContext::new();
+
+        if s.is_empty() {
+            return Ok(dur);
+        }
+
         for (i, c) in s.chars().enumerate() {
             match c {
                 '-' => {
