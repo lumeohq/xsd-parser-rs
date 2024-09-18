@@ -144,16 +144,6 @@ mod test {
     use super::*;
 
     #[test]
-    fn test_validator_for_tuple_struct() {
-        struct Foo(());
-        impl Validate for Foo {
-            fn validate(&self) -> Result<(), String> {
-                Err("Error".to_owned())
-            }
-        }
-    }
-
-    #[test]
     fn test_gen_max_exclusive_validation() {
         let expected = r#"
         if self.count >= "5".parse::<i32>().unwrap() {

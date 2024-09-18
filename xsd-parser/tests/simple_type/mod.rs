@@ -7,10 +7,6 @@ fn deserialization_works() {
 
         use xsd_macro_utils::*;
 
-        trait Validate {
-            fn validate(&self) -> Result<(), String>;
-        }
-
         include!("expected.rs");
     }
 
