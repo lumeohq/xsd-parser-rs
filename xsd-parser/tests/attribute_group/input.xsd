@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://example.com"
+           targetNamespace="http://example.com"
+           elementFormDefault="qualified">
+
+    <xs:attributeGroup name="anAttrGroup">
+        <xs:attribute name="id">
+            <xs:simpleType>
+                <xs:restriction base="xs:string" />
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="aNumber" type="xs:int"/>
+    </xs:attributeGroup>
+    
+    <xs:complexType name="FooType">
+        <xs:attributeGroup ref="tns:anAttrGroup" />
+    </xs:complexType>
+
+    <xs:element name="Foo" type="tns:FooType"/>
+</xs:schema>

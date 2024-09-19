@@ -2,6 +2,7 @@
 mod utils;
 mod all;
 mod any;
+mod attribute_group;
 mod choice;
 mod complex_type;
 mod complex_type_subtypes_clash;
