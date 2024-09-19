@@ -97,6 +97,11 @@ impl FromStr for Duration {
 
         let mut dur: Duration = Default::default();
         let mut context = ParsingContext::new();
+
+        if s.is_empty() {
+            return Ok(dur);
+        }
+
         for (i, c) in s.chars().enumerate() {
             match c {
                 '-' => {
@@ -296,6 +301,8 @@ mod tests {
 
     #[test]
     fn duration_parsing_test() {
+        assert_eq!(Duration::from_str(""), Duration::from_str("PT0S"));
+        check_valid("PT0S");
         check_valid("P2Y6M5DT12H35M30S");
         check_valid("P1DT2H");
         check_valid("P20M");
