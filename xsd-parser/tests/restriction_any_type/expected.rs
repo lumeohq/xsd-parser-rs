@@ -1,5 +1,5 @@
 // pub type AppSequence = AppSequenceType;
-#[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]
+#[derive(Default, Clone, PartialEq, Debug, YaSerialize, YaDeserialize)]
 #[yaserde(prefix = "tns", namespace = "tns: http://schemas.xmlsoap.org/ws/2005/04/discovery")]
 pub struct AppSequenceType {
     #[yaserde(attribute, rename = "InstanceId")]

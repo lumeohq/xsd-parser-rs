@@ -65,7 +65,7 @@ pub trait EnumGenerator {
             return "#[derive(PartialEq, Debug, UtilsUnionSerDe)]".into();
         }
 
-        let derives = "#[derive(PartialEq, Debug, YaSerialize, YaDeserialize)]";
+        let derives = "#[derive(PartialEq, Debug, Clone, YaSerialize, YaDeserialize)]";
         let tns = gen.target_ns.borrow();
         match tns.as_ref() {
             Some(tn) => match tn.name() {
