@@ -6,7 +6,7 @@ use xsd_macro_utils::UtilsDefaultSerde;
 use crate::types::datetime::DateTime;
 
 // The only difference from DateTime is that the time zone expression is required at the end of the value.
-#[derive(Default, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
+#[derive(Default, Clone, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
 pub struct DateTimeStamp {
     pub value: DateTime,
 }
@@ -114,7 +114,7 @@ mod tests {
         );
     }
 
-    #[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]
+    #[derive(Default, Clone, PartialEq, Debug, YaSerialize, YaDeserialize)]
     #[yaserde(prefix = "t", namespace = "t: test")]
     pub struct Message {
         #[yaserde(prefix = "t", rename = "CreatedAt")]

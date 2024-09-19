@@ -79,7 +79,7 @@ pub trait StructGenerator {
     }
 
     fn macros(&self, _entity: &Struct, gen: &Generator) -> Cow<'static, str> {
-        let derives = "#[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]\n";
+        let derives = "#[derive(Default, Clone, PartialEq, Debug, YaSerialize, YaDeserialize)]\n";
         let tns = gen.target_ns.borrow();
         match tns.as_ref() {
             Some(tn) => match tn.name() {

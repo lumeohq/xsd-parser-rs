@@ -1,4 +1,4 @@
-#[derive(PartialEq, Debug, YaSerialize, YaDeserialize)]
+#[derive(PartialEq, Debug, Clone, YaSerialize, YaDeserialize)]
 #[yaserde(prefix = "tns", namespace = "tns: http://example.com")]
 pub enum FooType {
     #[yaserde(rename = "OFF")]
@@ -18,7 +18,7 @@ impl Default for FooType {
 impl Validate for FooType {}
 
 
-#[derive(Default, PartialEq, Debug, UtilsTupleIo, UtilsDefaultSerde)]
+#[derive(Default, Clone, PartialEq, Debug, UtilsTupleIo, UtilsDefaultSerde)]
 pub struct FooType2(pub String);
 
 impl Validate for FooType2 {}

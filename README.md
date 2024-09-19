@@ -97,7 +97,7 @@ There are cases when schema allows extensions for the certain type.
 In such cases we don't know in advance what fields must be present in Rust struct so we don't add them to output:
 
 ```rust
-#[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]
+#[derive(Default, Clone, PartialEq, Debug, YaSerialize, YaDeserialize)]
 #[yaserde(prefix = "tns", namespace = "tns: http://example.com")]
 pub struct MyType {
     #[yaserde(prefix = "tns", rename = "Parameters")]

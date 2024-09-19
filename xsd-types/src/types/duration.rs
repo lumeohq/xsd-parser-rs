@@ -2,7 +2,7 @@ use std::{fmt, fmt::Write, str::FromStr};
 
 use xsd_macro_utils::UtilsDefaultSerde;
 
-#[derive(Default, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
+#[derive(Default, Clone, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
 pub struct Duration {
     pub is_negative: bool,
 

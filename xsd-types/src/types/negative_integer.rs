@@ -4,7 +4,7 @@ use num_bigint::{BigInt, ToBigInt};
 use xsd_macro_utils::UtilsDefaultSerde;
 
 // https://www.w3.org/TR/xmlschema-2/#negativeInteger
-#[derive(Default, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
+#[derive(Default, Clone, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
 pub struct NegativeInteger(pub BigInt);
 
 impl NegativeInteger {
@@ -83,7 +83,7 @@ mod tests {
         assert_eq!(NegativeInteger((-1).to_bigint().unwrap()).to_string(), "-1");
     }
 
-    #[derive(Default, PartialEq, Debug, YaSerialize, YaDeserialize)]
+    #[derive(Default, Clone, PartialEq, Debug, YaSerialize, YaDeserialize)]
     #[yaserde(prefix = "t", namespace = "t: test")]
     pub struct NegativeIntegerPair {
         #[yaserde(prefix = "t", rename = "First")]
