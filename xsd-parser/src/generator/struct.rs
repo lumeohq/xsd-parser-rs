@@ -7,7 +7,7 @@ use crate::{
 
 pub trait StructGenerator {
     fn generate(&self, entity: &Struct, gen: &Generator) -> String {
-        format!(
+        let str = format!(
             "{comment}{macros}pub struct {name} {{{fields}}}\n\n{validation}\n{subtypes}\n",
             comment = self.format_comment(entity, gen),
             macros = self.macros(entity, gen),
@@ -15,7 +15,14 @@ pub trait StructGenerator {
             fields = self.fields(entity, gen),
             subtypes = self.subtypes(entity, gen),
             validation = self.validation(entity, gen),
-        )
+        );
+        let name = self.get_type_name(entity, gen);
+        let mut str2 = format!("impl YaSerialize for Box<{name}> {{\n");
+        str2 += format!("\tfn serialize<W: Write>(&self, writer: &mut Serializer<W>) -> Result<(), String> {{\n\t\tself.as_ref().serialize(writer)\n}}\n").as_str();
+        str2 += format!("\tfn serialize_attributes(&self, attributes: Vec<OwnedAttribute>, namespace: Namespace) -> Result<(Vec<OwnedAttribute>, Namespace), String> {{\n\t\tself.as_ref().serialize_attributes(attributes, namespace)\n}}\n}}\n\n").as_str();
+        let mut str3 = format!("impl YaDeserialize for Box<{name}> {{\n\tfn deserialize<R: Read>(reader: &mut Deserializer<R>) -> Result<Self, String> {{\n");
+        str3 += format!("\t\tOk(Box::new({name}::deserialize(reader)?))\n}}\n}}\n\n").as_str();
+        str + str2.as_str() + str3.as_str()
     }
 
     fn fields(&self, entity: &Struct, gen: &Generator) -> String {
