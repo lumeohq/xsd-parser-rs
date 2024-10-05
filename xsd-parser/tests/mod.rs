@@ -12,6 +12,7 @@ mod extension_base_two_files;
 mod ref_to_attribute;
 mod rename_only_where_needed;
 mod restriction_any_type;
+mod sequence_choice;
 mod simple_type;
 mod tuple_with_integer;
 mod tuple_with_string;

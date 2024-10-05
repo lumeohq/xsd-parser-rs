@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns="http://pubchem.ncbi.nlm.nih.gov/pug_view"
+  targetNamespace="http://pubchem.ncbi.nlm.nih.gov/pug_view"
+  elementFormDefault="qualified"
+  attributeFormDefault="unqualified">
+  <xs:element name="Section">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:choice>
+          <xs:element name="TOCHeading" type="xs:string"/>
+          <xs:element name="TOCID" type="xs:int"/>
+        </xs:choice>
+        <xs:element name="Description" type="xs:string" minOccurs="0"/> 
+        <xs:element name="URL" type="xs:string" minOccurs="0"/> 
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

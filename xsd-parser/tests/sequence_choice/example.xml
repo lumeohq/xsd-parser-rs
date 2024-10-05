@@ -1,0 +1,36 @@
+<Section
+    xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+    xs:schemaLocation="http://pubchem.ncbi.nlm.nih.gov/pug_view https://pubchem.ncbi.nlm.nih.gov/pug_view/pug_view.xsd"
+>
+  <TOCHeading>Structures</TOCHeading>
+  <Description>Structure depictions of this compound, including computationally generated two-dimensional (2D) and three-dimensional (3D) structures, as well as experimentally determined 3D single-crystal structures.</Description>
+  <Section>
+    <TOCHeading>2D Structure</TOCHeading>
+    <Description>A two-dimensional (2D) structure representation of the compound.  Because this structure is processed through chemical structure standardization (Hähnke et al., J. Cheminform. 2018, 10, 36), it is not necessarily the same as the structures provided by individual data contributors.  </Description>
+    <URL>https://doi.org/10.1186/s13321-018-0293-8</URL>
+    <DisplayControls>
+      <MoveToTop>true</MoveToTop>
+    </DisplayControls>
+    <Information>
+      <ReferenceNumber>66</ReferenceNumber>
+      <Value>
+        <Boolean>true</Boolean>
+      </Value>
+    </Information>
+  </Section>
+  <Section>
+    <TOCHeading>3D Conformer</TOCHeading>
+    <Description>A three-dimensional (3D) structure representation of the compound.  This 3D structure is not experimentally determined, but computed by PubChem.  This structure may or may not be the same as the inherent structure of the compound you would expect to see in vacuum or in the gas phase, because the underlying computational algorithm aims to generate a protein-bound structure, which would be observed in a protein-ligand complex.  More detailed information on this conformer model can be found in Kim et al., J. Cheminform. 2013, 5, 1.</Description>
+    <URL>https://doi.org/10.1186/1758-2946-5-1</URL>
+    <DisplayControls>
+      <MoveToTop>true</MoveToTop>
+    </DisplayControls>
+    <Information>
+      <ReferenceNumber>66</ReferenceNumber>
+      <Description>2-Hydroxyethyl Methacrylate</Description>
+      <Value>
+        <Number>13360</Number>
+      </Value>
+    </Information>
+  </Section>
+</Section>
