@@ -16,7 +16,7 @@ chrono = "0.4"
 num-bigint = "0.4"
 xml-rs = "0.8"
 xsd-macro-utils = { path = "../xsd-macro-utils" }
-yaserde = "0.7"
+yaserde = "0.12"
 
 [dev-dependencies]
-yaserde_derive = "0.7"
+yaserde = {version="0.12", features=["derive"]}

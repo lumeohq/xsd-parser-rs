@@ -40,7 +40,7 @@ impl fmt::Display for NegativeInteger {
 
 #[cfg(test)]
 mod tests {
-    use yaserde_derive::{YaDeserialize, YaSerialize};
+    use yaserde::{YaDeserialize, YaSerialize};
 
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
@@ -84,7 +84,7 @@ mod tests {
     }
 
     #[derive(Default, Clone, PartialEq, Debug, YaSerialize, YaDeserialize)]
-    #[yaserde(prefix = "t", namespace = "t: test")]
+    #[yaserde(prefix = "t", namespaces = {"t" = "test"})]
     pub struct NegativeIntegerPair {
         #[yaserde(prefix = "t", rename = "First")]
         pub first: NegativeInteger,
@@ -95,7 +95,7 @@ mod tests {
 
     #[test]
     fn negative_integer_serialize_test() {
-        let expected = r#"<?xml version="1.0" encoding="utf-8"?>
+        let expected = r#"<?xml version="1.0" encoding="UTF-8"?>
             <t:NegativeIntegerPair xmlns:t="test">
                 <t:First>-1</t:First>
                 <t:Second>-1234</t:Second>
@@ -111,7 +111,7 @@ mod tests {
 
     #[test]
     fn negative_integer_deserialize_test() {
-        let s = r#"<?xml version="1.0" encoding="utf-8"?>
+        let s = r#"<?xml version="1.0" encoding="UTF-8"?>
             <t:NegativeIntegerPair xmlns:t="test">
                 <t:First>-1</t:First>
                 <t:Second>-1234</t:Second>

@@ -12,7 +12,7 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 Inflector = "0.11"
-roxmltree = "0.19"
+roxmltree = "0.20"
 
 [dev-dependencies]
 num-bigint = "0.4"
@@ -21,5 +21,4 @@ text-diff = "0.4"
 xml-rs = "0.8"
 xsd-macro-utils = { path = "../xsd-macro-utils" }
 xsd-types = { path = "../xsd-types" }
-yaserde = "0.7"
-yaserde_derive = "0.7"
+yaserde = {version="0.12", features=["derive"]}

@@ -4,7 +4,7 @@ use super::utils;
 fn deserialization_works() {
     mod expected {
         use xsd_parser::generator::validator::Validate;
-        use yaserde_derive::{YaDeserialize, YaSerialize};
+        use yaserde::{YaDeserialize, YaSerialize};
 
         include!("expected.rs");
     }

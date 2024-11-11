@@ -126,7 +126,7 @@ impl fmt::Display for GYearMonth {
 
 #[cfg(test)]
 mod tests {
-    use yaserde_derive::{YaDeserialize, YaSerialize};
+    use yaserde::{YaDeserialize, YaSerialize};
 
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
@@ -259,7 +259,7 @@ mod tests {
     }
 
     #[derive(Default, Clone, PartialEq, Debug, YaSerialize, YaDeserialize)]
-    #[yaserde(prefix = "t", namespace = "t: test")]
+    #[yaserde(prefix = "t", namespaces = {"t"= "test"})]
     pub struct Message {
         #[yaserde(prefix = "t", rename = "CreatedAt")]
         pub created_at: GYearMonth,
@@ -270,7 +270,7 @@ mod tests {
 
     #[test]
     fn gyearmonth_serialize_test() {
-        let expected = r#"<?xml version="1.0" encoding="utf-8"?>
+        let expected = r#"<?xml version="1.0" encoding="UTF-8"?>
             <t:Message xmlns:t="test">
                 <t:CreatedAt>2007-02+06:30</t:CreatedAt>
                 <t:Text>Hello world</t:Text>
@@ -290,7 +290,7 @@ mod tests {
 
     #[test]
     fn gyearmonth_deserialize_test() {
-        let s = r#"<?xml version="1.0" encoding="utf-8"?>
+        let s = r#"<?xml version="1.0" encoding="UTF-8"?>
             <t:Message xmlns:t="test">
                 <t:CreatedAt>2007-02-06:30</t:CreatedAt>
                 <t:Text>Hello world</t:Text>

@@ -86,7 +86,7 @@ impl fmt::Display for Time {
 
 #[cfg(test)]
 mod tests {
-    use yaserde_derive::{YaDeserialize, YaSerialize};
+    use yaserde::{YaDeserialize, YaSerialize};
 
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
@@ -167,7 +167,7 @@ mod tests {
     }
 
     #[derive(Default, Clone, PartialEq, Debug, YaSerialize, YaDeserialize)]
-    #[yaserde(prefix = "t", namespace = "t: test")]
+    #[yaserde(prefix = "t", namespaces = {"t" = "test"})]
     pub struct Message {
         #[yaserde(prefix = "t", rename = "CreatedAt")]
         pub created_at: Time,
@@ -178,7 +178,7 @@ mod tests {
 
     #[test]
     fn datetime_serialize_test() {
-        let expected = r#"<?xml version="1.0" encoding="utf-8"?>
+        let expected = r#"<?xml version="1.0" encoding="UTF-8"?>
             <t:Message xmlns:t="test">
                 <t:CreatedAt>04:40:00+06:30</t:CreatedAt>
                 <t:Text>Hello world</t:Text>
@@ -197,7 +197,7 @@ mod tests {
 
     #[test]
     fn integer_deserialize_test() {
-        let s = r#"<?xml version="1.0" encoding="utf-8"?>
+        let s = r#"<?xml version="1.0" encoding="UTF-8"?>
             <t:Message xmlns:t="test">
                 <t:CreatedAt>04:40:00-06:30</t:CreatedAt>
                 <t:Text>Hello world</t:Text>

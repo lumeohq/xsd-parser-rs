@@ -1,8 +1,7 @@
 #[derive(Default, Clone, PartialEq, Debug, YaSerialize, YaDeserialize)]
 #[yaserde(
     prefix = "tns",
-    namespace = "tns: http://example.com",
-    namespace = "tns2: http://other.example.com"
+    namespaces = {"tns" = "http://example.com", "tns2" = "http://other.example.com"},
 )]
 pub struct FooType {
     #[yaserde(prefix = "tns", rename = "a")]

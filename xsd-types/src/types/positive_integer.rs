@@ -40,7 +40,7 @@ impl fmt::Display for PositiveInteger {
 
 #[cfg(test)]
 mod tests {
-    use yaserde_derive::{YaDeserialize, YaSerialize};
+    use yaserde::{YaDeserialize, YaSerialize};
 
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
@@ -80,7 +80,7 @@ mod tests {
     }
 
     #[derive(Default, Clone, PartialEq, Debug, YaSerialize, YaDeserialize)]
-    #[yaserde(prefix = "t", namespace = "t: test")]
+    #[yaserde(prefix = "t", namespaces = {"t" = "test"})]
     pub struct PositiveIntegerPair {
         #[yaserde(prefix = "t", rename = "First")]
         pub first: PositiveInteger,
@@ -91,7 +91,7 @@ mod tests {
 
     #[test]
     fn positive_integer_serialize_test() {
-        let expected = r#"<?xml version="1.0" encoding="utf-8"?>
+        let expected = r#"<?xml version="1.0" encoding="UTF-8"?>
             <t:PositiveIntegerPair xmlns:t="test">
                 <t:First>1234</t:First>
                 <t:Second>1</t:Second>
@@ -108,7 +108,7 @@ mod tests {
     #[test]
     fn positive_integer_deserialize_test() {
         // Value "+1234" is used to check optional plus sign deserialization.
-        let s = r#"<?xml version="1.0" encoding="utf-8"?>
+        let s = r#"<?xml version="1.0" encoding="UTF-8"?>
             <t:PositiveIntegerPair xmlns:t="test">
                 <t:First>+1234</t:First>
                 <t:Second>1</t:Second>

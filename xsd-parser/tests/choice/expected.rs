@@ -5,7 +5,7 @@ pub struct BarType(pub String);
 pub struct BazType(pub i32);
 
 #[derive(PartialEq, Debug, Clone, YaSerialize, YaDeserialize)]
-#[yaserde(prefix = "tns", namespace = "tns: http://example.com")]
+#[yaserde(prefix = "tns", namespaces = {"tns" = "http://example.com"})]
 pub enum FooTypeChoice {
     Bar(BarType),
     Baz(BazType),
@@ -19,8 +19,8 @@ impl Default for FooTypeChoice {
 }
 
 #[derive(Default, Clone, PartialEq, Debug, YaSerialize, YaDeserialize)]
-#[yaserde(prefix = "tns", namespace = "tns: http://example.com")]
+#[yaserde(prefix = "tns", namespaces = {"tns" = "http://example.com"})]
 pub struct FooType {
-    #[yaserde(flatten)]
+    #[yaserde(flatten = true)]
     pub foo_type_choice: FooTypeChoice,
 }

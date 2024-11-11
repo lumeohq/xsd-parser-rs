@@ -1,5 +1,5 @@
 #[derive(Default, Clone, PartialEq, Debug, YaSerialize, YaDeserialize)]
-#[yaserde(prefix = "tns", namespace = "tns: http://example.com")]
+#[yaserde(prefix = "tns", namespaces = {"tns" = "http://example.com"})]
 pub struct BarType {
     #[yaserde(prefix = "tns", rename = "b")]
     pub b: i32,
@@ -11,7 +11,7 @@ pub struct BarType {
 impl Validate for BarType {}
 
 #[derive(Default, Clone, PartialEq, Debug, YaSerialize, YaDeserialize)]
-#[yaserde(prefix = "tns", namespace = "tns: http://example.com")]
+#[yaserde(prefix = "tns", namespaces = {"tns" = "http://example.com"})]
 pub struct FooType {
     #[yaserde(prefix = "tns", rename = "a")]
     pub a: f64,

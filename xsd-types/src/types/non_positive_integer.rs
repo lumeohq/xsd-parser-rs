@@ -40,7 +40,7 @@ impl fmt::Display for NonPositiveInteger {
 
 #[cfg(test)]
 mod tests {
-    use yaserde_derive::{YaDeserialize, YaSerialize};
+    use yaserde::{YaDeserialize, YaSerialize};
 
     use super::*;
     use crate::utils::xml_eq::assert_xml_eq;
@@ -91,7 +91,7 @@ mod tests {
     }
 
     #[derive(Default, Clone, PartialEq, Debug, YaSerialize, YaDeserialize)]
-    #[yaserde(prefix = "t", namespace = "t: test")]
+    #[yaserde(prefix = "t", namespaces = {"t" = "test"})]
     pub struct NonPositiveIntegerPair {
         #[yaserde(prefix = "t", rename = "First")]
         pub first: NonPositiveInteger,
@@ -102,7 +102,7 @@ mod tests {
 
     #[test]
     fn non_positive_integer_serialize_test() {
-        let expected = r#"<?xml version="1.0" encoding="utf-8"?>
+        let expected = r#"<?xml version="1.0" encoding="UTF-8"?>
             <t:NonPositiveIntegerPair xmlns:t="test">
                 <t:First>0</t:First>
                 <t:Second>-1234</t:Second>
@@ -118,7 +118,7 @@ mod tests {
 
     #[test]
     fn non_positive_integer_deserialize_test() {
-        let s = r#"<?xml version="1.0" encoding="utf-8"?>
+        let s = r#"<?xml version="1.0" encoding="UTF-8"?>
             <t:NonPositiveIntegerPair xmlns:t="test">
                 <t:First>0</t:First>
                 <t:Second>-1234</t:Second>

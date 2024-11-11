@@ -7,7 +7,7 @@ fn deserialization_works() {
 
         use xsd_macro_utils::*;
         use xsd_parser::generator::validator::Validate;
-        use yaserde_derive::{YaDeserialize, YaSerialize};
+        use yaserde::{YaDeserialize, YaSerialize};
 
         include!("expected.rs");
     }

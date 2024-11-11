@@ -67,13 +67,13 @@ pub fn default_modify_type(type_name: &str, modifiers: &[TypeModifier]) -> Cow<'
 pub fn yaserde_for_attribute(name: &str, indent: &str) -> String {
     if let Some(index) = name.find(':') {
         format!(
-            "{}#[yaserde(attribute, prefix = \"{}\", rename = \"{}\")]\n",
+            "{}#[yaserde(attribute = true, prefix = \"{}\", rename = \"{}\")]\n",
             indent,
             &name[0..index],
             &name[index + 1..]
         )
     } else {
-        format!("{}#[yaserde(attribute, rename = \"{}\")]\n", indent, name)
+        format!("{}#[yaserde(attribute = true, rename = \"{}\")]\n", indent, name)
     }
 }
 

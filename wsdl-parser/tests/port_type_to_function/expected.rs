@@ -1,6 +1,6 @@
 
 #[derive(Default, Clone, PartialEq, Debug, YaSerialize, YaDeserialize)]
-#[yaserde(prefix = "tds", namespace = "tds: http://www.onvif.org/ver10/device/wsdl")]
+#[yaserde(prefix = "tds", namespaces = {"tds" = "http://www.onvif.org/ver10/device/wsdl"})]
 pub struct GetServices {
     // Indicates if the service capabilities (untyped) should be included in the
     // response.
@@ -12,7 +12,7 @@ impl Validate for GetServices {}
 
 
 #[derive(Default, Clone, PartialEq, Debug, YaSerialize, YaDeserialize)]
-#[yaserde(prefix = "tds", namespace = "tds: http://www.onvif.org/ver10/device/wsdl")]
+#[yaserde(prefix = "tds", namespaces = {"tds" = "http://www.onvif.org/ver10/device/wsdl"})]
 pub struct GetServicesResponse {
     // Each Service element contains information about one service.
     #[yaserde(prefix = "tds", rename = "Service")]

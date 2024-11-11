@@ -98,7 +98,7 @@ In such cases we don't know in advance what fields must be present in Rust struc
 
 ```rust
 #[derive(Default, Clone, PartialEq, Debug, YaSerialize, YaDeserialize)]
-#[yaserde(prefix = "tns", namespace = "tns: http://example.com")]
+#[yaserde(prefix = "tns", namespaces = {"tns" = "http://example.com"})]
 pub struct MyType {
     #[yaserde(prefix = "tns", rename = "Parameters")]
     pub parameters: String,
